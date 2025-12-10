@@ -1,0 +1,21 @@
+name: cytospace_v1.1.0
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.9.19
+  - numpy=1.26.2
+  - lap=0.4.0
+  - scipy=1.11.4
+  - pip=23.3.2
+  - pandas=2.2.0
+  - matplotlib=3.8.2
+  - gdown=4.7.1
+  - r-base=4.3.3
+  - r-seurat=5.1.0
+  - r-argparse
+  - pip:
+      - ortools==9.3.10497
+      - scanpy==1.9.6
+      - datatable==1.1.0

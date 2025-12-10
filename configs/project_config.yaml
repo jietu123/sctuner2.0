@@ -1,0 +1,45 @@
+# SVTuner environment specification
+project: SVTuner
+environment:
+  name: cytospace_v1.1.0_py310
+  channels:
+    - conda-forge
+    - defaults
+  # Conda packages pinned to the working environment (Windows, Python 3.10)
+  conda:
+    - python=3.10.19
+    - numpy=1.26.4
+    - scipy=1.11.4
+    - pandas=2.3.3
+    - anndata=0.9.2
+    - scanpy=1.9.8
+    - h5py=3.10.0
+    - numba=0.63.0
+    - llvmlite=0.46.0
+    - matplotlib-base=3.10.8
+    - seaborn=0.13.2
+    - statsmodels=0.14.6
+    - umap-learn=0.5.9.post2
+    - pynndescent=0.5.13
+    - tqdm=4.67.1
+    - colorama=0.4.6
+    - pip=25.3
+  # Pip-only packages
+  pip:
+    - datatable==1.1.0
+    - ortools==9.8.3296
+  # Local editable installs (kept inside this repo)
+  editable:
+    - name: cytospace
+      path: ../external/cytospace
+  # Optional extras
+  optional:
+    - lapjv (requires MSVC build tools on Windows; only needed if selecting the lapjv solver)
+
+# How to recreate:
+#   conda env create -n cytospace_v1.1.0_py310 python=3.10 -c conda-forge -c defaults
+#   conda activate cytospace_v1.1.0_py310
+#   conda install -c conda-forge numpy=1.26.4 scipy=1.11.4 pandas=2.3.3 anndata=0.9.2 scanpy=1.9.8 h5py=3.10.0 numba=0.63.0 llvmlite=0.46.0 matplotlib-base=3.10.8 seaborn=0.13.2 statsmodels=0.14.6 umap-learn=0.5.9.post2 pynndescent=0.5.13 tqdm=4.67.1 colorama=0.4.6 pip=25.3
+#   pip install datatable==1.1.0 ortools==9.8.3296
+#   pip install -e external/cytospace
+#   # Optional: pip install lapjv==1.0.1 (requires MSVC)

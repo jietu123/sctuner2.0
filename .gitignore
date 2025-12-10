@@ -1,0 +1,28 @@
+# OS/IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Python/R artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.ipynb_checkpoints/
+.Rhistory
+.RData
+.Rproj.user/
+.env
+.venv/
+venv/
+
+# Project outputs and large data
+logs/
+result/
+data/
+external/cytospace/cytospace_results*/
+external/cytospace/cytospace_results_brca/
+external/cytospace/data/
+external/cytospace/images/
