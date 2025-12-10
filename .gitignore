@@ -21,7 +21,6 @@ venv/
 # Project outputs and large data
 logs/
 result/
-data/
 external/cytospace/cytospace_results*/
 external/cytospace/cytospace_results_brca/
 external/cytospace/data/
