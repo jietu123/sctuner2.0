@@ -115,6 +115,21 @@ python src/stages/stage2_svg_plugin.py --sample real_brca --skip_export
 # 如需覆盖参数：加 --alpha/--beta/--k_neighbors/--svg_topk 等
 ```
 
+## Stage3 类型不匹配 / Unknown-aware 插件（src/stages/stage3_type_plugin.py）
+- 配置/参数（CLI 可覆盖）：`strong_th`、`weak_th`、`st_cluster_k`、`unknown_floor`、`min_cells_rare_type`、`eps`，相似度度量固定为 `weighted_cosine`；support_score 定义固定为 top-3 相似度均值。
+- 输入：
+  - Stage1 导出：`data/processed/<sample>/stage1_preprocess/exported/` 下的 `sc_expression_normalized.csv`、`st_expression_normalized.csv`、`sc_metadata.csv`（类型列为 `cell_type` 或 `celltype`）、`st_coordinates.csv`
+  - Stage2 导出：`data/processed/<sample>/stage2_svg_plugin/plugin_genes.txt`、`gene_weights.csv`
+- 输出：
+  - `data/processed/<sample>/stage3_typematch/`：`type_support.csv`、`cell_type_relabel.csv`（Unknown 统一为 `Unknown_sc_only`）、`type_prior_matrix.csv`
+  - `result/<sample>/stage3_typematch/`：`stage3_summary.json`（记录参数、支持度分布、Unknown 占比、稀有类型、plugin_type 列表）
+- 运行示例（已激活 env，复用导出的 CSV）：
+```pwsh
+cd D:\Experiment\SVTuner_Project
+python src/stages/stage3_type_plugin.py --sample real_brca
+# 可调阈值/聚类等：--strong_th --weak_th --st_cluster_k --unknown_floor --min_cells_rare_type
+```
+
 ## Git/LFS 注意
 - 大文件（raw 数据）已由 Git LFS 跟踪；请确保本地安装并启用 Git LFS。
 - 默认 `.gitignore` 忽略 `result/`，`data/processed/` 目前未忽略，如需忽略可自行调整。
