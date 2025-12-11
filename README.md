@@ -81,21 +81,39 @@ python src/main.py --sample real_brca --r-cmd "Rscript" --stages 1
 
 ## Stage1 预处理要点（r_scripts/stage1_preprocess.R）
 - 读取配置：`configs/project_config.yaml`、`configs/datasets/<sample>.yaml`，支持覆盖 QC/路径。
-- 温和过滤（可调）：`qc` 与 `gene_filter` 参数，支持 mt_pattern；支持 SVG/marker 白名单强制保留。
+- 温和过滤（可调）：`qc` 与 `gene_filter` 参数，支持 `mt_pattern`，支持 SVG/marker 白名单强制保留。
 - 输出：
   - `data/processed/<sample>/stage1_preprocess/`：
     - `sc_processed.rds`, `st_processed.rds`
     - `common_genes.txt`, `hvg_genes.txt`
+    - 若加 `--export_csv`：`exported/` 下生成 `sc_expression_normalized.csv`、`st_expression_normalized.csv`、`sc_metadata.csv`、`st_coordinates.csv`（Stage2 直接复用）
   - `result/<sample>/stage1_preprocess/`：
     - `stage1_summary.json`
     - `qc_plots/`（基础直方图：counts/genes/percent.mt）
+  - 日志：`logs/stage1_preprocess.log`
 - Summary 包含：过滤前后细胞/基因数、whitelist 保留数、公共基因数与路径、HVG 请求/实际数、mt% 统计等。
-- 运行（独立调用）：  
+- 运行（独立调用示例，避免 MinGW 冲突，先激活 env 再清理 PATH）：  
 ```pwsh
-conda run -n cytospace_v1.1.0_py310 Rscript r_scripts/stage1_preprocess.R --sample real_brca
-Rscript r_scripts/stage1_preprocess.R --sample <sample>  # 如已将 Rscript 加入 PATH
+$env:PATH="E:\ANACONDA\envs\cytospace_v1.1.0_py310\Library\bin;E:\ANACONDA\envs\cytospace_v1.1.0_py310\bin;E:\ANACONDA\envs\cytospace_v1.1.0_py310\Scripts;C:\Windows\System32"
+& "E:\ANACONDA\envs\cytospace_v1.1.0_py310\Scripts\Rscript.exe" r_scripts/stage1_preprocess.R --sample real_brca --project_root D:/Experiment/SVTuner_Project --export_csv
 ```
-（Windows 建议 `CONDA_DLL_SEARCH_MODIFICATION_ENABLE=1`，main.py 已默认设置）
+  也可用 `conda run -n cytospace_v1.1.0_py310 Rscript ...`（若无 DLL 冲突）。
+
+## Stage2 SVG+HVG 动态加权（src/stages/stage2_svg_plugin.py）
+- 配置来源：`configs/project_config.yaml` + `configs/datasets/<sample>.yaml` 的 `stage2` 段（支持 `alpha`、`beta`、`k_neighbors`、`svg_min_detect`、`svg_min_var`、`svg_topk`、`weight_norm`、`n_jobs`、`raw_st_expr` 等）；CLI 仅作覆盖。
+- 输入：
+  - Stage1 导出的 CSV：`data/processed/<sample>/stage1_preprocess/exported/` 下的 `sc_expression_normalized.csv`、`st_expression_normalized.csv`、`sc_metadata.csv`（可选）、`st_coordinates.csv`
+  - 基因对齐/标签：`data/processed/<sample>/stage1_preprocess/common_genes.txt`、`hvg_genes.txt`
+  - 原始 ST 表达矩阵（敏感性分析用）：在 `configs/datasets/<sample>.yaml` 里显式设置 `stage2.raw_st_expr`（示例：`data/raw/real_brca/brca_STdata_GEP.txt`）
+- 输出：
+  - `data/processed/<sample>/stage2_svg_plugin/`：`gene_weights.csv`、`plugin_genes.txt`
+  - `result/<sample>/stage2_svg_plugin/`：`stage2_summary.json`（含 top 基因及类别标签）、`stage2_params.json`、`svg_filter_sensitivity.json`、`svg_morans_hist.png`、`top_weights.png`（HVG/SVG 堆叠条形图）
+- 运行示例（已激活 env，复用导出的 CSV）：
+```pwsh
+cd D:\Experiment\SVTuner_Project
+python src/stages/stage2_svg_plugin.py --sample real_brca --skip_export
+# 如需覆盖参数：加 --alpha/--beta/--k_neighbors/--svg_topk 等
+```
 
 ## Git/LFS 注意
 - 大文件（raw 数据）已由 Git LFS 跟踪；请确保本地安装并启用 Git LFS。

@@ -1,6 +1,7 @@
 # Stage 1: Preprocess scRNA and ST data (Seurat, mild/adjustable filtering)
 # Usage (from project root):
 #   Rscript r_scripts/stage1_preprocess.R --sample real_brca
+# Optional: add --project_root <path> to override root detection, --export_csv to dump CSVs for Stage2 reuse.
 
 `%||%` <- function(a, b) if (!is.null(a) && length(a) > 0 && !is.na(a)) a else b
 
@@ -14,7 +15,34 @@ suppressPackageStartupMessages({
 })
 
 args <- commandArgs(trailingOnly = TRUE)
-sample_id <- if (length(args) >= 2 && args[1] == "--sample") args[2] else "real_brca"
+
+parse_args <- function(args) {
+  res <- list(
+    sample = "real_brca",
+    project_root = NULL,
+    export_csv = FALSE
+  )
+  i <- 1
+  while (i <= length(args)) {
+    key <- args[[i]]
+    if (key == "--sample" && i + 1 <= length(args)) {
+      res$sample <- args[[i + 1]]
+      i <- i + 2
+    } else if (key == "--project_root" && i + 1 <= length(args)) {
+      res$project_root <- args[[i + 1]]
+      i <- i + 2
+    } else if (key == "--export_csv") {
+      res$export_csv <- TRUE
+      i <- i + 1
+    } else {
+      i <- i + 1
+    }
+  }
+  res
+}
+
+cli <- parse_args(args)
+sample_id <- cli$sample
 
 # Resolve project root: script is under r_scripts/, so parent is project root
 get_script_path <- function() {
@@ -33,7 +61,16 @@ get_script_path <- function() {
 }
 
 script_path <- get_script_path()
-project_root <- normalizePath(file.path(dirname(script_path), ".."))
+project_root <- cli$project_root %||% normalizePath(file.path(dirname(script_path), ".."))
+
+# Logs
+logs_dir <- file.path(project_root, "logs")
+dir.create(logs_dir, recursive = TRUE, showWarnings = FALSE)
+log_path <- file.path(logs_dir, "stage1_preprocess.log")
+sink(file = log_path, split = TRUE, append = TRUE)
+message("==== Stage1 preprocess start: ", Sys.time(), " ====")
+message("[Stage1] sample: ", sample_id)
+message("[Stage1] project_root: ", project_root)
 
 # Paths
 input_dir <- file.path(project_root, "data", "raw", sample_id)
@@ -276,4 +313,39 @@ saveRDS(sc, file.path(processed_dir, "sc_processed.rds"))
 saveRDS(st, file.path(processed_dir, "st_processed.rds"))
 write_json(summary_list, file.path(summary_dir, "stage1_summary.json"), auto_unbox = TRUE, pretty = TRUE)
 
+if (cli$export_csv) {
+  message("[Stage1] Exporting CSVs for Stage2 reuse...")
+  export_dir <- file.path(processed_dir, "exported")
+  dir.create(export_dir, recursive = TRUE, showWarnings = FALSE)
+
+  get_layer_data <- function(obj) {
+    tryCatch(
+      GetAssayData(obj, layer = "data"),
+      error = function(e) GetAssayData(obj, slot = "data")
+    )
+  }
+
+  sc_mat <- get_layer_data(sc)
+  sc_df <- as.data.frame(Matrix::t(sc_mat))
+  sc_df <- cbind(cell_id = rownames(sc_df), sc_df)
+  fwrite(sc_df, file.path(export_dir, "sc_expression_normalized.csv"))
+
+  sc_meta <- sc@meta.data
+  sc_meta <- cbind(cell_id = rownames(sc_meta), sc_meta)
+  fwrite(sc_meta, file.path(export_dir, "sc_metadata.csv"))
+
+  st_mat <- get_layer_data(st)
+  st_df <- as.data.frame(Matrix::t(st_mat))
+  st_df <- cbind(spot_id = rownames(st_df), st_df)
+  fwrite(st_df, file.path(export_dir, "st_expression_normalized.csv"))
+
+  st_meta <- st@meta.data
+  st_meta <- cbind(spot_id = rownames(st_meta), st_meta)
+  fwrite(st_meta, file.path(export_dir, "st_coordinates.csv"))
+
+  message("[Stage1] CSV export done: ", export_dir)
+}
+
 message("[Stage1] Done.")
+message("==== Stage1 preprocess end: ", Sys.time(), " ====")
+try(sink(NULL), silent = TRUE)
