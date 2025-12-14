@@ -94,18 +94,22 @@ def match_solution(cost):
         solve = assignment.solve
         right_mate = assignment.right_mate
         assignment_cost = assignment.assignment_cost
+        num_nodes = assignment.num_nodes
         STATUS_OPTIMAL = assignment.OPTIMAL
         STATUS_INFEASIBLE = assignment.INFEASIBLE
         STATUS_OVERFLOW = assignment.POSSIBLE_OVERFLOW
+        get_total_cost = getattr(assignment, "optimal_cost", None)
     else:
         assignment = _pywrapgraph.LinearSumAssignment()
         add_arc = assignment.AddArcWithCost
         solve = assignment.Solve
         right_mate = assignment.RightMate
         assignment_cost = assignment.AssignmentCost
+        num_nodes = assignment.NumNodes
         STATUS_OPTIMAL = assignment.OPTIMAL
         STATUS_INFEASIBLE = assignment.INFEASIBLE
         STATUS_OVERFLOW = assignment.POSSIBLE_OVERFLOW
+        get_total_cost = assignment.OptimalCost
 
     for worker in range(rows):
         for task in range(cols):
@@ -114,9 +118,14 @@ def match_solution(cost):
 
     solve_status = solve()
     if solve_status == STATUS_OPTIMAL:
-        print('Total cost = ', assignment.OptimalCost())
+        if callable(get_total_cost):
+            total_cost = get_total_cost()
+        else:
+            total_cost = None
+        if total_cost is not None:
+            print('Total cost = ', total_cost)
         print()
-        for i in range(0, assignment.NumNodes()):
+        for i in range(0, num_nodes()):
             assignment_mat[i, 0] = right_mate(i)
             assignment_mat[i, 1] = assignment_cost(i)
     elif solve_status == STATUS_INFEASIBLE:

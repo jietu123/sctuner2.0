@@ -1,3 +1,7 @@
 stage2:
   # 原始 ST 表达矩阵路径，用于 SVG 过滤敏感性统计
   raw_st_expr: data/raw/real_brca/brca_STdata_GEP.txt
+
+mapping:
+  cytospace:
+    prior_ablation_enabled: true

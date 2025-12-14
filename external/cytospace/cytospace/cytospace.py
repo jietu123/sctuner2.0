@@ -244,7 +244,7 @@ def sample_single_cells(scRNA_data, cell_type_data, cell_type_numbers_int, sampl
         cell_type_count_available = len(cell_type_index)
         if cell_type_count_available == 0:
             raise ValueError(f"Cell type {cell_type} in the ST dataset is not available in the scRNA-seq dataset.")
-        cell_type_count_desired = cell_type_numbers_int.loc[cell_type][0]
+        cell_type_count_desired = int(cell_type_numbers_int.loc[cell_type][0])
 
         if sampling_method == "place_holders":
             if cell_type_count_desired > cell_type_count_available:

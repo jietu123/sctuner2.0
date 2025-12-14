@@ -1,8 +1,12 @@
 """
 Centralized defaults for SVTuner.
 If you need to change default R command, paths, or stage selections, do it here.
+Also hosts ProjectConfig to读取 project_config.yaml / configs/datasets/*.yaml.
 """
 from pathlib import Path
+from typing import Dict, Any, List, Optional
+
+import yaml
 
 # Default R command (Windows conda env recommended to avoid DLL issues)
 DEFAULT_R_CMD = "conda run -n cytospace_v1.1.0_py310 Rscript"
@@ -29,6 +33,87 @@ RESULT = Path("result")
 LOGS = Path("logs")
 
 
+class ProjectConfig:
+    """Thin helper to load project-level和dataset-level YAML 配置."""
+
+    def __init__(self, project_root: Path):
+        self.project_root = project_root
+        cfg_path = project_root / "configs" / "project_config.yaml"
+        self.project_cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) if cfg_path.exists() else {}
+        self._dataset_cache: Dict[str, Dict[str, Any]] = {}
+
+    def load_dataset_cfg(self, sample: str) -> Dict[str, Any]:
+        if sample in self._dataset_cache:
+            return self._dataset_cache[sample]
+        cfg_path = self.project_root / "configs" / "datasets" / f"{sample}.yaml"
+        if cfg_path.exists():
+            data = yaml.safe_load(cfg_path.read_text(encoding="utf-8"))
+        else:
+            data = {}
+        self._dataset_cache[sample] = data or {}
+        return self._dataset_cache[sample]
+
+    def dataset_cfg_path(self, sample: str) -> Path:
+        return self.project_root / "configs" / "datasets" / f"{sample}.yaml"
+
+    def get_stage_dir(self, sample: str, stage: str) -> Path:
+        root = self.project_root
+        if stage == "stage1_preprocess":
+            return root / "data" / "processed" / sample / "stage1_preprocess"
+        if stage == "stage2_svg_plugin":
+            return root / "data" / "processed" / sample / "stage2_svg_plugin"
+        if stage == "stage3_typematch":
+            return root / "data" / "processed" / sample / "stage3_typematch"
+        if stage == "stage4_mapping":
+            return root / "result" / sample / "stage4_mapping"
+        raise ValueError(f"未知 stage: {stage}")
+
+    def enabled_backends(self, sample: str) -> List[str]:
+        mapping_cfg = self.project_cfg.get("mapping", {})
+        return mapping_cfg.get("enabled_backends", ["cytospace"])
+
+    def _default_mapping_params(self) -> Dict[str, Any]:
+        return {
+            "seed": 42,
+            "svg_refine_lambda": 0.5,
+            "lambda_prior": 1.0,
+            "eps": 1e-8,
+            "umi_to_cell_norm": "median",
+            "default_cells_per_spot": 1.0,
+            "cells_per_spot_source": "auto",  # auto|spot_cell_counts|UMI_total|uniform
+            "cells_per_spot_clip_min": 1,
+            "cells_per_spot_clip_max": None,
+            "cells_per_spot_rounding": "round",  # round|floor|ceil
+            "distance_metric": "Pearson_correlation",
+            "knn_block_size": 1024,
+            "knn_max_dense_n": 5000,
+            "knn_metric": "euclidean",
+            "harden_topk": 5,
+            "type_prior_apply_refine": True,
+            "type_prior_apply_harden": True,
+            "svg_refine_batch_size": None,
+            "min_gene_overlap_ratio": 0.2,
+            "max_cells_missing_type_prior_ratio": 0.0,
+            "min_prior_row_nonzero_ratio": 0.0,
+        }
+
+    def get_mapping_config(self, sample: str, backend: str, config_id: Optional[str] = None) -> Dict[str, Any]:
+        cfg = self._default_mapping_params()
+        proj_map = self.project_cfg.get("mapping", {})
+        backend_cfg = proj_map.get(backend, {})
+        cfg.update(backend_cfg or {})
+        ds_cfg = self.load_dataset_cfg(sample).get("mapping", {})
+        if backend in ds_cfg:
+            cfg.update(ds_cfg[backend] or {})
+        if config_id:
+            cfg["config_id"] = config_id
+        return cfg
+
+
+def load_project_config(project_root: Path) -> ProjectConfig:
+    return ProjectConfig(project_root)
+
+
 __all__ = [
     "DEFAULT_R_CMD",
     "DEFAULT_STAGES",
@@ -38,4 +123,6 @@ __all__ = [
     "DATA_PROCESSED",
     "RESULT",
     "LOGS",
+    "ProjectConfig",
+    "load_project_config",
 ]
