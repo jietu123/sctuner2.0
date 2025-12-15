@@ -340,6 +340,13 @@ if (cli$export_csv) {
   fwrite(st_df, file.path(export_dir, "st_expression_normalized.csv"))
 
   st_meta <- st@meta.data
+  if (!("UMI_total" %in% colnames(st_meta))) {
+    if ("nCount_RNA" %in% colnames(st_meta)) {
+      st_meta$UMI_total <- st_meta$nCount_RNA
+    } else if ("nCount_Spatial" %in% colnames(st_meta)) {
+      st_meta$UMI_total <- st_meta$nCount_Spatial
+    }
+  }
   st_meta <- cbind(spot_id = rownames(st_meta), st_meta)
   fwrite(st_meta, file.path(export_dir, "st_coordinates.csv"))
 

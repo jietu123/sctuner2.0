@@ -5,3 +5,11 @@ stage2:
 mapping:
   cytospace:
     prior_ablation_enabled: true
+    # --- Stage4 / CytoSPACE capacity (解冻 v1) ---
+    cells_per_spot_source: auto
+    default_cells_per_spot: 3.0
+    # median(nCount_RNA)/3 ≈ 11727/3 = 3909 (real_brca Stage1 st_coordinates)
+    umi_to_cell_norm: 3909
+    cells_per_spot_rounding: round
+    cells_per_spot_clip_min: 1
+    cells_per_spot_clip_max: 10

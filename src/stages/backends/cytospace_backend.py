@@ -382,7 +382,7 @@ def _compute_cells_per_spot(st_coords: pd.DataFrame, cfg: Dict[str, Any]) -> Tup
     if src.lower() == "auto":
         if _has_col("spot_cell_counts"):
             src = "spot_cell_counts"
-        elif _has_col("UMI_total"):
+        elif _has_col("UMI_total") or _has_col("nCount_RNA") or _has_col("nCount_Spatial"):
             src = "UMI_total"
         else:
             src = "uniform"
@@ -395,9 +395,14 @@ def _compute_cells_per_spot(st_coords: pd.DataFrame, cfg: Dict[str, Any]) -> Tup
         return cps, "spot_cell_counts", None
 
     if src == "UMI_total":
-        if "UMI_total" not in st_coords.columns:
-            raise KeyError("cells_per_spot_source=UMI_total 但 st_coords 缺少 UMI_total 列")
-        umi = st_coords["UMI_total"].fillna(0).astype(float)
+        umi_col = None
+        for c in ("UMI_total", "nCount_RNA", "nCount_Spatial"):
+            if c in st_coords.columns and st_coords[c].notna().any():
+                umi_col = c
+                break
+        if umi_col is None:
+            raise KeyError("cells_per_spot_source=UMI_total 但 st_coords 缺少 UMI_total/nCount_RNA/nCount_Spatial 列")
+        umi = pd.to_numeric(st_coords[umi_col], errors="coerce").fillna(0).astype(float)
         umi.index = st_coords.index
         norm = cfg.get("umi_to_cell_norm", 1000)
         if isinstance(norm, str) and norm.strip().lower() == "median":
@@ -407,7 +412,8 @@ def _compute_cells_per_spot(st_coords: pd.DataFrame, cfg: Dict[str, Any]) -> Tup
         cps = umi / max(norm_val, 1e-8)
         cps = cps.astype(float)
         cps.index = st_coords.index
-        return cps, "UMI_total", norm_val
+        src_resolved = "UMI_total" if umi_col == "UMI_total" else f"UMI_total[{umi_col}]"
+        return cps, src_resolved, norm_val
 
     if src == "uniform":
         default_c = float(cfg.get("default_cells_per_spot", 1.0))
