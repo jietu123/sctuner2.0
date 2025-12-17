@@ -616,13 +616,17 @@ result/
 
 对每个 `scenario_id`，在 `data/sim/<scenario_id>/` 下生成：
 
-- `sim_sc_expression.csv`
-- `sim_sc_metadata.csv`
+- `sim_sc_expression.csv`（⚠️Query：Stage4 要映射的 sc，等价于 stage1_exported 的 sc）
+- `sim_sc_metadata.csv`（Query 元数据，建议含 `celltype` 列）
+- `sim_ref_sc_expression.csv`（可选：Ref，仅分析用，不参与 Stage4）
+- `sim_ref_sc_metadata.csv`（可选：Ref，仅分析用）
 - `sim_st_expression.csv`
 - `sim_st_coordinates.csv`
-- `sim_truth_cell_spot.csv`
-- `sim_truth_spot_type_fraction.csv`
+- `sim_truth_spot_type_fraction.csv`（spot×type 真值）
+- `sim_truth_cell_spot.csv`（World cell→spot 真值，用于解释/审计 World 造 ST 过程）
+- `sim_truth_query_cell_spot.csv`（⚠️Query cell→spot 真值：Stage5 的 cell-level 真值口径）
 - `scenario_meta.json`（记录 missing_types、world_fraction 等元信息）
+  - 建议包含：`role_map`、`cell_level_mode="query"`、`query_truth_policy`、`truth_files`（含别名）
 
 **🔗 关键关节：**
 
@@ -648,7 +652,9 @@ result/
 - 来自 **SimGen** 的每个场景文件（按 `scenario_id`）：
   - `sim_sc_expression.csv`, `sim_sc_metadata.csv`
   - `sim_st_expression.csv`, `sim_st_coordinates.csv`
-  - `sim_truth_cell_spot.csv`, `sim_truth_spot_type_fraction.csv`
+  - `sim_truth_spot_type_fraction.csv`
+  - `sim_truth_query_cell_spot.csv`（cell-level 真值；若存在别名 `cell_true_spot.csv` 也可作为兼容读取）
+  - `sim_truth_cell_spot.csv`（World 真值，仅用于审计/解释，可选读取）
   - `scenario_meta.json`
 - 对每个场景跑完 Stage1–4 后的输出（按 backend / baseline / plus）：
   - `result/<scenario_id>/stage4_mapping/<backend>/baseline/...`
@@ -2561,18 +2567,23 @@ st_missing_types: []
 
 ### 四、输出 & 目录结构设计
 
-SimGen 可以为每个场景生成一个独立目录，例如：
+SimGen 可以为每个场景生成一个独立目录，例如（⚠️统一根目录：`data/sim/<scenario_id>/`）：
 
 ```text
 data/
-  simulations/
+  sim/
     S0_matched/
       sim_sc_expression.csv
       sim_sc_metadata.csv
+      sim_ref_sc_expression.csv          # 可选：Ref，仅分析用
+      sim_ref_sc_metadata.csv            # 可选：Ref，仅分析用
       sim_st_expression.csv
       sim_st_coordinates.csv
-      sim_truth_cell_spot.csv
       sim_truth_spot_type_fraction.csv
+      sim_truth_cell_spot.csv            # World cell -> spot（审计/解释）
+      sim_truth_query_cell_spot.csv      # ⚠️Query cell -> spot（cell-level 真值）
+      cell_true_spot.csv                 # alias -> sim_truth_query_cell_spot.csv
+      spot_true_type_fraction.csv        # alias -> sim_truth_spot_type_fraction.csv
       scenario_meta.json
     M1_sc_missing_Bcell/
       ...
@@ -2580,17 +2591,18 @@ data/
       ...
 ```
 
-#### 4.1 模拟 sc（Ref）部分输出
+#### 4.1 模拟 sc（Query）部分输出
 
-> 注意：这里的“sim_sc_*.csv”对应的是 **Ref 子集**，即后续映射阶段看到的 sc 数据。
+> ⚠️契约：这里的 `sim_sc_*.csv` 对应 **Query 子集**，也就是后续 Stage4 要映射的 sc（并同步写入 `data/processed/<scenario>/stage1_preprocess/exported/`）。
+> `sim_ref_sc_*.csv`（若存在）才是 Ref，仅用于分析/对照，不参与映射。
 
 ##### 4.1.1 `sim_sc_expression.csv`
 
-- 维度：`N_ref_cells × N_genes`
+- 维度：`N_query_cells × N_genes`
 - 行：`cell_id`（来源于原始 BRCA scRNA 的 cell_id 子集）
 - 列：gene_name（与原始 sc 表达列一致，可能只保留交集基因）
 
-Ref 子集的构建方式见后文的 World/Ref 拆分设定。
+Query 子集的构建方式见后文的 World/Query/Ref 拆分设定（默认 World/Query 不重叠）。
 
 ##### 4.1.2 `sim_sc_metadata.csv`
 
@@ -2598,8 +2610,9 @@ Ref 子集的构建方式见后文的 World/Ref 拆分设定。
 
 | 列名      | 含义                                              |
 | --------- | ------------------------------------------------- |
-| `cell_id` | Ref 子集细胞 ID                                   |
-| `type`    | Ref 子集的类型注释（一般使用清洗后的 `celltype`） |
+| `cell_id` | Query 子集细胞 ID                                 |
+| `type`    | Query 子集的类型注释（一般使用清洗后的 `celltype`） |
+| `celltype` | `type` 的别名（建议同时写，避免下游列名歧义） |
 
 可附加：
 
@@ -2643,10 +2656,21 @@ Ref 子集的构建方式见后文的 World/Ref 拆分设定。
 > World 子集的定义很关键：
 >
 > - 所有用来造 ST 的细胞都属于 World；
-> - 后续，映射算法看到的 sc 参考只来自 Ref 子集，不看到 World 子集本身。
->    -（是否允许 World/Ref 有少量重叠，可以由配置决定，默认不重叠）
+> - 后续，映射算法看到的 sc 输入来自 **Query** 子集，不看到 World 子集本身。
+>    -（是否允许 World/Query 有少量重叠，可以由配置决定，默认不重叠）
 
-##### 4.3.2 `sim_truth_spot_type_fraction.csv`
+##### 4.3.2 `sim_truth_query_cell_spot.csv`
+
+重点：**每个 Query 细胞的 cell-level 真值落点**（用于 Stage5 的 cell-level 指标）。
+
+| 列名           | 含义                                  |
+| -------------- | ------------------------------------- |
+| `cell_id`      | Query 子集细胞 ID（⚠️应与 Stage4 输出的 cell_id 对齐） |
+| `true_spot_id` | 该 Query 细胞的真值 spot（若该类型在 ST 缺失，可为 NA） |
+
+> `cell_true_spot.csv` 作为兼容别名，默认指向这份 Query 真值文件。
+
+##### 4.3.3 `sim_truth_spot_type_fraction.csv`
 
 每个 spot 里真实类型构成：
 
@@ -2995,9 +3019,14 @@ SimGen 阶段可以用以下 checklist 来判断是否“达到设计目标”�
 
 - 阶段 5 不再关心“模拟数据怎么造”；
 - 它只需要：
-  - 把 `data/simulations/<scenario>/sim_sc_*.csv` 和 `sim_st_*.csv` 当成新的 sc/ST 输入，跑 1–4；
-  - 再用 `sim_truth_cell_spot.csv` 和 `sim_truth_spot_type_fraction.csv` + `scenario_meta.json` 等，
-    - 对 baseline vs plus 的映射结果做一整套指标对比（Top1/TopK、距离、KL/JS、Missing→Unknown 等）。
+  - 把 `data/sim/<scenario>/sim_sc_*.csv`（⚠️Query）和 `sim_st_*.csv` 当成新的 sc/ST 输入，跑 1–4；
+    - 代码侧等价于：`data/processed/<scenario>/stage1_preprocess/exported/` 下的四件套 CSV
+  - 再用：
+    - `sim_truth_query_cell_spot.csv`（cell-level 真值；别名 `cell_true_spot.csv`）
+    - `sim_truth_spot_type_fraction.csv`（spot-level 真值；别名 `spot_true_type_fraction.csv`）
+    - `scenario_meta.json`
+    - （可选）`sim_truth_cell_spot.csv`（World 真值，仅用于审计/解释）
+    - 对 baseline vs plus 的映射结果做指标对比（cell-level + spot-level + Missing→Unknown 等）。
 
 ------
 
@@ -3117,14 +3146,16 @@ SimGen 阶段可以用以下 checklist 来判断是否“达到设计目标”�
 
 对每个模拟场景 `scenario_id`（例如：`S0_matched`、`M1_sc_missing_Bcell` 等）：
 
-1. **SimGen 输出：** `data/simulations/<scenario_id>/`
-   - `sim_sc_expression.csv`
-   - `sim_sc_metadata.csv`（含 `true_type` 等）
+1. **SimGen 输出：** `data/sim/<scenario_id>/`
+   - `sim_sc_expression.csv`（⚠️Query：Stage4 要映射的 sc）
+   - `sim_sc_metadata.csv`（Query 元数据，建议含 `celltype`）
+   - `sim_ref_sc_expression.csv` / `sim_ref_sc_metadata.csv`（可选：Ref，仅分析用）
    - `sim_st_expression.csv`
    - `sim_st_coordinates.csv`
-   - `sim_truth_cell_spot.csv`（World cell → spot 真值）
-   - `sim_truth_spot_type_fraction.csv`（spot×type 真值）
-   - `scenario_meta.json`（场景说明，例如 `sc_missing_types` / `st_missing_types` / `rare_types` 等）
+   - `sim_truth_query_cell_spot.csv`（⚠️Query cell→spot 真值；别名 `cell_true_spot.csv`）
+   - `sim_truth_spot_type_fraction.csv`（spot×type 真值；别名 `spot_true_type_fraction.csv`）
+   - `sim_truth_cell_spot.csv`（World cell→spot 真值，仅审计/解释用）
+   - `scenario_meta.json`（场景说明 + role_map + query_truth_policy + audits 等）
 2. **Stage1–3 输出：** `result/<scenario_id>/stageX_*`
    - Stage2：`gene_weights.csv`、`plugin_genes.txt`
      - 用于定义“SVG 基因集合”和权重（后续 SVG 指标的核心参考）；
@@ -6224,4 +6255,3 @@ PROJECT_ROOT/
         └─ aggregate_truth.py
 
 ```
-

@@ -1,0 +1,70 @@
+scenario_id: "M2_st_missing_Tcell"
+description: "M2: ST(World) 中缺失 T cell；Query(sc) 仍包含 T cell（Query 真值对缺失类型将为 NA）"
+seed: 42
+
+input_sample: "real_brca"
+gene_panel: "hvg"
+
+type_cleaning:
+  min_cells_per_type: 30
+  low_count_policy: "merge_to_other"
+  other_name: "Other"
+  merge_map_path: null
+
+world_fraction: 0.6
+query_fraction: 0.4
+ref_fraction: 0.0
+allow_world_ref_overlap: false
+allow_world_query_overlap: false
+allow_ref_query_overlap: false
+
+space_width: 1000
+space_height: 1000
+block_nx: 5
+block_ny: 5
+block_mixture:
+  primary_weight: 0.50
+  neighbor_weight: 0.30
+  background_weight: 0.20
+spot_grid_nx: 25
+spot_grid_ny: 25
+spot_radius: 90
+min_cells_per_spot: 2
+
+coverage_fallback: ["expand_radius", "resample_world"]
+max_radius_multiplier: 2.0
+max_resample_rounds: 20
+max_empty_spot_fraction: 0.30
+min_cells_per_spot_satisfied_fraction_warn: 0.50
+
+sc_missing_types: []
+# ST 缺型：对 World 生效（Query 仍保留）
+st_missing_types: ["T cells CD8", "T cells CD4"]
+
+query_truth_policy: "nearest_spot_after_sampling_xy"
+
+counts:
+  counts_source: "pseudo_from_norm"
+  target_depth: 5000
+  scale_factor: 10000
+
+noise:
+  libsize_mode: "lognormal"
+  libsize_sigma: 0.3
+  noise_level: 1.0
+
+capacity_policy: "world_density"
+capacity_clip_min: 1
+
+# Stage1 兼容基因列表（非 exported 目录；仅输出少量 txt，避免后续缺文件返工）
+stage1_compat_gene_lists:
+  enabled: true
+  source_sample: "real_brca"
+  filter_to_sim_common: true
+  generate_if_missing: true
+  hvg_cap_n_top: 1000
+  min_hvg_after_filter: 300
+  hvg_fallback:
+    method: "variance"
+    n_top: 1000
+  write_manifest: true

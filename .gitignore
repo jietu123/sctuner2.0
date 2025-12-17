@@ -19,6 +19,7 @@ __pycache__/
 venv/
 
 # Project outputs and large data
+data/
 logs/
 result/
 external/cytospace/cytospace_results*/

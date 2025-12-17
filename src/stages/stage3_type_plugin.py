@@ -146,8 +146,22 @@ def main():
     sc_expr = sc_expr.loc[:, plugin_genes]
     st_expr = st_expr.loc[:, plugin_genes]
 
-    # 取类型列名（兼容 cell_type / celltype）
-    type_col = "cell_type" if "cell_type" in sc_meta.columns else "celltype"
+    # 取类型列名（兼容 cell_type / celltype / type），并加护栏避免 silent mismatch
+    if "cell_type" in sc_meta.columns and "celltype" in sc_meta.columns:
+        a = sc_meta["cell_type"].astype(str).to_numpy()
+        b = sc_meta["celltype"].astype(str).to_numpy()
+        if a.shape == b.shape and (a != b).any():
+            raise ValueError("sc_metadata.csv 同时存在 cell_type 与 celltype，但两列不一致（禁止 silent bug）")
+    if "cell_type" in sc_meta.columns:
+        type_col = "cell_type"
+    elif "celltype" in sc_meta.columns:
+        type_col = "celltype"
+    elif "type" in sc_meta.columns:
+        sc_meta = sc_meta.copy()
+        sc_meta["celltype"] = sc_meta["type"].astype(str)
+        type_col = "celltype"
+    else:
+        raise KeyError("sc_metadata.csv 需要包含 celltype/cell_type/type 之一作为类型列")
     # 类型画像
     profiles = compute_type_profiles(sc_expr, sc_meta, plugin_genes, type_col=type_col)
 
@@ -312,6 +326,7 @@ def main():
             "unknown_floor": args.unknown_floor,
             "min_cells_rare_type": args.min_cells_rare_type,
             "support_score_def": "top3_mean_cluster_similarity",
+            "resolved_celltype_column": type_col,
         },
         "support_overview": support_overview,
         "unknown_overview": {

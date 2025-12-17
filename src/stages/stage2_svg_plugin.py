@@ -541,36 +541,48 @@ def main():
     genes_df.to_csv(processed_out / "gene_weights.csv", index=False)
     (processed_out / "plugin_genes.txt").write_text("\n".join(plugin_genes), encoding="utf-8")
 
-    # SVG filter sensitivity
+    # SVG filter sensitivity (optional for simulated samples)
+    raw_st_df = None
+    raw_info: Dict = {"status": "skipped", "reason": "raw_st_expr_not_set"}
     raw_st_path = cfg.get("raw_st_expr")
     if raw_st_path is None:
         default_raw = project_root / "data" / "raw" / args.sample / f"{args.sample}_STdata_GEP.txt"
         if default_raw.exists():
             raw_st_path = default_raw
         else:
-            raise RuntimeError(
-                f"[Stage2] 请在 configs/datasets/{args.sample}.yaml 的 stage2.raw_st_expr 指定原始 ST 表达矩阵路径，"
-                f"默认路径不存在：{default_raw}"
-            )
-    raw_st_path = Path(raw_st_path)
-    if not raw_st_path.is_absolute():
-        raw_st_path = project_root / raw_st_path
-    raw_st_df, raw_info = read_raw_st_expression(raw_st_path, st_coords_index=st_coords.index)
-    if raw_info.get("status") != "ok":
-        print(f"[Stage2] Raw ST sensitivity skipped: {raw_info}")
+            raw_info = {
+                "status": "skipped",
+                "reason": "raw_st_missing",
+                "default_path": str(default_raw),
+                "hint": f"若需要敏感性分析，请在 configs/datasets/{args.sample}.yaml 的 stage2.raw_st_expr 指定原始 ST 表达矩阵路径",
+            }
+            print(f"[Stage2] Raw ST sensitivity skipped: {raw_info}")
+            raw_st_path = None
+    if raw_st_path is not None:
+        raw_st_path = Path(raw_st_path)
+        if not raw_st_path.is_absolute():
+            raw_st_path = project_root / raw_st_path
+        raw_st_df, raw_info = read_raw_st_expression(raw_st_path, st_coords_index=st_coords.index)
+        if raw_info.get("status") != "ok":
+            print(f"[Stage2] Raw ST sensitivity skipped: {raw_info}")
+            raw_st_df = None
+
     filtered_genes = list(st_expr.columns)
-    sensitivity = svg_filter_sensitivity(
-        raw_st_df,
-        graph,
-        filtered_genes,
-        st_coords_index=st_coords.index.astype(str),
-        detect_thresh=cfg["svg_min_detect"],
-        min_var=cfg["svg_min_var"],
-        method=cfg["svg_method"],
-        norm_method=cfg["weight_norm"],
-        top_n=500,
-        n_jobs=int(cfg["n_jobs"]),
-    )
+    if raw_st_df is None:
+        sensitivity = {"status": "skipped", "raw_info": raw_info}
+    else:
+        sensitivity = svg_filter_sensitivity(
+            raw_st_df,
+            graph,
+            filtered_genes,
+            st_coords_index=st_coords.index.astype(str),
+            detect_thresh=cfg["svg_min_detect"],
+            min_var=cfg["svg_min_var"],
+            method=cfg["svg_method"],
+            norm_method=cfg["weight_norm"],
+            top_n=500,
+            n_jobs=int(cfg["n_jobs"]),
+        )
     with (result_out / "svg_filter_sensitivity.json").open("w", encoding="utf-8") as f:
         json.dump(sensitivity, f, ensure_ascii=False, indent=2)
 

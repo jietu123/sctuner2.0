@@ -30,7 +30,14 @@ for p in (ROOT, SRC):
         sys.path.append(str(p))
 
 from stages.backends.base_backend import MappingBackend
-from cytospace.cytospace import main_cytospace
+try:
+    from cytospace.cytospace import main_cytospace
+except ModuleNotFoundError:
+    # Fallback to local editable source (external/cytospace) if not installed in current env.
+    ext = ROOT / "external" / "cytospace"
+    if ext.exists() and str(ext) not in sys.path:
+        sys.path.append(str(ext))
+    from cytospace.cytospace import main_cytospace
 
 
 def _assert_unique_index(df: pd.DataFrame, name: str):
@@ -330,12 +337,22 @@ def _load_stage1(stage1_dir: Path):
     if missing:
         raise ValueError(f"sc_metadata 缺少以下 cell_id: {list(missing)[:5]} ...")
     sc_meta = sc_meta.loc[sc_expr.index]
+    # 类型列兼容 + 护栏（避免 cell_type/celltype 同时存在但不一致）
+    if "cell_type" in sc_meta.columns and "celltype" in sc_meta.columns:
+        a = sc_meta["cell_type"].astype(str).to_numpy()
+        b = sc_meta["celltype"].astype(str).to_numpy()
+        if a.shape == b.shape and (a != b).any():
+            raise ValueError("sc_metadata.csv 同时存在 cell_type 与 celltype，但两列不一致（禁止 silent bug）")
     if "cell_type" in sc_meta.columns:
         type_col = "cell_type"
     elif "celltype" in sc_meta.columns:
         type_col = "celltype"
+    elif "type" in sc_meta.columns:
+        sc_meta = sc_meta.copy()
+        sc_meta["celltype"] = sc_meta["type"].astype(str)
+        type_col = "celltype"
     else:
-        raise KeyError("sc_metadata.csv 需要包含 cell_type 或 celltype 列")
+        raise KeyError("sc_metadata.csv 需要包含 cell_type/celltype/type 之一作为类型列")
     sc_meta["type_col"] = sc_meta[type_col]
     # 坐标列容错
     coords_xy = _get_coord_xy(st_coords)
@@ -745,13 +762,14 @@ def _parse_assigned_locations(
     missing = sorted(required_cols - set(assigned.columns))
     if missing:
         raise ValueError(f"assigned_locations.csv 缺少必需列: {missing}")
-    if require_original_cid and "OriginalCID" not in assigned.columns:
+    has_original = "OriginalCID" in assigned.columns
+    if require_original_cid and not has_original:
         raise ValueError("assigned_locations.csv 缺少列 OriginalCID（用于从 Stage1 sc_expr 构建 cell pool 表达）")
 
     spot_pos = {sid: i for i, sid in enumerate(st_ids)}
     cell_ids = assigned["UniqueCID"].astype(str).tolist()
     cell_types = assigned["CellType"].astype(str).tolist()
-    orig_cell_ids = assigned["OriginalCID"].astype(str).tolist() if require_original_cid else None
+    orig_cell_ids = assigned["OriginalCID"].astype(str).tolist() if has_original else None
 
     assignments: List[Tuple[int, int, float]] = []
     bad_spots: List[str] = []
@@ -1254,19 +1272,25 @@ def _build_outputs(
     mode: str,
     type_order: Optional[List[str]] = None,
     hard_matrix: Optional[sparse.csr_matrix] = None,
+    unique_cell_ids: Optional[List[str]] = None,
 ):
+    if unique_cell_ids is not None and len(unique_cell_ids) != len(sc_index):
+        raise ValueError(
+            f"[outputs] unique_cell_ids length {len(unique_cell_ids)} != sc_index length {len(sc_index)}"
+        )
     rows = []
     for cell_idx, spot_idx, score in assignments:
-        rows.append(
-            {
-                "cell_id": sc_index[cell_idx],
-                "spot_id": st_index[spot_idx],
-                "type": cell_types[cell_idx],
-                "backend": "cytospace",
-                "mode": mode,
-                "assign_score": score,
-            }
-        )
+        r = {
+            "cell_id": sc_index[cell_idx],
+            "spot_id": st_index[spot_idx],
+            "type": cell_types[cell_idx],
+            "backend": "cytospace",
+            "mode": mode,
+            "assign_score": score,
+        }
+        if unique_cell_ids is not None:
+            r["unique_cid"] = unique_cell_ids[cell_idx]
+        rows.append(r)
     ca = pd.DataFrame(rows)
     ca.to_csv(out_dir / f"cell_assignment_{mode}.csv", index=False)
 
@@ -1405,19 +1429,30 @@ class CytoSPACEBackend(MappingBackend):
                 if not assigned_path.exists():
                     raise FileNotFoundError("CytoSPACE 输出缺少 assigned_locations.csv")
                 assigned = pd.read_csv(assigned_path)
-                cell_ids, pool_types, _, assignments = _parse_assigned_locations(
-                    assigned, list(st_expr.index), require_original_cid=False
+                cell_ids, pool_types, pool_orig_ids, assignments = _parse_assigned_locations(
+                    assigned, list(st_expr.index), require_original_cid=True
                 )
+                try:
+                    assigned[["UniqueCID", "OriginalCID", "SpotID", "CellType"]].to_csv(
+                        out_dir / "cell_pool_map_baseline.csv", index=False
+                    )
+                except Exception:
+                    pass
+
+                if not pool_orig_ids:
+                    raise ValueError("[baseline] assigned_locations 缺少 OriginalCID，无法与 Stage1/SimGen Query 真值对齐")
                 mat = _assignments_to_matrix(assignments, len(st_expr.index), len(cell_ids)).tocsr()
+                # ⚠️cell_id 统一用 OriginalCID；UniqueCID 作为额外列 unique_cid 供审计
                 _build_outputs(
                     assignments,
-                    cell_ids,
+                    [str(x) for x in pool_orig_ids],
                     list(st_expr.index),
                     pool_types,
                     out_dir,
                     mode=mode,
                     type_order=type_order,
                     hard_matrix=mat,
+                    unique_cell_ids=[str(x) for x in cell_ids],
                 )
         except Exception as e:
             import traceback
@@ -1452,6 +1487,8 @@ class CytoSPACEBackend(MappingBackend):
             "config_validation": locals().get("config_validation", None),
             "config_effective_subset": locals().get("config_effective_subset", None),
             "capacity_audit": locals().get("capacity_audit", None),
+            "cell_id_space": "original_cid",
+            "cell_instance_id_column": "unique_cid",
             "cells_per_spot_source": locals().get("cps_source", None),
             "umi_to_cell_norm": locals().get("norm_val", None),
             "has_capacity_constraint": status == "success",
@@ -1751,15 +1788,26 @@ class CytoSPACEBackend(MappingBackend):
                 hard_meta["prior_effect_fraction_delta_mean_per_spot"] = float(per_spot_l1.mean())
                 hard_meta["prior_effect_fraction_delta_audit_before"] = audit_b
                 hard_meta["prior_effect_fraction_delta_audit_after"] = audit_a
+                try:
+                    assigned[["UniqueCID", "OriginalCID", "SpotID", "CellType"]].to_csv(
+                        out_dir / "cell_pool_map_plus.csv", index=False
+                    )
+                except Exception:
+                    pass
+
+                if not pool_orig_ids:
+                    raise ValueError("[plus] assigned_locations 缺少 OriginalCID，无法与 Stage1/SimGen Query 真值对齐")
+                # ⚠️cell_id 统一用 OriginalCID；UniqueCID 作为额外列 unique_cid 供审计
                 _build_outputs(
                     assignments_hard,
-                    cell_ids,
+                    [str(x) for x in pool_orig_ids],
                     list(st_expr.index),
                     pool_types,
                     out_dir,
                     mode=mode,
                     type_order=type_cols,
                     hard_matrix=hard_mat,
+                    unique_cell_ids=[str(x) for x in cell_ids],
                 )
         except Exception as e:
             import traceback
@@ -1794,6 +1842,8 @@ class CytoSPACEBackend(MappingBackend):
             "config_validation": locals().get("config_validation", None),
             "config_effective_subset": locals().get("config_effective_subset", None),
             "capacity_audit": locals().get("capacity_audit", None),
+            "cell_id_space": "original_cid",
+            "cell_instance_id_column": "unique_cid",
             "cells_per_spot_source": locals().get("cps_source", None),
             "umi_to_cell_norm": locals().get("norm_val", None),
             "has_capacity_constraint": status == "success",
