@@ -11,7 +11,6 @@ suppressPackageStartupMessages({
   library(Matrix)
   library(jsonlite)
   library(yaml)
-  library(ggplot2)
 })
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -63,11 +62,6 @@ get_script_path <- function() {
 script_path <- get_script_path()
 project_root <- cli$project_root %||% normalizePath(file.path(dirname(script_path), ".."))
 
-# Logs
-logs_dir <- file.path(project_root, "logs")
-dir.create(logs_dir, recursive = TRUE, showWarnings = FALSE)
-log_path <- file.path(logs_dir, "stage1_preprocess.log")
-sink(file = log_path, split = TRUE, append = TRUE)
 message("==== Stage1 preprocess start: ", Sys.time(), " ====")
 message("[Stage1] sample: ", sample_id)
 message("[Stage1] project_root: ", project_root)
@@ -79,7 +73,6 @@ summary_dir <- file.path(project_root, "result", sample_id, "stage1_preprocess")
 qc_dir <- file.path(summary_dir, "qc_plots")
 dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(summary_dir, recursive = TRUE, showWarnings = FALSE)
-dir.create(qc_dir, recursive = TRUE, showWarnings = FALSE)
 
 # Defaults
 default_cfg <- list(
@@ -237,13 +230,6 @@ load_st <- function() {
   list(obj = seurat_obj, stats = stats, whitelist = whitelist)
 }
 
-plot_hist <- function(df, col, title, path) {
-  p <- ggplot(df, aes_string(x = col)) +
-    geom_histogram(bins = 50, fill = "#3182bd", color = "white", alpha = 0.8) +
-    theme_minimal() +
-    ggtitle(title)
-  ggsave(path, p, width = 6, height = 4, dpi = 150)
-}
 
 message("[Stage1] Loading scRNA...")
 sc_res <- load_scrna()
@@ -297,20 +283,7 @@ summary_list <- list(
   )
 )
 
-# QC plots (basic histograms)
-try({
-  sc_df <- sc@meta.data
-  st_df <- st@meta.data
-  plot_hist(sc_df, "nCount_RNA", "scRNA nCount_RNA", file.path(qc_dir, "sc_qc_nCount.png"))
-  plot_hist(sc_df, "nFeature_RNA", "scRNA nFeature_RNA", file.path(qc_dir, "sc_qc_nFeature.png"))
-  plot_hist(sc_df, "percent.mt", "scRNA percent.mt", file.path(qc_dir, "sc_qc_percent_mt.png"))
-  plot_hist(st_df, "nCount_RNA", "ST nCount_RNA", file.path(qc_dir, "st_qc_nCount.png"))
-  plot_hist(st_df, "nFeature_RNA", "ST nFeature_RNA", file.path(qc_dir, "st_qc_nFeature.png"))
-}, silent = TRUE)
-
 message("[Stage1] Saving outputs...")
-saveRDS(sc, file.path(processed_dir, "sc_processed.rds"))
-saveRDS(st, file.path(processed_dir, "st_processed.rds"))
 write_json(summary_list, file.path(summary_dir, "stage1_summary.json"), auto_unbox = TRUE, pretty = TRUE)
 
 if (cli$export_csv) {
@@ -355,4 +328,3 @@ if (cli$export_csv) {
 
 message("[Stage1] Done.")
 message("==== Stage1 preprocess end: ", Sys.time(), " ====")
-try(sink(NULL), silent = TRUE)

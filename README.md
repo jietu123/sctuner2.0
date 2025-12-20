@@ -84,13 +84,10 @@ python src/main.py --sample real_brca --r-cmd "Rscript" --stages 1
 - 温和过滤（可调）：`qc` 与 `gene_filter` 参数，支持 `mt_pattern`，支持 SVG/marker 白名单强制保留。
 - 输出：
   - `data/processed/<sample>/stage1_preprocess/`：
-    - `sc_processed.rds`, `st_processed.rds`
     - `common_genes.txt`, `hvg_genes.txt`
     - 若加 `--export_csv`：`exported/` 下生成 `sc_expression_normalized.csv`、`st_expression_normalized.csv`、`sc_metadata.csv`、`st_coordinates.csv`（Stage2 直接复用）
   - `result/<sample>/stage1_preprocess/`：
     - `stage1_summary.json`
-    - `qc_plots/`（基础直方图：counts/genes/percent.mt）
-  - 日志：`logs/stage1_preprocess.log`
 - Summary 包含：过滤前后细胞/基因数、whitelist 保留数、公共基因数与路径、HVG 请求/实际数、mt% 统计等。
 - 运行（独立调用示例，避免 MinGW 冲突，先激活 env 再清理 PATH）：  
 ```pwsh
@@ -107,7 +104,7 @@ $env:PATH="E:\ANACONDA\envs\cytospace_v1.1.0_py310\Library\bin;E:\ANACONDA\envs\
   - 原始 ST 表达矩阵（敏感性分析用）：在 `configs/datasets/<sample>.yaml` 里显式设置 `stage2.raw_st_expr`（示例：`data/raw/real_brca/brca_STdata_GEP.txt`）
 - 输出：
   - `data/processed/<sample>/stage2_svg_plugin/`：`gene_weights.csv`、`plugin_genes.txt`
-  - `result/<sample>/stage2_svg_plugin/`：`stage2_summary.json`（含 top 基因及类别标签）、`stage2_params.json`、`svg_filter_sensitivity.json`、`svg_morans_hist.png`、`top_weights.png`（HVG/SVG 堆叠条形图）
+  - `result/<sample>/stage2_svg_plugin/`：`stage2_summary.json`（含 top 基因及类别标签）、`stage2_params.json`、`svg_filter_sensitivity.json`
 - 运行示例（已激活 env，复用导出的 CSV）：
 ```pwsh
 cd D:\Experiment\SVTuner_Project
@@ -130,13 +127,49 @@ python src/stages/stage3_type_plugin.py --sample real_brca
 # 可调阈值/聚类等：--strong_th --weak_th --st_cluster_k --unknown_floor --min_cells_rare_type
 ```
 
+
+## SimGen ???????src/simgen/make_scenario.py?
+- ?????????????????????????? Stage4 ?????? Stage1 ?????
+- ???`configs/simgen/<scenario_id>.yaml`????????? Stage1 ???`data/processed/<input_sample>/stage1_preprocess/exported/`??
+- ???????
+  - `data/sim/<scenario_id>/`??? sc/st ???????????cell?spot?spot?type??
+  - `data/processed/<scenario_id>/stage1_preprocess/exported/`?????? CSV?sc/st ???sc_metadata?st_coordinates??
+- ???SimGen ???????????? Stage4??????? Stage4?
+
+## Stage4 ???src/stages/stage4_mapping.py + src/stages/backends/cytospace_backend.py?
+- ?????? sample???? SimGen ??????????????????
+- ???
+  - Stage1 ???`data/processed/<sample>/stage1_preprocess/exported/` ??? CSV
+  - plus ??????`data/processed/<sample>/stage2_svg_plugin/` ? `data/processed/<sample>/stage3_typematch/`
+- ???
+  - `result/<sample>/stage4_mapping/<backend>/baseline/`?cell_assignment / cell_spot_matrix / spot_type_fraction
+  - `result/<sample>/stage4_mapping/<backend>/plus_svg_type/`??? plus ??
+  - `result/<sample>/stage4_run_manifest.json|csv`?Stage4 ?? run ???
+- ?????
+```pwsh
+python src/stages/stage4_mapping.py --sample S0_matched --backends cytospace --enable_plus
+python src/stages/stage4_mapping.py --sample M1_sc_missing_Bcell --backends cytospace --enable_plus
+python src/stages/stage4_mapping.py --sample M2_st_missing_Tcell --backends cytospace --enable_plus
+```
+
+
+## SimGen + Stage4 run examples (CLI)
+```pwsh
+python src/simgen/make_scenario.py --scenario_id S0_matched --config configs/simgen/S0_matched.yaml
+python src/simgen/make_scenario.py --scenario_id M1_sc_missing_Bcell --config configs/simgen/M1_sc_missing_Bcell.yaml
+python src/simgen/make_scenario.py --scenario_id M2_st_missing_Tcell --config configs/simgen/M2_st_missing_Tcell.yaml
+python src/stages/stage4_mapping.py --sample S0_matched --backends cytospace --enable_plus
+python src/stages/stage4_mapping.py --sample M1_sc_missing_Bcell --backends cytospace --enable_plus
+python src/stages/stage4_mapping.py --sample M2_st_missing_Tcell --backends cytospace --enable_plus
+```
+
 ## Git/LFS 注意
 - 大文件（raw 数据）已由 Git LFS 跟踪；请确保本地安装并启用 Git LFS。
 - 默认 `.gitignore` 忽略 `result/`，`data/processed/` 目前未忽略，如需忽略可自行调整。
 
 ## 后续阶段（占位说明）
 - Stage0：当前为占位提示，未来可接入真实环境检查。
-- Stage2/3/4/5/6/7：按 `dosc/SVTuner.md` 规划依次接入（SVG/HVG 加权、类型对齐、映射 orchestrator、模拟/真实评估、报告）。
+- Stage5/6/7?? `dosc/SVTuner.md` ?????????????
 
 ## 常见问题
 - Rscript 找不到：确认 `--r-cmd` 指向有效 Rscript（建议 conda run）。

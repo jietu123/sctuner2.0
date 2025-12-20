@@ -15,6 +15,7 @@ import pandas as pd
 from scipy import sparse
 from scipy.sparse import coo_matrix, csr_matrix
 from scipy.spatial.distance import cdist
+from scipy.spatial import cKDTree
 
 # Stage4-plus（CytoSPACEBackend.run_plus）关键路径唯一入口（防回归）：
 # - soft matrix：_parse_assigned_locations -> _assignments_to_matrix
@@ -59,6 +60,13 @@ def _module_fingerprint() -> Dict[str, Optional[str]]:
     return {"module_file": str(p), "module_sha1": sha1}
 
 
+def _sha1_file(path: Path) -> Optional[str]:
+    try:
+        return hashlib.sha1(path.read_bytes()).hexdigest().lower()
+    except Exception:
+        return None
+
+
 _DEPRECATED_KEYS: Dict[str, str] = {
     "capacity_normalize_mode": "废弃/从未完整实现：请改用 cells_per_spot_* 族配置（cells_per_spot_source/clip/rounding）",
     "capacity_normalize_factor": "废弃：请改用 umi_to_cell_norm 或 default_cells_per_spot（配合 cells_per_spot_source）",
@@ -90,6 +98,9 @@ _USED_KEYS: set[str] = {
     "svg_refine_k",
     "svg_refine_batch_size",
     "lambda_prior",
+    "prior_candidate_topk",
+    "prior_candidate_weight",
+    "abstain_unknown_sc_only",
     "type_prior_apply_refine",
     "type_prior_apply_harden",
     "knn_metric",
@@ -100,6 +111,30 @@ _USED_KEYS: set[str] = {
     "min_gene_overlap_ratio",
     "max_cells_missing_type_prior_ratio",
     "min_prior_row_nonzero_ratio",
+    "post_assign_adjust",
+    "cost_expr_norm",
+    "cost_expr_norm_eps",
+    "cost_scale_source",
+    "cost_scale_metric",
+    "cost_scale_eps",
+    "cost_scale_floor",
+    "cost_scale_clip",
+    "cost_scale_report_quantiles",
+    "cost_scale_beta",
+    "cost_scale_clip_ratio_soft",
+    "cost_scale_clip_ratio_max",
+    "cost_scale_downweight_only",
+    "spot_weight_mode",
+    "spot_weight_topk",
+    "spot_weight_k",
+    "spot_weight_kappa",
+    "spot_weight_weight_max",
+    "spot_weight_scale",
+    "spot_weight_only_up",
+    "spot_weight_truth_filter",
+    "spot_specific_basin",
+    "spot_specific_threshold_kappa",
+    "default_config_id",
     # cells_per_spot / capacity
     "cells_per_spot_source",
     "cells_per_spot_clip_min",
@@ -121,6 +156,9 @@ _CONFIG_EFFECTIVE_KEYS: list[str] = [
     "svg_refine_k",
     "svg_refine_batch_size",
     "lambda_prior",
+    "prior_candidate_topk",
+    "prior_candidate_weight",
+    "abstain_unknown_sc_only",
     "type_prior_apply_refine",
     "type_prior_apply_harden",
     "prior_ablation_enabled",
@@ -131,6 +169,30 @@ _CONFIG_EFFECTIVE_KEYS: list[str] = [
     "min_gene_overlap_ratio",
     "max_cells_missing_type_prior_ratio",
     "min_prior_row_nonzero_ratio",
+    "post_assign_adjust",
+    "cost_expr_norm",
+    "cost_expr_norm_eps",
+    "cost_scale_source",
+    "cost_scale_metric",
+    "cost_scale_eps",
+    "cost_scale_floor",
+    "cost_scale_clip",
+    "cost_scale_report_quantiles",
+    "cost_scale_beta",
+    "cost_scale_clip_ratio_soft",
+    "cost_scale_clip_ratio_max",
+    "cost_scale_downweight_only",
+    "spot_weight_mode",
+    "spot_weight_topk",
+    "spot_weight_k",
+    "spot_weight_kappa",
+    "spot_weight_weight_max",
+    "spot_weight_scale",
+    "spot_weight_only_up",
+    "spot_weight_truth_filter",
+    "spot_specific_basin",
+    "spot_specific_threshold_kappa",
+    "default_config_id",
     "cells_per_spot_source",
     "umi_to_cell_norm",
     "default_cells_per_spot",
@@ -220,12 +282,87 @@ def _validate_and_resolve_config(config: Dict[str, Any], *, context: str) -> Tup
             raise ValueError(f"[{context}] invalid distance_metric={dm!r}; allowed={sorted(allowed_dm)}")
         cfg["distance_metric"] = dm
 
+    if "cost_expr_norm" in cfg and cfg["cost_expr_norm"] is not None:
+        norm = str(cfg["cost_expr_norm"]).strip().lower()
+        if norm in ("", "none"):
+            norm = "none"
+        allowed_norm = {"none", "st_center", "st_zscore", "gene_scale"}
+        if norm not in allowed_norm:
+            raise ValueError(f"[{context}] invalid cost_expr_norm={norm!r}; allowed={sorted(allowed_norm)}")
+        cfg["cost_expr_norm"] = norm
+    if "cost_expr_norm_eps" in cfg and cfg["cost_expr_norm_eps"] is not None:
+        cfg["cost_expr_norm_eps"] = _as_float(cfg["cost_expr_norm_eps"], "cost_expr_norm_eps", min_v=1e-12)
+    if "cost_scale_source" in cfg and cfg["cost_scale_source"] is not None:
+        src = str(cfg["cost_scale_source"]).strip().lower()
+        allowed_src = {"st", "joint"}
+        if src not in allowed_src:
+            raise ValueError(f"[{context}] invalid cost_scale_source={src!r}; allowed={sorted(allowed_src)}")
+        cfg["cost_scale_source"] = src
+    if "cost_scale_metric" in cfg and cfg["cost_scale_metric"] is not None:
+        metric = str(cfg["cost_scale_metric"]).strip().lower()
+        allowed_metric = {"std", "mean", "p95"}
+        if metric not in allowed_metric:
+            raise ValueError(f"[{context}] invalid cost_scale_metric={metric!r}; allowed={sorted(allowed_metric)}")
+        cfg["cost_scale_metric"] = metric
+    if "cost_scale_eps" in cfg and cfg["cost_scale_eps"] is not None:
+        cfg["cost_scale_eps"] = _as_float(cfg["cost_scale_eps"], "cost_scale_eps", min_v=1e-12)
+    if "cost_scale_floor" in cfg and cfg["cost_scale_floor"] is not None:
+        cfg["cost_scale_floor"] = _as_float(cfg["cost_scale_floor"], "cost_scale_floor", min_v=0.0)
+    if "cost_scale_clip" in cfg and cfg["cost_scale_clip"] is not None:
+        clip = cfg["cost_scale_clip"]
+        if isinstance(clip, str):
+            parts = [p for p in clip.replace(",", " ").split() if p]
+            if len(parts) != 2:
+                raise ValueError(f"[{context}] cost_scale_clip must have 2 values, got {clip!r}")
+            clip = [float(parts[0]), float(parts[1])]
+        if not isinstance(clip, (list, tuple)) or len(clip) != 2:
+            raise ValueError(f"[{context}] cost_scale_clip must be 2-item list, got {clip!r}")
+        clip_low, clip_high = float(clip[0]), float(clip[1])
+        if clip_low <= 0 or clip_high <= 0 or clip_low > clip_high:
+            raise ValueError(f"[{context}] invalid cost_scale_clip={clip!r}")
+        cfg["cost_scale_clip"] = [clip_low, clip_high]
+    if "cost_scale_report_quantiles" in cfg and cfg["cost_scale_report_quantiles"] is not None:
+        q = cfg["cost_scale_report_quantiles"]
+        if isinstance(q, str):
+            parts = [p for p in q.replace(",", " ").split() if p]
+            q = [float(x) for x in parts]
+        if not isinstance(q, (list, tuple)) or len(q) == 0:
+            raise ValueError(f"[{context}] cost_scale_report_quantiles must be list, got {q!r}")
+        cfg["cost_scale_report_quantiles"] = [float(x) for x in q]
+    if "cost_scale_beta" in cfg and cfg["cost_scale_beta"] is not None:
+        cfg["cost_scale_beta"] = _as_float(cfg["cost_scale_beta"], "cost_scale_beta", min_v=0.0, max_v=1.0)
+    if "cost_scale_clip_ratio_soft" in cfg and cfg["cost_scale_clip_ratio_soft"] is not None:
+        cfg["cost_scale_clip_ratio_soft"] = _as_float(
+            cfg["cost_scale_clip_ratio_soft"], "cost_scale_clip_ratio_soft", min_v=0.0, max_v=1.0
+        )
+    if "cost_scale_clip_ratio_max" in cfg and cfg["cost_scale_clip_ratio_max"] is not None:
+        cfg["cost_scale_clip_ratio_max"] = _as_float(
+            cfg["cost_scale_clip_ratio_max"], "cost_scale_clip_ratio_max", min_v=0.0, max_v=1.0
+        )
+    if "cost_scale_downweight_only" in cfg and cfg["cost_scale_downweight_only"] is not None:
+        cfg["cost_scale_downweight_only"] = _as_bool(cfg["cost_scale_downweight_only"], "cost_scale_downweight_only")
+
     if "knn_metric" in cfg and cfg["knn_metric"] is not None:
         km = str(cfg["knn_metric"]).lower()
         allowed_km = {"euclidean", "cosine"}
         if km not in allowed_km:
             raise ValueError(f"[{context}] invalid knn_metric={km!r}; allowed={sorted(allowed_km)}")
         cfg["knn_metric"] = km
+
+    if "spot_weight_mode" in cfg and cfg["spot_weight_mode"] is not None:
+        mode = str(cfg["spot_weight_mode"]).strip().lower()
+        if mode in ("", "none"):
+            mode = "none"
+        allowed_mode = {"none", "local_zscore"}
+        if mode not in allowed_mode:
+            raise ValueError(f"[{context}] invalid spot_weight_mode={mode!r}; allowed={sorted(allowed_mode)}")
+        cfg["spot_weight_mode"] = mode
+    if "spot_weight_scale" in cfg and cfg["spot_weight_scale"] is not None:
+        scale = str(cfg["spot_weight_scale"]).strip().lower()
+        allowed_scale = {"linear", "exp"}
+        if scale not in allowed_scale:
+            raise ValueError(f"[{context}] invalid spot_weight_scale={scale!r}; allowed={sorted(allowed_scale)}")
+        cfg["spot_weight_scale"] = scale
 
     if "cells_per_spot_source" in cfg and cfg["cells_per_spot_source"] is not None:
         src0 = str(cfg["cells_per_spot_source"]).strip()
@@ -268,8 +405,26 @@ def _validate_and_resolve_config(config: Dict[str, Any], *, context: str) -> Tup
 
     if "lambda_prior" in cfg and cfg["lambda_prior"] is not None:
         cfg["lambda_prior"] = _as_float(cfg["lambda_prior"], "lambda_prior", min_v=0.0)
+    if "prior_candidate_topk" in cfg and cfg["prior_candidate_topk"] is not None:
+        cfg["prior_candidate_topk"] = _as_int(cfg["prior_candidate_topk"], "prior_candidate_topk", min_v=0)
+    if "prior_candidate_weight" in cfg and cfg["prior_candidate_weight"] is not None:
+        cfg["prior_candidate_weight"] = _as_float(cfg["prior_candidate_weight"], "prior_candidate_weight", min_v=0.0)
+    if "abstain_unknown_sc_only" in cfg and cfg["abstain_unknown_sc_only"] is not None:
+        cfg["abstain_unknown_sc_only"] = _as_bool(cfg["abstain_unknown_sc_only"], "abstain_unknown_sc_only")
     if "harden_topk" in cfg and cfg["harden_topk"] is not None:
         cfg["harden_topk"] = _as_int(cfg["harden_topk"], "harden_topk", min_v=1)
+    if "spot_weight_topk" in cfg and cfg["spot_weight_topk"] is not None:
+        cfg["spot_weight_topk"] = _as_int(cfg["spot_weight_topk"], "spot_weight_topk", min_v=0)
+    if "spot_weight_k" in cfg and cfg["spot_weight_k"] is not None:
+        cfg["spot_weight_k"] = _as_int(cfg["spot_weight_k"], "spot_weight_k", min_v=1)
+    if "spot_weight_kappa" in cfg and cfg["spot_weight_kappa"] is not None:
+        cfg["spot_weight_kappa"] = _as_float(cfg["spot_weight_kappa"], "spot_weight_kappa", min_v=0.0)
+    if "spot_weight_weight_max" in cfg and cfg["spot_weight_weight_max"] is not None:
+        cfg["spot_weight_weight_max"] = _as_float(cfg["spot_weight_weight_max"], "spot_weight_weight_max", min_v=1.0)
+    if "spot_weight_only_up" in cfg and cfg["spot_weight_only_up"] is not None:
+        cfg["spot_weight_only_up"] = _as_bool(cfg["spot_weight_only_up"], "spot_weight_only_up")
+    if "spot_weight_truth_filter" in cfg and cfg["spot_weight_truth_filter"] is not None:
+        cfg["spot_weight_truth_filter"] = _as_bool(cfg["spot_weight_truth_filter"], "spot_weight_truth_filter")
 
     for k in ("knn_block_size", "knn_max_dense_n"):
         if k in cfg and cfg[k] is not None:
@@ -282,6 +437,8 @@ def _validate_and_resolve_config(config: Dict[str, Any], *, context: str) -> Tup
     for k in ("type_prior_apply_refine", "type_prior_apply_harden", "prior_ablation_enabled"):
         if k in cfg and cfg[k] is not None:
             cfg[k] = _as_bool(cfg[k], k)
+    if "post_assign_adjust" in cfg and cfg["post_assign_adjust"] is not None:
+        cfg["post_assign_adjust"] = _as_bool(cfg["post_assign_adjust"], "post_assign_adjust")
 
     if "cells_per_spot_clip_min" in cfg and cfg["cells_per_spot_clip_min"] is not None:
         cfg["cells_per_spot_clip_min"] = _as_int(cfg["cells_per_spot_clip_min"], "cells_per_spot_clip_min", min_v=0)
@@ -360,18 +517,25 @@ def _load_stage1(stage1_dir: Path):
     return sc_expr, st_expr, sc_meta, st_coords, type_col
 
 
+
 def _load_stage2(stage2_dir: Path):
-    plugin_genes = [
-        g.strip()
-        for g in (stage2_dir / "plugin_genes.txt").read_text(encoding="utf-8").splitlines()
-        if g.strip()
-    ]
+    plugin_path = stage2_dir / "plugin_genes.txt"
+    plugin_genes = [g.strip() for g in plugin_path.read_text(encoding="utf-8").splitlines() if g.strip()]
     gw_path = stage2_dir / "gene_weights.csv"
     gene_weights = pd.read_csv(gw_path)
-    if "gene" not in gene_weights.columns or "final_weight" not in gene_weights.columns:
-        raise ValueError("gene_weights.csv 需要包含列 gene 与 final_weight")
-    weight_map = dict(zip(gene_weights["gene"], gene_weights["final_weight"]))
-    return plugin_genes, weight_map
+    if "gene" not in gene_weights.columns:
+        raise ValueError("gene_weights.csv ??????????????? gene")
+    if "cost_weight" in gene_weights.columns:
+        weight_field = "cost_weight"
+        weights = pd.to_numeric(gene_weights["cost_weight"], errors="coerce").fillna(1.0).astype(float)
+    elif "final_weight" in gene_weights.columns:
+        weight_field = "final_weight_compat"
+        weights = pd.to_numeric(gene_weights["final_weight"], errors="coerce").fillna(1.0).astype(float)
+        weights = np.maximum(weights, 1.0)
+    else:
+        raise ValueError("gene_weights.csv ???????????? cost_weight ???final_weight")
+    weight_map = dict(zip(gene_weights["gene"], weights))
+    return plugin_genes, weight_map, weight_field, gene_weights
 
 
 def _load_stage3(stage3_dir: Path):
@@ -512,6 +676,347 @@ def _build_feature_mats(sc_expr: pd.DataFrame, st_expr: pd.DataFrame, genes: Lis
     sc_mat = sc_expr[genes_use].to_numpy(dtype=float)
     st_mat = st_expr[genes_use].to_numpy(dtype=float)
     return sc_mat, st_mat, w, genes_use
+
+
+def _apply_cost_expr_norm(
+    sc_expr: pd.DataFrame,
+    st_expr: pd.DataFrame,
+    genes_use: List[str],
+    cfg: Dict[str, Any],
+    eps: float,
+) -> Tuple[pd.DataFrame, pd.DataFrame, Dict[str, Any]]:
+    mode = str(cfg.get("cost_expr_norm") or "none").lower()
+    if mode in ("", "none"):
+        return sc_expr, st_expr, {"mode": "none"}
+
+    st_vals = st_expr[genes_use].to_numpy(dtype=float)
+    st_mean = st_vals.mean(axis=0)
+    audit: Dict[str, Any] = {"mode": mode}
+
+    if mode in ("st_center", "st_zscore"):
+        if mode == "st_center":
+            sc_vals = sc_expr[genes_use].to_numpy(dtype=float) - st_mean
+            st_vals = st_vals - st_mean
+        else:
+            st_std = st_vals.std(axis=0, ddof=0)
+            st_std = np.where(st_std > eps, st_std, 1.0)
+            sc_vals = (sc_expr[genes_use].to_numpy(dtype=float) - st_mean) / st_std
+            st_vals = (st_vals - st_mean) / st_std
+            audit["std_min"] = float(np.min(st_std))
+            audit["std_max"] = float(np.max(st_std))
+
+        min_val = float(min(np.min(sc_vals), np.min(st_vals)))
+        if min_val < 0:
+            shift = -min_val
+            sc_vals = sc_vals + shift
+            st_vals = st_vals + shift
+            audit["shift_nonneg"] = float(shift)
+        else:
+            audit["shift_nonneg"] = 0.0
+
+        audit["mean_min"] = float(np.min(st_mean))
+        audit["mean_max"] = float(np.max(st_mean))
+        sc_out = sc_expr.copy()
+        st_out = st_expr.copy()
+        sc_out.loc[:, genes_use] = sc_vals
+        st_out.loc[:, genes_use] = st_vals
+        return sc_out, st_out, audit
+
+    if mode != "gene_scale":
+        raise ValueError(f"invalid cost_expr_norm={mode!r}")
+
+    beta_raw = cfg.get("cost_scale_beta", None)
+    scale_beta = 1.0 if beta_raw is None else float(beta_raw)
+    scale_beta = float(np.clip(scale_beta, 0.0, 1.0))
+    if scale_beta <= 0.0:
+        q_list = cfg.get("cost_scale_report_quantiles") or [0.01, 0.05, 0.5, 0.95, 0.99]
+        q_list = [float(q) for q in q_list]
+        q_stats = {f"q{int(round(q * 100)):02d}": 1.0 for q in q_list}
+        clip_ratio_soft = float(cfg.get("cost_scale_clip_ratio_soft") or 0.85)
+        clip_ratio_max = float(cfg.get("cost_scale_clip_ratio_max") or 0.95)
+        audit = {
+            "mode": "gene_scale",
+            "scale_source": str(cfg.get("cost_scale_source") or "st").lower(),
+            "scale_metric": str(cfg.get("cost_scale_metric") or "std").lower(),
+            "scale_beta": scale_beta,
+            "scale_downweight_only": bool(cfg.get("cost_scale_downweight_only", False)),
+            "scale_eps": float(cfg.get("cost_scale_eps") or eps),
+            "scale_floor": float(cfg.get("cost_scale_floor") or 0.0),
+            "scale_clip": cfg.get("cost_scale_clip"),
+            "clip_ratio": 0.0,
+            "clip_ratio_soft": float(clip_ratio_soft),
+            "clip_ratio_max": float(clip_ratio_max),
+            "scale_stats": {
+                "scale_min": None,
+                "scale_max": None,
+                "n_floor_applied": 0,
+                "n_clip_low": 0,
+                "n_clip_high": 0,
+                **{k: None for k in q_stats.keys()},
+            },
+            "multiplier_stats_planned": {
+                "min": 1.0,
+                "max": 1.0,
+                "n_clip_low": 0,
+                "n_clip_high": 0,
+                **q_stats,
+            },
+            "multiplier_stats_applied": {
+                "min": 1.0,
+                "max": 1.0,
+                "n_clip_low": 0,
+                "n_clip_high": 0,
+                **q_stats,
+            },
+            "genes_use_count": int(len(genes_use)),
+            "norm_applied": False,
+            "norm_fallback": False,
+            "norm_reason": "beta_is_zero_skip",
+            "norm_fallback_reason": [],
+            "scale_min_threshold": 1e-4,
+        }
+        return sc_expr, st_expr, audit
+
+    source = str(cfg.get("cost_scale_source") or "st").lower()
+    if source == "joint":
+        base = pd.concat([sc_expr[genes_use], st_expr[genes_use]], axis=0)
+    else:
+        source = "st"
+        base = st_expr[genes_use]
+
+    scale_metric = str(cfg.get("cost_scale_metric") or "std").lower()
+    base_vals = base.to_numpy(dtype=float)
+    if scale_metric == "std":
+        scale = base_vals.std(axis=0, ddof=0)
+    elif scale_metric == "mean":
+        scale = base_vals.mean(axis=0)
+    elif scale_metric == "p95":
+        scale = np.quantile(base_vals, 0.95, axis=0)
+    else:
+        raise ValueError(f"invalid cost_scale_metric={scale_metric!r}")
+    scale = np.where(np.isfinite(scale), scale, 0.0)
+    scale_eps = float(cfg.get("cost_scale_eps") or eps)
+    scale_floor = float(cfg.get("cost_scale_floor") or 0.0)
+    scale = np.maximum(scale, scale_eps)
+    scale = np.maximum(scale, scale_floor)
+
+    mult_raw = 1.0 / scale
+    mult = 1.0 + scale_beta * (mult_raw - 1.0)
+    downweight_only = bool(cfg.get("cost_scale_downweight_only", False))
+    if downweight_only:
+        mult = np.minimum(mult, 1.0)
+    clip = cfg.get("cost_scale_clip")
+    clip_low = clip_high = None
+    n_clip_low = n_clip_high = 0
+    if clip:
+        clip_low, clip_high = float(clip[0]), float(clip[1])
+        n_clip_low = int((mult < clip_low).sum())
+        n_clip_high = int((mult > clip_high).sum())
+        mult = np.clip(mult, clip_low, clip_high)
+
+    sc_vals = sc_expr[genes_use].to_numpy(dtype=float) * mult
+    st_vals = st_expr[genes_use].to_numpy(dtype=float) * mult
+
+    q_list = cfg.get("cost_scale_report_quantiles") or [0.01, 0.05, 0.5, 0.95, 0.99]
+    q_list = [float(q) for q in q_list]
+    scale_stats = {}
+    mult_stats_before = {}
+    mult_stats_after = {}
+    for q in q_list:
+        label = f"q{int(round(q * 100)):02d}"
+        scale_stats[label] = float(np.quantile(scale, q))
+        mult_stats_before[label] = float(np.quantile(mult_raw, q))
+        mult_stats_after[label] = float(np.quantile(mult, q))
+
+    n_floor_applied = int((scale <= scale_floor + 1e-12).sum())
+    n_genes = int(len(scale))
+    floor_ratio = n_floor_applied / max(n_genes, 1)
+    clip_ratio = (n_clip_low + n_clip_high) / max(n_genes, 1)
+    scale_min = float(np.min(scale)) if n_genes else None
+    scale_q01 = scale_stats.get("q01")
+    min_threshold = 1e-4
+    clip_ratio_soft = float(cfg.get("cost_scale_clip_ratio_soft") or 0.85)
+    clip_ratio_max = float(cfg.get("cost_scale_clip_ratio_max") or 0.95)
+    if clip_ratio > clip_ratio_soft:
+        audit["clip_ratio_warning"] = float(clip_ratio)
+
+    fallback_reasons = []
+    if floor_ratio > 0.3:
+        fallback_reasons.append(f"floor_ratio_too_high:{floor_ratio:.3f}")
+    if scale_min is not None and scale_min < min_threshold:
+        fallback_reasons.append(f"scale_too_small:{scale_min:.6g}")
+    if scale_q01 is not None and scale_q01 < min_threshold:
+        fallback_reasons.append(f"scale_q01_too_small:{scale_q01:.6g}")
+    if clip and clip_ratio > clip_ratio_max:
+        fallback_reasons.append(f"clip_ratio_too_high:{clip_ratio:.3f}")
+
+    audit.update(
+        {
+            "mode": "gene_scale",
+            "scale_source": source,
+            "scale_metric": scale_metric,
+            "scale_beta": scale_beta,
+            "scale_downweight_only": downweight_only,
+            "scale_eps": scale_eps,
+            "scale_floor": scale_floor,
+            "scale_clip": clip if clip else None,
+            "clip_ratio": float(clip_ratio),
+            "clip_ratio_soft": float(clip_ratio_soft),
+            "clip_ratio_max": float(clip_ratio_max),
+            "scale_stats": {
+                "scale_min": scale_min,
+                "scale_max": float(np.max(scale)) if n_genes else None,
+                "n_floor_applied": n_floor_applied,
+                "n_clip_low": n_clip_low,
+                "n_clip_high": n_clip_high,
+                **scale_stats,
+            },
+            "multiplier_stats_before_beta": {
+                "min": float(np.min(mult_raw)) if n_genes else None,
+                "max": float(np.max(mult_raw)) if n_genes else None,
+                **mult_stats_before,
+            },
+            "genes_use_count": n_genes,
+            "norm_fallback": len(fallback_reasons) > 0,
+            "norm_fallback_reason": fallback_reasons,
+            "scale_min_threshold": min_threshold,
+        }
+    )
+
+    planned_stats = {
+        "min": float(np.min(mult)) if n_genes else None,
+        "max": float(np.max(mult)) if n_genes else None,
+        "n_clip_low": n_clip_low,
+        "n_clip_high": n_clip_high,
+        **mult_stats_after,
+    }
+    audit["multiplier_stats_planned"] = planned_stats
+    if fallback_reasons:
+        applied_stats = {
+            "min": 1.0,
+            "max": 1.0,
+            "n_clip_low": 0,
+            "n_clip_high": 0,
+            **{k: 1.0 for k in mult_stats_after.keys()},
+        }
+        audit["multiplier_stats_applied"] = applied_stats
+        audit["norm_applied"] = False
+        return sc_expr, st_expr, audit
+
+    audit["multiplier_stats_applied"] = planned_stats
+    audit["norm_applied"] = True
+
+    sc_out = sc_expr.copy()
+    st_out = st_expr.copy()
+    sc_out.loc[:, genes_use] = sc_vals
+    st_out.loc[:, genes_use] = st_vals
+    return sc_out, st_out, audit
+
+
+def _compute_spot_weight_matrix(
+    st_expr: pd.DataFrame,
+    st_coords: pd.DataFrame,
+    genes_use: List[str],
+    cfg: Dict[str, Any],
+    *,
+    eps: float,
+    candidate_mask: Optional[np.ndarray] = None,
+) -> Tuple[Optional[np.ndarray], Dict[str, Any]]:
+    mode = str(cfg.get("spot_weight_mode") or "none").lower()
+    if mode in ("", "none"):
+        return None, {"status": "disabled", "mode": "none"}
+    if mode != "local_zscore":
+        raise ValueError(f"invalid spot_weight_mode={mode!r}")
+
+    topk = int(cfg.get("spot_weight_topk") or 0)
+    if topk <= 0:
+        return None, {"status": "disabled", "mode": mode, "reason": "topk<=0"}
+
+    k = int(cfg.get("spot_weight_k") or 8)
+    kappa = float(cfg.get("spot_weight_kappa") or 0.0)
+    weight_max = float(cfg.get("spot_weight_weight_max") or 1.0)
+    scale = str(cfg.get("spot_weight_scale") or "linear").lower()
+    only_up = bool(cfg.get("spot_weight_only_up", True))
+
+    coords = _get_coord_xy(st_coords).to_numpy(dtype=float)
+    n_spots = coords.shape[0]
+    if n_spots == 0:
+        return None, {"status": "disabled", "mode": mode, "reason": "no_spots"}
+    k_use = min(max(k, 1), n_spots)
+    try:
+        tree = cKDTree(coords)
+        _, idxs = tree.query(coords, k=k_use)
+    except Exception:
+        dists = cdist(coords, coords)
+        idxs = np.argsort(dists, axis=1)[:, :k_use]
+
+    if idxs.ndim == 1:
+        idxs = idxs[:, None]
+
+    st_vals = st_expr[genes_use].to_numpy(dtype=float)
+    n_genes = st_vals.shape[1]
+    topk = min(topk, n_genes)
+
+    if candidate_mask is not None:
+        candidate_mask = np.asarray(candidate_mask).astype(bool)
+        if candidate_mask.shape[0] != n_genes:
+            raise ValueError("spot_weight candidate_mask shape mismatch")
+        cand_idx = np.where(candidate_mask)[0]
+    else:
+        cand_idx = None
+
+    weights = np.ones((n_spots, n_genes), dtype=float)
+    weighted_per_spot = []
+    for i in range(n_spots):
+        neigh_idx = idxs[i]
+        local = st_vals[neigh_idx]
+        mean = local.mean(axis=0)
+        std = local.std(axis=0)
+        score = np.abs(st_vals[i] - mean) / (std + eps)
+        if cand_idx is not None:
+            if len(cand_idx) == 0:
+                continue
+            score_cand = score[cand_idx]
+            topk_i = min(topk, len(cand_idx))
+            pick = cand_idx[np.argpartition(-score_cand, topk_i - 1)[:topk_i]]
+        else:
+            topk_i = topk
+            pick = np.argpartition(-score, topk_i - 1)[:topk_i]
+        if topk_i <= 0:
+            continue
+        smax = float(np.max(score[pick]))
+        if smax <= 0:
+            continue
+        score_norm = score[pick] / (smax + eps)
+        if scale == "exp":
+            w = np.exp(kappa * score_norm)
+        else:
+            w = 1.0 + kappa * score_norm
+        if only_up:
+            w = np.maximum(w, 1.0)
+        w = np.clip(w, 1.0, weight_max)
+        weights[i, pick] = w
+        weighted_per_spot.append(int(len(pick)))
+
+    stats = {
+        "status": "ok",
+        "mode": mode,
+        "scale": scale,
+        "topk": int(topk),
+        "k": int(k_use),
+        "kappa": float(kappa),
+        "weight_max": float(weight_max),
+        "n_spots": int(n_spots),
+        "n_genes": int(n_genes),
+        "weighted_per_spot_mean": float(np.mean(weighted_per_spot)) if weighted_per_spot else 0.0,
+        "weights_min": float(np.min(weights)),
+        "weights_p50": float(np.percentile(weights, 50)),
+        "weights_p95": float(np.percentile(weights, 95)),
+        "weights_max": float(np.max(weights)),
+        "weighted_ratio": float((weights > 1.0).mean()),
+        "candidate_n": int(len(cand_idx)) if cand_idx is not None else None,
+    }
+    return weights, stats
 
 
 def _spot_fraction_from_mat(
@@ -1038,6 +1543,8 @@ def _harden_assignment_quota_matching(
     lambda_prior: float,
     eps: float = 1e-8,
     topk: int = 5,
+    prior_candidate_topk: int = 0,
+    prior_candidate_weight: float = 1.0,
     fallback_assignments: Optional[List[Tuple[int, int, float]]] = None,
     ablate_lambda: bool = False,
     min_prior_row_nonzero_ratio: float = 0.0,
@@ -1078,6 +1585,20 @@ def _harden_assignment_quota_matching(
     prior_entropy_max = float(np.max(prior_row_entropy)) if prior_row_entropy else 0.0
     prior_np = type_prior_aligned.fillna(0.0).to_numpy(dtype=float, copy=False)
     type_to_col = {t: i for i, t in enumerate(type_cols)}
+    prior_candidate_topk = int(prior_candidate_topk or 0)
+    prior_candidate_weight = float(1.0 if prior_candidate_weight is None else prior_candidate_weight)
+    prior_topk_by_type: Optional[List[List[int]]] = None
+    if lambda_prior and prior_candidate_topk > 0:
+        k = min(prior_candidate_topk, n_spots)
+        prior_topk_by_type = []
+        for t_idx in range(len(type_cols)):
+            col = prior_np[:, t_idx]
+            if k >= n_spots:
+                idx = np.argsort(-col)
+            else:
+                idx = np.argpartition(-col, k - 1)[:k]
+                idx = idx[np.argsort(-col[idx])]
+            prior_topk_by_type.append(idx.tolist())
     if prior_row_nonzero < min_prior_row_nonzero_ratio:
         raise ValueError(f"type_prior 非零行比例过低: {prior_row_nonzero:.3f} < {min_prior_row_nonzero_ratio}")
 
@@ -1101,6 +1622,10 @@ def _harden_assignment_quota_matching(
         cand_list: List[Tuple[int, float]] = []
         type_col = type_to_col.get(cell_types[c], None)
         best_score_only = None
+        if lambda_prior and prior_topk_by_type is not None and type_col is not None:
+            for r in prior_topk_by_type[type_col]:
+                if r not in cand_dict:
+                    cand_dict[r] = prior_candidate_weight * float(prior_np[r, type_col])
         for r, v in cand_dict.items():
             prior_val = prior_np[r, type_col] if (type_col is not None and r < prior_np.shape[0]) else 0.0
             u = np.log(v + eps)
@@ -1233,6 +1758,8 @@ def _harden_assignment_quota_matching(
         "type_prior_row_entropy_mean": prior_entropy_mean,
         "type_prior_row_entropy_max": prior_entropy_max,
         "prior_local_top1_change_rate": float(local_change / n_cells) if n_cells > 0 else 0.0,
+        "prior_candidate_topk": int(prior_candidate_topk),
+        "prior_candidate_weight": float(prior_candidate_weight),
     }
     if n_unassigned > 0:
         meta["status"] = "failed_unassigned"
@@ -1442,7 +1969,6 @@ class CytoSPACEBackend(MappingBackend):
                 if not pool_orig_ids:
                     raise ValueError("[baseline] assigned_locations 缺少 OriginalCID，无法与 Stage1/SimGen Query 真值对齐")
                 mat = _assignments_to_matrix(assignments, len(st_expr.index), len(cell_ids)).tocsr()
-                # ⚠️cell_id 统一用 OriginalCID；UniqueCID 作为额外列 unique_cid 供审计
                 _build_outputs(
                     assignments,
                     [str(x) for x in pool_orig_ids],
@@ -1551,8 +2077,10 @@ class CytoSPACEBackend(MappingBackend):
                 raise ValueError(f"[plus] out_dir.name={out_dir.name!r} != run_id={run_id!r}")
 
             spot_ids = list(st_expr.index)
-            plugin_genes, weight_map = _load_stage2(stage2_dir)
+            plugin_genes, weight_map, weight_field, gene_weights = _load_stage2(stage2_dir)
             relabel, type_prior = _load_stage3(stage3_dir)
+            stage2_gene_weights_sha1 = _sha1_file(stage2_dir / "gene_weights.csv")
+            plugin_genes_sha1 = _sha1_file(stage2_dir / "plugin_genes.txt")
             if len(plugin_genes) == 0:
                 raise ValueError("plugin_genes 为空")
 
@@ -1568,13 +2096,71 @@ class CytoSPACEBackend(MappingBackend):
             if ratio_cells_missing_type > float(config.get("max_cells_missing_type_prior_ratio", 0.0)):
                 raise ValueError(f"{ratio_cells_missing_type:.3f} 比例的细胞类型缺失在 type_prior 列中，超过阈值")
 
-            sc_mat, st_mat, w, genes_use = _build_feature_mats(sc_expr, st_expr, plugin_genes, weight_map)
+            
+            genes_use = sorted(set(sc_expr.columns) & set(st_expr.columns))
+            if not genes_use:
+                raise ValueError("sc/st ??????")
+            gene_to_idx = {g: i for i, g in enumerate(genes_use)}
             plugin_n = max(1, len(plugin_genes))
-            sc_cov = len(set(plugin_genes) & set(sc_expr.columns)) / plugin_n
-            st_cov = len(set(plugin_genes) & set(st_expr.columns)) / plugin_n
-            plugin_overlap_ratio = len(genes_use) / plugin_n
-            if min(sc_cov, st_cov) < float(config.get("min_gene_overlap_ratio", 0.0)):
-                raise ValueError(f"插件基因交集比例过低: sc_cov={sc_cov:.3f}, st_cov={st_cov:.3f}")
+            plugin_in_sc = [g for g in plugin_genes if g in sc_expr.columns]
+            plugin_in_st = [g for g in plugin_genes if g in st_expr.columns]
+            sc_cov = len(plugin_in_sc) / plugin_n
+            st_cov = len(plugin_in_st) / plugin_n
+            plugin_overlap_genes = [g for g in plugin_genes if g in gene_to_idx]
+            plugin_overlap_ratio = len(plugin_overlap_genes) / plugin_n
+
+            truth_pass_map = None
+            if "truth_pass" in gene_weights.columns:
+                truth_pass_map = dict(zip(gene_weights["gene"], gene_weights["truth_pass"]))
+            spot_weight_candidate_mask = None
+            if config.get("spot_weight_truth_filter", False) and truth_pass_map is not None:
+                spot_weight_candidate_mask = np.array(
+                    [bool(truth_pass_map.get(g, 0)) for g in genes_use],
+                    dtype=bool,
+                )
+
+            w_full = np.ones(len(genes_use), dtype=float)
+            weighted_genes = []
+            for g in plugin_overlap_genes:
+                idx = gene_to_idx[g]
+                w_val = float(weight_map.get(g, 1.0))
+                if not np.isfinite(w_val):
+                    w_val = 1.0
+                w_full[idx] = w_val
+                if abs(w_val - 1.0) > 1e-12:
+                    weighted_genes.append(g)
+
+            w_min = float(np.min(w_full))
+            w_p50 = float(np.percentile(w_full, 50))
+            w_p95 = float(np.percentile(w_full, 95))
+            w_max = float(np.max(w_full))
+            weighted_ratio = len(weighted_genes) / max(len(genes_use), 1)
+
+            svg_fallback_reasons = []
+            if plugin_overlap_ratio < float(config.get("min_gene_overlap_ratio", 0.0)):
+                svg_fallback_reasons.append(f"plugin_overlap_low:{plugin_overlap_ratio:.3f}")
+            if weighted_ratio > 0.2:
+                svg_fallback_reasons.append(f"weighted_ratio>0.2:{weighted_ratio:.3f}")
+            if abs(w_p50 - 1.0) > 1e-8:
+                svg_fallback_reasons.append(f"p50!=1:{w_p50:.6f}")
+            if w_min < 1.0 - 1e-8:
+                svg_fallback_reasons.append(f"weight_below_1:{w_min:.6f}")
+
+            svg_fallback = len(svg_fallback_reasons) > 0
+            w_stats_raw = {"min": w_min, "p50": w_p50, "p95": w_p95, "max": w_max}
+            if svg_fallback:
+                w_full = np.ones(len(genes_use), dtype=float)
+                weighted_genes_applied = []
+            else:
+                weighted_genes_applied = weighted_genes
+            weighted_ratio_applied = len(weighted_genes_applied) / max(len(genes_use), 1)
+            w_stats = {
+                "min": float(np.min(w_full)),
+                "p50": float(np.percentile(w_full, 50)),
+                "p95": float(np.percentile(w_full, 95)),
+                "max": float(np.max(w_full)),
+            }
+
             capacity_raw, cps_source, norm_val = _compute_cells_per_spot(st_coords, config)
             st_coords, capacity_raw, type_prior_raw, spot_alignment_audit = _align_spot_inputs(
                 spot_ids=spot_ids,
@@ -1597,6 +2183,32 @@ class CytoSPACEBackend(MappingBackend):
             prior_intersection = len(set(spot_ids) & set(type_prior_raw.index))
             missing_prior_spots = list(set(spot_ids) - set(type_prior_raw.index))
             missing_prior_examples = missing_prior_spots[:5]
+            cost_expr_guard_reason = None
+            norm_mode = str(config.get("cost_expr_norm") or "none").lower()
+            sample_id = str(config.get("sample") or "")
+            is_sim = bool((ROOT / "data" / "sim" / sample_id).exists())
+            norm_cfg = config
+            if is_sim and norm_mode == "st_zscore":
+                norm_cfg = dict(config)
+                norm_cfg["cost_expr_norm"] = "none"
+                cost_expr_guard_reason = "sim_zscore_forbidden"
+            sc_cost, st_cost, cost_expr_audit = _apply_cost_expr_norm(
+                sc_expr,
+                st_expr,
+                genes_use,
+                norm_cfg,
+                eps=float(norm_cfg.get("cost_expr_norm_eps") or 1e-8),
+            )
+            if cost_expr_guard_reason:
+                cost_expr_audit["guard_reason"] = cost_expr_guard_reason
+            spot_weight_matrix, spot_weight_stats = _compute_spot_weight_matrix(
+                st_cost,
+                st_coords,
+                genes_use,
+                config,
+                eps=float(config.get("cost_expr_norm_eps") or 1e-8),
+                candidate_mask=spot_weight_candidate_mask,
+            )
             refine_lambda = float(config.get("svg_refine_lambda", 0.0) or 0.0)
             refine_k = int(config.get("svg_refine_k", 8))
             distance_metric = config.get("distance_metric", "Pearson_correlation")
@@ -1609,10 +2221,14 @@ class CytoSPACEBackend(MappingBackend):
                 tmp_dir = Path(tmp)
                 os.environ.setdefault("PYTHON", sys.executable)
                 os.environ.setdefault("PYTHON3", sys.executable)
-                sc_weighted = sc_expr.copy()
-                st_weighted = st_expr.copy()
-                sc_weighted.loc[:, genes_use] = sc_expr[genes_use].to_numpy(dtype=float) * w
-                st_weighted.loc[:, genes_use] = st_expr[genes_use].to_numpy(dtype=float) * w
+                sc_weighted = sc_cost.copy()
+                st_weighted = st_cost.copy()
+                sc_vals = sc_cost[genes_use].to_numpy(dtype=float) * w_full
+                st_vals = st_cost[genes_use].to_numpy(dtype=float) * w_full
+                if spot_weight_matrix is not None:
+                    st_vals = st_vals * spot_weight_matrix
+                sc_weighted.loc[:, genes_use] = sc_vals
+                st_weighted.loc[:, genes_use] = st_vals
                 sc_path, ct_path, st_path, coord_path, cps_path = _write_cytospace_inputs(
                     sc_weighted,
                     sc_meta,
@@ -1625,13 +2241,15 @@ class CytoSPACEBackend(MappingBackend):
                     tmp_dir,
                     prefix="plus_",
                 )
-                st_ct_frac_path = tmp_dir / "type_prior_matrix.csv"
+                # NOTE (Stage5 truth alignment):
+                # CytoSPACE samples a "cell pool" by the provided cell-type fractions. If we derive those
+                # fractions from ST priors, it can over-demand rare types and trigger duplicate sampling,
+                # breaking one-to-one Query cell_id alignment with SimGen truth. We therefore sample by the
+                # Query sc composition (plugin_type) and apply type_prior only in our own refine/harden.
+                st_ct_frac_path = _write_global_fraction(cell_types, type_cols, tmp_dir / "ct_fraction.csv")
                 # spot×type -> 全局 1×type（喂 CytoSPACE）
                 row_sum = type_prior_raw.sum(axis=1).replace(0, eps)
                 type_prior_norm = type_prior_raw.div(row_sum, axis=0)
-                global_frac = type_prior_norm.mean(axis=0)
-                frac_row = global_frac.to_frame().T
-                frac_row.to_csv(st_ct_frac_path)
 
                 out_tmp = tmp_dir / "cyto_out"
                 out_tmp.mkdir(exist_ok=True)
@@ -1679,13 +2297,14 @@ class CytoSPACEBackend(MappingBackend):
                 cap_sum = int(capacity_arr.sum())
                 if cap_sum != len(cell_ids):
                     raise ValueError(f"cells_per_spot 总和 {cap_sum} 与 CytoSPACE cell pool 大小 {len(cell_ids)} 不一致")
+                post_adjust = bool(config.get("post_assign_adjust", True))
                 knn_mode = None
-                if refine_lambda > 0:
+                if post_adjust and refine_lambda > 0:
                     missing_pool = [cid for cid in pool_orig_ids if cid not in sc_expr.index]
                     if missing_pool:
-                        raise ValueError(f"CytoSPACE cell pool 中存在 sc_expr 未包含的 OriginalCID，示例: {missing_pool[:5]}")
-                    sc_svg = sc_expr.loc[pool_orig_ids, genes_use].to_numpy(dtype=float) * w
-                    st_svg = st_expr[genes_use].to_numpy(dtype=float) * w
+                        raise ValueError(f"CytoSPACE cell pool ?????????sc_expr ???????????? OriginalCID????????? {missing_pool[:5]}")
+                    sc_svg = sc_expr.loc[pool_orig_ids, genes_use].to_numpy(dtype=float) * w_full
+                    st_svg = st_expr[genes_use].to_numpy(dtype=float) * w_full
                     mat, knn_mode = _refine_spot_cell_matrix_svg(
                         mat=mat,
                         st_coords=st_coords,
@@ -1702,27 +2321,47 @@ class CytoSPACEBackend(MappingBackend):
                     refine_used = True
                 else:
                     refine_used = False
-                # 类型先验 refine（per-spot soft adjust）
-                if effective_lambda_refine > 0 and config.get("type_prior_apply_refine", True):
+                # ???????????? refine???per-spot soft adjust???
+                if post_adjust and effective_lambda_refine > 0 and config.get("type_prior_apply_refine", True):
                     missing_pool_types = sorted(set(pool_types) - set(type_cols))
                     if missing_pool_types:
-                        raise ValueError(f"cell pool 存在 type_cols 未包含的类型: {missing_pool_types[:5]}")
+                        raise ValueError(f"cell pool ?????? type_cols ??????????????????: {missing_pool_types[:5]}")
                     mat = _type_prior_refine(mat, pool_types, type_cols, type_prior_norm, effective_lambda_refine, eps=type_prior_eps)
                 hard_topk = int(config.get("harden_topk", 5) or 5)
-                assignments_hard, hard_mat, hard_meta = _harden_assignment_quota_matching(
-                    mat=mat,
-                    capacity=capacity_arr,
-                    cell_types=pool_types,
-                    type_prior=type_prior_norm,
-                    spot_ids=list(st_expr.index),
-                    lambda_prior=effective_lambda_harden,
-                    eps=eps,
-                    topk=hard_topk,
-                    fallback_assignments=assignments,
-                    ablate_lambda=False,
-                    min_prior_row_nonzero_ratio=float(config.get("min_prior_row_nonzero_ratio", 0.0)),
-                )
-                if config.get("prior_ablation_enabled", False):
+                prior_candidate_topk = int(config.get("prior_candidate_topk", 0) or 0)
+                prior_candidate_weight = float(config.get("prior_candidate_weight", 1.0) or 1.0)
+                if post_adjust:
+                    assignments_hard, hard_mat, hard_meta = _harden_assignment_quota_matching(
+                        mat=mat,
+                        capacity=capacity_arr,
+                        cell_types=pool_types,
+                        type_prior=type_prior_norm,
+                        spot_ids=list(st_expr.index),
+                        lambda_prior=effective_lambda_harden,
+                        eps=eps,
+                        topk=hard_topk,
+                        prior_candidate_topk=prior_candidate_topk,
+                        prior_candidate_weight=prior_candidate_weight,
+                        fallback_assignments=assignments,
+                        ablate_lambda=False,
+                        min_prior_row_nonzero_ratio=float(config.get("min_prior_row_nonzero_ratio", 0.0)),
+                    )
+                else:
+                    assignments_hard = assignments
+                    hard_mat = mat0
+                    hard_meta = {
+                        "harden_method": "skipped_post_adjust",
+                        "harden_topk": None,
+                        "capacity_check": None,
+                        "harden_fallback_n_cells": None,
+                        "harden_repair_n_cells": None,
+                        "n_unassigned_before_repair": None,
+                        "n_unassigned_cells": None,
+                        "type_prior_row_nonzero_ratio": None,
+                        "type_prior_row_entropy_mean": None,
+                        "type_prior_row_entropy_max": None,
+                    }
+                if post_adjust and config.get("prior_ablation_enabled", False):
                     # ablation 仅用于证据链；即使失败也不应影响 plus 主输出
                     hard_meta["prior_ablation_enabled"] = True
                     try:
@@ -1735,6 +2374,8 @@ class CytoSPACEBackend(MappingBackend):
                             lambda_prior=0.0,
                             eps=eps,
                             topk=hard_topk,
+                            prior_candidate_topk=prior_candidate_topk,
+                            prior_candidate_weight=prior_candidate_weight,
                             fallback_assignments=assignments,
                             ablate_lambda=True,
                             min_prior_row_nonzero_ratio=float(config.get("min_prior_row_nonzero_ratio", 0.0)),
@@ -1798,6 +2439,37 @@ class CytoSPACEBackend(MappingBackend):
                 if not pool_orig_ids:
                     raise ValueError("[plus] assigned_locations 缺少 OriginalCID，无法与 Stage1/SimGen Query 真值对齐")
                 # ⚠️cell_id 统一用 OriginalCID；UniqueCID 作为额外列 unique_cid 供审计
+                abstain_unknown = bool(config.get("abstain_unknown_sc_only", False)) if post_adjust else False
+                unknown_label = "Unknown_sc_only"
+                unknown_mask = [t == unknown_label for t in pool_types]
+                n_unknown_pool = int(sum(unknown_mask))
+                n_unknown_dropped = 0
+                if abstain_unknown and n_unknown_pool:
+                    keep_indices = [i for i, is_unknown in enumerate(unknown_mask) if not is_unknown]
+                    n_unknown_dropped = int(len(pool_types) - len(keep_indices))
+                    if keep_indices:
+                        keep_set = set(keep_indices)
+                        index_map = {old_i: new_i for new_i, old_i in enumerate(keep_indices)}
+                        assignments_hard = [
+                            (index_map[cell_i], spot_i, score)
+                            for cell_i, spot_i, score in assignments_hard
+                            if cell_i in keep_set
+                        ]
+                        hard_mat = hard_mat[:, keep_indices].tocsr()
+                        pool_types = [pool_types[i] for i in keep_indices]
+                        pool_orig_ids = [pool_orig_ids[i] for i in keep_indices]
+                        cell_ids = [cell_ids[i] for i in keep_indices]
+                    else:
+                        assignments_hard = []
+                        hard_mat = hard_mat[:, :0].tocsr()
+                        pool_types = []
+                        pool_orig_ids = []
+                        cell_ids = []
+                hard_meta["abstain_unknown_sc_only"] = abstain_unknown
+                hard_meta["abstain_unknown_label"] = unknown_label
+                hard_meta["abstain_unknown_pool_count"] = n_unknown_pool
+                hard_meta["abstain_unknown_dropped"] = n_unknown_dropped
+                hard_meta["abstain_unknown_remaining"] = len(pool_orig_ids)
                 _build_outputs(
                     assignments_hard,
                     [str(x) for x in pool_orig_ids],
@@ -1830,12 +2502,31 @@ class CytoSPACEBackend(MappingBackend):
             "runner_file": config.get("runner_file"),
             "runner_sha1": (str(config.get("runner_sha1")).lower() if config.get("runner_sha1") else None),
             "svg_refine_lambda": config.get("svg_refine_lambda"),
-            "feature_set": "plugin_genes",
+            "feature_set": "all_common_genes",
             "type_set": "plugin_type",
-            "weight_field": "final_weight",
+            "weight_field": locals().get("weight_field"),
             "stage1_dir": str(stage1_dir),
             "stage2_dir": str(stage2_dir),
             "stage3_dir": str(stage3_dir),
+            "stage2_gene_weights_sha1": locals().get("stage2_gene_weights_sha1"),
+            "plugin_genes_sha1": locals().get("plugin_genes_sha1"),
+            "n_genes_use": len(genes_use) if "genes_use" in locals() else None,
+            "n_weighted_genes": len(weighted_genes_applied) if "weighted_genes_applied" in locals() else None,
+            "weighted_gene_examples": (locals().get("weighted_genes_applied") or [])[:10],
+            "weighted_gene_ratio": locals().get("weighted_ratio_applied"),
+            "w_stats": locals().get("w_stats"),
+            "w_stats_raw": locals().get("w_stats_raw"),
+            "svg_fallback": locals().get("svg_fallback"),
+            "svg_fallback_reason": locals().get("svg_fallback_reasons"),
+            "plugin_overlap_ratio": locals().get("plugin_overlap_ratio"),
+            "cost_expr_norm": locals().get("cost_expr_audit", None),
+            "spot_weight_stats": locals().get("spot_weight_stats", None),
+            "spot_specific_basin": config.get("spot_specific_basin"),
+            "spot_specific_threshold_kappa": config.get("spot_specific_threshold_kappa"),
+            "norm_applied": (locals().get("cost_expr_audit") or {}).get("norm_applied"),
+            "norm_fallback": (locals().get("cost_expr_audit") or {}).get("norm_fallback"),
+            "norm_fallback_reason": (locals().get("cost_expr_audit") or {}).get("norm_fallback_reason"),
+            "norm_reason": (locals().get("cost_expr_audit") or {}).get("norm_reason"),
             "config_id": config.get("config_id"),
             "project_config_path": config.get("project_config_path"),
             "dataset_config_path": config.get("dataset_config_path"),
@@ -1918,11 +2609,15 @@ class CytoSPACEBackend(MappingBackend):
             "type_prior_row_entropy_max": locals().get("hard_meta", {}).get("type_prior_row_entropy_max"),
             "gene_usage_stats": {
                 "plugin_genes_total": len(plugin_genes),
-                "genes_use": len(genes_use),
+                "genes_use": len(genes_use) if "genes_use" in locals() else None,
                 "genes_missing_in_sc": int(len(set(plugin_genes) - set(sc_expr.columns))),
                 "genes_missing_in_st": int(len(set(plugin_genes) - set(st_expr.columns))),
-                "weight_min": float(w.min()) if len(w) else None,
-                "weight_max": float(w.max()) if len(w) else None,
+                "weight_min": (locals().get("w_stats") or {}).get("min"),
+                "weight_p50": (locals().get("w_stats") or {}).get("p50"),
+                "weight_p95": (locals().get("w_stats") or {}).get("p95"),
+                "weight_max": (locals().get("w_stats") or {}).get("max"),
+                "weighted_gene_count": len(weighted_genes_applied) if "weighted_genes_applied" in locals() else None,
+                "weighted_gene_ratio": locals().get("weighted_ratio_applied"),
             },
             "runtime_sec": time.time() - t0,
             "status": status,

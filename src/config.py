@@ -40,12 +40,19 @@ class ProjectConfig:
         self.project_root = project_root
         cfg_path = project_root / "configs" / "project_config.yaml"
         self.project_cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) if cfg_path.exists() else {}
+        self._dataset_cfg_map = self.project_cfg.get("dataset_config_map", {}) or {}
         self._dataset_cache: Dict[str, Dict[str, Any]] = {}
+
+    def _dataset_cfg_name(self, sample: str) -> str:
+        mapped = self._dataset_cfg_map.get(sample)
+        if mapped:
+            return str(mapped)
+        return f"{sample}.yaml"
 
     def load_dataset_cfg(self, sample: str) -> Dict[str, Any]:
         if sample in self._dataset_cache:
             return self._dataset_cache[sample]
-        cfg_path = self.project_root / "configs" / "datasets" / f"{sample}.yaml"
+        cfg_path = self.project_root / "configs" / "datasets" / self._dataset_cfg_name(sample)
         if cfg_path.exists():
             data = yaml.safe_load(cfg_path.read_text(encoding="utf-8"))
         else:
@@ -54,7 +61,7 @@ class ProjectConfig:
         return self._dataset_cache[sample]
 
     def dataset_cfg_path(self, sample: str) -> Path:
-        return self.project_root / "configs" / "datasets" / f"{sample}.yaml"
+        return self.project_root / "configs" / "datasets" / self._dataset_cfg_name(sample)
 
     def get_stage_dir(self, sample: str, stage: str) -> Path:
         root = self.project_root
@@ -77,6 +84,9 @@ class ProjectConfig:
             "seed": 42,
             "svg_refine_lambda": 0.5,
             "lambda_prior": 1.0,
+            "prior_candidate_topk": 0,
+            "prior_candidate_weight": 1.0,
+            "abstain_unknown_sc_only": False,
             "eps": 1e-8,
             "umi_to_cell_norm": "median",
             "default_cells_per_spot": 1.0,

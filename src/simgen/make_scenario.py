@@ -1226,6 +1226,59 @@ def run_simgen_for_scenario(
         index=pd.Index(grid.spot_ids, name="spot_id"),
     )
 
+    # ---- Output policy: optionally drop non-tissue spots from all ST outputs
+    output_in_tissue_only = bool(cfg.get("output_in_tissue_only", True))
+    spot_output_audit = {
+        "output_in_tissue_only": output_in_tissue_only,
+        "n_spots_total": int(len(st_coords)),
+        "n_spots_output": int(len(st_coords)),
+        "n_spots_dropped": 0,
+    }
+    if output_in_tissue_only:
+        tissue_mask = st_coords["in_tissue"].astype(int).to_numpy() == 1
+        n_drop = int((~tissue_mask).sum())
+        spot_output_audit["n_spots_output"] = int(tissue_mask.sum())
+        spot_output_audit["n_spots_dropped"] = n_drop
+        if n_drop > 0:
+            keep_spot_ids = st_coords.index[tissue_mask]
+            drop_spot_ids = set(st_coords.index[~tissue_mask].astype(str))
+            st_expr = st_expr.loc[keep_spot_ids]
+            st_coords = st_coords.loc[keep_spot_ids].copy()
+            spot_type_fraction = spot_type_fraction.loc[keep_spot_ids]
+
+            # Recompute capacity for kept spots so sum == n_query (Stage4 expects full pool)
+            capacity = _allocate_capacity_from_world_density(
+                world_spot_counts[tissue_mask],
+                rng,
+                n_query_cells=len(query_ids),
+                clip_min=int(cfg.get("capacity_clip_min", 1)),
+            )
+            st_coords["spot_cell_counts"] = capacity.astype(int)
+
+            # Query truth: if assigned to a dropped spot, reassign to nearest tissue spot
+            if "true_spot_id" in truth_query.columns:
+                truth_policy = str(cfg.get("non_tissue_truth_policy", "reassign")).strip().lower()
+                if truth_policy not in ("reassign", "missing"):
+                    raise ValueError("non_tissue_truth_policy must be reassign or missing")
+                mask_drop = truth_query["true_spot_id"].astype(str).isin(drop_spot_ids)
+                if mask_drop.any():
+                    if truth_policy == "missing":
+                        truth_query.loc[mask_drop, "true_spot_id"] = ""
+                        if "truth_status" in truth_query.columns:
+                            truth_query.loc[mask_drop, "truth_status"] = "non_tissue_spot_filtered"
+                    else:
+                        spot_xy = st_coords[["x", "y"]].to_numpy(dtype=float)
+                        tree = cKDTree(spot_xy)
+                        q_xy = truth_query.loc[mask_drop, ["sim_x", "sim_y"]].to_numpy(dtype=float)
+                        _, nn_idx = tree.query(q_xy, k=1)
+                        new_spot_ids = st_coords.index.to_numpy()[nn_idx]
+                        truth_query.loc[mask_drop, "true_spot_id"] = new_spot_ids
+                        if "truth_status" in truth_query.columns:
+                            truth_query.loc[mask_drop, "truth_status"] = "non_tissue_spot_reassigned"
+                    spot_output_audit["non_tissue_truth_policy"] = truth_policy
+                    spot_output_audit["n_truth_reassigned"] = int(mask_drop.sum()) if truth_policy == "reassign" else 0
+                    spot_output_audit["n_truth_missing_due_to_non_tissue"] = int(mask_drop.sum()) if truth_policy == "missing" else 0
+
     # ---- Write outputs
     _write_csv_with_index(query_expr, out_dir / "sim_sc_expression.csv", index_name="cell_id")
     _write_csv_no_index(query_meta, out_dir / "sim_sc_metadata.csv")
@@ -1295,6 +1348,7 @@ def run_simgen_for_scenario(
             "min_cells_per_spot_satisfied_fraction_warn": float(min_cells_per_spot_satisfied_fraction_warn),
             "fallback_steps": coverage_audit_steps,
         },
+        "spot_output_audit": spot_output_audit,
         "expression_audit": {
             "counts_source": counts_source,
             "target_depth": target_depth,

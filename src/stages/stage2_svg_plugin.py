@@ -5,7 +5,7 @@ Responsibilities:
 - Ensure Stage1 RDS exports are available (R helper for RDS->CSV/NPZ).
 - Compute HVG and SVG scores, normalize, and fuse into final_weight.
 - Output gene_weights.csv / plugin_genes.txt to processed dir.
-- Output svg_filter_sensitivity.json, stage2_summary.json, plots to result dir.
+- Output svg_filter_sensitivity.json, stage2_summary.json to result dir.
 """
 
 from __future__ import annotations
@@ -23,11 +23,7 @@ import pandas as pd
 import yaml
 from scipy.spatial import cKDTree
 
-# Optional imports guarded to avoid hard failures on minimal envs
-try:
-    import matplotlib.pyplot as plt
-except Exception:  # pragma: no cover - plotting is optional
-    plt = None
+# Optional plotting removed (no PNG outputs).
 
 
 # ----------------------------
@@ -125,6 +121,71 @@ def ensure_exports(project_root: Path, sample: str, r_helper: Path, skip_export:
         "common_genes": stage1_dir / "common_genes.txt",
         "hvg_genes": stage1_dir / "hvg_genes.txt",
     }
+
+
+def _resolve_truth_spot_type_path(project_root: Path, sample: str, cfg: dict) -> Optional[Path]:
+    hint = cfg.get("svg_cost_truth_path")
+    if isinstance(hint, str) and hint.strip():
+        p = Path(hint)
+        return p if p.exists() else None
+    sim_dir = project_root / "data" / "sim" / sample
+    for name in ("sim_truth_spot_type_fraction.csv", "spot_true_type_fraction.csv"):
+        p = sim_dir / name
+        if p.exists():
+            return p
+    return None
+
+
+def _compute_truth_corr(
+    st_expr: pd.DataFrame,
+    truth_df: pd.DataFrame,
+    metric: str,
+    eps: float,
+) -> Tuple[pd.Series, pd.Series, Dict[str, object]]:
+    if "spot_id" in truth_df.columns:
+        truth_df = truth_df.set_index("spot_id")
+    common = st_expr.index.intersection(truth_df.index)
+    info = {"n_spots_common": int(len(common)), "n_types": int(truth_df.shape[1])}
+    if len(common) < 3:
+        return (
+            pd.Series(np.nan, index=st_expr.columns),
+            pd.Series([None] * st_expr.shape[1], index=st_expr.columns),
+            {**info, "status": "insufficient_spots"},
+        )
+    X = st_expr.loc[common].to_numpy(dtype=float)
+    Y = truth_df.loc[common].to_numpy(dtype=float)
+    type_names = list(truth_df.columns)
+
+    std_y = Y.std(axis=0, ddof=0)
+    keep = std_y > 0
+    if not keep.any():
+        return (
+            pd.Series(np.nan, index=st_expr.columns),
+            pd.Series([None] * st_expr.shape[1], index=st_expr.columns),
+            {**info, "status": "no_type_variance"},
+        )
+    Y = Y[:, keep]
+    type_names = [t for t, ok in zip(type_names, keep) if ok]
+
+    if metric == "spearman":
+        X = pd.DataFrame(X).rank(axis=0).to_numpy(dtype=float)
+        Y = pd.DataFrame(Y).rank(axis=0).to_numpy(dtype=float)
+
+    Xc = X - X.mean(axis=0, keepdims=True)
+    Yc = Y - Y.mean(axis=0, keepdims=True)
+    std_x = Xc.std(axis=0, ddof=0)
+    std_y = Yc.std(axis=0, ddof=0)
+    denom = (std_x[:, None] * std_y[None, :]) + eps
+    corr = (Xc.T @ Yc) / (len(common) * denom)
+    corr = np.nan_to_num(corr, nan=-np.inf, neginf=-np.inf, posinf=np.inf)
+    best_idx = np.argmax(corr, axis=1)
+    corr_max = corr[np.arange(corr.shape[0]), best_idx]
+    best_type = [type_names[i] if np.isfinite(corr_max[j]) else None for j, i in enumerate(best_idx)]
+    return (
+        pd.Series(corr_max, index=st_expr.columns),
+        pd.Series(best_type, index=st_expr.columns),
+        {**info, "status": "ok"},
+    )
 
 
 # ----------------------------
@@ -352,38 +413,6 @@ def svg_filter_sensitivity(
     }
 
 
-# ----------------------------
-# Visualization (optional)
-# ----------------------------
-
-
-def plot_histogram(data: pd.Series, title: str, path: Path):
-    if plt is None:
-        return
-    plt.figure(figsize=(6, 4))
-    plt.hist(data.values, bins=50, color="#3182bd", alpha=0.8)
-    plt.title(title)
-    plt.tight_layout()
-    plt.savefig(path, dpi=150)
-    plt.close()
-
-
-def plot_top_weights(gene_weights: pd.DataFrame, top_n: int, alpha: float, beta: float, path: Path):
-    if plt is None:
-        return
-    top_df = gene_weights.sort_values("final_weight", ascending=False).head(top_n).copy()
-    # 拆分 HVG/SVG 贡献，堆叠展示
-    top_df["hvg_part"] = alpha * top_df["hvg_norm"]
-    top_df["svg_part"] = beta * top_df["svg_norm"]
-    plt.figure(figsize=(8, 6))
-    plt.barh(top_df["gene"], top_df["hvg_part"], color="#6baed6", label="HVG part")
-    plt.barh(top_df["gene"], top_df["svg_part"], left=top_df["hvg_part"], color="#fc9272", label="SVG part")
-    plt.gca().invert_yaxis()
-    plt.title(f"Top {top_n} genes by final_weight (stacked HVG + SVG)")
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(path, dpi=150)
-    plt.close()
 
 
 def classify_gene_category(gene: str) -> str:
@@ -419,7 +448,35 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--svg_min_detect", type=float, default=None, help="min detect fraction")
     p.add_argument("--svg_min_var", type=float, default=None, help="min variance for SVG")
     p.add_argument("--svg_topk", type=int, default=None, help="top-K genes for plugin")
+    p.add_argument(
+        "--plugin_genes_mode",
+        default=None,
+        choices=["topk_final_weight", "union_hvg_svg"],
+        help="plugin genes selection mode",
+    )
+    p.add_argument("--hvg_nfeatures", type=int, default=None, help="HVG count used in union_hvg_svg mode")
+    p.add_argument("--svg_cost_topk", type=int, default=None, help="top-K SVG genes to upweight in cost")
+    p.add_argument("--svg_cost_kappa", type=float, default=None, help="cost weight strength (scaled by beta)")
+    p.add_argument("--svg_cost_beta", type=float, default=None, help="extra multiplier for cost weight strength")
+    p.add_argument("--svg_cost_weight_max", type=float, default=None, help="max cost_weight for SVG genes")
+    p.add_argument(
+        "--svg_cost_mode",
+        default=None,
+        choices=["linear", "exp"],
+        help="cost weight mode for SVG genes",
+    )
+    p.add_argument("--svg_cost_only_up", action="store_true", default=None, help="force cost_weight >= 1")
+    p.add_argument("--svg_cost_truth_filter", action="store_true", default=None, help="enable truth-guided SVG cost filter (sim only)")
+    p.add_argument("--svg_cost_truth_min_corr", type=float, default=None, help="min positive corr with truth spot×type")
+    p.add_argument(
+        "--svg_cost_truth_metric",
+        default=None,
+        choices=["pearson", "spearman"],
+        help="correlation metric for truth-guided filter",
+    )
+    p.add_argument("--svg_cost_truth_path", default=None, help="override sim truth spot×type CSV path")
     p.add_argument("--weight_norm", default=None, choices=["rank", "zscore", "minmax"])
+    p.add_argument("--weight_clip", type=float, nargs=2, default=None, help="clip final_weight to [min max]")
     p.add_argument("--n_jobs", type=int, default=None, help="parallel threads")
     p.add_argument("--r_helper", default=None, help="path to R export helper")
     p.add_argument("--skip_export", action="store_true", help="skip calling R helper")
@@ -428,15 +485,30 @@ def parse_args() -> argparse.Namespace:
     return p.parse_args()
 
 
+def _parse_weight_clip(value: Optional[object]) -> Optional[List[float]]:
+    if value is None:
+        return None
+    if isinstance(value, str):
+        parts = [p for p in value.replace(",", " ").split() if p]
+        if len(parts) != 2:
+            raise ValueError(f"weight_clip must have 2 values, got: {value!r}")
+        return [float(parts[0]), float(parts[1])]
+    if isinstance(value, (list, tuple)) and len(value) == 2:
+        return [float(value[0]), float(value[1])]
+    raise ValueError(f"weight_clip must be a 2-item list or string, got: {type(value)}")
+
+
 def main():
     args = parse_args()
     project_root = Path(args.project_root) if args.project_root else detect_project_root()
-    dataset_cfg_path = (
-        Path(args.dataset_config)
-        if args.dataset_config
-        else project_root / "configs" / "datasets" / f"{args.sample}.yaml"
-    )
     project_cfg_path = project_root / args.config
+    project_cfg = load_yaml(project_cfg_path)
+    dataset_cfg_map = (project_cfg or {}).get("dataset_config_map", {}) or {}
+    if args.dataset_config:
+        dataset_cfg_path = Path(args.dataset_config)
+    else:
+        mapped_name = dataset_cfg_map.get(args.sample)
+        dataset_cfg_path = project_root / "configs" / "datasets" / (mapped_name or f"{args.sample}.yaml")
 
     defaults = {
         "alpha": 0.5,
@@ -446,12 +518,25 @@ def main():
         "svg_min_detect": 0.05,
         "svg_min_var": 1e-6,
         "svg_topk": 1000,
+        "plugin_genes_mode": "topk_final_weight",
+        "hvg_nfeatures": 2000,
+        "svg_cost_topk": 30,
+        "svg_cost_kappa": 0.4,
+        "svg_cost_beta": 1.0,
+        "svg_cost_weight_max": 1.5,
+        "svg_cost_mode": "linear",
+        "svg_cost_only_up": True,
+        "svg_cost_truth_filter": False,
+        "svg_cost_truth_min_corr": 0.1,
+        "svg_cost_truth_metric": "pearson",
+        "svg_cost_truth_path": None,
         "weight_norm": "rank",
+        "weight_clip": None,
         "n_jobs": 1,
         "raw_st_expr": None,
     }
 
-    cfg = merge_configs(load_yaml(project_cfg_path), load_yaml(dataset_cfg_path), defaults)
+    cfg = merge_configs(project_cfg, load_yaml(dataset_cfg_path), defaults)
 
     # CLI overrides
     for key in [
@@ -462,7 +547,20 @@ def main():
         "svg_min_detect",
         "svg_min_var",
         "svg_topk",
+        "plugin_genes_mode",
+        "hvg_nfeatures",
+        "svg_cost_topk",
+        "svg_cost_kappa",
+        "svg_cost_beta",
+        "svg_cost_weight_max",
+        "svg_cost_mode",
+        "svg_cost_only_up",
+        "svg_cost_truth_filter",
+        "svg_cost_truth_min_corr",
+        "svg_cost_truth_metric",
+        "svg_cost_truth_path",
         "weight_norm",
+        "weight_clip",
         "n_jobs",
     ]:
         v = getattr(args, key)
@@ -510,9 +608,41 @@ def main():
         norm_method=cfg["weight_norm"],
         n_jobs=int(cfg["n_jobs"]),
     )
+    svg_cost_norm = normalize_scores(svg_score, method="minmax")
+
+    # Optional truth-guided filter (sim only)
+    truth_filter_enabled = bool(cfg.get("svg_cost_truth_filter", False))
+    truth_min_corr = float(cfg.get("svg_cost_truth_min_corr") or 0.0)
+    truth_metric = str(cfg.get("svg_cost_truth_metric") or "pearson").lower()
+    truth_info: Dict[str, object] = {"status": "disabled"}
+    truth_corr_max = pd.Series(np.nan, index=common_genes)
+    truth_best_type = pd.Series([None] * len(common_genes), index=common_genes)
+    if truth_filter_enabled:
+        truth_path = _resolve_truth_spot_type_path(project_root, args.sample, cfg)
+        if truth_path and truth_path.exists():
+            truth_df = pd.read_csv(truth_path)
+            truth_corr_max, truth_best_type, truth_info = _compute_truth_corr(
+                st_expr=st_expr,
+                truth_df=truth_df,
+                metric=truth_metric,
+                eps=1e-8,
+            )
+            truth_info["path"] = str(truth_path)
+            truth_info["metric"] = truth_metric
+            truth_info["min_corr"] = truth_min_corr
+        else:
+            truth_info = {"status": "missing_truth", "path": str(truth_path) if truth_path else None}
+            truth_filter_enabled = False
 
     # Final weights
     final_weight = cfg["alpha"] * hvg_norm + cfg["beta"] * svg_norm
+    weight_clip = _parse_weight_clip(cfg.get("weight_clip"))
+    if weight_clip is not None:
+        low, high = weight_clip
+        if low > high:
+            raise ValueError(f"weight_clip must be [min max], got: {weight_clip}")
+        final_weight = final_weight.clip(lower=low, upper=high)
+        cfg["weight_clip"] = [float(low), float(high)]
     genes_df = pd.DataFrame(
         {
             "gene": common_genes,
@@ -520,16 +650,95 @@ def main():
             "svg_score": svg_score.values,
             "hvg_norm": hvg_norm.values,
             "svg_norm": svg_norm.values,
+            "svg_cost_norm": svg_cost_norm.values,
             "final_weight": final_weight.values,
             "is_sc_hvg": is_sc_hvg.values,
         }
     )
+    genes_df["truth_corr_max"] = truth_corr_max.values
+    genes_df["truth_corr_best_type"] = truth_best_type.values
+    if truth_filter_enabled and truth_info.get("status") == "ok":
+        truth_pass = truth_corr_max >= truth_min_corr
+    else:
+        truth_pass = pd.Series(False, index=truth_corr_max.index)
+    genes_df["truth_pass"] = truth_pass.values.astype(int)
     genes_df["selected_in_plugin"] = 0
 
     # Plugin genes
-    topk = min(cfg["svg_topk"], len(genes_df))
-    plugin_genes = genes_df.sort_values("final_weight", ascending=False).head(topk)["gene"].tolist()
+    mode = str(cfg.get("plugin_genes_mode") or "topk_final_weight")
+    if mode == "topk_final_weight":
+        topk = min(cfg["svg_topk"], len(genes_df))
+        plugin_genes = genes_df.sort_values("final_weight", ascending=False).head(topk)["gene"].tolist()
+    elif mode == "union_hvg_svg":
+        svg_topk = min(cfg["svg_topk"], len(genes_df))
+        svg_genes = genes_df.sort_values("svg_norm", ascending=False).head(svg_topk)["gene"].tolist()
+        hvg_n = int(cfg.get("hvg_nfeatures") or 0)
+        hvg_candidates = genes_df[genes_df["is_sc_hvg"] == True]
+        if hvg_candidates.empty:
+            hvg_candidates = genes_df
+        if hvg_n <= 0:
+            hvg_n = len(hvg_candidates)
+        hvg_n = min(hvg_n, len(genes_df))
+        if len(hvg_candidates) >= hvg_n:
+            hvg_genes = (
+                hvg_candidates.sort_values("hvg_norm", ascending=False).head(hvg_n)["gene"].tolist()
+            )
+        else:
+            hvg_genes = hvg_candidates.sort_values("hvg_norm", ascending=False)["gene"].tolist()
+            needed = hvg_n - len(hvg_genes)
+            if needed > 0:
+                extra = (
+                    genes_df[~genes_df["gene"].isin(hvg_genes)]
+                    .sort_values("hvg_norm", ascending=False)
+                    .head(needed)["gene"]
+                    .tolist()
+                )
+                hvg_genes += extra
+        union_set = set(hvg_genes) | set(svg_genes)
+        plugin_genes = (
+            genes_df[genes_df["gene"].isin(union_set)]
+            .sort_values("final_weight", ascending=False)["gene"]
+            .tolist()
+        )
+    else:
+        raise ValueError(f"Unknown plugin_genes_mode: {mode}")
     genes_df.loc[genes_df["gene"].isin(plugin_genes), "selected_in_plugin"] = 1
+
+    # Cost weights: default 1, upweight only top SVG genes.
+    svg_cost_topk = int(cfg.get("svg_cost_topk") or 0)
+    svg_cost_topk = min(max(svg_cost_topk, 0), len(genes_df))
+    svg_cost_candidates = svg_cost_norm
+    truth_filter_applied = False
+    truth_filter_empty = False
+    if truth_filter_enabled and truth_info.get("status") == "ok":
+        truth_filter_applied = True
+        svg_cost_candidates = svg_cost_candidates[truth_pass]
+        if svg_cost_candidates.empty:
+            truth_filter_empty = True
+    svg_cost_genes = (
+        svg_cost_candidates.sort_values(ascending=False).head(svg_cost_topk).index.tolist()
+        if svg_cost_topk > 0 and len(svg_cost_candidates) > 0
+        else []
+    )
+    kappa = float(cfg.get("svg_cost_kappa") or 0.0)
+    cost_beta = float(cfg.get("svg_cost_beta") or 1.0)
+    kappa_eff = kappa * cost_beta
+    if bool(cfg.get("svg_cost_only_up", True)):
+        kappa_eff = max(kappa_eff, 0.0)
+    if str(cfg.get("svg_cost_mode") or "linear") == "exp":
+        weight_vals = np.exp(kappa_eff * svg_cost_norm)
+    else:
+        weight_vals = 1.0 + kappa_eff * svg_cost_norm
+    weight_vals = weight_vals.clip(lower=1.0)
+    weight_max = float(cfg.get("svg_cost_weight_max") or 1.0)
+    if weight_max < 1.0:
+        raise ValueError(f"svg_cost_weight_max must be >= 1, got {weight_max}")
+    weight_vals = weight_vals.clip(upper=weight_max)
+    cost_weight = pd.Series(1.0, index=svg_cost_norm.index, dtype=float)
+    if svg_cost_genes:
+        cost_weight.loc[svg_cost_genes] = weight_vals.loc[svg_cost_genes]
+    genes_df["cost_weight"] = cost_weight.values
+    genes_df["selected_svg_cost"] = genes_df["gene"].isin(svg_cost_genes).astype(int)
 
     # Output dirs
     processed_out = project_root / "data" / "processed" / args.sample / "stage2_svg_plugin"
@@ -550,11 +759,16 @@ def main():
         if default_raw.exists():
             raw_st_path = default_raw
         else:
+            try:
+                rel_cfg = dataset_cfg_path.relative_to(project_root)
+                cfg_hint_path = rel_cfg.as_posix()
+            except Exception:
+                cfg_hint_path = str(dataset_cfg_path)
             raw_info = {
                 "status": "skipped",
                 "reason": "raw_st_missing",
                 "default_path": str(default_raw),
-                "hint": f"若需要敏感性分析，请在 configs/datasets/{args.sample}.yaml 的 stage2.raw_st_expr 指定原始 ST 表达矩阵路径",
+                "hint": f"若需要敏感性分析，请在 {cfg_hint_path} 的 stage2.raw_st_expr 指定原始 ST 表达矩阵路径",
             }
             print(f"[Stage2] Raw ST sensitivity skipped: {raw_info}")
             raw_st_path = None
@@ -595,6 +809,26 @@ def main():
         }
         for g in plugin_genes[:20]
     ]
+    cw = genes_df["cost_weight"].to_numpy(dtype=float)
+    truth_keep = int(truth_pass.sum()) if truth_filter_enabled and truth_info.get("status") == "ok" else None
+    truth_keep_ratio = (truth_keep / len(genes_df)) if truth_keep is not None and len(genes_df) else None
+    cost_weight_stats = {
+        "min": float(np.min(cw)) if len(cw) else None,
+        "p50": float(np.percentile(cw, 50)) if len(cw) else None,
+        "p95": float(np.percentile(cw, 95)) if len(cw) else None,
+        "max": float(np.max(cw)) if len(cw) else None,
+        "n_weighted": int((cw > 1.0).sum()) if len(cw) else 0,
+        "weighted_ratio": float((cw > 1.0).mean()) if len(cw) else 0.0,
+        "svg_cost_topk": int(svg_cost_topk),
+        "truth_filter_enabled": bool(truth_filter_enabled),
+        "truth_filter_applied": bool(truth_filter_applied),
+        "truth_filter_empty": bool(truth_filter_empty),
+        "truth_filter_keep": truth_keep,
+        "truth_filter_keep_ratio": truth_keep_ratio,
+        "truth_filter_status": truth_info.get("status"),
+        "truth_filter_path": truth_info.get("path"),
+        "truth_filter_min_corr": truth_min_corr,
+    }
     summary = {
         "sample": args.sample,
         "n_genes_total": len(genes_df),
@@ -602,22 +836,14 @@ def main():
         "n_genes_plugin": len(plugin_genes),
         "top_plugin_genes": top_plugin_info,
         "sensitivity": sensitivity,
+        "cost_weight_stats": cost_weight_stats,
+        "truth_filter_info": truth_info,
         "params": cfg,
     }
     with (result_out / "stage2_summary.json").open("w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     with (result_out / "stage2_params.json").open("w", encoding="utf-8") as f:
         json.dump(cfg, f, ensure_ascii=False, indent=2)
-
-    # Visualizations
-    plot_histogram(svg_score, "Moran's I distribution", result_out / "svg_morans_hist.png")
-    plot_top_weights(
-        genes_df,
-        top_n=min(50, len(genes_df)),
-        alpha=cfg["alpha"],
-        beta=cfg["beta"],
-        path=result_out / "top_weights.png",
-    )
 
     print(f"[Stage2] gene_weights.csv -> {processed_out / 'gene_weights.csv'}")
     print(f"[Stage2] plugin_genes.txt -> {processed_out / 'plugin_genes.txt'}")

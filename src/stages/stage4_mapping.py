@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import time
 from pathlib import Path
 from typing import Dict, Any, List, Optional
@@ -25,6 +26,7 @@ for p in (PROJECT_ROOT, SRC_ROOT):
 from stages.backends.base_backend import MappingBackend
 from stages.backends.cytospace_backend import CytoSPACEBackend
 from config import load_project_config, ProjectConfig
+from utils.run_manifest import write_stage4_run_manifest
 
 
 BACKEND_REGISTRY = {
@@ -60,6 +62,55 @@ def runner_fingerprint() -> Dict[str, Optional[str]]:
     return {"runner_file": str(p), "runner_sha1": sha1}
 
 
+def _format_run_token(value: Any) -> str:
+    if value is None or value == "":
+        return "NA"
+    s = str(value).strip()
+    if not s:
+        return "NA"
+    for ch in ["\\", "/", ":", "|"]:
+        s = s.replace(ch, "-")
+    return s.replace(" ", "_")
+
+
+def _format_float_token(value: Any) -> str:
+    if value is None or value == "":
+        return "NA"
+    try:
+        f = float(value)
+    except Exception:
+        return _format_run_token(value)
+    if not math.isfinite(f):
+        return "NA"
+    return _format_run_token(f"{f:.6g}")
+
+
+def _resolve_refine_enabled(lambda_svg: Any) -> bool:
+    try:
+        return lambda_svg is not None and float(lambda_svg) > 0.0
+    except Exception:
+        return False
+
+
+def _build_run_id(
+    *,
+    mode: str,
+    variant: Optional[str],
+    seed: Any,
+    svg_refine_lambda: Any,
+    config_id: Any,
+    refine_enabled: bool,
+) -> str:
+    prefix = f"{mode}_{variant}" if variant else mode
+    return (
+        f"{prefix}"
+        f"__seed_{_format_run_token(seed)}"
+        f"__lam_{_format_float_token(svg_refine_lambda)}"
+        f"__ref_{'1' if refine_enabled else '0'}"
+        f"__cfg_{_format_run_token(config_id)}"
+    )
+
+
 def ensure_inputs(stage1_dir: Path, stage2_dir: Path, stage3_dir: Path, enable_plus: bool):
     # 基本存在性检查
     exp_dir = stage1_dir / "exported"
@@ -82,10 +133,19 @@ def ensure_inputs(stage1_dir: Path, stage2_dir: Path, stage3_dir: Path, enable_p
 
 def run_backend(backend: MappingBackend, name: str, stage1_dir: Path, stage2_dir: Path, stage3_dir: Path, out_root: Path, cfg: Dict[str, Any], enable_plus: bool):
     # baseline
-    out_base = out_root / name / "baseline"
+    base_cfg = cfg | {"mode": "baseline", "variant": None, "svg_refine_lambda": None}
+    base_run_id = _build_run_id(
+        mode="baseline",
+        variant=None,
+        seed=base_cfg.get("seed"),
+        svg_refine_lambda=None,
+        config_id=base_cfg.get("config_id"),
+        refine_enabled=False,
+    )
+    base_cfg = base_cfg | {"run_id": base_run_id}
+    out_base = out_root / name / base_run_id
     out_base.mkdir(parents=True, exist_ok=True)
     print(f"[Stage4] Running {name} baseline -> {out_base}")
-    base_cfg = cfg | {"mode": "baseline", "run_id": "baseline", "variant": None}
     log_base = out_base / "log.txt"
     with log_base.open("w", encoding="utf-8") as f:
         f.write(f"baseline backend={name}\n")
@@ -98,11 +158,38 @@ def run_backend(backend: MappingBackend, name: str, stage1_dir: Path, stage2_dir
             f.write(f"status=failed\nerror={e}\n")
             raise
 
+    # Ensure meta.json exists even for backends that don't emit it.
+    meta_path = out_base / "meta.json"
+    if not meta_path.exists():
+        meta = {
+            "backend": name,
+            "mode": base_cfg.get("mode"),
+            "run_id": base_cfg.get("run_id"),
+            "variant": base_cfg.get("variant"),
+            "sample": base_cfg.get("sample"),
+            "config_id": base_cfg.get("config_id"),
+            "seed": base_cfg.get("seed"),
+            "svg_refine_lambda": base_cfg.get("svg_refine_lambda"),
+            "status": "success",
+            "resolved_mapping_config": base_cfg,
+        }
+        meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
     if enable_plus:
-        out_plus = out_root / name / "plus_svg_type"
+        plus_cfg = cfg | {"mode": "plus", "variant": "svg_type"}
+        lambda_svg = plus_cfg.get("svg_refine_lambda")
+        plus_run_id = _build_run_id(
+            mode="plus",
+            variant="svg_type",
+            seed=plus_cfg.get("seed"),
+            svg_refine_lambda=lambda_svg,
+            config_id=plus_cfg.get("config_id"),
+            refine_enabled=_resolve_refine_enabled(lambda_svg),
+        )
+        plus_cfg = plus_cfg | {"run_id": plus_run_id}
+        out_plus = out_root / name / plus_run_id
         out_plus.mkdir(parents=True, exist_ok=True)
         print(f"[Stage4] Running {name} plus_svg_type -> {out_plus}")
-        plus_cfg = cfg | {"mode": "plus", "run_id": "plus_svg_type", "variant": "svg_type"}
         log_plus = out_plus / "log.txt"
         with log_plus.open("w", encoding="utf-8") as f:
             f.write(f"plus backend={name}\n")
@@ -116,10 +203,34 @@ def run_backend(backend: MappingBackend, name: str, stage1_dir: Path, stage2_dir
                     out_dir=out_plus,
                     config=plus_cfg,
                 )
+                try:
+                    meta = json.loads((out_plus / "meta.json").read_text(encoding="utf-8"))
+                    norm_applied = meta.get("norm_applied")
+                    norm_fallback = meta.get("norm_fallback")
+                    norm_reason = meta.get("norm_reason")
+                    f.write(f"norm_applied={norm_applied} norm_fallback={norm_fallback} norm_reason={norm_reason}\n")
+                except Exception as meta_err:
+                    f.write(f"norm_meta_read_error={meta_err}\n")
                 f.write("status=success\n")
             except Exception as e:
                 f.write(f"status=failed\nerror={e}\n")
                 raise
+
+        meta_path = out_plus / "meta.json"
+        if not meta_path.exists():
+            meta = {
+                "backend": name,
+                "mode": plus_cfg.get("mode"),
+                "run_id": plus_cfg.get("run_id"),
+                "variant": plus_cfg.get("variant"),
+                "sample": plus_cfg.get("sample"),
+                "config_id": plus_cfg.get("config_id"),
+                "seed": plus_cfg.get("seed"),
+                "svg_refine_lambda": plus_cfg.get("svg_refine_lambda"),
+                "status": "success",
+                "resolved_mapping_config": plus_cfg,
+            }
+            meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def main():
@@ -150,6 +261,7 @@ def run_stage4_for_sample(
     enable_plus: bool = False,
     config_id: Optional[str] = None,
 ) -> None:
+    ds_cfg = cfg.load_dataset_cfg(sample_id) or {}
     stage1_dir = cfg.get_stage_dir(sample_id, "stage1_preprocess")
     stage2_dir = cfg.get_stage_dir(sample_id, "stage2_svg_plugin")
     stage3_dir = cfg.get_stage_dir(sample_id, "stage3_typematch")
@@ -162,11 +274,15 @@ def run_stage4_for_sample(
     for bname in backend_list:
         if bname not in BACKEND_REGISTRY:
             raise ValueError(f"未知 backend: {bname}")
-        backend_cfg = cfg.get_mapping_config(sample_id, bname, config_id=config_id)
+        ds_map = ds_cfg.get("mapping", {}) if isinstance(ds_cfg, dict) else {}
+        ds_backend = ds_map.get(bname, {}) if isinstance(ds_map, dict) else {}
+        default_cfg_id = ds_backend.get("default_config_id")
+        effective_config_id = config_id if config_id is not None else default_cfg_id
+        backend_cfg = cfg.get_mapping_config(sample_id, bname, config_id=effective_config_id)
         backend_cfg = backend_cfg | {
             "sample": sample_id,
             "backend": bname,
-            "config_id": config_id,
+            "config_id": effective_config_id,
             "project_root": str(cfg.project_root),
             "project_config_path": str(cfg.project_root / "configs" / "project_config.yaml"),
             "dataset_config_path": str(cfg.dataset_cfg_path(sample_id)),
@@ -182,6 +298,15 @@ def run_stage4_for_sample(
             cfg=backend_cfg,
             enable_plus=enable_plus,
         )
+
+    # Stage4 manifest is the single source of truth for Stage5/6 run enumeration.
+    out_json, out_csv = write_stage4_run_manifest(
+        project_root=cfg.project_root,
+        scenario_id=sample_id,
+        stage4_mapping_root=out_root,
+    )
+    print(f"[Stage4] Wrote manifest: {out_json}")
+    print(f"[Stage4] Wrote manifest: {out_csv}")
 
 
 if __name__ == "__main__":
