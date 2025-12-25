@@ -22,22 +22,32 @@ from typing import Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
+import yaml
 
 
 # ----------------------------
 # 配置与路径
 # ----------------------------
 
+def load_yaml(path: Path) -> dict:
+    if not path.exists() or path.stat().st_size == 0:
+        return {}
+    with path.open("r", encoding="utf-8") as f:
+        return yaml.safe_load(f) or {}
+
+
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Stage 3: type matching / unknown-aware plugin")
     p.add_argument("--sample", default="real_brca", help="sample id")
     p.add_argument("--project_root", default=None, help="override project root")
-    p.add_argument("--strong_th", type=float, default=0.7, help="support threshold for strong")
-    p.add_argument("--weak_th", type=float, default=0.4, help="support threshold for weak")
-    p.add_argument("--st_cluster_k", type=int, default=30, help="ST clustering K (<=0 表示不聚类，直接用 spot)")
-    p.add_argument("--unknown_floor", type=float, default=0.3, help="Unknown_sc_only 最小占比（0~1）")
-    p.add_argument("--min_cells_rare_type", type=int, default=20, help="稀有类型阈值，低于此不会标 strong")
-    p.add_argument("--eps", type=float, default=1e-8, help="数值下限，避免除零")
+    p.add_argument("--config", default="configs/project_config.yaml", help="project config path")
+    p.add_argument("--dataset_config", default=None, help="dataset config path (overrides auto-detection)")
+    p.add_argument("--strong_th", type=float, default=None, help="support threshold for strong (overrides config)")
+    p.add_argument("--weak_th", type=float, default=None, help="support threshold for weak (overrides config)")
+    p.add_argument("--st_cluster_k", type=int, default=None, help="ST clustering K (<=0 表示不聚类，直接用 spot)")
+    p.add_argument("--unknown_floor", type=float, default=None, help="Unknown_sc_only 最小占比（0~1）")
+    p.add_argument("--min_cells_rare_type", type=int, default=None, help="稀有类型阈值，低于此不会标 strong")
+    p.add_argument("--eps", type=float, default=None, help="数值下限，避免除零")
     return p.parse_args()
 
 
@@ -124,9 +134,39 @@ def main():
     args = parse_args()
     project_root = Path(args.project_root) if args.project_root else detect_project_root()
 
+    # 加载配置（参考 Stage2 的实现）
+    project_cfg_path = project_root / args.config
+    project_cfg = load_yaml(project_cfg_path)
+    dataset_cfg_map = (project_cfg or {}).get("dataset_config_map", {}) or {}
+    if args.dataset_config:
+        dataset_cfg_path = Path(args.dataset_config)
+    else:
+        mapped_name = dataset_cfg_map.get(args.sample)
+        dataset_cfg_path = project_root / "configs" / "datasets" / (mapped_name or f"{args.sample}.yaml")
+    
+    dataset_cfg = load_yaml(dataset_cfg_path)
+    stage3_cfg = (dataset_cfg.get("stage3") or {}) if isinstance(dataset_cfg, dict) else {}
+    
+    # 默认值
+    defaults = {
+        "strong_th": 0.7,
+        "weak_th": 0.4,
+        "st_cluster_k": 30,
+        "unknown_floor": 0.3,
+        "min_cells_rare_type": 20,
+        "eps": 1e-8,
+    }
+    
+    # 从配置读取（配置优先，然后 CLI 覆盖）
+    strong_th = args.strong_th if args.strong_th is not None else stage3_cfg.get("strong_th", defaults["strong_th"])
+    weak_th = args.weak_th if args.weak_th is not None else stage3_cfg.get("weak_th", defaults["weak_th"])
+    st_cluster_k = args.st_cluster_k if args.st_cluster_k is not None else stage3_cfg.get("st_cluster_k", defaults["st_cluster_k"])
+    unknown_floor = args.unknown_floor if args.unknown_floor is not None else stage3_cfg.get("unknown_floor", defaults["unknown_floor"])
+    min_cells_rare_type = args.min_cells_rare_type if args.min_cells_rare_type is not None else stage3_cfg.get("min_cells_rare_type", defaults["min_cells_rare_type"])
+    eps = args.eps if args.eps is not None else stage3_cfg.get("eps", defaults["eps"])
+
     # 路径
     stage1_export = project_root / "data" / "processed" / args.sample / "stage1_preprocess" / "exported"
-    stage2_dir = project_root / "data" / "processed" / args.sample / "stage2_svg_plugin"
     out_proc = project_root / "data" / "processed" / args.sample / "stage3_typematch"
     out_res = project_root / "result" / args.sample / "stage3_typematch"
     out_proc.mkdir(parents=True, exist_ok=True)
@@ -137,9 +177,17 @@ def main():
     st_expr = pd.read_csv(stage1_export / "st_expression_normalized.csv", index_col=0)
     sc_meta = pd.read_csv(stage1_export / "sc_metadata.csv")
     st_coords = pd.read_csv(stage1_export / "st_coordinates.csv", index_col=0)
-    plugin_genes = [g.strip() for g in (stage2_dir / "plugin_genes.txt").read_text(encoding="utf-8").splitlines() if g.strip()]
-    gene_weights = pd.read_csv(stage2_dir / "gene_weights.csv")
-    weight_map = dict(zip(gene_weights["gene"], gene_weights["final_weight"]))
+    # 阶段二已移除：改用 Stage1 的高变基因或配置指定的基因列表
+    plugin_genes_path = stage3_cfg.get("plugin_genes_path") or (stage1_export.parent / "hvg_genes.txt")
+    if not Path(plugin_genes_path).exists():
+        raise FileNotFoundError(f"plugin_genes_path 不存在: {plugin_genes_path}")
+    plugin_genes = [g.strip() for g in Path(plugin_genes_path).read_text(encoding="utf-8").splitlines() if g.strip()]
+    gene_weights_path = stage3_cfg.get("gene_weights_path")
+    if gene_weights_path and Path(gene_weights_path).exists():
+        gene_weights = pd.read_csv(gene_weights_path)
+        weight_map = dict(zip(gene_weights.iloc[:, 0], gene_weights.iloc[:, 1]))
+    else:
+        weight_map = {}
     w = np.array([weight_map.get(g, 1.0) for g in plugin_genes], dtype=float)
 
     # 对齐基因
@@ -166,7 +214,7 @@ def main():
     profiles = compute_type_profiles(sc_expr, sc_meta, plugin_genes, type_col=type_col)
 
     # ST 聚类（可选）
-    labels, st_profiles = try_cluster_st(st_expr, plugin_genes, k=args.st_cluster_k)
+    labels, st_profiles = try_cluster_st(st_expr, plugin_genes, k=st_cluster_k)
     st_profiles_np = st_profiles.to_numpy(dtype=float)
 
     # 支持度计算
@@ -175,7 +223,7 @@ def main():
     for t, prof in profiles.items():
         sims = []
         for i in range(st_profiles_np.shape[0]):
-            sims.append(weighted_cosine(prof, st_profiles_np[i], w, eps=args.eps))
+            sims.append(weighted_cosine(prof, st_profiles_np[i], w, eps=eps))
         sims = np.array(sims, dtype=float)
         score = topk_mean(sims, k=3)
         type_support_score[t] = score
@@ -196,11 +244,11 @@ def main():
     for row in support_rows:
         score = row["support_score"]
         n_cells = row["n_cells"]
-        if n_cells < args.min_cells_rare_type and score >= args.strong_th:
+        if n_cells < min_cells_rare_type and score >= strong_th:
             category = "weak"
-        elif score >= args.strong_th:
+        elif score >= strong_th:
             category = "strong"
-        elif score >= args.weak_th:
+        elif score >= weak_th:
             category = "weak"
         else:
             category = "unsupported"
@@ -264,11 +312,11 @@ def main():
     for spot_id, row in st_expr.iterrows():
         sims = []
         for t in plugin_types:
-            sims.append(weighted_cosine(row.to_numpy(dtype=float), np.array(type_profiles[t]), w, eps=args.eps))
+            sims.append(weighted_cosine(row.to_numpy(dtype=float), np.array(type_profiles[t]), w, eps=eps))
         sims = np.array(sims, dtype=float)
         sims_pos = np.maximum(sims, 0.0)
         total = sims_pos.sum()
-        if total <= args.eps:
+        if total <= eps:
             # 极端情况：全部未知
             prior = np.zeros_like(sims_pos)
             prior[-1] = 1.0  # Unknown_sc_only
@@ -276,12 +324,12 @@ def main():
         else:
             prior = sims_pos / total
             # Unknown 保底
-            uf = args.unknown_floor
+            uf = unknown_floor
             if uf < 0 or uf > 1:
                 raise ValueError("unknown_floor must be in [0,1]")
             if prior[-1] < uf:
-                remain = max(args.eps, 1.0 - uf)
-                scale = remain / max(args.eps, prior[:-1].sum())
+                remain = max(eps, 1.0 - uf)
+                scale = remain / max(eps, prior[:-1].sum())
                 prior[:-1] = prior[:-1] * scale
                 prior[-1] = uf
                 prior = prior / prior.sum()  # 归一化到1
@@ -314,17 +362,17 @@ def main():
             "support_category": r["support_category"],
         }
         for r in support_rows
-        if r["n_cells"] < args.min_cells_rare_type
+        if r["n_cells"] < min_cells_rare_type
     ]
 
     summary = {
         "params": {
-            "strong_th": args.strong_th,
-            "weak_th": args.weak_th,
-            "st_cluster_k": args.st_cluster_k,
+            "strong_th": strong_th,
+            "weak_th": weak_th,
+            "st_cluster_k": st_cluster_k,
             "similarity_metric": "weighted_cosine",
-            "unknown_floor": args.unknown_floor,
-            "min_cells_rare_type": args.min_cells_rare_type,
+            "unknown_floor": unknown_floor,
+            "min_cells_rare_type": min_cells_rare_type,
             "support_score_def": "top3_mean_cluster_similarity",
             "resolved_celltype_column": type_col,
         },

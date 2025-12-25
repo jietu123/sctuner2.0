@@ -108,15 +108,68 @@ class ProjectConfig:
         }
 
     def get_mapping_config(self, sample: str, backend: str, config_id: Optional[str] = None) -> Dict[str, Any]:
+        """
+        加载映射配置，支持 config_id overlay。
+        
+        Merge 顺序：
+        1. defaults
+        2. project_config.yaml -> mapping -> {backend}
+        3. configs/datasets/{sample}.yaml -> mapping -> {backend}
+        4. configs/datasets/{config_id}.yaml -> mapping -> {backend} (如果 config_id 指定)
+        5. CLI overrides (在调用处处理)
+        
+        返回的配置中包含 resolved_config_paths 和 resolved_config_sha1s 用于证据链追溯。
+        """
+        import hashlib
+        
         cfg = self._default_mapping_params()
+        resolved_paths = []
+        resolved_sha1s = {}
+        
+        # 1. Project-level config
         proj_map = self.project_cfg.get("mapping", {})
         backend_cfg = proj_map.get(backend, {})
+        if backend_cfg:
+            proj_cfg_path = self.project_root / "configs" / "project_config.yaml"
+            if proj_cfg_path.exists():
+                resolved_paths.append(str(proj_cfg_path))
+                resolved_sha1s[str(proj_cfg_path)] = hashlib.sha1(proj_cfg_path.read_bytes()).hexdigest()
         cfg.update(backend_cfg or {})
-        ds_cfg = self.load_dataset_cfg(sample).get("mapping", {})
-        if backend in ds_cfg:
-            cfg.update(ds_cfg[backend] or {})
+        
+        # 2. Dataset-level base config
+        ds_cfg = self.load_dataset_cfg(sample)
+        ds_base_path = self.dataset_cfg_path(sample)
+        if ds_base_path.exists():
+            resolved_paths.append(str(ds_base_path))
+            resolved_sha1s[str(ds_base_path)] = hashlib.sha1(ds_base_path.read_bytes()).hexdigest()
+        
+        ds_map = ds_cfg.get("mapping", {})
+        if backend in ds_map:
+            cfg.update(ds_map[backend] or {})
+        
+        # 3. Config ID overlay (如果指定)
         if config_id:
-            cfg["config_id"] = config_id
+            overlay_path = self.project_root / "configs" / "datasets" / f"{config_id}.yaml"
+            if not overlay_path.exists():
+                raise FileNotFoundError(
+                    f"Config ID overlay file not found: {overlay_path}\n"
+                    f"如果指定了 --config_id={config_id}，必须存在对应的配置文件。"
+                )
+            
+            resolved_paths.append(str(overlay_path))
+            resolved_sha1s[str(overlay_path)] = hashlib.sha1(overlay_path.read_bytes()).hexdigest()
+            
+            overlay_cfg = yaml.safe_load(overlay_path.read_text(encoding="utf-8")) or {}
+            overlay_map = overlay_cfg.get("mapping", {})
+            if backend in overlay_map:
+                cfg.update(overlay_map[backend] or {})
+        
+        # 记录配置证据链（必须在最后，确保不被后续更新覆盖）
+        cfg["resolved_config_paths"] = resolved_paths
+        cfg["resolved_config_sha1s"] = resolved_sha1s
+        if config_id:
+            cfg["resolved_config_id"] = config_id
+        
         return cfg
 
 

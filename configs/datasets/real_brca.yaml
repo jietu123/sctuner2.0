@@ -1,15 +1,34 @@
-stage2:
-  # 原始 ST 表达矩阵路径，用于 SVG 过滤敏感性统计
-  raw_st_expr: data/raw/real_brca/brca_STdata_GEP.txt
+paths:
+  # 相对 data/raw/real_brca/ 的文件名；保持与原始 BRCA 数据前缀一致
+  sc_expr: brca_scRNA_GEP.txt
+  sc_meta: brca_scRNA_celllabels.txt
+  st_expr: brca_STdata_GEP.txt
+  st_meta: brca_STdata_coordinates.txt
+  svg_marker_whitelist: null
 
-mapping:
-  cytospace:
-    prior_ablation_enabled: true
-    # --- Stage4 / CytoSPACE capacity (解冻 v1) ---
-    cells_per_spot_source: auto
-    default_cells_per_spot: 3.0
-    # median(nCount_RNA)/3 ≈ 11727/3 = 3909 (real_brca Stage1 st_coordinates)
-    umi_to_cell_norm: 3909
-    cells_per_spot_rounding: round
-    cells_per_spot_clip_min: 1
-    cells_per_spot_clip_max: 10
+qc:
+  sc_min_genes: 200
+  sc_max_genes: 6000
+  sc_max_mt: 10
+  st_min_genes: 100
+  st_max_genes: Inf
+  st_max_mt: 20
+  hvg_nfeatures: 2000
+  mt_pattern: "^MT-"
+
+gene_filter:
+  min_cells_sc: 0
+  min_cells_st: 0
+
+stage3:
+  # 类型匹配主控（仅保留阶段三优化）
+  strong_th: 0.7
+  weak_th: 0.4
+  st_cluster_k: 30
+  unknown_floor: 0.3
+  min_cells_rare_type: 20
+  eps: 1.0e-8
+  # 使用 Stage1 导出的高变基因；若需自定义，可替换为其他文件路径
+  plugin_genes_path: data/processed/real_brca/stage1_preprocess/hvg_genes.txt
+  # 可选：基因权重文件（两列：gene,weight），为空则默认全 1
+  gene_weights_path: null

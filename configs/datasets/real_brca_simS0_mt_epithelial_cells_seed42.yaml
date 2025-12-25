@@ -1,0 +1,4 @@
+stage3:
+  abstain_unknown_sc_only: true
+  strong_th: 0.8
+  weak_th: 0.5

@@ -1,0 +1,6 @@
+# SimGen S1 占位配置（暂未实现）
+sample: real_brca
+removed_from_st: null
+removed_from_sc: null
+seed: 42
+

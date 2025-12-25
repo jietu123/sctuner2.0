@@ -1,0 +1,6 @@
+# SimGen S0 配置（可被 CLI 覆盖）
+sample: real_brca
+missing_type: null  # 若为 null，则自动选择 SC 中最常见类型
+cells_per_spot: 5
+seed: 42
+

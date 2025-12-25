@@ -1,7 +1,7 @@
 # SVTuner environment specification
 project: SVTuner
 dataset_config_map:
-  S0_matched: S0_matched_dataset.yaml
+  real_brca: real_brca.yaml
 environment:
   name: cytospace_v1.1.0_py310
   channels:
