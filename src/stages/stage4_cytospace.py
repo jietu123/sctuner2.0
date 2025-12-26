@@ -89,6 +89,12 @@ def load_stage1(root: Path, sample: str) -> tuple[pd.DataFrame, pd.DataFrame, pd
     st_expr = pd.read_csv(base / "st_expression_normalized.csv", index_col=0, sep=None, engine="python")
     st_coords = pd.read_csv(base / "st_coordinates.csv", index_col=0, sep=None, engine="python")
     sc_meta = pd.read_csv(base / "sc_metadata.csv", sep=None, engine="python")
+    if "cell_id" in sc_expr.columns:
+        sc_expr = sc_expr.drop(columns=["cell_id"])
+    if "cell_id" in st_expr.columns:
+        st_expr = st_expr.drop(columns=["cell_id"])
+    sc_expr = sc_expr.apply(pd.to_numeric, errors="coerce").dropna(axis=1, how="all").astype("float32")
+    st_expr = st_expr.apply(pd.to_numeric, errors="coerce").dropna(axis=1, how="all").astype("float32")
     st_expr.index = _clean_spot_index(st_expr.index)
     st_coords.index = _clean_spot_index(st_coords.index)
     return sc_expr, st_expr, st_coords, sc_meta

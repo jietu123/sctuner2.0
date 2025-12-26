@@ -1,4 +1,23 @@
 stage3:
   abstain_unknown_sc_only: true
+  alpha: 0.05
+  apply_mismatch_to_relabel: true
+  enable_mismatch_detection: true
+  fallback_specificity_mode: mean
+  fallback_specificity_types:
+    - Dendritic cells
+  marker_gene_count: 30
+  marker_specificity_mode: max
+  marker_specificity_mode_overrides: "NK cells=mean,PCs=mean"
+  min_marker_genes: 5
+  min_marker_genes_overrides: "T cells CD8=2"
+  min_marker_specificity: 1.4
+  min_marker_specificity_overrides: "T cells CD8=2.0"
+  multiple_test_correction: BH
+  score_method: fisher_z
   strong_th: 0.8
+  support_threshold: 1.8500000000000016
+  use_permutation_test: true
   weak_th: 0.5
+  z_score_aggregation: topk_mean
+  z_topk: 50
