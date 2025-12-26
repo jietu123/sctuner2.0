@@ -2,6 +2,7 @@ stage3:
   abstain_unknown_sc_only: true
   alpha: 0.05
   apply_mismatch_to_relabel: true
+  drop_unknown: true
   enable_mismatch_detection: true
   fallback_specificity_mode: mean
   fallback_specificity_types:
@@ -13,6 +14,7 @@ stage3:
   min_marker_genes_overrides: "T cells CD8=2"
   min_marker_specificity: 1.4
   min_marker_specificity_overrides: "T cells CD8=2.0"
+  mismatch_action: mark_unknown
   multiple_test_correction: BH
   score_method: fisher_z
   strong_th: 0.8
@@ -21,3 +23,6 @@ stage3:
   weak_th: 0.5
   z_score_aggregation: topk_mean
   z_topk: 50
+
+stage4:
+  filter_to_sim_truth: false

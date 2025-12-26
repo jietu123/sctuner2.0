@@ -5,21 +5,24 @@ import time
 import warnings
 from cytospace.common import normalize_data, matrix_correlation_pearson, matrix_correlation_spearman
 from scipy.spatial import distance
+from scipy.optimize import linear_sum_assignment
 
 # OR-Tools changed the graph API in 9.10.x, removing pywrapgraph.
 # Try the old location first, then fall back to the new python bindings.
+_HAVE_ORTOOLS = False
+_USE_NEW_LSA_API = False
+_pywrapgraph = None
 try:
-    from ortools.graph import pywrapgraph as _pywrapgraph
+    from ortools.graph import pywrapgraph as _pywrapgraph  # type: ignore
+    _HAVE_ORTOOLS = True
     _USE_NEW_LSA_API = False
-except ImportError:
+except Exception:
     try:
-        from ortools.graph.python import linear_sum_assignment as _pywrapgraph
+        from ortools.graph.python import linear_sum_assignment as _pywrapgraph  # type: ignore
+        _HAVE_ORTOOLS = True
         _USE_NEW_LSA_API = True
-    except ImportError as e:  # pragma: no cover - hard dependency
-        raise ImportError(
-            "Cannot import OR-Tools linear assignment API. "
-            "Install ortools>=9.8 or add the legacy pywrapgraph bindings."
-        ) from e
+    except Exception:
+        _HAVE_ORTOOLS = False
 
 
 def import_solver(solver_method):
@@ -87,6 +90,13 @@ def match_solution(cost):
     rows = len(cost)
     cols = len(cost[0])
     assignment_mat = np.zeros((rows, 2))
+    if not _HAVE_ORTOOLS:
+        cost_arr = np.array(cost)
+        row_ind, col_ind = linear_sum_assignment(cost_arr)
+        for r, c in zip(row_ind, col_ind):
+            assignment_mat[r, 0] = c
+            assignment_mat[r, 1] = cost_arr[r, c]
+        return assignment_mat
     # New OR-Tools bindings use SimpleLinearSumAssignment with snake_case methods.
     if _USE_NEW_LSA_API:
         assignment = _pywrapgraph.SimpleLinearSumAssignment()

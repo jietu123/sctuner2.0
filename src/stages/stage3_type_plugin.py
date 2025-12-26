@@ -8,7 +8,7 @@ Stage 3: 类型不匹配 / Unknown-aware 插件
 - 输出 stage3_summary.json 记录参数与统计。
 
 输出位置：
-- data/processed/<sample>/stage3_typematch/: type_support.csv, cell_type_relabel.csv, type_prior_matrix.csv
+- data/processed/<sample>/stage3_typematch/: type_support.csv, cell_type_relabel.csv, type_prior_matrix.csv, stage3_adjusted_annotations.csv
 - result/<sample>/stage3_typematch/: stage3_summary.json
 """
 
@@ -69,6 +69,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--z_score_aggregation", type=str, default=None, choices=["max", "topk_mean"], help="V4.2 支持度 z 值聚合方式")
     p.add_argument("--z_topk", type=int, default=None, help="topk_mean 的 k 值")
     p.add_argument("--apply_mismatch_to_relabel", type=bool, default=None, help="是否将 V4.2 显著缺失结果用于重写 plugin_type")
+    # V4.3 新增配置项
+    p.add_argument("--mismatch_action", type=str, default=None, choices=["relabel", "mark_unknown", "ignore"], help="缺失类型处理策略")
+    p.add_argument("--relabel_similarity_threshold", type=float, default=None, help="重标注相似度阈值")
+    p.add_argument("--merge_target_map", type=str, default=None, help="手工指定合并映射（JSON或A=B,B=C）")
+    p.add_argument("--unknown_label_prefix", type=str, default=None, help="unknown类型标签前缀")
+    p.add_argument("--drop_unknown", type=bool, default=None, help="unknown类型是否从映射中剔除")
     return p.parse_args()
 
 
@@ -110,6 +116,55 @@ def compute_type_profiles(sc_expr: pd.DataFrame, sc_meta: pd.DataFrame, plugin_g
         sub = sc_expr.loc[ids, plugin_genes]
         profiles[t] = sub.to_numpy(dtype=float).mean(axis=0)
     return profiles
+
+
+def normalize_type_key(name: str | None) -> str:
+    return " ".join(str(name or "").strip().lower().split())
+
+
+def parse_merge_target_map(raw: object) -> Dict[str, str]:
+    if raw is None:
+        return {}
+    if isinstance(raw, dict):
+        return {str(k).strip(): str(v).strip() for k, v in raw.items() if str(k).strip() and str(v).strip()}
+    if isinstance(raw, str):
+        raw = raw.strip()
+        if not raw:
+            return {}
+        try:
+            data = json.loads(raw)
+            if isinstance(data, dict):
+                return {str(k).strip(): str(v).strip() for k, v in data.items() if str(k).strip() and str(v).strip()}
+        except Exception:
+            pass
+        mapping = {}
+        for part in raw.split(","):
+            part = part.strip()
+            if not part:
+                continue
+            if "=" in part:
+                key, val = part.split("=", 1)
+            elif ":" in part:
+                key, val = part.split(":", 1)
+            else:
+                continue
+            key = key.strip()
+            val = val.strip()
+            if key and val:
+                mapping[key] = val
+        return mapping
+    return {}
+
+
+def safe_pearson(a: np.ndarray, b: np.ndarray, eps: float = 1e-12) -> float:
+    if a.size == 0 or b.size == 0:
+        return 0.0
+    if np.std(a) < eps or np.std(b) < eps:
+        return 0.0
+    r = pearsonr(a, b)[0]
+    if not np.isfinite(r):
+        return 0.0
+    return float(r)
 
 
 def try_cluster_st(st_expr: pd.DataFrame, plugin_genes: List[str], k: int) -> Tuple[np.ndarray, pd.DataFrame]:
@@ -598,6 +653,12 @@ def main():
         "z_score_aggregation": "max",  # z 值聚合方式
         "z_topk": 5,  # topk_mean 的 k 值
         "apply_mismatch_to_relabel": False,  # V4.2: 是否将显著缺失用于重写 plugin_type
+        # V4.3 默认值
+        "mismatch_action": "relabel",
+        "relabel_similarity_threshold": 0.8,
+        "merge_target_map": None,
+        "unknown_label_prefix": "Unknown_",
+        "drop_unknown": True,
     }
     
     # 从配置读取（配置优先，然后 CLI 覆盖）
@@ -628,6 +689,27 @@ def main():
     z_score_aggregation = args.z_score_aggregation if args.z_score_aggregation is not None else stage3_cfg.get("z_score_aggregation", defaults["z_score_aggregation"])
     z_topk = args.z_topk if args.z_topk is not None else stage3_cfg.get("z_topk", defaults["z_topk"])
     apply_mismatch_to_relabel = args.apply_mismatch_to_relabel if args.apply_mismatch_to_relabel is not None else stage3_cfg.get("apply_mismatch_to_relabel", defaults["apply_mismatch_to_relabel"])
+    # V4.3 配置
+    mismatch_action = args.mismatch_action if args.mismatch_action is not None else stage3_cfg.get("mismatch_action", defaults["mismatch_action"])
+    relabel_similarity_threshold = (
+        args.relabel_similarity_threshold
+        if args.relabel_similarity_threshold is not None
+        else stage3_cfg.get("relabel_similarity_threshold", defaults["relabel_similarity_threshold"])
+    )
+    merge_target_map = parse_merge_target_map(
+        args.merge_target_map if args.merge_target_map is not None else stage3_cfg.get("merge_target_map", defaults["merge_target_map"])
+    )
+    unknown_label_prefix = args.unknown_label_prefix if args.unknown_label_prefix is not None else stage3_cfg.get("unknown_label_prefix", defaults["unknown_label_prefix"])
+    drop_unknown = args.drop_unknown if args.drop_unknown is not None else stage3_cfg.get("drop_unknown", defaults["drop_unknown"])
+
+    if mismatch_action not in {"relabel", "mark_unknown", "ignore"}:
+        mismatch_action = defaults["mismatch_action"]
+    if relabel_similarity_threshold is None:
+        relabel_similarity_threshold = defaults["relabel_similarity_threshold"]
+    if unknown_label_prefix is None:
+        unknown_label_prefix = defaults["unknown_label_prefix"]
+    if drop_unknown is None:
+        drop_unknown = defaults["drop_unknown"]
 
     if marker_specificity_mode not in {"mean", "max"}:
         marker_specificity_mode = defaults["marker_specificity_mode"]
@@ -797,6 +879,9 @@ def main():
     use_v42 = use_fisher_z  # V4.2 在 V4.1 基础上扩展
     if args.apply_mismatch_to_relabel is None and "apply_mismatch_to_relabel" not in stage3_cfg:
         apply_mismatch_to_relabel = use_v42
+    if mismatch_action != "ignore" and not use_v42:
+        print("[Stage3] V4.3 mismatch_action requires V4.2 results; fallback to ignore.")
+        mismatch_action = "ignore"
     
     n_spots = len(st_expr.index)  # 用于 p 值计算的多 spot 校正
     
@@ -967,6 +1052,63 @@ def main():
             category = "unsupported"
         row["support_category"] = category
 
+    # V4.3: 根据显著缺失结果进行处理决策
+    missing_types = set()
+    if use_v42:
+        for row in support_rows:
+            if str(row.get("Significant", "")).strip().lower() == "yes":
+                missing_types.add(row["orig_type"])
+
+    action_map = {row["orig_type"]: "Keep" for row in support_rows}
+    merge_sources: dict[str, List[str]] = defaultdict(list)
+    similarity_target_map: dict[str, str] = {}
+
+    if mismatch_action in {"relabel", "mark_unknown"} and missing_types:
+        type_by_norm = {normalize_type_key(t): t for t in profiles.keys()}
+        manual_map = {normalize_type_key(k): v for k, v in merge_target_map.items()}
+        for miss in sorted(missing_types):
+            if mismatch_action == "mark_unknown":
+                action_map[miss] = "Dropped" if drop_unknown else "Unknown"
+                continue
+            target = None
+            manual_target = manual_map.get(normalize_type_key(miss))
+            if manual_target:
+                resolved = type_by_norm.get(normalize_type_key(manual_target))
+                target = resolved or manual_target
+                if target == miss or target in missing_types:
+                    target = None
+            if target is None:
+                best_target = None
+                best_sim = -1.0
+                for cand in profiles.keys():
+                    if cand == miss or cand in missing_types:
+                        continue
+                    sim = safe_pearson(profiles[miss], profiles[cand])
+                    if sim > best_sim:
+                        best_sim = sim
+                        best_target = cand
+                if best_target is not None and best_sim >= relabel_similarity_threshold:
+                    target = best_target
+                    similarity_target_map[miss] = best_target
+            if target is not None:
+                action_map[miss] = f"Relabel->{target}"
+                merge_sources[target].append(miss)
+            else:
+                action_map[miss] = "Dropped" if drop_unknown else "Unknown"
+
+    for target, sources in merge_sources.items():
+        if not sources:
+            continue
+        merged = ",".join(sorted(sources))
+        prev = action_map.get(target, "Keep")
+        if prev.startswith("Merged<-"):
+            prev_sources = prev.replace("Merged<-", "").strip()
+            merged = ",".join(sorted({*prev_sources.split(","), *sources}))
+        action_map[target] = f"Merged<-{merged}"
+
+    for row in support_rows:
+        row["Action"] = action_map.get(row["orig_type"], "Keep")
+
     # 写 type_support
     type_support_path = out_proc / "type_support.csv"
     pd.DataFrame(support_rows).to_csv(type_support_path, index=False)
@@ -986,34 +1128,74 @@ def main():
         orig = r[type_col]
         is_orig_unknown = str(orig).lower() in {"unknown", "unk", "na", "unlabeled"}
         status = support_map.get(orig, "unsupported")
+        action = action_map.get(orig, "Keep")
 
-        # V4.2: mismatch detection applied to relabeling when enabled.
-        if use_fisher_z and apply_mismatch_to_relabel and mismatch_map.get(orig, False):
-            plugin_type = "Unknown_sc_only"
-            label_status = "v4.2_mismatch_detected"
-        elif is_orig_unknown or status == "unsupported":
-            plugin_type = "Unknown_sc_only"
-            label_status = "unknown_merged"
-        elif status == "strong":
-            plugin_type = orig
-            label_status = "kept"
-        elif status == "weak":
-            plugin_type = orig
-            label_status = "downweighted"
+        if mismatch_action in {"relabel", "mark_unknown"} and use_v42:
+            if is_orig_unknown:
+                plugin_type = "Unknown_sc_only"
+                label_status = "unknown_merged"
+            elif action.startswith("Relabel->"):
+                plugin_type = action.split("->", 1)[1].strip()
+                label_status = "v4.3_relabel"
+            elif action in {"Unknown", "Dropped"}:
+                plugin_type = "Unknown_sc_only"
+                label_status = "v4.3_unknown"
+            else:
+                plugin_type = orig
+                label_status = "kept"
         else:
-            plugin_type = "Unknown_sc_only"
-            label_status = "unknown_merged"
+            # V4.2: mismatch detection applied to relabeling when enabled.
+            if use_fisher_z and apply_mismatch_to_relabel and mismatch_map.get(orig, False):
+                plugin_type = "Unknown_sc_only"
+                label_status = "v4.2_mismatch_detected"
+            elif is_orig_unknown or status == "unsupported":
+                plugin_type = "Unknown_sc_only"
+                label_status = "unknown_merged"
+            elif status == "strong":
+                plugin_type = orig
+                label_status = "kept"
+            elif status == "weak":
+                plugin_type = orig
+                label_status = "downweighted"
+            else:
+                plugin_type = "Unknown_sc_only"
+                label_status = "unknown_merged"
         relabel_rows.append(
             {
                 "cell_id": r["cell_id"],
                 "orig_type": orig,
                 "plugin_type": plugin_type,
                 "status": label_status,
+                "action": action,
             }
         )
     relabel_df = pd.DataFrame(relabel_rows)
     relabel_path = out_proc / "cell_type_relabel.csv"
     relabel_df.to_csv(relabel_path, index=False)
+
+    adjusted_rows = []
+    for row in relabel_rows:
+        orig = row["orig_type"]
+        action = action_map.get(orig, "Keep")
+        if action.startswith("Relabel->"):
+            final_type = action.split("->", 1)[1].strip()
+        elif action in {"Unknown", "Dropped"}:
+            final_type = f"{unknown_label_prefix}{orig}"
+        else:
+            final_type = orig
+        if drop_unknown and action in {"Unknown", "Dropped"}:
+            continue
+        adjusted_rows.append(
+            {
+                "cell_id": row["cell_id"],
+                "cell_type_final": final_type,
+                "orig_type": orig,
+                "action": action,
+            }
+        )
+    adjusted_df = pd.DataFrame(adjusted_rows)
+    adjusted_path = out_proc / "stage3_adjusted_annotations.csv"
+    adjusted_df.to_csv(adjusted_path, index=False)
 
     # plugin_type 列顺序（非 Unknown 按字母排序，Unknown_sc_only 最后）
     plugin_types = sorted([t for t in relabel_df["plugin_type"].unique() if t != "Unknown_sc_only"])
@@ -1081,6 +1263,20 @@ def main():
     unknown_cells = (relabel_df["plugin_type"] == "Unknown_sc_only").sum()
     unknown_prior_mass = prior_df["Unknown_sc_only"].mean() if "Unknown_sc_only" in prior_df.columns else 0.0
 
+    def _action_bucket(action: str) -> str:
+        if action.startswith("Relabel->"):
+            return "Relabel"
+        if action.startswith("Merged<-"):
+            return "Merged"
+        if action in {"Unknown", "Dropped"}:
+            return action
+        return "Keep"
+
+    action_by_type = Counter(_action_bucket(v) for v in action_map.values())
+    action_by_cell = Counter()
+    for r in relabel_rows:
+        action_by_cell[_action_bucket(action_map.get(r["orig_type"], "Keep"))] += 1
+
     rare_types = [
         {
             "orig_type": r["orig_type"],
@@ -1128,8 +1324,19 @@ def main():
             "z_score_aggregation": z_score_aggregation if use_v42 else None,
             "z_topk": z_topk if use_v42 else None,
             "apply_mismatch_to_relabel": apply_mismatch_to_relabel if use_fisher_z else None,
+            # V4.3 参数
+            "mismatch_action": mismatch_action if use_v42 else None,
+            "relabel_similarity_threshold": relabel_similarity_threshold if use_v42 else None,
+            "merge_target_map": merge_target_map if use_v42 else None,
+            "unknown_label_prefix": unknown_label_prefix if use_v42 else None,
+            "drop_unknown": drop_unknown if use_v42 else None,
         },
         "support_overview": support_overview,
+        "action_overview": {
+            "by_type_count": dict(action_by_type),
+            "by_cell_count": dict(action_by_cell),
+            "missing_types": sorted(missing_types),
+        },
         "unknown_overview": {
             "cell_fraction": unknown_cells / total_cells if total_cells > 0 else 0.0,
             "prior_mass_fraction": unknown_prior_mass,
@@ -1143,6 +1350,7 @@ def main():
 
     print(f"[Stage3] type_support.csv -> {type_support_path}")
     print(f"[Stage3] cell_type_relabel.csv -> {relabel_path}")
+    print(f"[Stage3] stage3_adjusted_annotations.csv -> {adjusted_path}")
     print(f"[Stage3] type_prior_matrix.csv -> {prior_path}")
     print(f"[Stage3] stage3_summary.json -> {out_res / 'stage3_summary.json'}")
 

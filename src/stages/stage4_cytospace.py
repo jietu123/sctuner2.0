@@ -68,6 +68,11 @@ def parse_args() -> argparse.Namespace:
             "'missing_only' only drops cells whose orig_type matches the specified missing_type"
         ),
     )
+    p.add_argument(
+        "--filter_to_sim_truth",
+        action="store_true",
+        help="filter cell pool to sim_truth_query_cell_spot.csv (simulation-only evaluation alignment)",
+    )
     return p.parse_args()
 
 
@@ -122,6 +127,23 @@ def load_stage3_thresholds(root: Path, sample: str) -> tuple[float | None, float
     return stage3.get("weak_th"), stage3.get("strong_th")
 
 
+def load_stage4_truth_filter(root: Path, sample: str) -> bool | None:
+    cfg_path = root / "configs" / "datasets" / f"{sample}.yaml"
+    if not cfg_path.exists():
+        return None
+    try:
+        import yaml  # type: ignore
+    except Exception:
+        return None
+    with cfg_path.open("r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    stage4 = (data or {}).get("stage4") or {}
+    val = stage4.get("filter_to_sim_truth")
+    if val is None:
+        return None
+    return bool(val)
+
+
 def load_missing_truth(root: Path, sample: str) -> str | None:
     sim_info_path = root / "data" / "processed" / sample / "stage1_preprocess" / "exported" / "sim_info.json"
     if not sim_info_path.exists():
@@ -131,6 +153,28 @@ def load_missing_truth(root: Path, sample: str) -> str | None:
         return data.get("missing_type")
     except Exception:
         return None
+
+
+def load_sim_truth_cell_ids(root: Path, sample: str) -> set[str] | None:
+    sim_info_path = root / "data" / "processed" / sample / "stage1_preprocess" / "exported" / "sim_info.json"
+    if not sim_info_path.exists():
+        return None
+    try:
+        data = json.loads(sim_info_path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    output_dir = data.get("output_dir")
+    seed = data.get("seed")
+    if not output_dir or seed is None:
+        return None
+    truth_path = Path(output_dir) / f"seed_{seed}" / "sim_truth_query_cell_spot.csv"
+    if not truth_path.exists():
+        return None
+    try:
+        truth = pd.read_csv(truth_path, usecols=["cell_id"])
+    except Exception:
+        return None
+    return set(truth["cell_id"].astype(str))
 
 
 def load_cells_per_spot_override(root: Path, sample: str) -> int | None:
@@ -419,6 +463,9 @@ def main():
 
     project_root = Path(args.project_root) if args.project_root else detect_root()
 
+    cfg_truth_filter = load_stage4_truth_filter(project_root, args.sample)
+    filter_to_sim_truth = bool(args.filter_to_sim_truth or cfg_truth_filter)
+
     # 加载别名映射，并对 missing_type 做 canonicalize
     alias_map_path = project_root / "configs" / "type_aliases.yaml"
     alias_map = load_alias_map(alias_map_path)
@@ -481,6 +528,16 @@ def main():
         )
         n_after = len(relabel_filtered)
 
+    truth_filter_removed = 0
+    if filter_to_sim_truth:
+        truth_cell_ids = load_sim_truth_cell_ids(project_root, args.sample)
+        if truth_cell_ids:
+            before_truth = len(relabel_filtered)
+            relabel_filtered = relabel_filtered[relabel_filtered["cell_id"].astype(str).isin(truth_cell_ids)].copy()
+            truth_filter_removed = before_truth - len(relabel_filtered)
+            n_after = len(relabel_filtered)
+            n_filtered = int(n_filtered) + int(truth_filter_removed)
+
     out_root = project_root / "result" / args.sample / "stage4_cytospace"
     prep_dir = out_root / "cytospace_input"
     cyto_out_dir = out_root / "cytospace_output"
@@ -521,6 +578,8 @@ def main():
         args.filter_scope,
         mark_stats,
     )
+    summary["truth_filter_enabled"] = bool(filter_to_sim_truth)
+    summary["truth_filter_removed"] = int(truth_filter_removed)
 
     print("[Stage4 cytospace] summary:")
     print(json.dumps(summary, ensure_ascii=False, indent=2))

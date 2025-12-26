@@ -321,9 +321,9 @@ def eval_cell_spot_accuracy(
         # 确认不包含CD8
         missing_types_in_extra = [mt for mt in missing_types_norm if mt in extra_pred_type_counts.index]
         if missing_types_in_extra:
-            print(f"[self_check_1] ⚠️ WARNING: extra_pred中包含missing_types: {missing_types_in_extra}")
+            print(f"[self_check_1] WARNING: extra_pred中包含missing_types: {missing_types_in_extra}")
         else:
-            print(f"[self_check_1] ✅ OK: extra_pred中不包含missing_types (CD8等)")
+            print(f"[self_check_1] OK: extra_pred中不包含missing_types (CD8等)")
     else:
         print(f"[self_check_1] extra_pred count = 0 (所有pred都在truth中)")
     
@@ -355,7 +355,7 @@ def eval_cell_spot_accuracy(
     # 验证：Acc@1计算只用了truth中存在的cell
     n_non_missing_in_truth = len(non_missing_merged)
     print(f"[self_check_2] Acc@1计算使用的cell数 = {n_non_missing_in_truth} (应该等于n_truth_nonmissing，且只包含truth中存在的cell)")
-    print(f"[self_check_2] ✅ 确认: Acc@1只基于truth_query cells (truth_present=True)，不包含extra_pred")
+    print("[self_check_2] OK: Acc@1只基于truth_query cells (truth_present=True)，不包含extra_pred")
     
     # 清理 spot_id（去除可能的 tab/space artifacts）
     non_missing_merged["true_spot_id_clean"] = non_missing_merged["true_spot_id"].astype(str).str.split(r"\s|\t").str[0]

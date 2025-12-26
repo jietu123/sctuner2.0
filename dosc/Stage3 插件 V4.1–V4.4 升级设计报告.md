@@ -343,6 +343,8 @@ V4.3版本的目标是在准确检测不匹配细胞类型的基础上，**引�
 
 - `Stage3.drop_unknown`：**布尔值**, 当`mismatch_action="mark_unknown"`时，是否彻底丢弃unknown类型的细胞不参与映射（默认`true`）。若为`false`，则unknown类型细胞仍作为一个独立类型传给Stage4（这种情况下unknown实际相当于一个新簇，在空间中比例应为0，CytoSPACE处理时会按零处理，但稳健起见通常选择drop）。
 
+- `Stage4.filter_to_sim_truth`：**布尔值**, 仅用于模拟评估时的对齐开关（默认`false`）。开启后会在Stage4输入侧只保留`sim_truth_query_cell_spot.csv`中出现的cell_id，用于消除评估中的extra_pred偏差。该选项不建议在真实生产流程中默认启用，仅用于评估对齐。
+
 配置示例：
 
 ```
