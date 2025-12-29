@@ -20,9 +20,11 @@ import sys
 from pathlib import Path
 from typing import Literal
 
-import pandas as pd
 import hashlib
+import numpy as np
+import pandas as pd
 import sys as _sys
+import yaml
 
 # 确保项目根目录在 sys.path 中，便于在多种运行方式下都能导入 src.*
 _HERE = Path(__file__).resolve()
@@ -59,6 +61,12 @@ def parse_args() -> argparse.Namespace:
         help="number of processors (reduce to 1 to avoid memory issues)",
     )
     p.add_argument(
+        "--mapping_cells_per_spot",
+        type=int,
+        default=None,
+        help="override cells_per_spot for CytoSPACE mapping (optional)",
+    )
+    p.add_argument(
         "--filter_scope",
         choices=["unsupported_all", "missing_only"],
         default="unsupported_all",
@@ -72,6 +80,73 @@ def parse_args() -> argparse.Namespace:
         "--filter_to_sim_truth",
         action="store_true",
         help="filter cell pool to sim_truth_query_cell_spot.csv (simulation-only evaluation alignment)",
+    )
+    p.add_argument(
+        "--hotspot_rescue_post",
+        action="store_true",
+        help="enable post-mapping hotspot rescue (stage4-level)",
+    )
+    p.add_argument(
+        "--hotspot_rescue_qvalue_min",
+        default=None,
+        help="minimum qvalue for rescue window (use 'final_fdr' to follow Stage3 alpha)",
+    )
+    p.add_argument(
+        "--hotspot_rescue_qvalue_max",
+        type=float,
+        default=None,
+        help="maximum qvalue for rescue window (default 0.1)",
+    )
+    p.add_argument(
+        "--hotspot_rescue_min_genes",
+        type=int,
+        default=None,
+        help="minimum marker genes required to flag hotspot (default 3)",
+    )
+    p.add_argument(
+        "--hotspot_rescue_expr_quantile",
+        type=float,
+        default=None,
+        help="expression quantile for hotspot mask (default 0.9)",
+    )
+    p.add_argument(
+        "--hotspot_rescue_min_cluster_fraction",
+        type=float,
+        default=None,
+        help="minimum hotspot spot fraction to accept rescue (default 0.01)",
+    )
+    p.add_argument(
+        "--hotspot_rescue_dedupe",
+        action="store_true",
+        help="dedupe cell_assignment by cell_id before filling empty slots",
+    )
+    p.add_argument(
+        "--hotspot_rescue_cells_per_spot",
+        type=int,
+        default=None,
+        help="cells_per_spot used when filling rescue empty slots (optional)",
+    )
+    p.add_argument(
+        "--hotspot_rescue_allow_nonsignificant",
+        action="store_true",
+        help="allow Significant=No types to enter rescue candidate window (still filtered by qvalue)",
+    )
+    p.add_argument(
+        "--hotspot_rescue_max_replace_fraction",
+        type=float,
+        default=None,
+        help="max fraction of total assignments to replace during rescue (0-1, optional)",
+    )
+    p.add_argument(
+        "--hotspot_rescue_replace_low_confidence",
+        action="store_true",
+        help="replace lowest marker-support cells within hotspot instead of random picks",
+    )
+    p.add_argument(
+        "--hotspot_rescue_replace_support_max",
+        type=float,
+        default=None,
+        help="only replace spots with marker support <= threshold (optional)",
     )
     return p.parse_args()
 
@@ -144,6 +219,385 @@ def load_stage4_truth_filter(root: Path, sample: str) -> bool | None:
     return bool(val)
 
 
+def load_dataset_cfg(root: Path, sample: str) -> dict:
+    cfg_path = root / "configs" / "datasets" / f"{sample}.yaml"
+    if not cfg_path.exists():
+        return {}
+    with cfg_path.open("r", encoding="utf-8") as f:
+        return yaml.safe_load(f) or {}
+
+
+def parse_overrides(value, cast_type):
+    overrides = {}
+    if isinstance(value, str):
+        for part in value.split(","):
+            part = part.strip()
+            if not part:
+                continue
+            if "=" in part:
+                key, val = part.split("=", 1)
+            elif ":" in part:
+                key, val = part.split(":", 1)
+            else:
+                continue
+            key = key.strip().lower()
+            val = val.strip()
+            try:
+                overrides[key] = cast_type(val)
+            except (TypeError, ValueError):
+                continue
+    elif isinstance(value, dict):
+        for key, val in value.items():
+            key = str(key).strip().lower()
+            try:
+                overrides[key] = cast_type(val)
+            except (TypeError, ValueError):
+                continue
+    return overrides
+
+
+def resolve_final_fdr(stage3_cfg: dict, stage3_summary_path: Path) -> float:
+    alpha = stage3_cfg.get("alpha")
+    if stage3_summary_path.exists():
+        try:
+            summary = json.loads(stage3_summary_path.read_text(encoding="utf-8"))
+            params = summary.get("params", {})
+            alpha = params.get("alpha", alpha)
+        except Exception:
+            pass
+    try:
+        return float(alpha) if alpha is not None else 0.05
+    except (TypeError, ValueError):
+        return 0.05
+
+
+def resolve_qvalue_min(value, final_fdr: float) -> float:
+    if value is None:
+        return final_fdr
+    if isinstance(value, str) and value.strip().lower() == "final_fdr":
+        return final_fdr
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return final_fdr
+
+
+def build_hotspot_mask(
+    st_expr: pd.DataFrame,
+    marker_genes: list[str],
+    expr_quantile: float,
+    min_genes: int,
+) -> tuple[pd.Series, pd.Series]:
+    genes = [g for g in marker_genes if g in st_expr.columns]
+    if len(genes) < min_genes:
+        empty = pd.Series(False, index=st_expr.index)
+        counts = pd.Series(0, index=st_expr.index)
+        return empty, counts
+    expr = st_expr[genes]
+    high_flags = []
+    for g in genes:
+        vals = expr[g].to_numpy(dtype=float)
+        thr = float(np.quantile(vals, expr_quantile))
+        high_flags.append(vals > thr)
+    high_flags = np.stack(high_flags, axis=1)
+    counts = pd.Series(high_flags.sum(axis=1), index=st_expr.index)
+    mask = counts >= min_genes
+    return mask, counts
+
+
+def prepare_post_rescue_assignment(
+    assignment_path: Path,
+    relabel: pd.DataFrame,
+    sc_expr: pd.DataFrame,
+    sc_meta: pd.DataFrame,
+    st_expr: pd.DataFrame,
+    stage1_export: Path,
+    stage3_cfg: dict,
+    q_min: float,
+    q_max: float,
+    expr_quantile: float,
+    min_genes: int,
+    min_cluster_fraction: float,
+    cells_per_spot: int,
+    seed: int,
+    dedupe: bool,
+    allow_nonsignificant: bool,
+    max_replace_fraction: float | None,
+    replace_low_confidence: bool,
+    replace_support_max: float | None,
+) -> tuple[pd.DataFrame, dict]:
+    from src.stages.stage3_type_plugin import select_marker_genes_with_specificity, select_marker_genes
+
+    assignment = pd.read_csv(assignment_path)
+    base_assignment = assignment
+    slot_assignment = assignment
+    stats = {
+        "enabled": True,
+        "deduped": False,
+        "dedup_removed": 0,
+        "allow_nonsignificant": bool(allow_nonsignificant),
+        "candidate_types": [],
+        "rescued_types": [],
+        "rescued_cells_total": 0,
+        "rescued_cells_by_type": {},
+        "replaced_cells_total": 0,
+        "replaced_cells_by_type": {},
+        "hotspot_fraction_by_type": {},
+        "max_replace_fraction": float(max_replace_fraction) if max_replace_fraction is not None else 0.0,
+        "replace_low_confidence": bool(replace_low_confidence),
+        "replace_support_max": float(replace_support_max) if replace_support_max is not None else None,
+        "replace_support_filtered": 0,
+    }
+
+    base_assignment = base_assignment.copy()
+    base_assignment["assigned_spot"] = base_assignment["assigned_spot"].astype(str).str.split(r"\s|\t").str[0]
+
+    if dedupe:
+        before = len(slot_assignment)
+        slot_assignment = slot_assignment.drop_duplicates(subset=["cell_id"], keep="first")
+        stats["deduped"] = True
+        stats["dedup_removed"] = int(before - len(slot_assignment))
+
+    type_support_path = stage1_export.parent.parent / "stage3_typematch" / "type_support.csv"
+    if not type_support_path.exists():
+        return base_assignment, stats
+    type_support = pd.read_csv(type_support_path)
+    if "QValue" not in type_support.columns or "Significant" not in type_support.columns:
+        return base_assignment, stats
+
+    if allow_nonsignificant:
+        sig_mask = pd.Series(True, index=type_support.index)
+    else:
+        sig_mask = type_support["Significant"].astype(str).str.strip().str.lower() == "yes"
+    qvals = pd.to_numeric(type_support["QValue"], errors="coerce")
+    rescue_mask = sig_mask & qvals.ge(q_min) & qvals.le(q_max)
+    missing_types = type_support.loc[rescue_mask, "orig_type"].astype(str).tolist()
+    if not missing_types:
+        return base_assignment, stats
+
+    stats["candidate_types"] = missing_types
+
+    plugin_genes_path = stage3_cfg.get("plugin_genes_path") or (stage1_export.parent / "hvg_genes.txt")
+    if not Path(plugin_genes_path).exists():
+        return base_assignment, stats
+    plugin_genes = [g.strip() for g in Path(plugin_genes_path).read_text(encoding="utf-8").splitlines() if g.strip()]
+    plugin_genes = [g for g in plugin_genes if g in sc_expr.columns]
+    if not plugin_genes:
+        return base_assignment, stats
+
+    if "cell_type" in sc_meta.columns:
+        type_col = "cell_type"
+    elif "celltype" in sc_meta.columns:
+        type_col = "celltype"
+    else:
+        type_col = sc_meta.columns[1]
+
+    marker_gene_count = int(stage3_cfg.get("marker_gene_count", 30) or 30)
+    min_marker_specificity = float(stage3_cfg.get("min_marker_specificity", 0.0) or 0.0)
+    marker_specificity_mode = stage3_cfg.get("marker_specificity_mode", "mean")
+    min_marker_genes = int(stage3_cfg.get("min_marker_genes", 2) or 2)
+    fallback_specificity_mode = stage3_cfg.get("fallback_specificity_mode")
+    fallback_specificity_types = stage3_cfg.get("fallback_specificity_types") or []
+    if isinstance(fallback_specificity_types, str):
+        fallback_specificity_types = [t.strip().lower() for t in fallback_specificity_types.split(",") if t.strip()]
+    else:
+        fallback_specificity_types = [str(t).strip().lower() for t in fallback_specificity_types]
+
+    spec_overrides = parse_overrides(stage3_cfg.get("min_marker_specificity_overrides"), float)
+    min_genes_overrides = parse_overrides(stage3_cfg.get("min_marker_genes_overrides"), int)
+    mode_overrides = parse_overrides(stage3_cfg.get("marker_specificity_mode_overrides"), str)
+
+    rng = np.random.RandomState(seed)
+
+    assignment_spot = slot_assignment["assigned_spot"].astype(str).str.split(r"\s|\t").str[0]
+    slot_assignment = slot_assignment.copy()
+    slot_assignment["assigned_spot"] = assignment_spot
+
+    spot_counts = slot_assignment.groupby("assigned_spot").size()
+    spot_counts = spot_counts.reindex(st_expr.index, fill_value=0)
+    empty_slots = (cells_per_spot - spot_counts).clip(lower=0)
+
+    rescued_rows = []
+    used_cells = set(base_assignment["cell_id"].astype(str))
+    max_replace = 0
+    if max_replace_fraction is not None:
+        try:
+            max_replace = int(len(base_assignment) * float(max_replace_fraction))
+        except (TypeError, ValueError):
+            max_replace = 0
+    max_replace = max(0, max_replace)
+
+    for ct in missing_types:
+        key = str(ct).strip().lower()
+        eff_min_spec = spec_overrides.get(key, min_marker_specificity)
+        eff_min_genes = min_genes_overrides.get(key, min_marker_genes)
+        eff_mode = mode_overrides.get(key, marker_specificity_mode)
+        fallback_mode = (
+            fallback_specificity_mode
+            if (key in fallback_specificity_types or not fallback_specificity_types)
+            else None
+        )
+        if eff_min_spec > 0:
+            marker_genes = select_marker_genes_with_specificity(
+                sc_expr,
+                sc_meta,
+                ct,
+                type_col,
+                plugin_genes,
+                marker_gene_count,
+                eff_min_spec,
+                eff_mode,
+                eff_min_genes,
+                fallback_mode,
+            )
+        else:
+            marker_genes = select_marker_genes(sc_expr, sc_meta, ct, type_col, plugin_genes, marker_gene_count)
+
+        mask, counts = build_hotspot_mask(st_expr, marker_genes, expr_quantile, min_genes)
+        hotspot_fraction = float(mask.mean()) if len(mask) else 0.0
+        stats["hotspot_fraction_by_type"][ct] = hotspot_fraction
+        if hotspot_fraction < min_cluster_fraction:
+            continue
+
+        candidate_spots = mask[mask].index
+        if len(candidate_spots) == 0:
+            continue
+
+        available_cells = (
+            relabel.loc[relabel["orig_type"].astype(str) == str(ct), "cell_id"].astype(str).tolist()
+        )
+        available_cells = [cid for cid in available_cells if cid not in used_cells]
+        if not available_cells:
+            continue
+
+        weights = counts.reindex(candidate_spots).fillna(0).to_numpy(dtype=float)
+        if weights.sum() <= 0:
+            weights = np.ones(len(candidate_spots), dtype=float)
+        weights = weights / weights.sum()
+
+        rescued = 0
+        for cid in available_cells:
+            available_spots = candidate_spots[empty_slots.reindex(candidate_spots).to_numpy() > 0]
+            if len(available_spots) == 0:
+                break
+            avail_weights = weights[: len(available_spots)]
+            avail_weights = avail_weights / avail_weights.sum()
+            spot = rng.choice(available_spots, p=avail_weights)
+            rescued_rows.append({"cell_id": cid, "assigned_spot": spot, "cell_type": ct})
+            used_cells.add(cid)
+            empty_slots.loc[spot] -= 1
+            rescued += 1
+        if rescued > 0:
+            stats["rescued_types"].append(ct)
+            stats["rescued_cells_by_type"][ct] = rescued
+            stats["rescued_cells_total"] += rescued
+
+        # Optional replacement within hotspot spots (keeps total assignments constant)
+        if max_replace > 0:
+            available_cells = [cid for cid in available_cells if cid not in used_cells]
+            if available_cells:
+                candidate_rows = base_assignment.loc[
+                    base_assignment["assigned_spot"].astype(str).isin(candidate_spots)
+                    & (base_assignment["cell_type"].astype(str) != str(ct))
+                ]
+                if replace_low_confidence or replace_support_max is not None:
+                    def spot_support_for_type(cell_type: str) -> pd.Series:
+                        key2 = str(cell_type).strip().lower()
+                        eff_min_spec2 = spec_overrides.get(key2, min_marker_specificity)
+                        eff_min_genes2 = min_genes_overrides.get(key2, min_marker_genes)
+                        eff_mode2 = mode_overrides.get(key2, marker_specificity_mode)
+                        fallback_mode2 = (
+                            fallback_specificity_mode
+                            if (key2 in fallback_specificity_types or not fallback_specificity_types)
+                            else None
+                        )
+                        if eff_min_spec2 > 0:
+                            genes2 = select_marker_genes_with_specificity(
+                                sc_expr,
+                                sc_meta,
+                                cell_type,
+                                type_col,
+                                plugin_genes,
+                                marker_gene_count,
+                                eff_min_spec2,
+                                eff_mode2,
+                                eff_min_genes2,
+                                fallback_mode2,
+                            )
+                        else:
+                            genes2 = select_marker_genes(sc_expr, sc_meta, cell_type, type_col, plugin_genes, marker_gene_count)
+                        available = [g for g in genes2 if g in st_expr.columns]
+                        if len(available) < 2:
+                            return pd.Series(0.0, index=st_expr.index)
+                        type_cells2 = sc_meta[sc_meta[type_col] == cell_type]["cell_id"]
+                        type_cells2 = [cid for cid in type_cells2 if cid in sc_expr.index]
+                        if len(type_cells2) == 0:
+                            return pd.Series(0.0, index=st_expr.index)
+                        type_expr2 = sc_expr.loc[type_cells2, available]
+                        type_profile2 = type_expr2.mean(axis=0)
+                        type_vec = type_profile2.to_numpy(dtype=float)
+                        st_subset = st_expr[available].to_numpy(dtype=float)
+                        type_center = type_vec - type_vec.mean()
+                        st_centered = st_subset - st_subset.mean(axis=1, keepdims=True)
+                        denom = (np.linalg.norm(type_center) * np.linalg.norm(st_centered, axis=1))
+                        denom = np.where(denom <= 1e-10, np.inf, denom)
+                        r_vals = (st_centered @ type_center) / denom
+                        r_vals = np.clip(r_vals, -1.0 + 1e-10, 1.0 - 1e-10)
+                        z_vals = np.arctanh(r_vals)
+                        return pd.Series(z_vals, index=st_expr.index)
+
+                    support_cache: dict[str, pd.Series] = {}
+                    scores = []
+                    for _, row in candidate_rows.iterrows():
+                        ctype = str(row["cell_type"])
+                        if ctype not in support_cache:
+                            support_cache[ctype] = spot_support_for_type(ctype)
+                        spot_id = str(row["assigned_spot"])
+                        scores.append(float(support_cache[ctype].get(spot_id, 0.0)))
+                    candidate_rows = candidate_rows.copy()
+                    candidate_rows["support_score"] = scores
+                    if replace_support_max is not None:
+                        before_filter = len(candidate_rows)
+                        candidate_rows = candidate_rows[candidate_rows["support_score"] <= float(replace_support_max)]
+                        stats["replace_support_filtered"] += int(before_filter - len(candidate_rows))
+                    if replace_low_confidence:
+                        candidate_rows = candidate_rows.sort_values("support_score", ascending=True)
+
+                replace_cap = min(max_replace, len(available_cells), len(candidate_rows))
+                if replace_cap > 0:
+                    if replace_low_confidence:
+                        pick_idx = candidate_rows.index[:replace_cap]
+                    else:
+                        pick_idx = rng.choice(candidate_rows.index.to_numpy(), size=replace_cap, replace=False)
+                    replace_cells = available_cells[:replace_cap]
+                    base_assignment.loc[pick_idx, "cell_id"] = replace_cells
+                    base_assignment.loc[pick_idx, "cell_type"] = ct
+                    used_cells.update(replace_cells)
+                    max_replace -= replace_cap
+                    stats["replaced_cells_total"] += replace_cap
+                    stats["replaced_cells_by_type"][ct] = stats["replaced_cells_by_type"].get(ct, 0) + replace_cap
+
+    if rescued_rows:
+        rescue_df = pd.DataFrame(rescued_rows)
+        base_assignment = pd.concat([base_assignment, rescue_df], ignore_index=True)
+
+    return base_assignment, stats
+
+
+def build_by_spot_counts_from_assignment(assignment: pd.DataFrame, st_index: pd.Index) -> pd.DataFrame:
+    df = assignment.copy()
+    df["assigned_spot"] = df["assigned_spot"].astype(str).str.split(r"\s|\t").str[0]
+    counts = (
+        df.groupby(["assigned_spot", "cell_type"]).size().unstack(fill_value=0)
+        if not df.empty
+        else pd.DataFrame(index=[], columns=[])
+    )
+    counts = counts.reindex(st_index, fill_value=0)
+    counts.index.name = "SpotID"
+    counts["Total cells"] = counts.sum(axis=1)
+    return counts
+
+
 def load_missing_truth(root: Path, sample: str) -> str | None:
     sim_info_path = root / "data" / "processed" / sample / "stage1_preprocess" / "exported" / "sim_info.json"
     if not sim_info_path.exists():
@@ -167,8 +621,17 @@ def load_sim_truth_cell_ids(root: Path, sample: str) -> set[str] | None:
     seed = data.get("seed")
     if not output_dir or seed is None:
         return None
-    truth_path = Path(output_dir) / f"seed_{seed}" / "sim_truth_query_cell_spot.csv"
-    if not truth_path.exists():
+    out_dir = Path(output_dir)
+    candidates = [
+        out_dir / f"seed_{seed}" / "sim_truth_query_cell_spot.csv",
+        out_dir / "sim_truth_query_cell_spot.csv",
+    ]
+    truth_path = None
+    for cand in candidates:
+        if cand.exists():
+            truth_path = cand
+            break
+    if truth_path is None:
         return None
     try:
         truth = pd.read_csv(truth_path, usecols=["cell_id"])
@@ -463,8 +926,63 @@ def main():
 
     project_root = Path(args.project_root) if args.project_root else detect_root()
 
+    dataset_cfg = load_dataset_cfg(project_root, args.sample)
+    stage3_cfg = (dataset_cfg.get("stage3") or {}) if isinstance(dataset_cfg, dict) else {}
+    stage4_cfg = (dataset_cfg.get("stage4") or {}) if isinstance(dataset_cfg, dict) else {}
+
     cfg_truth_filter = load_stage4_truth_filter(project_root, args.sample)
     filter_to_sim_truth = bool(args.filter_to_sim_truth or cfg_truth_filter)
+
+    hotspot_rescue_post = bool(args.hotspot_rescue_post or stage4_cfg.get("hotspot_rescue_post", False))
+    qvalue_max = (
+        args.hotspot_rescue_qvalue_max
+        if args.hotspot_rescue_qvalue_max is not None
+        else float(stage4_cfg.get("hotspot_rescue_qvalue_max", 0.1))
+    )
+    qvalue_min_cfg = (
+        args.hotspot_rescue_qvalue_min
+        if args.hotspot_rescue_qvalue_min is not None
+        else stage4_cfg.get("hotspot_rescue_qvalue_min", "final_fdr")
+    )
+    stage3_summary_path = project_root / "result" / args.sample / "stage3_typematch" / "stage3_summary.json"
+    final_fdr = resolve_final_fdr(stage3_cfg, stage3_summary_path)
+    qvalue_min = resolve_qvalue_min(qvalue_min_cfg, final_fdr)
+    rescue_min_genes = (
+        args.hotspot_rescue_min_genes
+        if args.hotspot_rescue_min_genes is not None
+        else int(stage4_cfg.get("hotspot_min_genes", 3))
+    )
+    rescue_expr_quantile = (
+        args.hotspot_rescue_expr_quantile
+        if args.hotspot_rescue_expr_quantile is not None
+        else float(stage4_cfg.get("hotspot_expr_quantile", 0.9))
+    )
+    rescue_min_cluster_fraction = (
+        args.hotspot_rescue_min_cluster_fraction
+        if args.hotspot_rescue_min_cluster_fraction is not None
+        else float(stage4_cfg.get("hotspot_min_cluster_fraction", 0.01))
+    )
+    rescue_dedupe = bool(args.hotspot_rescue_dedupe or stage4_cfg.get("hotspot_rescue_dedupe", False))
+    allow_nonsignificant = bool(
+        args.hotspot_rescue_allow_nonsignificant
+        or stage4_cfg.get("hotspot_rescue_allow_nonsignificant", False)
+    )
+    max_replace_fraction = (
+        args.hotspot_rescue_max_replace_fraction
+        if args.hotspot_rescue_max_replace_fraction is not None
+        else stage4_cfg.get("hotspot_rescue_max_replace_fraction")
+    )
+    replace_low_confidence = bool(
+        args.hotspot_rescue_replace_low_confidence
+        or stage4_cfg.get("hotspot_rescue_replace_low_confidence", False)
+    )
+    replace_support_max = (
+        args.hotspot_rescue_replace_support_max
+        if args.hotspot_rescue_replace_support_max is not None
+        else stage4_cfg.get("hotspot_rescue_replace_support_max")
+    )
+    if replace_support_max is not None:
+        replace_support_max = float(replace_support_max)
 
     # 加载别名映射，并对 missing_type 做 canonicalize
     alias_map_path = project_root / "configs" / "type_aliases.yaml"
@@ -543,6 +1061,9 @@ def main():
     cyto_out_dir = out_root / "cytospace_output"
 
     cps_override = load_cells_per_spot_override(project_root, args.sample)
+    mapping_cps = args.mapping_cells_per_spot if args.mapping_cells_per_spot is not None else cps_override
+    if mapping_cps is None:
+        mapping_cps = args.mean_cell_numbers
     inputs = prepare_cytospace_inputs(
         sc_expr,
         st_expr,
@@ -550,7 +1071,7 @@ def main():
         sc_meta,
         relabel_filtered,
         prep_dir,
-        cells_per_spot_override=cps_override,
+        cells_per_spot_override=mapping_cps,
         cell_type_column=args.cell_type_column,
     )
     run_cytospace(inputs, cyto_out_dir, project_root, args)
@@ -578,8 +1099,63 @@ def main():
         args.filter_scope,
         mark_stats,
     )
+    summary["mapping_cells_per_spot"] = int(mapping_cps) if mapping_cps is not None else None
     summary["truth_filter_enabled"] = bool(filter_to_sim_truth)
     summary["truth_filter_removed"] = int(truth_filter_removed)
+
+    if hotspot_rescue_post and args.filter_mode != "none":
+        stage1_export = project_root / "data" / "processed" / args.sample / "stage1_preprocess" / "exported"
+        rescue_cells_per_spot = (
+            args.hotspot_rescue_cells_per_spot
+            if args.hotspot_rescue_cells_per_spot is not None
+            else cps_override
+        )
+        if rescue_cells_per_spot is None:
+            rescue_cells_per_spot = mapping_cps or args.mean_cell_numbers
+        cells_per_spot = rescue_cells_per_spot
+        assignment_post, rescue_stats = prepare_post_rescue_assignment(
+            cyto_out_dir / "cell_assignment.csv",
+            relabel,
+            sc_expr,
+            sc_meta,
+            st_expr,
+            stage1_export,
+            stage3_cfg,
+            qvalue_min,
+            qvalue_max,
+            rescue_expr_quantile,
+            rescue_min_genes,
+            rescue_min_cluster_fraction,
+            int(cells_per_spot),
+            args.seed,
+            rescue_dedupe,
+            allow_nonsignificant,
+            max_replace_fraction,
+            replace_low_confidence,
+            replace_support_max,
+        )
+        post_assign_path = cyto_out_dir / "cell_assignment_post_rescue.csv"
+        assignment_post.to_csv(post_assign_path, index=False)
+        post_by_spot_path = cyto_out_dir / "cell_type_assignments_by_spot_post_rescue.csv"
+        post_by_spot = build_by_spot_counts_from_assignment(assignment_post, st_expr.index)
+        post_by_spot.to_csv(post_by_spot_path)
+
+        rescue_stats["qvalue_window"] = [qvalue_min, qvalue_max]
+        rescue_stats["expr_quantile"] = rescue_expr_quantile
+        rescue_stats["min_genes"] = int(rescue_min_genes)
+        rescue_stats["min_cluster_fraction"] = float(rescue_min_cluster_fraction)
+        rescue_stats["cells_per_spot"] = int(cells_per_spot)
+        rescue_stats["mapping_cells_per_spot"] = int(mapping_cps) if mapping_cps is not None else None
+        rescue_stats["replace_support_max"] = replace_support_max
+
+        summary["hotspot_rescue_post"] = rescue_stats
+        summary["post_rescue_assignment_path"] = str(post_assign_path)
+        summary["post_rescue_by_spot_path"] = str(post_by_spot_path)
+
+    (cyto_out_dir / "stage4_summary.json").write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
 
     print("[Stage4 cytospace] summary:")
     print(json.dumps(summary, ensure_ascii=False, indent=2))

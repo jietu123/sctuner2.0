@@ -57,6 +57,53 @@ def sha1_file(p: Path) -> str:
     return h.hexdigest()
 
 
+def resolve_optional_path(value: str | None, base_dir: Path) -> Path | None:
+    if not value:
+        return None
+    p = Path(value)
+    return p if p.is_absolute() else base_dir / p
+
+
+def resolve_eval_paths(
+    stage4_dir: Path,
+    s4_summary: dict,
+    args: argparse.Namespace,
+) -> tuple[Path, Path, str]:
+    assign_p = stage4_dir / "cell_assignment.csv"
+    by_spot_p = stage4_dir / "cell_type_assignments_by_spot.csv"
+    source = "default"
+
+    assign_override = resolve_optional_path(args.assignment_csv, stage4_dir)
+    by_spot_override = resolve_optional_path(args.by_spot_csv, stage4_dir)
+
+    if assign_override is not None:
+        assign_p = assign_override
+        source = "override"
+    elif args.use_post_rescue:
+        source = "post_rescue"
+        summary_path = s4_summary.get("post_rescue_assignment_path")
+        if summary_path:
+            assign_p = Path(summary_path)
+            if not assign_p.is_absolute():
+                assign_p = stage4_dir / assign_p
+        else:
+            assign_p = stage4_dir / "cell_assignment_post_rescue.csv"
+
+    post_hint = assign_override is not None and "post_rescue" in assign_override.name
+    if by_spot_override is not None:
+        by_spot_p = by_spot_override
+    elif args.use_post_rescue or post_hint:
+        summary_path = s4_summary.get("post_rescue_by_spot_path")
+        if summary_path:
+            by_spot_p = Path(summary_path)
+            if not by_spot_p.is_absolute():
+                by_spot_p = stage4_dir / by_spot_p
+        else:
+            by_spot_p = stage4_dir / "cell_type_assignments_by_spot_post_rescue.csv"
+
+    return assign_p, by_spot_p, source
+
+
 def normalize_rows(mat: np.ndarray) -> np.ndarray:
     row_sum = mat.sum(axis=1, keepdims=True)
     row_sum[row_sum == 0] = 1.0
@@ -663,8 +710,6 @@ def run_eval(args: argparse.Namespace):
     out_dir.mkdir(parents=True, exist_ok=True)
 
     summary_p = stage4_dir / "stage4_summary.json"
-    assign_p = stage4_dir / "cell_assignment.csv"
-    by_spot_p = stage4_dir / "cell_type_assignments_by_spot.csv"
 
     sim_info_p = sim_dir / "sim_info.json"
     truth_spot_p = sim_dir / "sim_truth_spot_type_fraction.csv"
@@ -672,6 +717,12 @@ def run_eval(args: argparse.Namespace):
 
     with summary_p.open("r", encoding="utf-8") as f:
         s4 = json.load(f)
+
+    assign_p, by_spot_p, assignment_source = resolve_eval_paths(stage4_dir, s4, args)
+    if not assign_p.exists():
+        raise FileNotFoundError(f"assignment_csv not found: {assign_p}")
+    if not by_spot_p.exists():
+        raise FileNotFoundError(f"by_spot_csv not found: {by_spot_p}")
 
     with sim_info_p.open("r", encoding="utf-8") as f:
         sim_info = json.load(f)
@@ -684,7 +735,7 @@ def run_eval(args: argparse.Namespace):
     by_spot = load_by_spot_counts(by_spot_p)
     leak_by_spot = int(by_spot[missing_type].sum()) if missing_type in by_spot.columns else 0
 
-    assignment_rows = int(s4.get("assignment_rows", len(ca)))
+    assignment_rows = int(len(ca))
     leak_rate = (leak_by_spot / assignment_rows) if assignment_rows else 0.0
 
     truth = load_by_spot_counts(truth_spot_p)
@@ -758,6 +809,11 @@ def run_eval(args: argparse.Namespace):
             "n_cells_after_prefilter": s4.get("n_cells_after_prefilter"),
             "n_filtered": s4.get("n_filtered"),
         },
+        "assignment": {
+            "source": assignment_source,
+            "cell_assignment_path": str(assign_p),
+            "by_spot_path": str(by_spot_p),
+        },
         "filter_audit": filter_audit,
         "scale": {
             "spots": int(n_spots),
@@ -777,8 +833,8 @@ def run_eval(args: argparse.Namespace):
         "cell_spot_eval": cell_spot_eval,
         "sha1": {
             "stage4_summary": sha1_file(summary_p),
-            "cell_assignment": sha1_file(assign_p),
-            "by_spot": sha1_file(by_spot_p),
+            "cell_assignment": sha1_file(assign_p) if assign_p.exists() else None,
+            "by_spot": sha1_file(by_spot_p) if by_spot_p.exists() else None,
             "sim_info": sha1_file(sim_info_p),
             "truth_spot_type_fraction": sha1_file(truth_spot_p),
             "truth_query_cell_spot": sha1_file(truth_query_p) if truth_query_p.exists() else None,
@@ -825,6 +881,13 @@ def parse_args():
     ap.add_argument("--stage4_dir", help="stage4 output dir for this run", required=False)
     ap.add_argument("--sim_dir", help="sim truth dir (data/sim/<sample_base>/S0)", required=False)
     ap.add_argument("--out_dir", help="output dir for stage5 jsons", required=False)
+    ap.add_argument("--assignment_csv", help="override assignment csv (absolute or relative to stage4_dir)", required=False)
+    ap.add_argument("--by_spot_csv", help="override by-spot csv (absolute or relative to stage4_dir)", required=False)
+    ap.add_argument(
+        "--use_post_rescue",
+        action="store_true",
+        help="use post-rescue outputs if available (cell_assignment_post_rescue.csv)",
+    )
     ap.add_argument("--seeds", nargs="+", type=int, help="run multiple seeds (will append seed to sample name)", required=False)
     ap.add_argument("--stage4_dir_template", help="template with {seed} for stage4_dir when batch", required=False)
     ap.add_argument("--out_dir_template", help="template with {seed} for out_dir when batch", required=False)

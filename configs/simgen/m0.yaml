@@ -1,0 +1,17 @@
+# SimGen M0 config (weak missing + spatial bias)
+sample: real_brca
+missing_type: T cells CD8
+cells_per_spot: 5
+seed: 42
+
+# Overall fraction of missing_type kept in ST
+keep_fraction: 0.05
+
+# Spatial bias: pick a clustered hotspot region of spots
+hotspot_fraction: 0.2
+
+# CD8 fraction inside hotspot spots (base fraction computed to match keep_fraction)
+hotspot_cd8_fraction: 0.2
+
+# Optional scenario tag (used in output folder)
+scenario_tag: cd8_weak_hotspot
