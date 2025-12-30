@@ -23,6 +23,7 @@ import hashlib
 import sys
 from pathlib import Path
 from typing import Tuple, List
+import re
 
 import numpy as np
 import pandas as pd
@@ -31,6 +32,19 @@ try:
     import yaml
 except ImportError:
     yaml = None
+try:
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.svm import SVC
+    from sklearn.model_selection import StratifiedKFold
+    from sklearn.metrics import roc_auc_score, accuracy_score
+except ImportError:
+    make_pipeline = None
+    StandardScaler = None
+    SVC = None
+    StratifiedKFold = None
+    roc_auc_score = None
+    accuracy_score = None
 
 # 添加项目根目录到路径，以便导入 src.utils
 def detect_root() -> Path:
@@ -102,6 +116,693 @@ def resolve_eval_paths(
             by_spot_p = stage4_dir / "cell_type_assignments_by_spot_post_rescue.csv"
 
     return assign_p, by_spot_p, source
+
+
+def resolve_confidence_inputs(
+    args: argparse.Namespace,
+    stage4_dir: Path,
+    sim_dir: Path,
+    project_root: Path,
+) -> dict:
+    stage1_export = project_root / "data" / "processed" / args.sample / "stage1_preprocess" / "exported"
+
+    def resolve_override(value: str | None) -> Path | None:
+        if not value:
+            return None
+        p = Path(value)
+        return p if p.is_absolute() else project_root / p
+
+    def pick_path(candidates: list[Path | None]) -> tuple[Path | None, str | None]:
+        for p in candidates:
+            if p is not None and p.exists():
+                return p, "override" if p in overrides else sources.get(p, None)
+        return None, None
+
+    overrides = set()
+    sources = {}
+
+    assigned_override = resolve_override(args.confidence_assigned_locations)
+    if assigned_override is not None:
+        overrides.add(assigned_override)
+    assigned_candidate = assigned_override or (stage4_dir / "assigned_locations.csv")
+    assigned_p = assigned_candidate if assigned_candidate.exists() else None
+    assigned_source = "override" if assigned_override is not None else ("stage4_dir" if assigned_p else None)
+
+    sc_expr_override = resolve_override(args.confidence_sc_expr)
+    st_expr_override = resolve_override(args.confidence_st_expr)
+    sc_meta_override = resolve_override(args.confidence_sc_meta)
+    if sc_expr_override is not None:
+        overrides.add(sc_expr_override)
+    if st_expr_override is not None:
+        overrides.add(st_expr_override)
+    if sc_meta_override is not None:
+        overrides.add(sc_meta_override)
+
+    sim_sc_expr = sim_dir / "sc_expression.csv"
+    sim_st_expr = sim_dir / "st_expression.csv"
+    sim_sc_meta = sim_dir / "sc_metadata.csv"
+
+    stage1_sc_expr = stage1_export / "sc_expression_normalized.csv"
+    stage1_st_expr = stage1_export / "st_expression_normalized.csv"
+    stage1_sc_meta = stage1_export / "sc_metadata.csv"
+
+    sources.update({
+        sim_sc_expr: "sim_dir",
+        sim_st_expr: "sim_dir",
+        sim_sc_meta: "sim_dir",
+        stage1_sc_expr: "stage1_export",
+        stage1_st_expr: "stage1_export",
+        stage1_sc_meta: "stage1_export",
+    })
+
+    sc_expr_p, sc_expr_source = pick_path([sc_expr_override, sim_sc_expr, stage1_sc_expr])
+    st_expr_p, st_expr_source = pick_path([st_expr_override, sim_st_expr, stage1_st_expr])
+    sc_meta_p, sc_meta_source = pick_path([sc_meta_override, sim_sc_meta, stage1_sc_meta])
+
+    ready = all([assigned_p, sc_expr_p, st_expr_p, sc_meta_p])
+
+    return {
+        "assigned_locations": str(assigned_p) if assigned_p else None,
+        "sc_expression": str(sc_expr_p) if sc_expr_p else None,
+        "st_expression": str(st_expr_p) if st_expr_p else None,
+        "sc_metadata": str(sc_meta_p) if sc_meta_p else None,
+        "sources": {
+            "assigned_locations": assigned_source,
+            "sc_expression": sc_expr_source,
+            "st_expression": st_expr_source,
+            "sc_metadata": sc_meta_source,
+        },
+        "ready": bool(ready),
+    }
+
+
+def clean_spot_id(value: str) -> str:
+    return str(value).split()[0].split("\t")[0]
+
+
+def load_expression_matrix(path: Path, clean_cols: bool = False) -> pd.DataFrame:
+    df = pd.read_csv(path, low_memory=False)
+    if "Gene" not in df.columns:
+        raise ValueError(f"Missing Gene column in expression matrix: {path}")
+    expr = df.drop(columns=["Gene"])
+    expr = expr.apply(pd.to_numeric, errors="coerce").fillna(0.0).astype(np.float32)
+    expr.index = df["Gene"].astype(str)
+    if clean_cols:
+        expr.columns = pd.Index(expr.columns).astype(str).map(clean_spot_id)
+    else:
+        expr.columns = expr.columns.astype(str)
+    return expr
+
+
+def load_truth_spot_presence(path: Path) -> pd.DataFrame:
+    truth = pd.read_csv(path, sep=None, engine="python")
+    if "spot_id" not in truth.columns:
+        first_col = truth.columns[0]
+        truth = truth.rename(columns={first_col: "spot_id"})
+    truth["spot_id"] = truth["spot_id"].astype(str).map(clean_spot_id)
+    truth = truth.set_index("spot_id")
+    return truth
+
+
+def load_truth_query(path: Path) -> pd.DataFrame:
+    truth = pd.read_csv(path)
+    required = {"query_id", "cell_id", "true_spot_id", "cell_type"}
+    missing = required - set(truth.columns)
+    if missing:
+        raise ValueError(f"truth_query_cell_spot.csv missing columns: {sorted(missing)}")
+    truth = truth.drop_duplicates(subset=["cell_id"], keep="first").copy()
+    truth["cell_id"] = truth["cell_id"].astype(str)
+    truth["true_spot_id"] = truth["true_spot_id"].astype(str).map(clean_spot_id)
+    return truth
+
+
+def compute_marker_scores(
+    sc_expr: pd.DataFrame,
+    pos_cells: list[str],
+    neg_cells: list[str],
+    strategy: str,
+) -> pd.Series:
+    if not pos_cells or not neg_cells:
+        return pd.Series(dtype=float)
+    if strategy == "t_stat":
+        pos_log = np.log1p(sc_expr[pos_cells])
+        neg_log = np.log1p(sc_expr[neg_cells])
+        pos_mean = pos_log.mean(axis=1)
+        neg_mean = neg_log.mean(axis=1)
+        pos_var = pos_log.var(axis=1, ddof=1)
+        neg_var = neg_log.var(axis=1, ddof=1)
+        denom = np.sqrt(pos_var / max(len(pos_cells), 1) + neg_var / max(len(neg_cells), 1))
+        denom = denom.replace(0.0, np.nan)
+        score = (pos_mean - neg_mean) / denom
+        return score.fillna(0.0)
+    pos_mean = sc_expr[pos_cells].mean(axis=1)
+    neg_mean = sc_expr[neg_cells].mean(axis=1)
+    return np.log1p(pos_mean) - np.log1p(neg_mean)
+
+
+def select_marker_genes(
+    sc_expr: pd.DataFrame,
+    pos_cells: list[str],
+    neg_cells: list[str],
+    st_genes: set[str],
+    n_markers: int,
+    min_markers: int,
+    strategy: str,
+) -> tuple[list[str], pd.Series]:
+    score = compute_marker_scores(sc_expr, pos_cells, neg_cells, strategy)
+    if score.empty:
+        return [], score
+    score = score.loc[score.index.intersection(st_genes)]
+    score = score.sort_values(ascending=False, kind="mergesort")
+    markers = score.head(n_markers).index.tolist()
+    return (markers if len(markers) >= min_markers else []), score
+
+
+def build_pseudobulk(
+    sc_expr: pd.DataFrame,
+    markers: list[str],
+    spot_cells: dict[str, list[str]],
+    spots: list[str],
+) -> np.ndarray:
+    rows = []
+    for spot in spots:
+        cell_ids = spot_cells.get(spot, [])
+        if not cell_ids:
+            continue
+        mat = sc_expr.loc[markers, cell_ids]
+        rows.append(mat.mean(axis=1).to_numpy(dtype=float))
+    return np.vstack(rows) if rows else np.empty((0, len(markers)))
+
+
+def compute_spot_support(
+    st_expr: pd.DataFrame,
+    markers: list[str],
+    weights: pd.Series,
+) -> pd.Series:
+    mat = np.log1p(st_expr.loc[markers].to_numpy(dtype=float)).T
+    score = mat.dot(weights.to_numpy(dtype=float))
+    if np.allclose(score.max(), score.min()):
+        return pd.Series(0.5, index=st_expr.columns)
+    score = (score - score.min()) / (score.max() - score.min())
+    return pd.Series(score, index=st_expr.columns)
+
+
+def auc_score(y_true: np.ndarray, y_score: np.ndarray) -> float | None:
+    y_true = np.asarray(y_true)
+    y_score = np.asarray(y_score)
+    pos = y_true == 1
+    neg = y_true == 0
+    n_pos = int(pos.sum())
+    n_neg = int(neg.sum())
+    if n_pos == 0 or n_neg == 0:
+        return None
+    ranks = pd.Series(y_score).rank(method="average").to_numpy()
+    sum_pos = float(ranks[pos].sum())
+    return (sum_pos - n_pos * (n_pos + 1) / 2.0) / (n_pos * n_neg)
+
+
+def stratified_folds(labels: np.ndarray, n_splits: int, rng: np.random.Generator):
+    pos_idx = np.where(labels == 1)[0]
+    neg_idx = np.where(labels == 0)[0]
+    rng.shuffle(pos_idx)
+    rng.shuffle(neg_idx)
+    folds = [[] for _ in range(n_splits)]
+    for i, idx in enumerate(pos_idx):
+        folds[i % n_splits].append(idx)
+    for i, idx in enumerate(neg_idx):
+        folds[i % n_splits].append(idx)
+    for fold in folds:
+        test_idx = np.array(fold, dtype=int)
+        mask = np.zeros(len(labels), dtype=bool)
+        mask[test_idx] = True
+        train_idx = np.where(~mask)[0]
+        yield train_idx, test_idx
+
+
+def compute_cv_metrics(
+    train: np.ndarray,
+    labels: np.ndarray,
+    method: str,
+    rng: np.random.Generator,
+    n_folds: int,
+    svm_c: float | None = None,
+) -> dict | None:
+    labels = np.asarray(labels)
+    n_pos = int((labels == 1).sum())
+    n_neg = int((labels == 0).sum())
+    max_folds = min(n_folds, n_pos, n_neg)
+    if max_folds < 2:
+        return None
+    auc_list = []
+    acc_list = []
+    if StratifiedKFold is not None:
+        splitter = StratifiedKFold(n_splits=max_folds, shuffle=True, random_state=int(rng.integers(0, 1_000_000)))
+        splits = splitter.split(train, labels)
+    else:
+        splits = stratified_folds(labels, max_folds, rng)
+    for train_idx, test_idx in splits:
+        x_train = train[train_idx]
+        y_train = labels[train_idx]
+        x_test = train[test_idx]
+        y_test = labels[test_idx]
+        if method == "svm" and SVC is not None:
+            c_value = svm_c if svm_c is not None else 1.0
+            model = make_pipeline(StandardScaler(), SVC(kernel="linear", C=c_value, probability=True, random_state=1))
+            model.fit(x_train, y_train)
+            scores = model.predict_proba(x_test)[:, 1]
+        else:
+            pos_mean = np.log1p(x_train[y_train == 1].mean(axis=0))
+            neg_mean = np.log1p(x_train[y_train == 0].mean(axis=0))
+            weights = pos_mean - neg_mean
+            scores = np.log1p(x_test).dot(weights)
+            if np.allclose(scores.max(), scores.min()):
+                scores = np.full_like(scores, 0.5, dtype=float)
+            else:
+                scores = (scores - scores.min()) / (scores.max() - scores.min())
+        if roc_auc_score is not None:
+            auc = float(roc_auc_score(y_test, scores))
+        else:
+            auc = auc_score(y_test, scores)
+        acc = float(accuracy_score(y_test, scores >= 0.5)) if accuracy_score is not None else float((scores >= 0.5).mean())
+        if auc is not None:
+            auc_list.append(auc)
+        acc_list.append(acc)
+    return {
+        "folds": int(max_folds),
+        "auc_mean": float(np.mean(auc_list)) if auc_list else None,
+        "acc_mean": float(np.mean(acc_list)) if acc_list else None,
+    }
+
+
+def parse_float_list(value: str | None, default: list[float]) -> list[float]:
+    if not value:
+        return default
+    parts = [p for p in re.split(r"[,\s]+", value.strip()) if p]
+    values = []
+    for part in parts:
+        try:
+            values.append(float(part))
+        except ValueError:
+            continue
+    values = sorted(set(values))
+    return values if values else default
+
+
+def choose_svm_c(
+    train: np.ndarray,
+    labels: np.ndarray,
+    c_grid: list[float],
+    rng: np.random.Generator,
+    n_folds: int,
+) -> tuple[float, dict | None]:
+    best_c = c_grid[0]
+    best_cv = None
+    best_score = -1.0
+    for c_value in c_grid:
+        cv = compute_cv_metrics(train, labels, "svm", rng, n_folds, svm_c=c_value)
+        if cv and cv.get("auc_mean") is not None and cv["auc_mean"] > best_score:
+            best_score = cv["auc_mean"]
+            best_c = c_value
+            best_cv = cv
+    return best_c, best_cv
+
+
+def parse_thresholds(value: str | None, default: list[float]) -> list[float]:
+    if not value:
+        return default
+    parts = [p for p in re.split(r"[,\s]+", value.strip()) if p]
+    thresholds = []
+    for part in parts:
+        try:
+            thresholds.append(float(part))
+        except ValueError:
+            continue
+    thresholds = sorted(set(thresholds))
+    return thresholds if thresholds else default
+
+
+def build_segment_stats(values: pd.Series, low: float, high: float) -> dict:
+    vals = values.dropna()
+    total = len(vals)
+    if total == 0:
+        return {"low": None, "mid": None, "high": None}
+    low_mask = vals < low
+    high_mask = vals >= high
+    mid_mask = (~low_mask) & (~high_mask)
+    return {
+        "low": float(low_mask.sum() / total),
+        "mid": float(mid_mask.sum() / total),
+        "high": float(high_mask.sum() / total),
+    }
+
+
+def compute_type_support_rate(assigned_conf: pd.DataFrame, threshold: float) -> dict:
+    rates = {}
+    for cell_type, group in assigned_conf.groupby("CellType"):
+        vals = group["confidence"].dropna()
+        if len(vals) == 0:
+            continue
+        rates[cell_type] = float((vals >= threshold).sum() / len(vals))
+    return rates
+
+
+def compute_confidence_metrics(
+    confidence_inputs: dict,
+    truth_spot_path: Path,
+    truth_query_path: Path | None,
+    out_dir: Path,
+    args: argparse.Namespace,
+) -> dict:
+    if args.disable_confidence:
+        return {"enabled": False, "ready": False, "reason": "disabled_by_flag"}
+    if not confidence_inputs.get("ready"):
+        return {"enabled": True, "ready": False, "reason": "missing_inputs"}
+    if not truth_spot_path.exists():
+        return {"enabled": True, "ready": False, "reason": "missing_truth_spot"}
+
+    assigned_p = Path(confidence_inputs["assigned_locations"])
+    sc_expr_p = Path(confidence_inputs["sc_expression"])
+    st_expr_p = Path(confidence_inputs["st_expression"])
+    sc_meta_p = Path(confidence_inputs["sc_metadata"])
+
+    assigned = pd.read_csv(assigned_p)
+    required = {"OriginalCID", "CellType", "SpotID"}
+    if not required.issubset(set(assigned.columns)):
+        raise ValueError(f"assigned_locations.csv missing columns: {sorted(required - set(assigned.columns))}")
+    assigned["SpotID"] = assigned["SpotID"].astype(str).map(clean_spot_id)
+    assigned["OriginalCID"] = assigned["OriginalCID"].astype(str)
+    assigned["CellType"] = assigned["CellType"].astype(str)
+
+    sc_meta = pd.read_csv(sc_meta_p)
+    if "cell_id" not in sc_meta.columns or "cell_type" not in sc_meta.columns:
+        raise ValueError("sc_metadata.csv missing cell_id or cell_type")
+    sc_meta["cell_id"] = sc_meta["cell_id"].astype(str)
+    sc_meta["cell_type"] = sc_meta["cell_type"].astype(str)
+
+    sc_expr = load_expression_matrix(sc_expr_p, clean_cols=False)
+    st_expr = load_expression_matrix(st_expr_p, clean_cols=True)
+    truth = load_truth_spot_presence(truth_spot_path)
+
+    sc_cells = [c for c in sc_meta["cell_id"].unique().tolist() if c in sc_expr.columns]
+    if not sc_cells:
+        return {"enabled": True, "ready": False, "reason": "no_sc_cells_matched"}
+    sc_expr = sc_expr[sc_cells]
+    sc_meta = sc_meta[sc_meta["cell_id"].isin(sc_cells)]
+
+    assigned = assigned[assigned["OriginalCID"].isin(sc_cells)]
+    if assigned.empty:
+        return {"enabled": True, "ready": False, "reason": "no_assigned_cells_matched"}
+
+    truth_types = [c for c in truth.columns if c in sc_meta["cell_type"].unique().tolist()]
+    assigned_types = assigned["CellType"].unique().tolist()
+    types = sorted(set(truth_types).intersection(assigned_types))
+    if not types:
+        return {"enabled": True, "ready": False, "reason": "no_common_cell_types"}
+
+    spot_cells = (
+        assigned.groupby("SpotID")["OriginalCID"]
+        .apply(list)
+        .to_dict()
+    )
+    st_genes = set(st_expr.index)
+    rng = np.random.default_rng(args.confidence_seed)
+    c_grid = parse_float_list(args.confidence_svm_c_grid, [1.0])
+
+    support = pd.DataFrame(index=st_expr.columns)
+    marker_summary = []
+    marker_rows = []
+    used_types = []
+    method_used = None
+    cv_auc_by_type = {}
+    cv_acc_by_type = {}
+    svm_c_by_type = {}
+
+    for cell_type in types:
+        pos_cells = sc_meta.loc[sc_meta["cell_type"] == cell_type, "cell_id"].tolist()
+        neg_cells = sc_meta.loc[sc_meta["cell_type"] != cell_type, "cell_id"].tolist()
+        markers, score = select_marker_genes(
+            sc_expr,
+            pos_cells,
+            neg_cells,
+            st_genes,
+            args.confidence_n_markers,
+            args.confidence_min_markers,
+            args.confidence_marker_strategy,
+        )
+        if not markers:
+            marker_summary.append({"cell_type": cell_type, "markers": 0, "status": "skip"})
+            continue
+        for rank, gene in enumerate(markers, start=1):
+            marker_rows.append({
+                "cell_type": cell_type,
+                "gene": gene,
+                "rank": rank,
+                "score": float(score.get(gene, 0.0)),
+            })
+
+        pos_spots = truth.index[truth[cell_type] > 0].tolist()
+        neg_spots = truth.index[truth[cell_type] <= 0].tolist()
+        pos_spots = [s for s in pos_spots if s in spot_cells]
+        neg_spots = [s for s in neg_spots if s in spot_cells]
+        if not pos_spots or not neg_spots:
+            marker_summary.append({"cell_type": cell_type, "markers": len(markers), "status": "skip_spots"})
+            continue
+
+        pos_sample = rng.choice(pos_spots, size=args.confidence_groupsize, replace=len(pos_spots) < args.confidence_groupsize).tolist()
+        neg_sample = rng.choice(neg_spots, size=args.confidence_groupsize, replace=len(neg_spots) < args.confidence_groupsize).tolist()
+
+        train_pos = build_pseudobulk(sc_expr, markers, spot_cells, pos_sample)
+        train_neg = build_pseudobulk(sc_expr, markers, spot_cells, neg_sample)
+        if train_pos.shape[0] == 0 or train_neg.shape[0] == 0:
+            marker_summary.append({"cell_type": cell_type, "markers": len(markers), "status": "skip_train"})
+            continue
+
+        train = np.vstack([train_pos, train_neg])
+        labels = np.array([1] * train_pos.shape[0] + [0] * train_neg.shape[0])
+        used_types.append(cell_type)
+
+        method = args.confidence_method
+        if method == "auto":
+            method = "svm" if SVC is not None else "weight_diff"
+        if method == "svm" and SVC is None:
+            method = "weight_diff"
+
+        if method == "svm":
+            if len(c_grid) > 1:
+                best_c, best_cv = choose_svm_c(train, labels, c_grid, rng, args.confidence_cv_folds)
+            else:
+                best_c, best_cv = c_grid[0], None
+            svm_c_by_type[cell_type] = float(best_c)
+            model = make_pipeline(StandardScaler(), SVC(kernel="linear", C=best_c, probability=True, random_state=args.confidence_seed))
+            model.fit(train, labels)
+            test = np.log1p(st_expr.loc[markers].to_numpy(dtype=float)).T
+            pred = model.predict_proba(test)[:, 1]
+            support[cell_type] = pred
+        else:
+            pos_mean = np.log1p(sc_expr.loc[markers, pos_cells].mean(axis=1))
+            neg_mean = np.log1p(sc_expr.loc[markers, neg_cells].mean(axis=1))
+            weights = pos_mean - neg_mean
+            support[cell_type] = compute_spot_support(st_expr, markers, weights)
+
+        method_used = method
+        cv = best_cv if (method == "svm" and best_cv is not None) else compute_cv_metrics(
+            train,
+            labels,
+            method,
+            rng,
+            args.confidence_cv_folds,
+            svm_c=svm_c_by_type.get(cell_type),
+        )
+        cv_auc = cv.get("auc_mean") if cv else None
+        cv_acc = cv.get("acc_mean") if cv else None
+        if cv_auc is not None:
+            cv_auc_by_type[cell_type] = cv_auc
+        if cv_acc is not None:
+            cv_acc_by_type[cell_type] = cv_acc
+        marker_summary.append({
+            "cell_type": cell_type,
+            "markers": len(markers),
+            "status": "ok",
+            "method": method,
+            "cv_auc_mean": cv_auc,
+            "cv_acc_mean": cv_acc,
+            "cv_folds": cv.get("folds") if cv else None,
+            "svm_c": svm_c_by_type.get(cell_type),
+        })
+
+    if support.empty:
+        return {"enabled": True, "ready": False, "reason": "no_support_matrix"}
+
+    marker_path = None
+    if marker_rows:
+        marker_path = out_dir / "confidence_markers.csv"
+        pd.DataFrame(marker_rows).to_csv(marker_path, index=False, encoding="utf-8")
+
+    support_path = out_dir / "spot_type_support.csv"
+    support.to_csv(support_path, index_label="spot_id")
+
+    support_long = support.stack().reset_index()
+    support_long.columns = ["SpotID", "CellType", "confidence"]
+    assigned_conf = assigned.merge(support_long, on=["SpotID", "CellType"], how="left")
+
+    conf_path = out_dir / "cell_confidence.csv"
+    assigned_conf.to_csv(conf_path, index=False, encoding="utf-8")
+
+    seg_low = float(args.confidence_segment_low)
+    seg_high = float(args.confidence_segment_high)
+    if seg_low >= seg_high:
+        seg_low, seg_high = min(seg_low, seg_high), max(seg_low, seg_high)
+
+    validation = None
+    validation_path = None
+    if truth_query_path is not None and truth_query_path.exists():
+        try:
+            truth_query = load_truth_query(truth_query_path)
+            truth_map = truth_query.set_index("cell_id")["true_spot_id"].to_dict()
+            assigned_conf["true_spot_id"] = assigned_conf["OriginalCID"].map(truth_map)
+            assigned_conf["has_truth"] = assigned_conf["true_spot_id"].notna()
+            assigned_conf["is_correct"] = (
+                assigned_conf["has_truth"] & (assigned_conf["true_spot_id"] == assigned_conf["SpotID"])
+            )
+            validation_path = out_dir / "confidence_validation.csv"
+            assigned_conf.to_csv(validation_path, index=False, encoding="utf-8")
+
+            truth_mask = assigned_conf["has_truth"]
+            correct_vals = assigned_conf.loc[truth_mask & assigned_conf["is_correct"], "confidence"]
+            incorrect_vals = assigned_conf.loc[truth_mask & (~assigned_conf["is_correct"]), "confidence"]
+            validation = {
+                "n_total_with_truth": int(truth_mask.sum()),
+                "n_correct": int((truth_mask & assigned_conf["is_correct"]).sum()),
+                "n_incorrect": int((truth_mask & (~assigned_conf["is_correct"])).sum()),
+                "mean_confidence_correct": float(correct_vals.mean()) if len(correct_vals) else None,
+                "mean_confidence_incorrect": float(incorrect_vals.mean()) if len(incorrect_vals) else None,
+                "median_confidence_correct": float(correct_vals.median()) if len(correct_vals) else None,
+                "median_confidence_incorrect": float(incorrect_vals.median()) if len(incorrect_vals) else None,
+                "high_confidence_fraction_correct": float((correct_vals >= args.confidence_threshold).sum() / len(correct_vals)) if len(correct_vals) else None,
+                "high_confidence_fraction_incorrect": float((incorrect_vals >= args.confidence_threshold).sum() / len(incorrect_vals)) if len(incorrect_vals) else None,
+                "segment_correct": build_segment_stats(correct_vals, seg_low, seg_high),
+                "segment_incorrect": build_segment_stats(incorrect_vals, seg_low, seg_high),
+            }
+        except Exception as e:
+            print(f"[WARN] confidence validation failed: {e}")
+
+    conf_values = assigned_conf["confidence"]
+    n_total = int(len(assigned_conf))
+    n_with = int(conf_values.notna().sum())
+    if n_with > 0:
+        mean_conf = float(conf_values.mean(skipna=True))
+        high_conf = float((conf_values >= args.confidence_threshold).sum() / n_with)
+    else:
+        mean_conf = None
+        high_conf = None
+
+    type_support = compute_type_support_rate(assigned_conf, args.confidence_threshold)
+    type_support_mean = float(np.mean(list(type_support.values()))) if type_support else None
+    cv_auc_mean = float(np.mean(list(cv_auc_by_type.values()))) if cv_auc_by_type else None
+    cv_acc_mean = float(np.mean(list(cv_acc_by_type.values()))) if cv_acc_by_type else None
+
+    thresholds = parse_thresholds(args.confidence_thresholds, [0.1, 0.3, 0.5, 0.7, 0.9])
+    threshold_scan = []
+    for th in thresholds:
+        th_rates = compute_type_support_rate(assigned_conf, th)
+        th_mean = float(np.mean(list(th_rates.values()))) if th_rates else None
+        th_high = float((conf_values.dropna() >= th).sum() / n_with) if n_with else None
+        threshold_scan.append({
+            "threshold": float(th),
+            "high_confidence_fraction": th_high,
+            "type_support_rate_mean": th_mean,
+            "type_support_rate": th_rates,
+        })
+
+    segment_global = build_segment_stats(conf_values, seg_low, seg_high)
+    segment_by_type = {}
+    for cell_type, group in assigned_conf.groupby("CellType"):
+        segment_by_type[cell_type] = build_segment_stats(group["confidence"], seg_low, seg_high)
+
+    report = {
+        "thresholds": thresholds,
+        "threshold_scan": threshold_scan,
+        "segments": {
+            "low": seg_low,
+            "high": seg_high,
+            "global": segment_global,
+            "by_type": segment_by_type,
+        },
+        "cv": {
+            "folds": int(args.confidence_cv_folds),
+            "auc_mean": cv_auc_mean,
+            "acc_mean": cv_acc_mean,
+        },
+    }
+    report_path = out_dir / "confidence_report.json"
+    report_path.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    md_path = out_dir / "confidence_report.md"
+    md_lines = [
+        "# Confidence Report",
+        "",
+        "## Threshold Scan",
+        "",
+        "| threshold | high_confidence_fraction | type_support_rate_mean |",
+        "| --- | --- | --- |",
+    ]
+    for row in threshold_scan:
+        md_lines.append(
+            f"| {row['threshold']:.2f} | {row['high_confidence_fraction'] if row['high_confidence_fraction'] is not None else 'NA'} | {row['type_support_rate_mean'] if row['type_support_rate_mean'] is not None else 'NA'} |"
+        )
+    md_lines.extend([
+        "",
+        "## Confidence Segments",
+        "",
+        "| segment | fraction |",
+        "| --- | --- |",
+        f"| low (<{seg_low}) | {segment_global.get('low')} |",
+        f"| mid ({seg_low}-{seg_high}) | {segment_global.get('mid')} |",
+        f"| high (>= {seg_high}) | {segment_global.get('high')} |",
+        "",
+    ])
+    md_path.write_text("\n".join(md_lines), encoding="utf-8")
+
+    return {
+        "enabled": True,
+        "ready": True,
+        "method": method_used,
+        "marker_strategy": args.confidence_marker_strategy,
+        "svm_c_grid": c_grid,
+        "svm_c_by_type": svm_c_by_type,
+        "marker_path": str(marker_path.relative_to(out_dir)) if marker_path else None,
+        "threshold": float(args.confidence_threshold),
+        "thresholds": thresholds,
+        "threshold_scan": threshold_scan,
+        "segments": {
+            "low": seg_low,
+            "high": seg_high,
+            "global": segment_global,
+            "by_type": segment_by_type,
+        },
+        "groupsize": int(args.confidence_groupsize),
+        "n_markers": int(args.confidence_n_markers),
+        "min_markers": int(args.confidence_min_markers),
+        "seed": int(args.confidence_seed),
+        "cv_folds": int(args.confidence_cv_folds),
+        "cv_auc_mean": cv_auc_mean,
+        "cv_acc_mean": cv_acc_mean,
+        "cv_auc_by_type": cv_auc_by_type,
+        "cv_acc_by_type": cv_acc_by_type,
+        "n_cell_types": int(len(used_types)),
+        "n_cells_total": n_total,
+        "n_cells_with_confidence": n_with,
+        "mean_confidence": mean_conf,
+        "high_confidence_fraction": high_conf,
+        "type_support_rate": type_support,
+        "type_support_rate_mean": type_support_mean,
+        "spot_type_support_path": str(support_path.relative_to(out_dir)),
+        "cell_confidence_path": str(conf_path.relative_to(out_dir)),
+        "confidence_validation_path": str(validation_path.relative_to(out_dir)) if validation_path else None,
+        "confidence_validation": validation,
+        "confidence_report_path": str(report_path.relative_to(out_dir)),
+        "confidence_report_md_path": str(md_path.relative_to(out_dir)),
+        "marker_summary": marker_summary,
+    }
 
 
 def normalize_rows(mat: np.ndarray) -> np.ndarray:
@@ -571,6 +1272,8 @@ def generate_filter_audit(
     n_sc_total: int,
     out_dir: Path,
     filter_scope: str | None = None,
+    truth_filter_enabled: bool | None = None,
+    truth_filter_removed: int | None = None,
 ) -> dict | None:
     """生成filter_audit：统计被过滤类型的构成
 
@@ -629,6 +1332,10 @@ def generate_filter_audit(
     
     # 强制检查3：non_missing_filtered_fraction
     check3_value = non_missing_fraction_of_total
+
+    # 强制检查4：Stage4 n_filtered vs Stage5重建数量（含 truth-filter）
+    truth_removed = int(truth_filter_removed or 0)
+    expected_stage4_filtered = actual_filtered + truth_removed
     
     # 读取weak_th
     weak_th_effective = load_stage3_weak_th(root, sample)
@@ -661,6 +1368,10 @@ def generate_filter_audit(
         "source_counts_basis": "sc_total_before_prefilter",
         "total_filtered": int(n_filtered_total),
         "total_sc_cells": int(n_sc_total),
+        "truth_filter": {
+            "enabled": bool(truth_filter_enabled),
+            "removed": int(truth_removed),
+        },
         "missing_type_contribution": {
             "count": int(missing_count),
             "fraction_of_filtered": float(missing_fraction_of_filtered),
@@ -694,10 +1405,12 @@ def generate_filter_audit(
                 "description": "non_missing_filtered_fraction = (n_filtered_total - n_filtered(missing_type))/n_sc_total"
             },
             "check4_stage4_stage5_n_filtered_match": {
-                "value": bool(actual_filtered == n_filtered_total),
+                "value": bool(expected_stage4_filtered == n_filtered_total),
                 "actual_filtered": int(actual_filtered),
+                "truth_filter_removed": int(truth_removed),
+                "expected_stage4_n_filtered": int(expected_stage4_filtered),
                 "stage4_n_filtered": int(n_filtered_total),
-                "description": "Ensure Stage4 n_filtered equals count of filtered rows reconstructed in Stage5"
+                "description": "Ensure Stage4 n_filtered equals Stage5 filtered + truth_filter_removed"
             },
         }
     }
@@ -709,6 +1422,7 @@ def run_eval(args: argparse.Namespace):
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    project_root = detect_root()
     summary_p = stage4_dir / "stage4_summary.json"
 
     sim_info_p = sim_dir / "sim_info.json"
@@ -727,6 +1441,18 @@ def run_eval(args: argparse.Namespace):
     with sim_info_p.open("r", encoding="utf-8") as f:
         sim_info = json.load(f)
 
+    confidence_inputs = resolve_confidence_inputs(args, stage4_dir, sim_dir, project_root)
+    try:
+        confidence_metrics = compute_confidence_metrics(
+            confidence_inputs,
+            truth_spot_p,
+            truth_query_p if truth_query_p.exists() else None,
+            out_dir,
+            args,
+        )
+    except Exception as e:
+        print(f"[WARN] confidence evaluation failed: {e}")
+        confidence_metrics = {"enabled": True, "ready": False, "reason": f"error:{e}"}
     missing_type = sim_info.get("missing_type")
 
     ca = pd.read_csv(assign_p)
@@ -754,6 +1480,8 @@ def run_eval(args: argparse.Namespace):
             n_sc_total,
             out_dir,
             filter_scope=s4.get("filter_scope"),
+            truth_filter_enabled=s4.get("truth_filter_enabled"),
+            truth_filter_removed=s4.get("truth_filter_removed"),
         )
         # 严格模式下，若Stage4与Stage5重建的filtered数量不一致则直接报错
         if args.strict_config and filter_audit is not None:
@@ -761,7 +1489,8 @@ def run_eval(args: argparse.Namespace):
             if isinstance(vc, dict) and not vc.get("value", True):
                 msg = (
                     "[strict_config] Stage4 vs Stage5 n_filtered mismatch: "
-                    f"Stage4={vc.get('stage4_n_filtered')} vs Stage5_reconstructed={vc.get('actual_filtered')}"
+                    f"Stage4={vc.get('stage4_n_filtered')} vs "
+                    f"Stage5_filtered={vc.get('actual_filtered')} + truth_removed={vc.get('truth_filter_removed')}"
                 )
                 raise ValueError(msg)
 
@@ -831,6 +1560,8 @@ def run_eval(args: argparse.Namespace):
             "reason": "Not computed: Stage4 output does not carry query_id mapping.",
         },
         "cell_spot_eval": cell_spot_eval,
+        "confidence_inputs": confidence_inputs,
+        "confidence_metrics": confidence_metrics,
         "sha1": {
             "stage4_summary": sha1_file(summary_p),
             "cell_assignment": sha1_file(assign_p) if assign_p.exists() else None,
@@ -894,6 +1625,61 @@ def parse_args():
     ap.add_argument("--compare_baseline", help="baseline json path", required=False)
     ap.add_argument("--compare_route2", help="route2 json path", required=False)
     ap.add_argument("--compare_out", help="output compare json path", required=False)
+    ap.add_argument("--confidence_sc_expr", help="override sc expression path for confidence inputs", required=False)
+    ap.add_argument("--confidence_st_expr", help="override st expression path for confidence inputs", required=False)
+    ap.add_argument("--confidence_sc_meta", help="override sc metadata path for confidence inputs", required=False)
+    ap.add_argument("--confidence_assigned_locations", help="override assigned_locations.csv path for confidence inputs", required=False)
+    ap.add_argument("--disable_confidence", action="store_true", help="skip confidence evaluation")
+    ap.add_argument(
+        "--confidence_threshold",
+        type=float,
+        default=0.35,
+        help="threshold for high-confidence fraction (recommended range: 0.35-0.40)",
+    )
+    ap.add_argument("--confidence_n_markers", type=int, default=50, help="number of marker genes per cell type")
+    ap.add_argument("--confidence_min_markers", type=int, default=5, help="minimum markers required to score a type")
+    ap.add_argument("--confidence_groupsize", type=int, default=50, help="pseudobulk group size per class")
+    ap.add_argument("--confidence_seed", type=int, default=1, help="seed for confidence evaluation")
+    ap.add_argument(
+        "--confidence_marker_strategy",
+        choices=["mean_logfc", "t_stat"],
+        default="mean_logfc",
+        help="marker score strategy for confidence evaluation",
+    )
+    ap.add_argument(
+        "--confidence_cv_folds",
+        type=int,
+        default=5,
+        help="number of CV folds for confidence model stability",
+    )
+    ap.add_argument(
+        "--confidence_thresholds",
+        default="0.10,0.15,0.20,0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.65,0.70,0.75,0.80,0.85,0.90",
+        help="threshold scan list, e.g. '0.35,0.4,0.5'",
+    )
+    ap.add_argument(
+        "--confidence_segment_low",
+        type=float,
+        default=0.3,
+        help="low confidence upper bound for segment stats",
+    )
+    ap.add_argument(
+        "--confidence_segment_high",
+        type=float,
+        default=0.7,
+        help="high confidence lower bound for segment stats",
+    )
+    ap.add_argument(
+        "--confidence_method",
+        choices=["auto", "svm", "weight_diff"],
+        default="auto",
+        help="confidence model: svm if available, otherwise weight_diff",
+    )
+    ap.add_argument(
+        "--confidence_svm_c_grid",
+        default="1",
+        help="comma-separated C values for SVM grid search (e.g. '0.1,1,10')",
+    )
     ap.add_argument(
         "--strict_config",
         action="store_true",

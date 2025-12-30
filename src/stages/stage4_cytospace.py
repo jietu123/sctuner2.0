@@ -609,6 +609,15 @@ def load_missing_truth(root: Path, sample: str) -> str | None:
         return None
 
 
+def _infer_sim_scenario(sample: str) -> str | None:
+    s = str(sample or "").lower()
+    if "sims0" in s:
+        return "S0"
+    if "sims1" in s:
+        return "S1"
+    return None
+
+
 def load_sim_truth_cell_ids(root: Path, sample: str) -> set[str] | None:
     sim_info_path = root / "data" / "processed" / sample / "stage1_preprocess" / "exported" / "sim_info.json"
     if not sim_info_path.exists():
@@ -619,6 +628,8 @@ def load_sim_truth_cell_ids(root: Path, sample: str) -> set[str] | None:
         return None
     output_dir = data.get("output_dir")
     seed = data.get("seed")
+    missing_type = data.get("missing_type")
+    sim_sample = data.get("sample")
     if not output_dir or seed is None:
         return None
     out_dir = Path(output_dir)
@@ -631,6 +642,22 @@ def load_sim_truth_cell_ids(root: Path, sample: str) -> set[str] | None:
         if cand.exists():
             truth_path = cand
             break
+    if truth_path is None and sim_sample and missing_type:
+        scenario = _infer_sim_scenario(sample)
+        if scenario:
+            mt_slug = str(missing_type).strip().lower().replace(" ", "_")
+            fallback = (
+                root
+                / "data"
+                / "sim"
+                / str(sim_sample)
+                / scenario
+                / mt_slug
+                / f"seed_{seed}"
+                / "sim_truth_query_cell_spot.csv"
+            )
+            if fallback.exists():
+                truth_path = fallback
     if truth_path is None:
         return None
     try:
