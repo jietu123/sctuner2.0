@@ -23,7 +23,7 @@ from typing import Dict, List, Tuple, Optional
 import numpy as np
 import pandas as pd
 import yaml
-from scipy.stats import pearsonr, norm
+from scipy.stats import pearsonr, norm, spearmanr
 
 
 # ----------------------------
@@ -45,6 +45,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--dataset_config", default=None, help="dataset config path (overrides auto-detection)")
     p.add_argument("--strong_th", type=float, default=None, help="support threshold for strong (overrides config)")
     p.add_argument("--weak_th", type=float, default=None, help="support threshold for weak (overrides config)")
+    p.add_argument("--min_effect_size", type=float, default=None, help="灰区效应量阈值（支持度过低也进入灰区）")
     p.add_argument("--st_cluster_k", type=int, default=None, help="ST clustering K (<=0 表示不聚类，直接用 spot)")
     p.add_argument("--unknown_floor", type=float, default=None, help="Unknown_sc_only 最小占比（0~1）")
     p.add_argument("--min_cells_rare_type", type=int, default=None, help="稀有类型阈值，低于此不会标 strong")
@@ -167,6 +168,17 @@ def safe_pearson(a: np.ndarray, b: np.ndarray, eps: float = 1e-12) -> float:
     return float(r)
 
 
+def safe_spearman(a: np.ndarray, b: np.ndarray, eps: float = 1e-12) -> float:
+    if a.size == 0 or b.size == 0:
+        return 0.0
+    if np.std(a) < eps or np.std(b) < eps:
+        return 0.0
+    r = spearmanr(a, b)[0]
+    if not np.isfinite(r):
+        return 0.0
+    return float(r)
+
+
 def try_cluster_st(st_expr: pd.DataFrame, plugin_genes: List[str], k: int) -> Tuple[np.ndarray, pd.DataFrame]:
     """
     返回 labels, cluster_profiles
@@ -210,6 +222,21 @@ def aggregate_z_values(z_values: np.ndarray, method: str = "max", topk: int = 5)
     if method == "topk_mean":
         return topk_mean(z_values, topk)
     raise ValueError(f"Unknown z-score aggregation method: {method}")
+
+
+def compute_normalized_entropy(z_values: np.ndarray, temperature: float = 1.0, eps: float = 1e-12) -> float:
+    if z_values.size <= 1:
+        return 0.0
+    temp = max(eps, float(temperature))
+    logits = z_values / temp
+    logits = logits - np.max(logits)
+    exp_vals = np.exp(logits)
+    probs = exp_vals / (np.sum(exp_vals) + eps)
+    entropy = -np.sum(probs * np.log(probs + eps))
+    entropy_max = np.log(float(z_values.size))
+    if entropy_max <= eps:
+        return 0.0
+    return float(entropy / entropy_max)
 
 
 # ----------------------------
@@ -331,6 +358,50 @@ def compute_fisher_z_support_score(
     if return_all_z:
         return support_score, z_values
     return support_score
+
+
+# ----------------------------
+# V5.1: Signal denoising (marker pruning)
+# ----------------------------
+
+def compute_marker_noise_scores_cv(
+    st_expr: pd.DataFrame,
+    marker_genes: List[str],
+    eps: float = 1e-10,
+) -> pd.Series:
+    available = [g for g in marker_genes if g in st_expr.columns]
+    if not available:
+        return pd.Series(dtype=float)
+    sub = st_expr[available]
+    mean = sub.mean(axis=0)
+    std = sub.std(axis=0)
+    cv = std / (mean + eps)
+    noise = 1.0 / (cv + eps)
+    return noise.sort_values(ascending=False)
+
+
+def prune_noisy_markers(
+    marker_genes: List[str],
+    st_expr: pd.DataFrame,
+    max_pruning_ratio: float,
+    min_markers_left: int,
+    eps: float = 1e-10,
+) -> Tuple[List[str], List[str]]:
+    n_total = len(marker_genes)
+    if n_total <= min_markers_left:
+        return marker_genes, []
+    max_pruning_ratio = max(0.0, min(1.0, max_pruning_ratio))
+    drop_n = int(n_total * max_pruning_ratio)
+    drop_n = min(drop_n, n_total - min_markers_left)
+    if drop_n <= 0:
+        return marker_genes, []
+    noise_scores = compute_marker_noise_scores_cv(st_expr, marker_genes, eps=eps)
+    if noise_scores.empty:
+        return marker_genes, []
+    drop_genes = noise_scores.head(drop_n).index.tolist()
+    drop_set = set(drop_genes)
+    kept = [g for g in marker_genes if g not in drop_set]
+    return kept, drop_genes
 
 
 # ----------------------------
@@ -629,6 +700,7 @@ def main():
     defaults = {
         "strong_th": 0.7,
         "weak_th": 0.4,
+        "min_effect_size": 0.15,
         "st_cluster_k": 30,
         "unknown_floor": 0.3,
         "min_cells_rare_type": 20,
@@ -654,20 +726,108 @@ def main():
         "z_topk": 5,  # topk_mean 的 k 值
         "apply_mismatch_to_relabel": False,  # V4.2: 是否将显著缺失用于重写 plugin_type
         # V4.3 默认值
-        "mismatch_action": "relabel",
+        "mismatch_action": "mark_unknown",
         "relabel_similarity_threshold": 0.8,
         "merge_target_map": None,
         "unknown_label_prefix": "Unknown_",
         "drop_unknown": True,
     }
-    
+
+    v5_cfg = {}
+    if isinstance(stage3_cfg, dict):
+        v5_cfg = stage3_cfg.get("V5_denoising") or stage3_cfg.get("v5_denoising") or {}
+
+    v5_niche_cfg = {}
+    if isinstance(stage3_cfg, dict):
+        v5_niche_cfg = stage3_cfg.get("V5_niche_rescue") or stage3_cfg.get("v5_niche_rescue") or {}
+
+    v5_entropy_cfg = {}
+    if isinstance(stage3_cfg, dict):
+        v5_entropy_cfg = stage3_cfg.get("V5_entropy_qc") or stage3_cfg.get("v5_entropy_qc") or {}
+
+    v5_rescue_ctrl_cfg = {}
+    if isinstance(stage3_cfg, dict):
+        v5_rescue_ctrl_cfg = stage3_cfg.get("V5_rescue_control") or stage3_cfg.get("v5_rescue_control") or {}
+
+    v5_enable = bool(v5_cfg.get("enable", False))
+    try:
+        v5_p_upper = float(v5_cfg.get("p_value_upper_limit", 0.2))
+    except (TypeError, ValueError):
+        v5_p_upper = 0.2
+    if v5_p_upper > 1.0:
+        v5_p_upper = 1.0
+    try:
+        v5_prune_ratio = float(v5_cfg.get("max_pruning_ratio", 0.3))
+    except (TypeError, ValueError):
+        v5_prune_ratio = 0.3
+    try:
+        v5_min_markers_left = int(v5_cfg.get("min_markers_left", 10))
+    except (TypeError, ValueError):
+        v5_min_markers_left = 10
+    if v5_min_markers_left < 2:
+        v5_min_markers_left = 2
+
+    v5_niche_enable = bool(v5_niche_cfg.get("enable", False))
+    try:
+        v5_niche_anchor_p = float(v5_niche_cfg.get("anchor_p_threshold", 0.01))
+    except (TypeError, ValueError):
+        v5_niche_anchor_p = 0.01
+    try:
+        v5_niche_corr_th = float(v5_niche_cfg.get("correlation_threshold", 0.35))
+    except (TypeError, ValueError):
+        v5_niche_corr_th = 0.35
+    v5_niche_metric = str(v5_niche_cfg.get("correlation_metric", "spearman")).strip().lower()
+    if v5_niche_metric not in {"spearman", "pearson"}:
+        v5_niche_metric = "spearman"
+    try:
+        v5_niche_p_upper = float(v5_niche_cfg.get("p_value_upper_limit", v5_p_upper))
+    except (TypeError, ValueError):
+        v5_niche_p_upper = v5_p_upper
+    if v5_niche_p_upper > 1.0:
+        v5_niche_p_upper = 1.0
+    if v5_niche_p_upper < 0.0:
+        v5_niche_p_upper = 0.0
+
+    v5_entropy_enable = bool(v5_entropy_cfg.get("enable", False))
+    try:
+        v5_entropy_threshold = float(v5_entropy_cfg.get("entropy_threshold", 0.9))
+    except (TypeError, ValueError):
+        v5_entropy_threshold = 0.9
+    try:
+        v5_entropy_temperature = float(v5_entropy_cfg.get("temperature", 1.0))
+    except (TypeError, ValueError):
+        v5_entropy_temperature = 1.0
+    if v5_entropy_temperature <= 0:
+        v5_entropy_temperature = 1.0
+
+    v5_rescue_ctrl_enable = bool(v5_rescue_ctrl_cfg.get("enable", False))
+    try:
+        v5_rescue_prior_weight = float(v5_rescue_ctrl_cfg.get("prior_weight", 1.0))
+    except (TypeError, ValueError):
+        v5_rescue_prior_weight = 1.0
+    if v5_rescue_prior_weight < 0:
+        v5_rescue_prior_weight = 0.0
+    if v5_rescue_prior_weight > 1:
+        v5_rescue_prior_weight = 1.0
+
     # 从配置读取（配置优先，然后 CLI 覆盖）
     strong_th = args.strong_th if args.strong_th is not None else stage3_cfg.get("strong_th", defaults["strong_th"])
     weak_th = args.weak_th if args.weak_th is not None else stage3_cfg.get("weak_th", defaults["weak_th"])
+    min_effect_size = (
+        args.min_effect_size
+        if args.min_effect_size is not None
+        else stage3_cfg.get("min_effect_size", defaults["min_effect_size"])
+    )
     st_cluster_k = args.st_cluster_k if args.st_cluster_k is not None else stage3_cfg.get("st_cluster_k", defaults["st_cluster_k"])
     unknown_floor = args.unknown_floor if args.unknown_floor is not None else stage3_cfg.get("unknown_floor", defaults["unknown_floor"])
     min_cells_rare_type = args.min_cells_rare_type if args.min_cells_rare_type is not None else stage3_cfg.get("min_cells_rare_type", defaults["min_cells_rare_type"])
     eps = args.eps if args.eps is not None else stage3_cfg.get("eps", defaults["eps"])
+    try:
+        min_effect_size = float(min_effect_size)
+    except (TypeError, ValueError):
+        min_effect_size = defaults["min_effect_size"]
+    if min_effect_size < 0:
+        min_effect_size = 0.0
     
     # V4.1 配置
     enable_mismatch_detection = args.enable_mismatch_detection if args.enable_mismatch_detection is not None else stage3_cfg.get("enable_mismatch_detection", defaults["enable_mismatch_detection"])
@@ -873,6 +1033,8 @@ def main():
     type_support_score = {}
     type_p_values = {}  # V4.2: 存储 p 值
     type_z_values = {}  # V4.2: 存储所有 z 值（用于计算 p 值）
+    marker_genes_map: dict[str, List[str]] = {}
+    type_cells_map: dict[str, List[str]] = {}
     
     # V4.1: 如果启用 Fisher r→z 方法
     use_fisher_z = enable_mismatch_detection and score_method == "fisher_z"
@@ -912,6 +1074,8 @@ def main():
                 type_profile = type_expr.mean(axis=0)  # 保持为 pd.Series，index=gene_name
             else:
                 type_profile = pd.Series(0.0, index=marker_genes)
+            marker_genes_map[t] = list(marker_genes)
+            type_cells_map[t] = list(type_cells)
             
             # 3. 计算 Fisher z 支持度评分（V4.2: 同时获取所有 z 值）
             if use_v42:
@@ -1038,6 +1202,163 @@ def main():
                     if "Significant" in row:
                         row["Significant"] = ""
 
+    def _in_v5_grey_zone(p_val: float, support_score: float, upper_limit: float) -> bool:
+        if p_val is None:
+            return False
+        if p_val >= alpha and p_val < upper_limit:
+            return True
+        if p_val < alpha and support_score <= min_effect_size:
+            return True
+        return False
+
+    # V5.1: 信号提纯拯救（只针对灰区 P 值）
+    v5_denoising_rescued: set[str] = set()
+    if v5_enable and use_v42:
+        if v5_p_upper < alpha:
+            v5_p_upper = alpha
+        for row in support_rows:
+            p_val = row.get("PValue", None)
+            if p_val is None:
+                continue
+            try:
+                p_val = float(p_val)
+            except (TypeError, ValueError):
+                continue
+            if not _in_v5_grey_zone(p_val, row.get("support_score", 0.0), v5_p_upper):
+                continue
+            t = row["orig_type"]
+            marker_genes = marker_genes_map.get(t, [])
+            if not marker_genes:
+                continue
+            cleaned_genes, dropped_genes = prune_noisy_markers(
+                marker_genes,
+                st_expr,
+                max_pruning_ratio=v5_prune_ratio,
+                min_markers_left=v5_min_markers_left,
+                eps=eps,
+            )
+            if len(cleaned_genes) < 2:
+                continue
+            type_cells = type_cells_map.get(t, [])
+            type_cells = [cid for cid in type_cells if cid in sc_expr.index]
+            if len(type_cells) == 0:
+                continue
+            type_profile = sc_expr.loc[type_cells, cleaned_genes].mean(axis=0)
+            score_new, z_vals = compute_fisher_z_support_score(
+                type_profile,
+                st_expr,
+                cleaned_genes,
+                eps=eps,
+                return_all_z=True,
+                agg_method=z_score_aggregation,
+                agg_topk=z_topk,
+            )
+            effective_use_permutation = use_permutation_test or z_score_aggregation != "max"
+            p_new = compute_p_value(
+                z_vals,
+                len(cleaned_genes),
+                n_spots,
+                use_permutation=effective_use_permutation,
+                type_profile=type_profile,
+                st_expr=st_expr,
+                marker_genes=cleaned_genes,
+                eps=eps,
+                score_aggregation=z_score_aggregation,
+                z_topk=z_topk,
+            )
+            row["V5_denoising"] = True
+            row["V5_p_value"] = p_new
+            row["V5_support_score"] = score_new
+            row["V5_marker_pruned"] = len(dropped_genes)
+            row["V5_marker_left"] = len(cleaned_genes)
+            row["V5_rescued"] = "Yes" if p_new < alpha else "No"
+            if p_new < alpha:
+                v5_denoising_rescued.add(t)
+
+    # V5.2: niche co-occurrence rescue
+    v5_niche_rescued: set[str] = set()
+    v5_niche_anchor_map: dict[str, str] = {}
+    v5_niche_corr_map: dict[str, float] = {}
+    if v5_niche_enable and use_v42:
+        if v5_niche_p_upper < alpha:
+            v5_niche_p_upper = alpha
+        anchor_types = []
+        for row in support_rows:
+            p_val = row.get("PValue", None)
+            if p_val is None:
+                continue
+            try:
+                p_val = float(p_val)
+            except (TypeError, ValueError):
+                continue
+            if p_val < v5_niche_anchor_p:
+                t = row["orig_type"]
+                z_vals = type_z_values.get(t)
+                if z_vals is not None and z_vals.size > 0:
+                    anchor_types.append(t)
+        for row in support_rows:
+            p_val = row.get("PValue", None)
+            if p_val is None:
+                continue
+            try:
+                p_val = float(p_val)
+            except (TypeError, ValueError):
+                continue
+            if not _in_v5_grey_zone(p_val, row.get("support_score", 0.0), v5_niche_p_upper):
+                continue
+            t = row["orig_type"]
+            if t in v5_denoising_rescued:
+                continue
+            z_c = type_z_values.get(t)
+            if z_c is None or z_c.size == 0:
+                continue
+            best_anchor = None
+            best_corr = -2.0
+            for anchor in anchor_types:
+                z_a = type_z_values.get(anchor)
+                if z_a is None or z_a.size == 0:
+                    continue
+                if v5_niche_metric == "pearson":
+                    corr = safe_pearson(z_c, z_a, eps=eps)
+                else:
+                    corr = safe_spearman(z_c, z_a, eps=eps)
+                if corr > best_corr:
+                    best_corr = corr
+                    best_anchor = anchor
+            if best_anchor is None:
+                continue
+            row["V5_niche"] = True
+            row["V5_niche_anchor"] = best_anchor
+            row["V5_niche_corr"] = best_corr
+            row["V5_niche_rescued"] = "Yes" if best_corr > v5_niche_corr_th else "No"
+            if best_corr > v5_niche_corr_th:
+                v5_niche_rescued.add(t)
+                v5_niche_anchor_map[t] = best_anchor
+                v5_niche_corr_map[t] = best_corr
+
+    v5_rescued_types = v5_denoising_rescued | v5_niche_rescued
+    v5_final_rescued = set(v5_rescued_types)
+    v5_entropy_values: dict[str, float] = {}
+    v5_entropy_pass: dict[str, bool] = {}
+    if v5_entropy_enable and use_v42 and v5_rescued_types:
+        for t in sorted(v5_rescued_types):
+            z_vals = type_z_values.get(t)
+            if z_vals is None or z_vals.size == 0:
+                v5_entropy_pass[t] = False
+                continue
+            entropy = compute_normalized_entropy(
+                z_vals, temperature=v5_entropy_temperature, eps=eps
+            )
+            v5_entropy_values[t] = entropy
+            v5_entropy_pass[t] = entropy < v5_entropy_threshold
+        v5_final_rescued = {t for t in v5_rescued_types if v5_entropy_pass.get(t, False)}
+    for row in support_rows:
+        t = row["orig_type"]
+        if t in v5_entropy_values:
+            row["V5_entropy"] = v5_entropy_values[t]
+            row["V5_entropy_pass"] = "Yes" if v5_entropy_pass.get(t, False) else "No"
+            row["V5_final_rescued"] = "Yes" if t in v5_final_rescued else "No"
+
     # 支持度分档 + 稀有类型保护
     for row in support_rows:
         score = row["support_score"]
@@ -1051,6 +1372,9 @@ def main():
         else:
             category = "unsupported"
         row["support_category"] = category
+    unsupported_types = {row["orig_type"] for row in support_rows if row["support_category"] == "unsupported"}
+    if v5_final_rescued:
+        unsupported_types -= v5_final_rescued
 
     # V4.3: 根据显著缺失结果进行处理决策
     missing_types = set()
@@ -1058,8 +1382,14 @@ def main():
         for row in support_rows:
             if str(row.get("Significant", "")).strip().lower() == "yes":
                 missing_types.add(row["orig_type"])
+    if v5_final_rescued:
+        missing_types -= v5_final_rescued
 
     action_map = {row["orig_type"]: "Keep" for row in support_rows}
+    for t in unsupported_types:
+        action_map[t] = "Dropped" if drop_unknown else "Unknown"
+    for t in v5_final_rescued:
+        action_map[t] = "Keep"
     merge_sources: dict[str, List[str]] = defaultdict(list)
     similarity_target_map: dict[str, str] = {}
 
@@ -1067,6 +1397,8 @@ def main():
         type_by_norm = {normalize_type_key(t): t for t in profiles.keys()}
         manual_map = {normalize_type_key(k): v for k, v in merge_target_map.items()}
         for miss in sorted(missing_types):
+            if miss in unsupported_types:
+                continue
             if mismatch_action == "mark_unknown":
                 action_map[miss] = "Dropped" if drop_unknown else "Unknown"
                 continue
@@ -1200,6 +1532,7 @@ def main():
     # plugin_type 列顺序（非 Unknown 按字母排序，Unknown_sc_only 最后）
     plugin_types = sorted([t for t in relabel_df["plugin_type"].unique() if t != "Unknown_sc_only"])
     plugin_types.append("Unknown_sc_only")
+    rescued_plugin_types = [t for t in plugin_types if t in v5_final_rescued]
 
     # type_prior_matrix
     type_profiles = {}
@@ -1231,6 +1564,13 @@ def main():
             n_spots_all_unknown += 1
         else:
             prior = sims_pos / total
+            if v5_rescue_ctrl_enable and rescued_plugin_types and v5_rescue_prior_weight < 1.0:
+                for idx, t in enumerate(plugin_types):
+                    if t in rescued_plugin_types:
+                        prior[idx] *= v5_rescue_prior_weight
+                prior_sum = prior.sum()
+                if prior_sum > eps:
+                    prior = prior / prior_sum
             # Unknown 保底
             uf = unknown_floor
             if uf < 0 or uf > 1:
@@ -1298,6 +1638,7 @@ def main():
         "params": {
             "strong_th": strong_th,
             "weak_th": weak_th,
+            "min_effect_size": min_effect_size,
             "st_cluster_k": st_cluster_k,
             "similarity_metric": "weighted_cosine" if not use_fisher_z else "fisher_z_pearson",
             "unknown_floor": unknown_floor,
@@ -1330,12 +1671,51 @@ def main():
             "merge_target_map": merge_target_map if use_v42 else None,
             "unknown_label_prefix": unknown_label_prefix if use_v42 else None,
             "drop_unknown": drop_unknown if use_v42 else None,
+            # V5.1 参数
+            "v5_denoising_enable": v5_enable if use_v42 else None,
+            "v5_p_value_upper_limit": v5_p_upper if use_v42 else None,
+            "v5_max_pruning_ratio": v5_prune_ratio if use_v42 else None,
+            "v5_min_markers_left": v5_min_markers_left if use_v42 else None,
+            "v5_niche_enable": v5_niche_enable if use_v42 else None,
+            "v5_niche_anchor_p_threshold": v5_niche_anchor_p if use_v42 else None,
+            "v5_niche_correlation_metric": v5_niche_metric if use_v42 else None,
+            "v5_niche_correlation_threshold": v5_niche_corr_th if use_v42 else None,
+            "v5_niche_p_value_upper_limit": v5_niche_p_upper if use_v42 else None,
+            "v5_entropy_enable": v5_entropy_enable if use_v42 else None,
+            "v5_entropy_threshold": v5_entropy_threshold if use_v42 else None,
+            "v5_entropy_temperature": v5_entropy_temperature if use_v42 else None,
+            "v5_rescue_control_enable": v5_rescue_ctrl_enable if use_v42 else None,
+            "v5_rescue_prior_weight": v5_rescue_prior_weight if use_v42 else None,
         },
         "support_overview": support_overview,
         "action_overview": {
             "by_type_count": dict(action_by_type),
             "by_cell_count": dict(action_by_cell),
             "missing_types": sorted(missing_types),
+        },
+        "v5_denoising": {
+            "rescued_types": sorted(v5_denoising_rescued),
+            "rescued_count": len(v5_denoising_rescued),
+        },
+        "v5_niche_rescue": {
+            "rescued_types": sorted(v5_niche_rescued),
+            "rescued_count": len(v5_niche_rescued),
+            "anchor_map": v5_niche_anchor_map,
+            "correlations": {k: v5_niche_corr_map[k] for k in sorted(v5_niche_corr_map)},
+        },
+        "v5_entropy_qc": {
+            "enabled": v5_entropy_enable,
+            "threshold": v5_entropy_threshold,
+            "temperature": v5_entropy_temperature,
+            "rescued_types_before": sorted(v5_rescued_types),
+            "rescued_types_final": sorted(v5_final_rescued),
+            "rejected_types": sorted(set(v5_rescued_types) - set(v5_final_rescued)),
+            "entropy": {k: v5_entropy_values[k] for k in sorted(v5_entropy_values)},
+        },
+        "v5_rescue_control": {
+            "enabled": v5_rescue_ctrl_enable,
+            "prior_weight": v5_rescue_prior_weight,
+            "rescued_types": rescued_plugin_types,
         },
         "unknown_overview": {
             "cell_fraction": unknown_cells / total_cells if total_cells > 0 else 0.0,

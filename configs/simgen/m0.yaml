@@ -1,17 +1,21 @@
-# SimGen M0 config (weak missing + spatial bias)
+# SimGen M0 config (weak missing + spatial bias + optional dispersed type)
 sample: real_brca
 missing_type: T cells CD8
+dispersed_type: T cells CD4
 cells_per_spot: 5
 seed: 42
 
-# Overall fraction of missing_type kept in ST
-keep_fraction: 0.05
+# Overall fraction of missing_type kept in ST (clustered)
+keep_fraction: 0.03
+
+# Overall fraction of dispersed_type (uniform across spots)
+dispersed_fraction: 0.10
 
 # Spatial bias: pick a clustered hotspot region of spots
 hotspot_fraction: 0.2
 
-# CD8 fraction inside hotspot spots (base fraction computed to match keep_fraction)
-hotspot_cd8_fraction: 0.2
+# missing_type fraction inside hotspot spots (base fraction computed to match keep_fraction)
+hotspot_cd8_fraction: 0.15
 
 # Optional scenario tag (used in output folder)
-scenario_tag: cd8_weak_hotspot
+scenario_tag: cd4_10pct_cd8_3pct_clustered

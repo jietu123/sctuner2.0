@@ -4,6 +4,7 @@ SimGen M0: weak-missing + spatial bias for a target cell type (e.g., CD8).
 Goal:
 - Keep a small fraction of the missing_type in ST (keep_fraction)
 - Add spatial bias so missing_type concentrates in a hotspot region
+- Optionally add a dispersed_type with a uniform fraction across spots
 """
 
 from __future__ import annotations
@@ -34,9 +35,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--dataset_config", default=None, help="dataset config path (overrides auto-detection)")
     p.add_argument("--sim_config", default=None, help="simgen config path for M0 (optional)")
     p.add_argument("--missing_type", default=None, help="cell type to downsample in ST (M0)")
+    p.add_argument("--dispersed_type", default=None, help="cell type to spread uniformly in ST (optional)")
     p.add_argument("--cells_per_spot", type=int, default=None, help="cells per spot for synthetic ST")
     p.add_argument("--seed", type=int, default=None, help="random seed")
     p.add_argument("--keep_fraction", type=float, default=None, help="overall missing_type fraction in ST")
+    p.add_argument("--dispersed_fraction", type=float, default=None, help="overall dispersed_type fraction in ST")
     p.add_argument("--hotspot_fraction", type=float, default=None, help="fraction of spots in hotspot region")
     p.add_argument("--hotspot_cd8_fraction", type=float, default=None, help="missing_type fraction inside hotspot spots")
     p.add_argument("--scenario_tag", default=None, help="output tag under data/sim/<sample>/M0/")
@@ -107,9 +110,11 @@ def build_st_expression_m0(
     sc_meta: pd.DataFrame,
     coords: pd.DataFrame,
     missing_type: str,
+    dispersed_type: str | None,
     cells_per_spot: int,
     seed: int,
     keep_fraction: float,
+    dispersed_fraction: float,
     hotspot_fraction: float,
     hotspot_cd8_fraction: float,
 ) -> Tuple[pd.DataFrame, Dict[str, float], pd.DataFrame, pd.DataFrame, list[str], str]:
@@ -119,9 +124,31 @@ def build_st_expression_m0(
     sc_meta[type_col] = sc_meta[type_col].astype(str)
 
     target_cells = sc_meta.loc[sc_meta[type_col] == missing_type, "cell_id"].tolist()
-    other_cells = sc_meta.loc[sc_meta[type_col] != missing_type, "cell_id"].tolist()
-    if len(target_cells) == 0 or len(other_cells) == 0:
-        raise ValueError("missing_type pool or other pool empty, cannot build ST")
+    if len(target_cells) == 0:
+        raise ValueError("missing_type pool empty, cannot build ST")
+    dispersed_cells = []
+    if dispersed_type and dispersed_fraction > 0:
+        if dispersed_type == missing_type:
+            raise ValueError("dispersed_type must differ from missing_type")
+        dispersed_cells = sc_meta.loc[sc_meta[type_col] == dispersed_type, "cell_id"].tolist()
+        if len(dispersed_cells) == 0:
+            raise ValueError("dispersed_type pool empty, cannot build ST")
+    else:
+        dispersed_type = None
+        dispersed_fraction = 0.0
+
+    other_cells = sc_meta.loc[
+        ~sc_meta[type_col].isin([missing_type] + ([dispersed_type] if dispersed_type else [])),
+        "cell_id",
+    ].tolist()
+    if keep_fraction < 0 or keep_fraction > 1:
+        raise ValueError("keep_fraction must be within [0, 1]")
+    if dispersed_fraction < 0 or dispersed_fraction > 1:
+        raise ValueError("dispersed_fraction must be within [0, 1]")
+    if hotspot_fraction < 0 or hotspot_fraction > 1:
+        raise ValueError("hotspot_fraction must be within [0, 1]")
+    if hotspot_cd8_fraction < 0 or hotspot_cd8_fraction > 1:
+        raise ValueError("hotspot_cd8_fraction must be within [0, 1]")
 
     hotspot_spots, hotspot_center = pick_hotspot_spots(coords, rng, hotspot_fraction)
     hotspot_set = set(hotspot_spots)
@@ -134,8 +161,13 @@ def build_st_expression_m0(
         hotspot_fraction_eff = hotspot_fraction
     if base_fraction < 0:
         raise ValueError("Computed base_fraction < 0. Reduce hotspot_cd8_fraction or hotspot_fraction.")
-    if hotspot_cd8_fraction > 1.0 or base_fraction > 1.0:
-        raise ValueError("CD8 fraction cannot exceed 1.0")
+    if base_fraction > 1.0:
+        raise ValueError("base_fraction cannot exceed 1.0")
+    max_cluster = max(base_fraction, hotspot_cd8_fraction)
+    if max_cluster + dispersed_fraction > 1.0:
+        raise ValueError("Sum of missing_type + dispersed_type fractions exceeds 1.0")
+    if not other_cells and (max_cluster + dispersed_fraction) < 1.0:
+        raise ValueError("other pool empty but remaining fraction > 0")
 
     cell2type = sc_meta.set_index("cell_id")[type_col].to_dict()
 
@@ -145,17 +177,25 @@ def build_st_expression_m0(
     truth_rows = []
     spot_type_counts = {spot: {} for spot in spot_ids}
     qid = 0
-    cd8_count = 0
+    missing_count = 0
+    dispersed_count = 0
     total_count = 0
 
     for spot in spot_ids:
-        p_cd8 = hotspot_cd8_fraction if spot in hotspot_set else base_fraction
+        p_missing = hotspot_cd8_fraction if spot in hotspot_set else base_fraction
+        p_dispersed = dispersed_fraction
         pick = []
         for _ in range(cells_per_spot):
-            if rng.random() < p_cd8:
+            r = rng.random()
+            if r < p_missing:
                 cid = rng.choice(target_cells)
-                cd8_count += 1
+                missing_count += 1
+            elif r < (p_missing + p_dispersed):
+                cid = rng.choice(dispersed_cells)
+                dispersed_count += 1
             else:
+                if not other_cells:
+                    raise ValueError("other pool empty but sampling requires other types")
                 cid = rng.choice(other_cells)
             pick.append(cid)
             total_count += 1
@@ -175,10 +215,14 @@ def build_st_expression_m0(
 
     stats = {
         "keep_fraction_target": float(keep_fraction),
-        "keep_fraction_actual": float(cd8_count / total_count) if total_count else 0.0,
+        "keep_fraction_actual": float(missing_count / total_count) if total_count else 0.0,
+        "dispersed_fraction_target": float(dispersed_fraction),
+        "dispersed_fraction_actual": float(dispersed_count / total_count) if total_count else 0.0,
         "hotspot_fraction": float(hotspot_fraction_eff),
         "hotspot_cd8_fraction": float(hotspot_cd8_fraction),
         "base_cd8_fraction": float(base_fraction),
+        "missing_type": str(missing_type),
+        "dispersed_type": str(dispersed_type) if dispersed_type else None,
     }
     return st_mat, stats, truth_query, frac_df, hotspot_spots, hotspot_center
 
@@ -200,6 +244,10 @@ def main():
     seed = args.seed if args.seed is not None else sim_cfg.get("seed", 42)
     missing_type_cli = args.missing_type or sim_cfg.get("missing_type")
     keep_fraction = args.keep_fraction if args.keep_fraction is not None else sim_cfg.get("keep_fraction", 0.05)
+    dispersed_type = args.dispersed_type or sim_cfg.get("dispersed_type")
+    dispersed_fraction = (
+        args.dispersed_fraction if args.dispersed_fraction is not None else sim_cfg.get("dispersed_fraction", 0.0)
+    )
     hotspot_fraction = args.hotspot_fraction if args.hotspot_fraction is not None else sim_cfg.get("hotspot_fraction", 0.2)
     hotspot_cd8_fraction = (
         args.hotspot_cd8_fraction if args.hotspot_cd8_fraction is not None else sim_cfg.get("hotspot_cd8_fraction", 0.2)
@@ -217,19 +265,30 @@ def main():
             raise ValueError("sc_meta requires at least 2 columns (cell_id, cell_type)")
         sc_meta = sc_meta.iloc[:, :2]
         sc_meta.columns = ["cell_id", "cell_type"]
-    st_coords = pd.read_csv(input_dir / paths["st_meta"], index_col=0)
+    st_coords_raw = pd.read_csv(input_dir / paths["st_meta"], sep=None, engine="python")
+    if "spot_id" not in st_coords_raw.columns:
+        cols = st_coords_raw.columns.tolist()
+        if len(cols) < 3:
+            raise ValueError("st_meta requires at least 3 columns (spot_id, row, col)")
+        st_coords_raw = st_coords_raw.iloc[:, :3]
+        st_coords_raw.columns = ["spot_id", "row", "col"]
+    st_coords = st_coords_raw.set_index("spot_id")
 
     missing_type = choose_missing_type(sc_meta, missing_type_cli)
     print(f"[SimGen M0] missing_type: {missing_type}")
+    if dispersed_type and dispersed_fraction > 0:
+        print(f"[SimGen M0] dispersed_type: {dispersed_type} ({dispersed_fraction:.3f})")
 
     st_expr_m0, stats, truth_query, truth_frac, hotspot_spots, hotspot_center = build_st_expression_m0(
         sc_expr=sc_expr,
         sc_meta=sc_meta,
         coords=st_coords,
         missing_type=missing_type,
+        dispersed_type=dispersed_type,
         cells_per_spot=cells_per_spot,
         seed=seed,
         keep_fraction=keep_fraction,
+        dispersed_fraction=dispersed_fraction,
         hotspot_fraction=hotspot_fraction,
         hotspot_cd8_fraction=hotspot_cd8_fraction,
     )

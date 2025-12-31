@@ -757,6 +757,8 @@ def prepare_cytospace_inputs(
     work_dir: Path,
     cells_per_spot_override: int | None = None,
     cell_type_column: str = "plugin_type",
+    rescue_types: list[str] | None = None,
+    rescue_weight: float | None = None,
 ) -> dict[str, Path]:
     work_dir.mkdir(parents=True, exist_ok=True)
 
@@ -781,7 +783,10 @@ def prepare_cytospace_inputs(
 
     sc_expr_gene_by_cell.to_csv(sc_expr_path, sep=",")
     st_expr_gene_by_spot.to_csv(st_expr_path, sep=",")
-    coords_for_cyto = st_coords.copy()
+    if "row" in st_coords.columns and "col" in st_coords.columns:
+        coords_for_cyto = st_coords[["row", "col"]].copy()
+    else:
+        coords_for_cyto = st_coords.iloc[:, :2].copy()
     coords_for_cyto.columns = ["row", "col"]
     coords_for_cyto.to_csv(coords_path, sep=",", index_label="SpotID")
 
@@ -798,6 +803,11 @@ def prepare_cytospace_inputs(
     cell_type_df.to_csv(cell_type_path, header=["cell_type"], sep=",")
 
     counts = cell_type_df["cell_type"].value_counts()
+    if rescue_types and rescue_weight is not None and rescue_weight < 1.0:
+        counts = counts.astype(float)
+        for ct in rescue_types:
+            if ct in counts:
+                counts[ct] *= rescue_weight
     frac_series = counts / counts.sum()
     frac_df = pd.DataFrame([frac_series.values], columns=frac_series.index)
     frac_df.index = ["Fraction"]
@@ -1011,6 +1021,24 @@ def main():
     if replace_support_max is not None:
         replace_support_max = float(replace_support_max)
 
+    rescue_ctrl_cfg = stage3_cfg.get("V5_rescue_control") or stage3_cfg.get("v5_rescue_control") or {}
+    rescue_ctrl_enable = bool(rescue_ctrl_cfg.get("enable", False))
+    try:
+        rescue_weight = float(rescue_ctrl_cfg.get("prior_weight", 1.0))
+    except (TypeError, ValueError):
+        rescue_weight = 1.0
+    if rescue_weight < 0:
+        rescue_weight = 0.0
+    if rescue_weight > 1:
+        rescue_weight = 1.0
+    rescued_types = []
+    if rescue_ctrl_enable and stage3_summary_path.exists():
+        try:
+            summary = json.loads(stage3_summary_path.read_text(encoding="utf-8"))
+            rescued_types = summary.get("v5_entropy_qc", {}).get("rescued_types_final", []) or []
+        except Exception:
+            rescued_types = []
+
     # 加载别名映射，并对 missing_type 做 canonicalize
     alias_map_path = project_root / "configs" / "type_aliases.yaml"
     alias_map = load_alias_map(alias_map_path)
@@ -1100,6 +1128,8 @@ def main():
         prep_dir,
         cells_per_spot_override=mapping_cps,
         cell_type_column=args.cell_type_column,
+        rescue_types=rescued_types if rescue_ctrl_enable else None,
+        rescue_weight=rescue_weight if rescue_ctrl_enable else None,
     )
     run_cytospace(inputs, cyto_out_dir, project_root, args)
     weak_th, strong_th = load_stage3_thresholds(project_root, args.sample)
