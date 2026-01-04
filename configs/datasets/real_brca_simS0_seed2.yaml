@@ -1,4 +1,45 @@
 stage3:
   abstain_unknown_sc_only: true
+  alpha: 0.1
+  apply_mismatch_to_relabel: true
+  drop_unknown: true
+  enable_mismatch_detection: true
+  fallback_specificity_mode: mean
+  fallback_specificity_types:
+  - Dendritic cells
+  marker_gene_count: 12
+  marker_specificity_mode: max
+  marker_specificity_mode_overrides: NK cells=mean,PCs=mean
+  min_effect_size: 0.15
+  min_marker_genes: 5
+  min_marker_genes_overrides: T cells CD8=2
+  min_marker_specificity: 1.4
+  min_marker_specificity_overrides: T cells CD8=3.0
+  mismatch_action: mark_unknown
+  multiple_test_correction: BH
+  score_method: fisher_z
   strong_th: 0.8
+  support_threshold: 1.8500000000000016
+  use_permutation_test: true
   weak_th: 0.5
+  z_score_aggregation: topk_mean
+  z_topk: 200
+  V5_denoising:
+    enable: true
+    p_value_upper_limit: 0.2
+    max_pruning_ratio: 0.3
+    min_markers_left: 10
+  V5_niche_rescue:
+    enable: true
+    anchor_p_threshold: 0.01
+    correlation_metric: spearman
+    correlation_threshold: 0.35
+  V5_entropy_qc:
+    enable: true
+    entropy_threshold: 0.95
+    temperature: 1.5
+  V5_rescue_control:
+    enable: true
+    prior_weight: 0.2
+stage4:
+  filter_to_sim_truth: false

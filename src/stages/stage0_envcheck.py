@@ -19,6 +19,20 @@ from datetime import datetime
 from pathlib import Path
 
 
+def load_yaml(path: Path) -> dict:
+    try:
+        import yaml
+    except Exception:
+        return {}
+    if not path.exists() or path.stat().st_size == 0:
+        return {}
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            return yaml.safe_load(f) or {}
+    except Exception:
+        return {}
+
+
 def detect_project_root() -> Path:
     """
     自动推断项目根目录：
@@ -156,10 +170,11 @@ def check_project_layout(project_root: Path):
         project_root / "configs" / "datasets" / "real_brca.yaml",
         project_root / "data" / "raw" / "real_brca",
         project_root / "r_scripts" / "stage1_preprocess.R",
-        project_root / "src" / "stages" / "stage1_preprocess.py",
         project_root / "src" / "stages" / "stage4_mapping.py",
         project_root / "src" / "stages" / "backends" / "cytospace_backend.py",
     ]
+    cfg = load_yaml(project_root / "configs" / "project_config.yaml")
+    rscript_path = (cfg or {}).get("rscript_path")
 
     result = {}
     all_ok = True
@@ -167,6 +182,17 @@ def check_project_layout(project_root: Path):
     for p in expected_paths:
         key = str(p.relative_to(project_root))
         if p.exists():
+            print(f"  - {key} [OK]")
+            result[key] = True
+        else:
+            print(f"  - {key} [MISSING]")
+            result[key] = False
+            all_ok = False
+
+    if rscript_path:
+        rp = Path(rscript_path)
+        key = f"rscript_path:{rscript_path}"
+        if rp.exists():
             print(f"  - {key} [OK]")
             result[key] = True
         else:

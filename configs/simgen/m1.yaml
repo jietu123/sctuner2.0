@@ -1,0 +1,4 @@
+missing_type: "B cells"
+cells_per_spot: 5
+seed: 42
+scenario_tag: "sc_missing_b_cells"

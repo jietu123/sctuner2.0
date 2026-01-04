@@ -2,6 +2,7 @@
 project: SVTuner
 dataset_config_map:
   real_brca: real_brca.yaml
+rscript_path: E:/ANACONDA/envs/cytospace_v1.1.0_py310/Scripts/Rscript.exe
 environment:
   name: cytospace_v1.1.0_py310
   channels:
