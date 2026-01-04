@@ -899,6 +899,34 @@ def load_stage3_weak_th(root: Path, sample: str) -> float | None:
     return None
 
 
+def load_stage3_unknown_label(root: Path, sample: str) -> str | None:
+    stage3_summary_path = root / "result" / sample / "stage3_typematch" / "stage3_summary.json"
+    if stage3_summary_path.exists():
+        try:
+            with stage3_summary_path.open("r", encoding="utf-8") as f:
+                summary = json.load(f)
+            final_strategy = summary.get("final_strategy") or {}
+            unknown_label = final_strategy.get("unknown_label") or summary.get("params", {}).get("unknown_label")
+            if unknown_label:
+                return str(unknown_label).strip()
+        except Exception:
+            pass
+    return None
+
+
+def load_stage3_rescued_types(root: Path, sample: str) -> list[str]:
+    stage3_summary_path = root / "result" / sample / "stage3_typematch" / "stage3_summary.json"
+    if stage3_summary_path.exists():
+        try:
+            with stage3_summary_path.open("r", encoding="utf-8") as f:
+                summary = json.load(f)
+            rescued = summary.get("v5_entropy_qc", {}).get("rescued_types_final", []) or []
+            return [str(t) for t in rescued if str(t).strip()]
+        except Exception:
+            return []
+    return []
+
+
 def eval_cell_spot_accuracy(
     truth_path: Path,
     pred_path: Path,
@@ -1294,7 +1322,8 @@ def generate_filter_audit(
     relabel = pd.read_csv(relabel_path)
 
     # 找出所有被过滤的细胞（与Stage4 filter_scope保持一致）
-    mask_unknown = relabel["plugin_type"] == "Unknown_sc_only"
+    unknown_label = load_stage3_unknown_label(root, sample) or "Unknown_sc_only"
+    mask_unknown = relabel["plugin_type"] == unknown_label
     if filter_scope == "missing_only":
         # missing_only 模式：直接过滤所有 orig_type == missing_type 的细胞，不管 plugin_type 是什么
         # 这与 Stage4 的逻辑保持一致：missing_only 模式下直接过滤 missing_type，不依赖 base_mask
@@ -1454,12 +1483,26 @@ def run_eval(args: argparse.Namespace):
         print(f"[WARN] confidence evaluation failed: {e}")
         confidence_metrics = {"enabled": True, "ready": False, "reason": f"error:{e}"}
     missing_type = sim_info.get("missing_type")
+    rescued_types_final = load_stage3_rescued_types(project_root, args.sample)
+    rescued_types_norm = {normalize_type_name(t) for t in rescued_types_final}
+    missing_type_eval = missing_type
+    missing_type_rescued = False
+    if missing_type and s4.get("filter_mode") != "none":
+        if normalize_type_name(missing_type) in rescued_types_norm:
+            missing_type_eval = None
+            missing_type_rescued = True
 
     ca = pd.read_csv(assign_p)
-    leak_assign = int((ca["cell_type"] == missing_type).sum()) if "cell_type" in ca.columns else None
+    if missing_type_eval and "cell_type" in ca.columns:
+        leak_assign = int((ca["cell_type"] == missing_type_eval).sum())
+    else:
+        leak_assign = 0 if missing_type_eval is None else None
 
     by_spot = load_by_spot_counts(by_spot_p)
-    leak_by_spot = int(by_spot[missing_type].sum()) if missing_type in by_spot.columns else 0
+    if missing_type_eval and missing_type_eval in by_spot.columns:
+        leak_by_spot = int(by_spot[missing_type_eval].sum())
+    else:
+        leak_by_spot = 0
 
     assignment_rows = int(len(ca))
     leak_rate = (leak_by_spot / assignment_rows) if assignment_rows else 0.0
@@ -1500,10 +1543,11 @@ def run_eval(args: argparse.Namespace):
         try:
             # 对于 route2，type_mismatch 是正常的（因为使用了 plugin_type），所以放宽检查
             eval_strict = args.strict_config and args.run_tag == "baseline"
+            missing_types_eval = [missing_type_eval] if missing_type_eval else []
             cell_spot_eval, _, _ = eval_cell_spot_accuracy(
                 truth_path=truth_query_p,
                 pred_path=assign_p,
-                missing_types=[missing_type] if missing_type else [],
+                missing_types=missing_types_eval,
                 out_dir=out_dir,
                 strict_config=eval_strict,
                 query_id=None,  # 自动检测
@@ -1526,6 +1570,9 @@ def run_eval(args: argparse.Namespace):
             "missing_in_assignment": leak_assign,
             "missing_in_by_spot": leak_by_spot,
             "missing_leak_rate": leak_rate,
+            "missing_type_eval": missing_type_eval,
+            "missing_type_rescued": missing_type_rescued,
+            "rescued_types_final": rescued_types_final,
         },
         "composition": {
             "L1_mean": l1_mean,

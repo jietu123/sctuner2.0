@@ -6,7 +6,7 @@ paths:
 
 stage3:
   abstain_unknown_sc_only: true
-  alpha: 0.05
+  alpha: 0.1
   apply_mismatch_to_relabel: true
   drop_unknown: true
   enable_mismatch_detection: true
@@ -42,11 +42,10 @@ stage3:
     correlation_threshold: 0.35
   V5_entropy_qc:
     enable: true
-    entropy_threshold: 0.8
+    entropy_threshold: 0.95
     temperature: 1.5
   V5_rescue_control:
     enable: true
     prior_weight: 0.2
-
 stage4:
   filter_to_sim_truth: false
