@@ -1,4 +1,4 @@
-# SVTuner 项目说明（2025）
+﻿# SVTuner 项目说明（2025）
 
 SVTuner：面向空间变异性（SVG）与类型感知的细胞–空间位点映射调谐框架。当前仓库已接入 GitHub，Stage0 占位，Stage1 预处理已实现并可运行，后续阶段按 SVTuner.md 规划逐步落地。
 
@@ -127,41 +127,19 @@ python src/stages/stage3_type_plugin.py --sample real_brca
 # 可调阈值/聚类等：--strong_th --weak_th --st_cluster_k --unknown_floor --min_cells_rare_type
 ```
 
+## SimGen 场景构建（src/sim/*.py）
+- 作用：生成模拟场景（S0/S1/M0/M1），并同步生成 Stage1 export 所需 CSV。
+- 配置：`configs/simgen/*.yaml`
+- 输出：
+  - `data/sim/<sample>/<scenario>/<seed_*>/`：sc/st 模拟数据与 truth 文件
+  - `data/processed/<scenario>/stage1_preprocess/exported/`：Stage1 export CSV（Stage3/4/5 直接使用）
 
-## SimGen ???????src/simgen/make_scenario.py?
-- ?????????????????????????? Stage4 ?????? Stage1 ?????
-- ???`configs/simgen/<scenario_id>.yaml`????????? Stage1 ???`data/processed/<input_sample>/stage1_preprocess/exported/`??
-- ???????
-  - `data/sim/<scenario_id>/`??? sc/st ???????????cell?spot?spot?type??
-  - `data/processed/<scenario_id>/stage1_preprocess/exported/`?????? CSV?sc/st ???sc_metadata?st_coordinates??
-- ???SimGen ???????????? Stage4??????? Stage4?
+## Stage4 映射（src/stages/stage4_cytospace.py）
+- Route2：基于 Stage3 的 `plugin_type` 过滤映射
+- Baseline：不经过过滤，等价官方 CytoSPACE
 
-## Stage4 ???src/stages/stage4_mapping.py + src/stages/backends/cytospace_backend.py?
-- ?????? sample???? SimGen ??????????????????
-- ???
-  - Stage1 ???`data/processed/<sample>/stage1_preprocess/exported/` ??? CSV
-  - plus ??????`data/processed/<sample>/stage2_svg_plugin/` ? `data/processed/<sample>/stage3_typematch/`
-- ???
-  - `result/<sample>/stage4_mapping/<backend>/baseline/`?cell_assignment / cell_spot_matrix / spot_type_fraction
-  - `result/<sample>/stage4_mapping/<backend>/plus_svg_type/`??? plus ??
-  - `result/<sample>/stage4_run_manifest.json|csv`?Stage4 ?? run ???
-- ?????
-```pwsh
-python src/stages/stage4_mapping.py --sample S0_matched --backends cytospace --enable_plus
-python src/stages/stage4_mapping.py --sample M1_sc_missing_Bcell --backends cytospace --enable_plus
-python src/stages/stage4_mapping.py --sample M2_st_missing_Tcell --backends cytospace --enable_plus
-```
-
-
-## SimGen + Stage4 run examples (CLI)
-```pwsh
-python src/simgen/make_scenario.py --scenario_id S0_matched --config configs/simgen/S0_matched.yaml
-python src/simgen/make_scenario.py --scenario_id M1_sc_missing_Bcell --config configs/simgen/M1_sc_missing_Bcell.yaml
-python src/simgen/make_scenario.py --scenario_id M2_st_missing_Tcell --config configs/simgen/M2_st_missing_Tcell.yaml
-python src/stages/stage4_mapping.py --sample S0_matched --backends cytospace --enable_plus
-python src/stages/stage4_mapping.py --sample M1_sc_missing_Bcell --backends cytospace --enable_plus
-python src/stages/stage4_mapping.py --sample M2_st_missing_Tcell --backends cytospace --enable_plus
-```
+## Stage5 评估（src/stages/stage5_route2_s0.py）
+- 产出 composition/coverage/accuracy 等指标，并支持 baseline 对比
 
 ## Git/LFS 注意
 - 大文件（raw 数据）已由 Git LFS 跟踪；请确保本地安装并启用 Git LFS。
@@ -169,12 +147,13 @@ python src/stages/stage4_mapping.py --sample M2_st_missing_Tcell --backends cyto
 
 ## 后续阶段（占位说明）
 - Stage0：当前为占位提示，未来可接入真实环境检查。
-- Stage5/6/7?? `dosc/SVTuner.md` ?????????????
+- Stage5/6/7：详见 `dosc/SVTuner.md` 的规划与说明。
 
 ## 常见问题
 - Rscript 找不到：确认 `--r-cmd` 指向有效 Rscript（建议 conda run）。
 - DLL 相关报错（Windows）：使用默认 `--r-cmd "conda run -n cytospace_v1.1.0_py310 Rscript"`，或手动设置 `CONDA_DLL_SEARCH_MODIFICATION_ENABLE=1`。
 - 输入文件名不匹配：在 `configs/datasets/<sample>.yaml` 显式配置 `paths`。
+
 ## S0/M1 当前固定配置（主线封板）
 - S0（`configs/datasets/S0_matched_dataset.yaml`）：Part2 + Part3 v1+quota 固定开启
   - `svg_post_enabled: true`
@@ -192,3 +171,160 @@ python src/stages/stage4_mapping.py --sample M2_st_missing_Tcell --backends cyto
   - S0：`--config_id S0_freeze_best`
   - M1：`--config_id M1_freeze_safe`
 
+## 脚本运行方式（逐文件清单）
+说明：以下列出了当前仓库内所有可执行脚本的运行方式。
+- 有 CLI 参数的脚本：先运行 `python <script> --help` 查看完整参数。
+- 无 CLI 参数的脚本：需在脚本顶部修改 sample/path 常量后运行。
+
+### 主入口 / Stage 脚本
+- `src/main.py`：主管线入口（Stage0/Stage1）
+```pwsh
+python src/main.py --sample real_brca_simS0_seed0 --stages 0,1
+```
+- `src/stages/stage0_envcheck.py`：环境自检
+```pwsh
+python src/stages/stage0_envcheck.py
+```
+- `r_scripts/stage1_preprocess.R`：Stage1 R 预处理
+```pwsh
+$env:PATH="E:\ANACONDA\envs\cytospace_v1.1.0_py310\Library\bin;E:\ANACONDA\envs\cytospace_v1.1.0_py310\bin;E:\ANACONDA\envs\cytospace_v1.1.0_py310\Scripts;C:\Windows\System32"
+& "E:\ANACONDA\envs\cytospace_v1.1.0_py310\Scripts\Rscript.exe" r_scripts/stage1_preprocess.R --sample real_brca_simS0_seed0 --project_root D:/Experiment/SVTuner_Project --export_csv
+```
+- `src/stages/stage3_type_plugin.py`：Stage3 V4/V5 unknown-aware
+```pwsh
+python src/stages/stage3_type_plugin.py --sample real_brca_simS0_seed0
+# 指定数据配置：--dataset_config configs/datasets/real_brca_simS0_seed0.yaml
+```
+- `src/stages/stage4_cytospace.py`：Stage4 Route2/Baseline
+```pwsh
+# Route2 (plugin_unknown)
+python src/stages/stage4_cytospace.py --sample real_brca_simS0_seed0 --filter_mode plugin_unknown --cell_type_column plugin_type --missing_type "T cells CD8" --mean_cell_numbers 5 --solver_method lap_CSPR --seed 0 --sampling_sub_spots --n_subspots 800 --n_processors 1 --filter_scope unsupported_all
+
+# Baseline (official CytoSPACE)
+python src/stages/stage4_cytospace.py --sample real_brca_simS0_seed0 --filter_mode none --cell_type_column sc_meta --seed 0 --sampling_sub_spots --n_subspots 800 --n_processors 1
+```
+- `src/stages/stage4_route2.py`：Stage4 MVP（仅过滤验收）
+```pwsh
+python src/stages/stage4_route2.py --sample real_brca_simS0_seed0 --missing_type "T cells CD8" --filter_mode plugin_unknown
+```
+- `src/stages/stage5_route2_s0.py`：Stage5 评估 / 对比
+```pwsh
+python src/stages/stage5_route2_s0.py --sample real_brca_simS0_seed0 --run_tag v5_3_1 --stage4_dir result/real_brca_simS0_seed0/stage4_cytospace/cytospace_output --sim_dir data/sim/real_brca/S0/t_cells_cd8/seed_0 --out_dir result/real_brca_simS0_seed0/stage5_route2_s0/v5_3_1
+
+# 对比 json（baseline vs route2）
+python src/stages/stage5_route2_s0.py --compare_baseline <baseline.json> --compare_route2 <route2.json> --compare_out <compare.json>
+```
+
+### SimGen 脚本（src/sim/*.py）
+- `src/sim/simgen_s0.py`
+```pwsh
+python src/sim/simgen_s0.py --sample real_brca --sim_config configs/simgen/s0.yaml --seed 0 --missing_type "T cells CD8"
+```
+- `src/sim/simgen_s1.py`
+```pwsh
+python src/sim/simgen_s1.py --sample real_brca --sim_config configs/simgen/s1.yaml
+```
+- `src/sim/simgen_m0.py`
+```pwsh
+python src/sim/simgen_m0.py --sample real_brca --sim_config configs/simgen/m0.yaml --seed 42 --missing_type "T cells CD8" --dispersed_type "T cells CD4" --scenario_tag cd4_10pct_cd8_3pct_clustered
+```
+- `src/sim/simgen_m1.py`
+```pwsh
+python src/sim/simgen_m1.py --sample real_brca --sim_config configs/simgen/m1.yaml --seed 42 --missing_type "B cells"
+```
+
+### scripts/ 辅助工具
+- `scripts/auto_tune_support_threshold.py`
+```pwsh
+python scripts/auto_tune_support_threshold.py --sample real_brca_simS0_seed42 --missing_type "T cells CD8" --seed 42 --sim_dir data/sim/real_brca/S0/t_cells_cd8/seed_42
+```
+- `scripts/auto_tune_weak_th.py`
+```pwsh
+python scripts/auto_tune_weak_th.py --sample real_brca_simS0_mt_b_cells_seed42 --missing_type "B cells" --seed 42 --sim_dir data/sim/real_brca/S0/b_cells/seed_42
+```
+- `scripts/prepare_sample_for_tuning.py`
+```pwsh
+python scripts/prepare_sample_for_tuning.py --sample real_brca_simS0_seed42 --missing_type "T cells CD8" --seed 42
+```
+- `scripts/run_single_weak_th.py`
+```pwsh
+python scripts/run_single_weak_th.py --sample real_brca_simS0_seed42 --missing_type "T cells CD8" --weak_th 0.55 --seed 42
+```
+- `scripts/run_until_cleared.py`
+```pwsh
+python scripts/run_until_cleared.py --sample real_brca_simS0_seed42 --missing_type "T cells CD8" --seed 42 --start_weak_th 0.50 --max_weak_th 0.70 --step 0.02
+```
+- `scripts/transpose_sample.py`
+```pwsh
+python scripts/transpose_sample.py --sample real_brca_simS0_seed42
+```
+- `scripts/transpose_seed.py`
+```pwsh
+python scripts/transpose_seed.py --seed 42
+```
+- `scripts/check_st_expression.py`（传入 3 个路径）
+```pwsh
+python scripts/check_st_expression.py <st_expression_normalized.csv> <sc_expression_normalized.csv> <sc_metadata.csv>
+```
+- `scripts/check_stage3_cd4.py`
+```pwsh
+python scripts/check_stage3_cd4.py real_brca_simS0_mt_t_cells_cd4_seed42
+```
+- `scripts/check_truth_types.py`
+```pwsh
+python scripts/check_truth_types.py data/sim/real_brca/S0/t_cells_cd4/seed_42/sim_truth_spot_type_fraction.csv
+```
+- `scripts/filter_audit.py`
+```pwsh
+python scripts/filter_audit.py real_brca_simS0_mt_t_cells_cd4_seed42 "T cells CD4"
+```
+- `scripts/verify_filter_audit.py`
+```pwsh
+python scripts/verify_filter_audit.py result/real_brca_simS0_mt_t_cells_cd4_seed42/stage5_route2_s0/stage5_route2_s0__route2.json
+```
+- `scripts/aggregate_seed_summary.py`（脚本内 SEEDS/base_tag 可修改）
+```pwsh
+python scripts/aggregate_seed_summary.py
+```
+- `scripts/analyze_false_positives.py`（脚本内 sample/missing_type/threshold 可修改）
+```pwsh
+python scripts/analyze_false_positives.py
+```
+- `scripts/audit_sha1.py`（脚本内路径可修改）
+```pwsh
+python scripts/audit_sha1.py
+```
+- `scripts/check_false_positives.py`（脚本内样本可修改）
+```pwsh
+python scripts/check_false_positives.py
+```
+- `scripts/compare_metrics_v41.py`（脚本内路径可修改）
+```pwsh
+python scripts/compare_metrics_v41.py
+```
+- `scripts/inspect_sc.py`（脚本内路径可修改）
+```pwsh
+python scripts/inspect_sc.py
+```
+- `scripts/print_metrics.py`（脚本内路径可修改）
+```pwsh
+python scripts/print_metrics.py
+```
+- `scripts/test_v42_pvalue.py`（脚本内参数可修改）
+```pwsh
+python scripts/test_v42_pvalue.py
+```
+- `scripts/transpose_seed0.py`（脚本内路径可修改）
+```pwsh
+python scripts/transpose_seed0.py
+```
+- `scripts/type_filter_audit_report.py`（脚本内路径可修改）
+```pwsh
+python scripts/type_filter_audit_report.py
+```
+
+### tools/ 工具
+- `tools/check_stage4_stats.py`（脚本内 sample 可修改）
+```pwsh
+python tools/check_stage4_stats.py
+```

@@ -26,6 +26,12 @@ import yaml
 from scipy.stats import pearsonr, norm, spearmanr
 
 
+# 模块流程概览：
+# 1) 读取项目与数据集配置，统一 Stage3 参数来源（defaults + dataset + CLI）。
+# 2) 计算类型支持度：V4.1 Fisher r->z 与 V4.2 显著性检验/多重校正。
+# 3) 生成 Unknown / Dropped / Relabel 与 type_prior_matrix。
+# 4) V5.x 进行去噪、生态位拯救、熵质控与拯救控制。
+# 5) 输出 stage3_summary.json 与 data/processed 下的中间文件。
 # ----------------------------
 # 配置与路径
 # ----------------------------
@@ -89,10 +95,13 @@ def detect_project_root() -> Path:
 
 # ----------------------------
 # 相似度与聚类
+# - 计算 ST/SC 在 marker 基因空间中的相似度。
+# - 可选 KMeans 将 ST spot 聚类，降低噪声与计算量；失败时回退到逐 spot。
 # ----------------------------
 
 def weighted_cosine(x: np.ndarray, y: np.ndarray, w: np.ndarray, eps: float) -> float:
     # x,y: (G,), w: (G,)
+    # Weighted cosine with stability guard for near-zero norms.
     wx = x * w
     wy = y * w
     num = np.dot(wx, wy)
@@ -184,6 +193,7 @@ def try_cluster_st(st_expr: pd.DataFrame, plugin_genes: List[str], k: int) -> Tu
     返回 labels, cluster_profiles
     cluster_profiles: index=cluster_id, columns=plugin_genes
     """
+    # Fall back to no clustering when k is invalid or too large.
     if k is None or k <= 0 or len(st_expr) <= k:
         labels = np.arange(len(st_expr))
         profiles = st_expr.loc[:, plugin_genes].copy()
@@ -192,6 +202,7 @@ def try_cluster_st(st_expr: pd.DataFrame, plugin_genes: List[str], k: int) -> Tu
     try:
         from sklearn.cluster import KMeans
     except Exception:
+        # If sklearn is missing, treat each spot as its own cluster.
         labels = np.arange(len(st_expr))
         profiles = st_expr.loc[:, plugin_genes].copy()
         profiles.index = [f"spot_{i}" for i in range(len(st_expr))]
@@ -227,6 +238,7 @@ def aggregate_z_values(z_values: np.ndarray, method: str = "max", topk: int = 5)
 def compute_normalized_entropy(z_values: np.ndarray, temperature: float = 1.0, eps: float = 1e-12) -> float:
     if z_values.size <= 1:
         return 0.0
+    # Softmax with temperature, then normalize entropy by log(K).
     temp = max(eps, float(temperature))
     logits = z_values / temp
     logits = logits - np.max(logits)
@@ -241,6 +253,8 @@ def compute_normalized_entropy(z_values: np.ndarray, temperature: float = 1.0, e
 
 # ----------------------------
 # V4.1: Fisher r→z 变换支持度计算
+# - 将相关系数转为 z 值，得到更稳定的支持度统计量。
+# - 后续用于显著性判定与灰区/缺失类型识别。
 # ----------------------------
 
 def fisher_z_transform(r: np.ndarray, eps: float = 1e-10) -> np.ndarray:
@@ -283,6 +297,7 @@ def select_marker_genes(
     Returns:
         标记基因列表
     """
+    # Simple marker selection: top mean expression within the target type.
     # 获取该类型的细胞
     type_cells = sc_meta[sc_meta[type_col] == cell_type]["cell_id"]
     type_cells = [cid for cid in type_cells if cid in sc_expr.index]
@@ -324,6 +339,7 @@ def compute_fisher_z_support_score(
         如果 return_all_z=False: 支持度评分（最大 Fisher z 值）
         如果 return_all_z=True: (support_score, z_values) 元组
     """
+    # Compute per-spot correlations, then aggregate Fisher z scores.
     # 确保 marker_genes 在 st_expr 和 type_profile 中都存在
     available_genes = [g for g in marker_genes if g in st_expr.columns and g in type_profile.index]
     if len(available_genes) < 2:  # 至少需要2个基因才能计算相关系数
@@ -362,6 +378,7 @@ def compute_fisher_z_support_score(
 
 # ----------------------------
 # V5.1: Signal denoising (marker pruning)
+# - 通过 CV 评估 marker 噪声，按比例剪枝，提升弱信号的可辨识性。
 # ----------------------------
 
 def compute_marker_noise_scores_cv(
@@ -369,6 +386,7 @@ def compute_marker_noise_scores_cv(
     marker_genes: List[str],
     eps: float = 1e-10,
 ) -> pd.Series:
+    # Use inverse CV as a stability score (higher = less noisy).
     available = [g for g in marker_genes if g in st_expr.columns]
     if not available:
         return pd.Series(dtype=float)
@@ -387,6 +405,7 @@ def prune_noisy_markers(
     min_markers_left: int,
     eps: float = 1e-10,
 ) -> Tuple[List[str], List[str]]:
+    # Drop the noisiest markers up to the configured pruning ratio.
     n_total = len(marker_genes)
     if n_total <= min_markers_left:
         return marker_genes, []
@@ -406,6 +425,7 @@ def prune_noisy_markers(
 
 # ----------------------------
 # V4.2: 显著性检验和多重比较校正
+# - 计算 p 值并进行 BH/Bonferroni 校正，为“灰区准入”提供统计依据。
 # ----------------------------
 
 def compute_p_value(
@@ -445,6 +465,7 @@ def compute_p_value(
     if z_values.size == 0:
         return 1.0
     
+    # Prefer permutation test when requested and inputs are available.
     if use_permutation:
         if type_profile is None or st_expr is None or marker_genes is None:
             # Missing data for permutation test, fall back to normal approximation.
@@ -515,6 +536,7 @@ def compute_p_value(
     # 多 spot 校正：Bonferroni 近似
     # p_c = min(1, S × min_i p_c,i)
     # 注意：这里我们取最小值 p，因为如果任何一个 spot 有高相关性，就表示类型存在
+    # Using min spot p-value yields a conservative multi-spot correction.
     min_spot_p = float(np.min(spot_p_values))
     p_value = min(1.0, n_spots * min_spot_p)
     
@@ -575,6 +597,7 @@ def apply_multiple_test_correction(
                 q_vals[sorted_indices[i + 1]] if i < M - 1 else sorted_p[i] * M / rank
             )
         
+        # Enforce monotonicity of BH-adjusted q-values.
         # 确保 q 值单调递增（从最小 p 到最大 p）
         for i in range(M - 2, -1, -1):
             if q_vals[sorted_indices[i]] > q_vals[sorted_indices[i + 1]]:
@@ -618,6 +641,7 @@ def select_marker_genes_with_specificity(
     Returns:
         选定的标记基因列表
     """
+    # Filter by specificity, then fall back to a minimum marker count if needed.
     # 获取该类型的细胞
     type_cells = sc_meta[sc_meta[type_col] == cell_type]["cell_id"]
     type_cells = [cid for cid in type_cells if cid in sc_expr.index]
@@ -677,12 +701,16 @@ def select_marker_genes_with_specificity(
 
 # ----------------------------
 # 主流程
+# - 加载配置与数据。
+# - 计算支持度与显著性，并生成 Unknown/Drop/Relabel。
+# - 应用 V5 拯救链，输出汇总与中间文件。
 # ----------------------------
 
 def main():
     args = parse_args()
     project_root = Path(args.project_root) if args.project_root else detect_project_root()
 
+    # Config precedence: dataset config -> defaults, with CLI overrides.
     # 加载配置（参考 Stage2 的实现）
     project_cfg_path = project_root / args.config
     project_cfg = load_yaml(project_cfg_path)
@@ -695,8 +723,10 @@ def main():
     
     dataset_cfg = load_yaml(dataset_cfg_path)
     stage3_cfg = (dataset_cfg.get("stage3") or {}) if isinstance(dataset_cfg, dict) else {}
+    # Stage3 子配置（若缺省则为空字典）
     
     # 默认值
+    # 统一的默认参数，用于缺省字段和向后兼容
     defaults = {
         "strong_th": 0.7,
         "weak_th": 0.4,
@@ -733,6 +763,7 @@ def main():
         "drop_unknown": True,
     }
 
+    # V5 系列子模块配置分组：去噪 / 生态位 / 熵质控 / 拯救控制
     v5_cfg = {}
     if isinstance(stage3_cfg, dict):
         v5_cfg = stage3_cfg.get("V5_denoising") or stage3_cfg.get("v5_denoising") or {}
@@ -749,6 +780,7 @@ def main():
     if isinstance(stage3_cfg, dict):
         v5_rescue_ctrl_cfg = stage3_cfg.get("V5_rescue_control") or stage3_cfg.get("v5_rescue_control") or {}
 
+    # 将 V5 参数做类型转换与范围裁剪，避免非法值影响流程
     v5_enable = bool(v5_cfg.get("enable", False))
     try:
         v5_p_upper = float(v5_cfg.get("p_value_upper_limit", 0.2))
@@ -811,6 +843,7 @@ def main():
         v5_rescue_prior_weight = 1.0
 
     # 从配置读取（配置优先，然后 CLI 覆盖）
+    # 读取 V4/V5 参数：dataset 配置优先，CLI 覆盖
     strong_th = args.strong_th if args.strong_th is not None else stage3_cfg.get("strong_th", defaults["strong_th"])
     weak_th = args.weak_th if args.weak_th is not None else stage3_cfg.get("weak_th", defaults["weak_th"])
     min_effect_size = (
@@ -875,6 +908,7 @@ def main():
         marker_specificity_mode = defaults["marker_specificity_mode"]
     if fallback_specificity_mode not in {None, "mean", "max"}:
         fallback_specificity_mode = None
+    # 解析按类型覆盖的特异性/marker 下限配置
     override_map = {}
     if isinstance(marker_specificity_mode_overrides, str):
         for part in marker_specificity_mode_overrides.split(","):
@@ -977,6 +1011,7 @@ def main():
         use_permutation_test = True
 
     # 路径
+    # Stage1 导出与 Stage3 输出目录
     stage1_export = project_root / "data" / "processed" / args.sample / "stage1_preprocess" / "exported"
     out_proc = project_root / "data" / "processed" / args.sample / "stage3_typematch"
     out_res = project_root / "result" / args.sample / "stage3_typematch"
@@ -984,15 +1019,18 @@ def main():
     out_res.mkdir(parents=True, exist_ok=True)
 
     # 读取数据
+    # 读取 Stage1 导出的表达矩阵与元数据
     sc_expr = pd.read_csv(stage1_export / "sc_expression_normalized.csv", index_col=0)
     st_expr = pd.read_csv(stage1_export / "st_expression_normalized.csv", index_col=0)
     sc_meta = pd.read_csv(stage1_export / "sc_metadata.csv")
     st_coords = pd.read_csv(stage1_export / "st_coordinates.csv", index_col=0)
     # 阶段二已移除：改用 Stage1 的高变基因或配置指定的基因列表
+    # 选择用于匹配的基因集合（HVG 或显式路径）
     plugin_genes_path = stage3_cfg.get("plugin_genes_path") or (stage1_export.parent / "hvg_genes.txt")
     if not Path(plugin_genes_path).exists():
         raise FileNotFoundError(f"plugin_genes_path 不存在: {plugin_genes_path}")
     plugin_genes = [g.strip() for g in Path(plugin_genes_path).read_text(encoding="utf-8").splitlines() if g.strip()]
+    # 可选基因权重，用于加权相似度
     gene_weights_path = stage3_cfg.get("gene_weights_path")
     if gene_weights_path and Path(gene_weights_path).exists():
         gene_weights = pd.read_csv(gene_weights_path)
@@ -1002,10 +1040,12 @@ def main():
     w = np.array([weight_map.get(g, 1.0) for g in plugin_genes], dtype=float)
 
     # 对齐基因
+    # 对齐 gene 列顺序，确保 SC/ST 使用同一集合
     sc_expr = sc_expr.loc[:, plugin_genes]
     st_expr = st_expr.loc[:, plugin_genes]
 
     # 取类型列名（兼容 cell_type / celltype / type），并加护栏避免 silent mismatch
+    # 解析细胞类型列并检查不一致
     if "cell_type" in sc_meta.columns and "celltype" in sc_meta.columns:
         a = sc_meta["cell_type"].astype(str).to_numpy()
         b = sc_meta["celltype"].astype(str).to_numpy()
@@ -1022,13 +1062,16 @@ def main():
     else:
         raise KeyError("sc_metadata.csv 需要包含 celltype/cell_type/type 之一作为类型列")
     # 类型画像
+    # 计算每个 cell type 的平均表达 profile，用于相似度与支持度评估
     profiles = compute_type_profiles(sc_expr, sc_meta, plugin_genes, type_col=type_col)
 
     # ST 聚类（可选）
+    # 将 spot 聚类为若干代表性簇，提高稳定性与计算效率
     labels, st_profiles = try_cluster_st(st_expr, plugin_genes, k=st_cluster_k)
     st_profiles_np = st_profiles.to_numpy(dtype=float)
 
     # 支持度计算
+    # 准备容器记录支持度、p 值、marker 等中间结果
     support_rows = []
     type_support_score = {}
     type_p_values = {}  # V4.2: 存储 p 值
@@ -1037,6 +1080,7 @@ def main():
     type_cells_map: dict[str, List[str]] = {}
     
     # V4.1: 如果启用 Fisher r→z 方法
+    # use_v42 代表启用 V4.2 的显著性检验与多重校正
     use_fisher_z = enable_mismatch_detection and score_method == "fisher_z"
     use_v42 = use_fisher_z  # V4.2 在 V4.1 基础上扩展
     if args.apply_mismatch_to_relabel is None and "apply_mismatch_to_relabel" not in stage3_cfg:
@@ -1047,6 +1091,7 @@ def main():
     
     n_spots = len(st_expr.index)  # 用于 p 值计算的多 spot 校正
     
+    # 逐类型计算支持度与显著性
     for t, prof in profiles.items():
         if use_fisher_z:
             # V4.1/V4.2: 使用 Fisher r→z 变换方法
@@ -1130,7 +1175,7 @@ def main():
             best_idx = int(np.argmax(sims)) if sims.size > 0 else 0
             mapped_cluster = st_profiles.index[best_idx] if len(st_profiles.index) > 0 else ""
         else:
-            # 传统方法：加权余弦相似度 + top-3 均值
+            # 传统方法：加权余弦相似度 + top-3 均值（兼容旧版本）
             sims = []
             for i in range(st_profiles_np.shape[0]):
                 sims.append(weighted_cosine(prof, st_profiles_np[i], w, eps=eps))
@@ -1164,6 +1209,7 @@ def main():
         support_rows.append(row_data)
     
     # V4.2: 多重比较校正和显著性判定
+    # 基于 q 值决定显著缺失（Significant=Yes 表示缺失）
     if use_v42 and type_p_values:
         # 过滤掉 None 值（传统方法没有 p 值）
         valid_p_values = {t: p for t, p in type_p_values.items() if p is not None}
@@ -1182,6 +1228,7 @@ def main():
                     row["PValue"] = valid_p_values[cell_type]
                     
                     # 判定显著性：根据设计文档，p 值表示"类型不存在的概率"
+                    # 这里用 q 值（校正后）来判定缺失，避免多重比较带来的假阳性
                     # 如果 p 值大（>= alpha），表示类型不存在（显著缺失）
                     # 如果 p 值小（< alpha），表示类型存在（不显著缺失）
                     # 注意：这里 p 值实际上是"类型存在的显著性"，所以需要反转逻辑
@@ -1202,6 +1249,10 @@ def main():
                     if "Significant" in row:
                         row["Significant"] = ""
 
+    # V5 灰区定义：
+    # 1) p 在 [alpha, upper_limit) 之间：统计不确定，进入拯救候选
+    # 2) p < alpha 但支持度 <= min_effect_size：统计显著但效应太弱
+    # upper_limit 由 V5 配置控制，用于限制“过于不显著”的类型
     def _in_v5_grey_zone(p_val: float, support_score: float, upper_limit: float) -> bool:
         if p_val is None:
             return False
@@ -1212,10 +1263,12 @@ def main():
         return False
 
     # V5.1: 信号提纯拯救（只针对灰区 P 值）
+    # 思路：对灰区类型做 marker 剪枝，重新计算支持度/显著性；若转为显著则拯救
     v5_denoising_rescued: set[str] = set()
     if v5_enable and use_v42:
         if v5_p_upper < alpha:
             v5_p_upper = alpha
+        # 遍历所有类型，筛出灰区候选
         for row in support_rows:
             p_val = row.get("PValue", None)
             if p_val is None:
@@ -1230,6 +1283,7 @@ def main():
             marker_genes = marker_genes_map.get(t, [])
             if not marker_genes:
                 continue
+            # 计算噪声并剪枝 marker
             cleaned_genes, dropped_genes = prune_noisy_markers(
                 marker_genes,
                 st_expr,
@@ -1243,6 +1297,7 @@ def main():
             type_cells = [cid for cid in type_cells if cid in sc_expr.index]
             if len(type_cells) == 0:
                 continue
+            # 用剪枝后的 marker 重新评估支持度与 p 值
             type_profile = sc_expr.loc[type_cells, cleaned_genes].mean(axis=0)
             score_new, z_vals = compute_fisher_z_support_score(
                 type_profile,
@@ -1272,10 +1327,12 @@ def main():
             row["V5_marker_pruned"] = len(dropped_genes)
             row["V5_marker_left"] = len(cleaned_genes)
             row["V5_rescued"] = "Yes" if p_new < alpha else "No"
+            # 记录是否被成功拯救
             if p_new < alpha:
                 v5_denoising_rescued.add(t)
 
     # V5.2: niche co-occurrence rescue
+    # 以高置信 anchor 类型为参照，基于 z 向量相关性判定拯救
     v5_niche_rescued: set[str] = set()
     v5_niche_anchor_map: dict[str, str] = {}
     v5_niche_corr_map: dict[str, float] = {}
@@ -1283,6 +1340,7 @@ def main():
         if v5_niche_p_upper < alpha:
             v5_niche_p_upper = alpha
         anchor_types = []
+        # 先筛出 anchor（极显著存在的类型）
         for row in support_rows:
             p_val = row.get("PValue", None)
             if p_val is None:
@@ -1296,6 +1354,7 @@ def main():
                 z_vals = type_z_values.get(t)
                 if z_vals is not None and z_vals.size > 0:
                     anchor_types.append(t)
+        # 再对灰区类型计算与 anchor 的相关性
         for row in support_rows:
             p_val = row.get("PValue", None)
             if p_val is None:
@@ -1327,6 +1386,7 @@ def main():
                     best_anchor = anchor
             if best_anchor is None:
                 continue
+            # 记录 anchor 与相关系数，用于审计与 summary
             row["V5_niche"] = True
             row["V5_niche_anchor"] = best_anchor
             row["V5_niche_corr"] = best_corr
@@ -1336,11 +1396,14 @@ def main():
                 v5_niche_anchor_map[t] = best_anchor
                 v5_niche_corr_map[t] = best_corr
 
+    # V5.3: 熵质控（过滤分布过于弥散的拯救类型）
+    # 熵越低表示信号集中（更可能真实），熵过高则撤销拯救
     v5_rescued_types = v5_denoising_rescued | v5_niche_rescued
     v5_final_rescued = set(v5_rescued_types)
     v5_entropy_values: dict[str, float] = {}
     v5_entropy_pass: dict[str, bool] = {}
     if v5_entropy_enable and use_v42 and v5_rescued_types:
+        # 对每个已拯救类型计算归一化熵
         for t in sorted(v5_rescued_types):
             z_vals = type_z_values.get(t)
             if z_vals is None or z_vals.size == 0:
@@ -1352,6 +1415,7 @@ def main():
             v5_entropy_values[t] = entropy
             v5_entropy_pass[t] = entropy < v5_entropy_threshold
         v5_final_rescued = {t for t in v5_rescued_types if v5_entropy_pass.get(t, False)}
+    # 回填熵质控结果，便于审计与可视化
     for row in support_rows:
         t = row["orig_type"]
         if t in v5_entropy_values:
@@ -1360,6 +1424,7 @@ def main():
             row["V5_final_rescued"] = "Yes" if t in v5_final_rescued else "No"
 
     # 支持度分档 + 稀有类型保护
+    # 根据 strong/weak/unsupported 将类型分层，稀有类型避免被判 strong
     for row in support_rows:
         score = row["support_score"]
         n_cells = row["n_cells"]
@@ -1373,18 +1438,23 @@ def main():
             category = "unsupported"
         row["support_category"] = category
     unsupported_types = {row["orig_type"] for row in support_rows if row["support_category"] == "unsupported"}
+    # 拯救成功的类型不再视为 unsupported
     if v5_final_rescued:
         unsupported_types -= v5_final_rescued
 
     # V4.3: 根据显著缺失结果进行处理决策
+    # missing_types 用于 relabel 或标记 Unknown
     missing_types = set()
     if use_v42:
         for row in support_rows:
             if str(row.get("Significant", "")).strip().lower() == "yes":
                 missing_types.add(row["orig_type"])
+    # 拯救成功的类型不再视为缺失
     if v5_final_rescued:
         missing_types -= v5_final_rescued
 
+    # 生成动作映射：Keep / Dropped / Unknown / Relabel
+    # 初始全部 Keep，再应用 unsupported 与 missing_types 规则
     action_map = {row["orig_type"]: "Keep" for row in support_rows}
     for t in unsupported_types:
         action_map[t] = "Dropped" if drop_unknown else "Unknown"
@@ -1393,6 +1463,8 @@ def main():
     merge_sources: dict[str, List[str]] = defaultdict(list)
     similarity_target_map: dict[str, str] = {}
 
+    # 缺失类型的处理策略：重标注或直接 Unknown
+    # relabel 优先使用 merge_target_map 的人工映射，其次按表达相似度自动匹配
     if mismatch_action in {"relabel", "mark_unknown"} and missing_types:
         type_by_norm = {normalize_type_key(t): t for t in profiles.keys()}
         manual_map = {normalize_type_key(k): v for k, v in merge_target_map.items()}
@@ -1438,14 +1510,18 @@ def main():
             merged = ",".join(sorted({*prev_sources.split(","), *sources}))
         action_map[target] = f"Merged<-{merged}"
 
+    # 将 action_map 写回 support_rows，供输出与后续分析
     for row in support_rows:
         row["Action"] = action_map.get(row["orig_type"], "Keep")
 
     # 写 type_support
+    # 记录支持度/显著性/处理动作的明细表
     type_support_path = out_proc / "type_support.csv"
     pd.DataFrame(support_rows).to_csv(type_support_path, index=False)
 
     # 重写标签
+    # 生成 cell_type_relabel.csv，提供给 Stage4 过滤与映射
+    # 同时保留原始类型与 action，便于回溯
     support_map = {r["orig_type"]: r["support_category"] for r in support_rows}
     # V4.2: 将显著缺失结果应用到 relabel
     mismatch_map = {}
@@ -1455,6 +1531,8 @@ def main():
             flag_mismatch = row.get("FlagMismatch", "")
             mismatch_map[orig_type] = (flag_mismatch == "Yes")
 
+    # 生成每个细胞的 plugin_type 与状态标签
+    # 依赖 action_map / mismatch 结果决定是否 Unknown 或 Relabel
     relabel_rows = []
     for _, r in sc_meta.iterrows():
         orig = r[type_col]
@@ -1505,6 +1583,8 @@ def main():
     relabel_path = out_proc / "cell_type_relabel.csv"
     relabel_df.to_csv(relabel_path, index=False)
 
+    # 生成最终注释（可选择去除 Unknown）
+    # 这里将 Relabel/Unknown 的最终标签写入 stage3_adjusted_annotations.csv
     adjusted_rows = []
     for row in relabel_rows:
         orig = row["orig_type"]
@@ -1515,6 +1595,7 @@ def main():
             final_type = f"{unknown_label_prefix}{orig}"
         else:
             final_type = orig
+        # drop_unknown=True 时直接丢弃 Unknown/Dropped 细胞
         if drop_unknown and action in {"Unknown", "Dropped"}:
             continue
         adjusted_rows.append(
@@ -1530,11 +1611,14 @@ def main():
     adjusted_df.to_csv(adjusted_path, index=False)
 
     # plugin_type 列顺序（非 Unknown 按字母排序，Unknown_sc_only 最后）
+    # rescued_plugin_types 用于后续 prior 的权重控制
     plugin_types = sorted([t for t in relabel_df["plugin_type"].unique() if t != "Unknown_sc_only"])
     plugin_types.append("Unknown_sc_only")
     rescued_plugin_types = [t for t in plugin_types if t in v5_final_rescued]
 
     # type_prior_matrix
+    # 构建 spot × plugin_type 的先验分布，供 Stage4 使用
+    # 注意：Unknown_sc_only 作为兜底类型参与归一化
     type_profiles = {}
     for t in plugin_types:
         if t == "Unknown_sc_only":
@@ -1564,6 +1648,7 @@ def main():
             n_spots_all_unknown += 1
         else:
             prior = sims_pos / total
+            # V5 拯救控制：对被拯救类型下调 prior 权重，避免过拟合
             if v5_rescue_ctrl_enable and rescued_plugin_types and v5_rescue_prior_weight < 1.0:
                 for idx, t in enumerate(plugin_types):
                     if t in rescued_plugin_types:
@@ -1571,7 +1656,7 @@ def main():
                 prior_sum = prior.sum()
                 if prior_sum > eps:
                     prior = prior / prior_sum
-            # Unknown 保底
+            # Unknown 保底：保证 Unknown_sc_only 有最低占比
             uf = unknown_floor
             if uf < 0 or uf > 1:
                 raise ValueError("unknown_floor must be in [0,1]")
@@ -1588,6 +1673,7 @@ def main():
     prior_df.to_csv(prior_path, index=False)
 
     # 汇总统计
+    # 汇总支持度分布、动作分布、Unknown 占比等
     # 支持度档按类型数
     cat_counts = Counter([r["support_category"] for r in support_rows])
     # 按细胞数占比
@@ -1634,7 +1720,10 @@ def main():
         else:
             support_score_def = "fisher_z_max"
 
+    # 汇总输出（stage3_summary.json）
+    # 结构包含：params / support_overview / action_overview / v5_* / unknown_overview / rare_types / plugin_types
     summary = {
+        # 参数快照：用于复现实验与排查差异
         "params": {
             "strong_th": strong_th,
             "weak_th": weak_th,
@@ -1687,22 +1776,27 @@ def main():
             "v5_rescue_control_enable": v5_rescue_ctrl_enable if use_v42 else None,
             "v5_rescue_prior_weight": v5_rescue_prior_weight if use_v42 else None,
         },
+        # 支持度分布与细胞占比
         "support_overview": support_overview,
+        # 动作汇总（Keep/Dropped/Unknown/Relabel）与缺失类型列表
         "action_overview": {
             "by_type_count": dict(action_by_type),
             "by_cell_count": dict(action_by_cell),
             "missing_types": sorted(missing_types),
         },
+        # V5.1 去噪拯救统计
         "v5_denoising": {
             "rescued_types": sorted(v5_denoising_rescued),
             "rescued_count": len(v5_denoising_rescued),
         },
+        # V5.2 生态位拯救统计
         "v5_niche_rescue": {
             "rescued_types": sorted(v5_niche_rescued),
             "rescued_count": len(v5_niche_rescued),
             "anchor_map": v5_niche_anchor_map,
             "correlations": {k: v5_niche_corr_map[k] for k in sorted(v5_niche_corr_map)},
         },
+        # V5.3 熵质控统计
         "v5_entropy_qc": {
             "enabled": v5_entropy_enable,
             "threshold": v5_entropy_threshold,
@@ -1712,19 +1806,23 @@ def main():
             "rejected_types": sorted(set(v5_rescued_types) - set(v5_final_rescued)),
             "entropy": {k: v5_entropy_values[k] for k in sorted(v5_entropy_values)},
         },
+        # V5 拯救控制（prior 权重调整）
         "v5_rescue_control": {
             "enabled": v5_rescue_ctrl_enable,
             "prior_weight": v5_rescue_prior_weight,
             "rescued_types": rescued_plugin_types,
         },
+        # Unknown 占比与 prior 统计
         "unknown_overview": {
             "cell_fraction": unknown_cells / total_cells if total_cells > 0 else 0.0,
             "prior_mass_fraction": unknown_prior_mass,
             "n_spots_all_unknown": n_spots_all_unknown,
         },
+        # 稀有类型清单与 plugin_type 列表（输出顺序）
         "rare_types": rare_types,
         "plugin_types": plugin_types,
     }
+    # 写入 summary 结果，作为后续指标与审计的权威来源
     with (out_res / "stage3_summary.json").open("w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
 
