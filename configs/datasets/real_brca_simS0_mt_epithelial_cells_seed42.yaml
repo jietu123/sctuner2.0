@@ -3,6 +3,10 @@ stage3:
   alpha: 0.1
   apply_mismatch_to_relabel: true
   drop_unknown: true
+  conflict_demotion_enable: true
+  support_margin_enable: true
+  support_margin_min: 0.2
+  protect_strong_from_missing: true
   enable_mismatch_detection: true
   fallback_specificity_mode: mean
   fallback_specificity_types:

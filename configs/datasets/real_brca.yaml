@@ -32,3 +32,84 @@ stage3:
   plugin_genes_path: data/processed/real_brca/stage1_preprocess/hvg_genes.txt
   # 可选：基因权重文件（两列：gene,weight），为空则默认全 1
   gene_weights_path: null
+
+stage6:
+  version: 4
+  expr_source:
+    kind: "csv"
+    path: data/processed/real_brca/stage1_preprocess/exported/st_expression_normalized.csv
+    transform: "none"
+  expr_candidates:
+    - data/processed/real_brca/stage1_preprocess/exported/st_expression_lognorm.csv
+    - data/processed/real_brca/stage1_preprocess/exported/st_expression_counts.csv
+  test:
+    method: "spearman_corr + top_bottom"
+    top_quantile: 0.2
+    bottom_quantile: 0.2
+    min_spots: 200
+  filters:
+    detect_rate_min: 0.05
+    x_var_min: 1e-12
+    y_var_min: 1e-12
+  strength_gate:
+    strength_rho_min: 0.1
+    strength_effect_min: 0.15
+    min_strong_tests: 6
+  direction_gate:
+    ok_fraction_pass: 0.6
+    ok_fraction_fail: 0.5
+  reconstruction:
+    gene_set: "st_hvg2000"
+    n_genes: 2000
+    null_shuffle: 50
+    corr_delta_min: 0.05
+    rmse_delta_min: 0.05
+    expr_layer_prefer: "lognorm"
+  compartments:
+    n_genes_per_compartment: 200
+    detect_rate_min: 0.05
+    smoothing_k: 6
+    smoothing_alpha: 0.5
+    mapping:
+      - name: "immune_total"
+        types: ["T cells CD4", "T cells CD8", "Monocytes and Macrophages", "NK cells", "B cells", "Dendritic cells", "PCs"]
+        markers: ["PTPRC", "TRAC", "LST1"]
+      - name: "epithelial"
+        types: ["Epithelial cells"]
+        markers: ["EPCAM", "KRT19"]
+      - name: "stromal"
+        types: ["Fibroblasts"]
+        markers: ["COL1A1", "COL1A2"]
+      - name: "endothelial"
+        types: ["Endothelial cells"]
+        markers: ["VWF", "KDR"]
+  composites:
+    - name: "immune_total"
+      sum_types: ["T cells CD4", "T cells CD8", "Monocytes and Macrophages", "NK cells", "B cells", "Dendritic cells", "PCs"]
+      markers: ["PTPRC", "TRAC", "LST1"]
+    - name: "epithelial"
+      sum_types: ["Epithelial cells"]
+      markers: ["EPCAM", "KRT19"]
+  marker_sets:
+    - type: "T cells CD4"
+      markers: ["CC2D2B", "CCR8", "FOXP3", "CD177", "F5", "CCR4", "FAAH2", "KIF18B", "TRAV29DV5", "CD28", "RTKN2", "IL2RA", "C10orf113", "PKIA", "CTLA4", "IL1RL1", "CD40LG", "TRAV2", "ADTRP", "TMPRSS3", "CXCL13", "ZC3H12D", "SGPP2", "FANK1", "PTCHD1", "ICOS", "SIRPG", "CD5", "TNFRSF9", "TNFRSF25"]
+    - type: "T cells CD8"
+      markers: ["DRICH1", "TAS2R60", "MIA2", "HDC", "RAB19", "GPR174", "CD8B", "FBN3", "CD8A", "PLIN1", "TRAV13-1", "ZNF683", "HIST1H2BO", "THEMIS", "TRAV12-1", "GZMK", "LAG3", "TRGV10", "FAM131B", "TNIP3", "TRAV21", "EOMES", "KLRC4", "KLRK1", "TRGC2", "NELL2", "KLRC3", "TRBV27", "CD3G", "ABCD2"]
+    - type: "Monocytes and Macrophages"
+      markers: ["HK3", "RETN", "CD209", "TM4SF19", "VENTX", "VNN3", "CDK3", "STPG2", "ADORA3", "APOC2", "FCGR1B", "AQP9", "IGSF21", "TREM2", "MEFV", "MRO", "HAMP", "MSR1", "CD163", "SDS", "CD300E", "SIGLEC1", "FOLR2", "TLR8", "C5AR1", "NFAM1", "RBP4", "C1QC", "FCGR1A", "FPR3"]
+    - type: "Epithelial cells"
+      markers: ["AQP5", "MUC15", "CLDN8", "TRIM29", "CAMSAP3", "ATP13A5", "ATP2C2", "SLC34A2", "SLC5A1", "ARHGEF38", "LRRC31", "CLPSL1", "ZNF750", "SYT8", "TMPRSS4", "TOX3", "SHANK2", "VGLL1", "HEPACAM2", "SOSTDC1", "EDN2", "SHISA9", "ADGRF1", "CPA4", "ORM1", "GABRQ", "CYP4Z1", "RASSF10", "BBOX1", "RBBP8NL"]
+    - type: "Endothelial cells"
+      markers: ["SOX17", "CCL14", "TPO", "TACR1", "PKD1L1", "WNK4", "TAS2R5", "LRRC70", "BCL6B", "CDH5", "NOVA2", "CLEC14A", "SHANK3", "ADGRL4", "VWF", "CLDN5", "SELE", "EMCN", "ROBO4", "RAMP3", "KDR", "ACKR1", "SOX18", "USHBP1", "STC1", "ARHGEF15", "HOXB9", "PLVAP", "SOX7", "THSD7A"]
+    - type: "B cells"
+      markers: ["FCRL1", "PAX5", "MS4A1", "VPREB3", "BANK1", "BLK", "CD22", "CD19", "TCL1A", "PCDHGA7", "TNFRSF13B", "GPR52", "TLR10", "PIGR", "AFF3", "PCDHGB4", "IGHD", "SNX22", "CD79A", "ZNF888", "RALGPS2", "DNASE1L2", "SPIB", "STAP1", "LY9", "RAP1GAP", "NSUN7", "ARHGAP24", "BCL11A", "GNG7"]
+    - type: "NK cells"
+      markers: ["LGALS9C", "CX3CR1", "JMJD7", "C19orf71", "TXK", "GNLY", "KLRD1", "TRDC", "PRF1", "COLQ", "TRGV9", "HCAR1", "PTGDR", "B3GNT7", "GPR75", "GZMB", "CCNJL", "CTSW", "PCP2", "AKR1C3", "NKG7", "MATK", "ST8SIA6", "TTC38", "SLFN13", "RNF165", "YPEL1", "FCRL6", "RAB37", "MCTP2"]
+    - type: "Fibroblasts"
+      markers: ["ADH1C", "IGFN1", "PCDHGA4", "TMEFF1", "BLID", "TAS2R13", "MDH1B", "GALNT5", "SYNDIG1", "WNT2", "SFRP4", "OMD", "MMP13", "SPOCK1", "CXCL14", "CORIN", "ABCB5", "ITGBL1", "CILP", "DPT", "COL10A1", "LRRC15", "GREM1", "PTPRD", "AOX1", "FNDC1", "CNTN1", "COL11A1", "PLPP4", "ST6GAL2"]
+    - type: "Dendritic cells"
+      markers: ["GGT2", "XCR1", "CLEC4C", "LILRA4", "HIST1H2AD", "FLT3", "FCER1A", "PACSIN1", "KRT5", "SLC7A11", "MYBL2", "DNASE1L3", "BCL2L14", "TIFAB", "CD1C", "IDO1", "LAMP3", "PPM1J", "CCL22", "SMIM5", "SCN9A", "PLD4", "CD300LB", "SCT", "CLEC10A", "SPIB", "GRIP1", "SLCO5A1", "TICRR", "CYP2S1"]
+    - type: "PCs"
+      markers: ["DQX1", "BHLHA15", "IGLV9-49", "PDXP", "KCNJ11", "IGHV6-1", "JSRP1", "IGLV3-1", "IGHG2", "TNFRSF17", "IGHV1-46", "MEF2B", "DPEP1", "FCRL5", "IGLV6-57", "MZB1", "DERL3", "IGKV4-1", "IGHG1", "JCHAIN", "IGHG4", "IGKV5-2", "SMPDL3B", "HIST1H2BM", "IGHG3", "SPAG4", "SCNN1B", "PRSS16", "WNT4", "RASSF6"]
+    - type: "PVL"
+      markers: ["FHL5", "LRRC10B", "SCN4B", "CFAP157", "HIGD1B", "CBLN4", "COX4I2", "LINGO1", "CDH6", "CACNA1H", "RTN4RL1", "ITGA7", "TMEM74B", "TRPC6", "NDUFA4L2", "CSPG4", "RGS5", "NFASC", "RASL12", "TDO2", "GUCY1A2", "ACTG2", "KCNJ8", "ABCC9", "TBX2", "NTRK2", "ENPEP", "KLHL23", "ANGPT1", "ADCY5"]
