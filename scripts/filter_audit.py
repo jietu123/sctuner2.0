@@ -4,7 +4,7 @@ import json
 import sys
 from pathlib import Path
 
-sample = sys.argv[1] if len(sys.argv) > 1 else "real_brca_simS0_mt_t_cells_cd4_seed42"
+sample = sys.argv[1] if len(sys.argv) > 1 else "real_brca_simS0_seed42"
 missing_type = sys.argv[2] if len(sys.argv) > 2 else "T cells CD4"
 
 relabel_path = Path(f"data/processed/{sample}/stage3_typematch/cell_type_relabel.csv")

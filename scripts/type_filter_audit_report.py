@@ -3,11 +3,11 @@ import pandas as pd
 import json
 from pathlib import Path
 
-sample = "real_brca_simS0_mt_t_cells_cd4_seed42"
+sample = "real_brca_simS0_seed42"
 missing_type = "T cells CD4"
 
 # 读取真值
-truth_path = Path(f"data/sim/real_brca/S0/t_cells_cd4/seed_42/sim_truth_spot_type_fraction.csv")
+truth_path = Path(f"data/sim/real_brca/S0/t_cells_cd8/seed_42/sim_truth_spot_type_fraction.csv")
 truth = pd.read_csv(truth_path, index_col=0)
 
 # 读取Stage3支持度

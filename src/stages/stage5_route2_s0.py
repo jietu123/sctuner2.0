@@ -873,19 +873,23 @@ def detect_root() -> Path:
         return here.parent.parent
 
 
-def load_stage3_weak_th(root: Path, sample: str) -> float | None:
-    """从stage3_summary.json或配置文件读取weak_th"""
-    # 优先从stage3_summary.json读取
+def load_stage3_summary_full(root: Path, sample: str) -> tuple[dict | None, Path | None]:
     stage3_summary_path = root / "result" / sample / "stage3_typematch" / "stage3_summary.json"
-    if stage3_summary_path.exists():
-        try:
-            with stage3_summary_path.open("r", encoding="utf-8") as f:
-                summary = json.load(f)
-            return summary.get("params", {}).get("weak_th")
-        except Exception:
-            pass
-    
-    # 从配置文件读取
+    if not stage3_summary_path.exists():
+        return None, None
+    try:
+        with stage3_summary_path.open("r", encoding="utf-8") as f:
+            summary = json.load(f)
+        return summary, stage3_summary_path
+    except Exception:
+        return None, stage3_summary_path
+
+
+def load_stage3_weak_th(root: Path, sample: str, summary: dict | None = None) -> float | None:
+    """Load weak_th from stage3_summary.json or dataset config."""
+    if summary:
+        return (summary.get("params") or {}).get("weak_th")
+
     cfg_path = root / "configs" / "datasets" / f"{sample}.yaml"
     if cfg_path.exists() and yaml is not None:
         try:
@@ -895,18 +899,32 @@ def load_stage3_weak_th(root: Path, sample: str) -> float | None:
             return stage3.get("weak_th")
         except Exception:
             pass
-    
+
     return None
 
 
-def load_stage3_unknown_label(root: Path, sample: str) -> str | None:
+def load_stage3_unknown_label(root: Path, sample: str, summary: dict | None = None) -> str | None:
+    if summary:
+        params = summary.get("params") or {}
+        unknown_label = (
+            params.get("unknown_label_effective")
+            or params.get("unknown_label")
+            or (summary.get("unknown_overview") or {}).get("unknown_label_effective")
+            or (summary.get("final_strategy") or {}).get("unknown_label")
+        )
+        if unknown_label:
+            return str(unknown_label).strip()
     stage3_summary_path = root / "result" / sample / "stage3_typematch" / "stage3_summary.json"
     if stage3_summary_path.exists():
         try:
             with stage3_summary_path.open("r", encoding="utf-8") as f:
                 summary = json.load(f)
             final_strategy = summary.get("final_strategy") or {}
-            unknown_label = final_strategy.get("unknown_label") or summary.get("params", {}).get("unknown_label")
+            unknown_label = (
+                final_strategy.get("unknown_label")
+                or (summary.get("params") or {}).get("unknown_label_effective")
+                or (summary.get("params") or {}).get("unknown_label")
+            )
             if unknown_label:
                 return str(unknown_label).strip()
         except Exception:
@@ -914,7 +932,10 @@ def load_stage3_unknown_label(root: Path, sample: str) -> str | None:
     return None
 
 
-def load_stage3_rescued_types(root: Path, sample: str) -> list[str]:
+def load_stage3_rescued_types(root: Path, sample: str, summary: dict | None = None) -> list[str]:
+    if summary:
+        rescued = (summary.get("v5_entropy_qc") or {}).get("rescued_types_final", []) or []
+        return [str(t) for t in rescued if str(t).strip()]
     stage3_summary_path = root / "result" / sample / "stage3_typematch" / "stage3_summary.json"
     if stage3_summary_path.exists():
         try:
@@ -1292,9 +1313,283 @@ def eval_cell_spot_accuracy(
     return summary, by_type_df, spot_f1_df
 
 
+
+
+def resolve_relabel_path(stage3_summary: dict | None, root: Path, sample: str) -> Path:
+    if stage3_summary:
+        relabel_value = (stage3_summary.get("output_paths") or {}).get("cell_type_relabel")
+        if relabel_value:
+            relabel_path = Path(relabel_value)
+            if not relabel_path.is_absolute():
+                relabel_path = root / relabel_path
+            return relabel_path
+    return root / "data" / "processed" / sample / "stage3_typematch" / "cell_type_relabel.csv"
+
+
+def compute_filter_ledger(
+    stage3_summary: dict | None,
+    stage4_summary: dict,
+    relabel_df: pd.DataFrame | None,
+    missing_type: str | None,
+    unknown_label: str | None,
+    filter_scope: str | None,
+    truth_filter_removed: int | None,
+) -> dict:
+    n_filtered = stage4_summary.get("n_filtered")
+    n_sc_total = stage4_summary.get("n_cells_before_prefilter")
+    filter_scope_effective = filter_scope or "unsupported_all"
+
+    expected_drop = None
+    expected_basis = None
+    if filter_scope_effective == "missing_only":
+        if relabel_df is not None and missing_type is not None:
+            expected_drop = int((relabel_df["orig_type"] == missing_type).sum())
+            expected_basis = "relabel_missing_type"
+    else:
+        if stage3_summary:
+            expected_drop = (stage3_summary.get("action_overview") or {}).get("by_cell_count", {}).get("Dropped")
+            if expected_drop is not None:
+                expected_drop = int(expected_drop)
+                expected_basis = "stage3_summary"
+        if expected_drop is None and relabel_df is not None and unknown_label:
+            expected_drop = int((relabel_df["plugin_type"] == unknown_label).sum())
+            expected_basis = "relabel_unknown"
+
+    truth_removed = int(truth_filter_removed or 0)
+    ledger_delta = None
+    ledger_check_ok = None
+    if expected_drop is not None and n_filtered is not None:
+        ledger_delta = int(n_filtered) - (expected_drop + truth_removed)
+        ledger_check_ok = bool(int(n_filtered) == expected_drop + truth_removed)
+
+    missing_count = None
+    false_nonmissing = None
+    false_nonmissing_fraction = None
+    if relabel_df is not None and missing_type is not None and n_filtered is not None:
+        if filter_scope_effective == "missing_only":
+            missing_count = expected_drop if expected_drop is not None else int((relabel_df["orig_type"] == missing_type).sum())
+        elif unknown_label:
+            filtered = relabel_df[relabel_df["plugin_type"] == unknown_label]
+            missing_count = int((filtered["orig_type"] == missing_type).sum())
+        if missing_count is not None:
+            false_nonmissing = int(n_filtered) - int(missing_count)
+            if n_sc_total:
+                false_nonmissing_fraction = float(false_nonmissing) / float(n_sc_total)
+
+    return {
+        "stage3_expected_drop_cells": expected_drop,
+        "stage3_summary": stage3_summary,
+        "stage4_observed_n_filtered": n_filtered,
+        "truth_filter_removed": truth_removed,
+        "filter_scope_effective": filter_scope_effective,
+        "ledger_delta": ledger_delta,
+        "ledger_check_ok": ledger_check_ok,
+        "expected_basis": expected_basis,
+        "unknown_label_effective": unknown_label,
+        "false_filter_nonmissing_count": false_nonmissing,
+        "false_filter_nonmissing_fraction_of_total": false_nonmissing_fraction,
+    }
+
+
+def compute_rescue_ledger(
+    stage3_summary: dict | None,
+    sc_meta_path: Path | None,
+    assignment_df: pd.DataFrame | None,
+    relabel_df: pd.DataFrame | None,
+    unknown_label: str | None,
+    project_root: Path,
+    out_dir: Path,
+) -> dict:
+    rescued_types_final = []
+    rescue_control = None
+    if stage3_summary:
+        rescued_types_final = (stage3_summary.get("v5_entropy_qc") or {}).get("rescued_types_final", []) or []
+        rescue_control = stage3_summary.get("v5_rescue_control")
+
+    alias_map_path = project_root / "configs" / "type_aliases.yaml"
+    alias_map = load_alias_map(alias_map_path)
+    rescued_norm = [canonicalize_type_name(t, alias_map) for t in rescued_types_final]
+    rescued_norm = [t for t in rescued_norm if t]
+    rescued_norm_unique = sorted(set(rescued_norm))
+
+    base = {
+        "rescued_types_final": rescued_types_final,
+        "rescued_types_count": len(rescued_norm_unique),
+        "rescued_types_normalized": rescued_norm_unique,
+        "rescue_control": rescue_control,
+    }
+
+    if not rescued_norm_unique:
+        base.update({
+            "ready": False,
+            "reason": "no_rescued_types",
+            "rescued_cells_total": 0,
+            "rescued_cells_in_assignment": 0,
+            "rescued_cells_filtered_or_missing": 0,
+            "rescued_cells_marked_unknown": 0,
+            "by_type": [],
+        })
+        return base
+
+    if sc_meta_path is None or not sc_meta_path.exists():
+        base.update({
+            "ready": False,
+            "reason": "missing_sc_metadata",
+            "rescued_cells_total": None,
+            "rescued_cells_in_assignment": None,
+            "rescued_cells_filtered_or_missing": None,
+            "rescued_cells_marked_unknown": None,
+            "by_type": [],
+        })
+        return base
+
+    sc_meta = pd.read_csv(sc_meta_path)
+    if "cell_id" not in sc_meta.columns or "cell_type" not in sc_meta.columns:
+        base.update({
+            "ready": False,
+            "reason": "sc_metadata_missing_columns",
+            "rescued_cells_total": None,
+            "rescued_cells_in_assignment": None,
+            "rescued_cells_filtered_or_missing": None,
+            "rescued_cells_marked_unknown": None,
+            "by_type": [],
+        })
+        return base
+
+    sc_meta = sc_meta[["cell_id", "cell_type"]].copy()
+    sc_meta["cell_id"] = sc_meta["cell_id"].astype(str)
+    sc_meta["cell_type_norm"] = sc_meta["cell_type"].apply(lambda x: canonicalize_type_name(x, alias_map))
+
+    rescued_df = sc_meta[sc_meta["cell_type_norm"].isin(rescued_norm_unique)].copy()
+    rescued_cells_total = int(len(rescued_df))
+
+    assignment_ids = set()
+    if assignment_df is not None and "cell_id" in assignment_df.columns:
+        assignment_ids = set(assignment_df["cell_id"].astype(str))
+
+    rescued_in_assignment = int(rescued_df["cell_id"].isin(assignment_ids).sum()) if assignment_ids else 0
+    rescued_filtered_or_missing = rescued_cells_total - rescued_in_assignment
+
+    marked_unknown_by_type = {}
+    marked_unknown_total = None
+    if relabel_df is not None and unknown_label:
+        relabel_norm = relabel_df[["orig_type", "plugin_type"]].copy()
+        relabel_norm["orig_type_norm"] = relabel_norm["orig_type"].apply(lambda x: canonicalize_type_name(x, alias_map))
+        relabel_norm = relabel_norm[relabel_norm["plugin_type"] == unknown_label]
+        marked_unknown_counts = relabel_norm["orig_type_norm"].value_counts().to_dict()
+        marked_unknown_by_type = {k: int(v) for k, v in marked_unknown_counts.items() if k in rescued_norm_unique}
+        marked_unknown_total = int(sum(marked_unknown_by_type.values()))
+
+    by_type = []
+    for cell_type in rescued_norm_unique:
+        subset = rescued_df[rescued_df["cell_type_norm"] == cell_type]
+        n_total = int(len(subset))
+        n_in_assignment = int(subset["cell_id"].isin(assignment_ids).sum()) if assignment_ids else 0
+        n_filtered = n_total - n_in_assignment
+        by_type.append({
+            "cell_type": cell_type,
+            "n_sc_cells_total": n_total,
+            "n_marked_unknown": marked_unknown_by_type.get(cell_type) if marked_unknown_by_type else None,
+            "n_in_assignment": n_in_assignment,
+            "n_filtered_or_missing": n_filtered,
+        })
+
+    by_type_df = pd.DataFrame(by_type)
+    csv_path = out_dir / "rescue_audit_by_type.csv"
+    by_type_df.to_csv(csv_path, index=False, encoding="utf-8")
+    try:
+        csv_path_rel = str(csv_path.relative_to(project_root))
+    except ValueError:
+        csv_path_rel = str(csv_path)
+
+    base.update({
+        "ready": True,
+        "rescued_cells_total": rescued_cells_total,
+        "rescued_cells_in_assignment": rescued_in_assignment,
+        "rescued_cells_filtered_or_missing": rescued_filtered_or_missing,
+        "rescued_cells_marked_unknown": marked_unknown_total,
+        "by_type": by_type,
+        "rescue_audit_by_type_path": csv_path_rel,
+    })
+    return base
+
+
+
+def compute_sim_missing_summary(sim_info: dict | None, sc_meta_path: Path | None, truth_query_path: Path | None) -> dict | None:
+    if not sim_info:
+        return None
+    missing_type = sim_info.get("missing_type")
+    if not missing_type:
+        return None
+
+    if sc_meta_path is None or not sc_meta_path.exists():
+        return {
+            "missing_type": missing_type,
+            "missing_cells_total": None,
+            "missing_cells_present_in_truth": None,
+            "missing_cells_in_sim": None,
+            "reason": "missing_sc_metadata",
+        }
+
+    if truth_query_path is None or not truth_query_path.exists():
+        return {
+            "missing_type": missing_type,
+            "missing_cells_total": None,
+            "missing_cells_present_in_truth": None,
+            "missing_cells_in_sim": None,
+            "reason": "missing_truth_query",
+        }
+
+    sc_meta = pd.read_csv(sc_meta_path)
+    if "cell_type" not in sc_meta.columns or "cell_id" not in sc_meta.columns:
+        return {
+            "missing_type": missing_type,
+            "missing_cells_total": None,
+            "missing_cells_present_in_truth": None,
+            "missing_cells_in_sim": None,
+            "reason": "sc_metadata_missing_columns",
+        }
+
+    truth = pd.read_csv(truth_query_path)
+    if "cell_type" not in truth.columns or "cell_id" not in truth.columns:
+        return {
+            "missing_type": missing_type,
+            "missing_cells_total": None,
+            "missing_cells_present_in_truth": None,
+            "missing_cells_in_sim": None,
+            "reason": "truth_query_missing_columns",
+        }
+
+    sc_total = int((sc_meta["cell_type"] == missing_type).sum())
+    truth_dedup = truth.drop_duplicates(subset=["cell_id"], keep="first")
+    truth_present = int((truth_dedup["cell_type"] == missing_type).sum())
+    missing_in_sim = sc_total - truth_present
+
+    return {
+        "missing_type": missing_type,
+        "missing_cells_total": sc_total,
+        "missing_cells_present_in_truth": truth_present,
+        "missing_cells_in_sim": missing_in_sim,
+        "missing_fraction_of_sc": float(missing_in_sim) / float(len(sc_meta)) if len(sc_meta) else None,
+    }
+
+
+def compute_stage3_grouped_counts(relabel_df: pd.DataFrame | None) -> dict | None:
+    if relabel_df is None:
+        return None
+
+    result = {}
+    if "action" in relabel_df.columns:
+        result["action_counts"] = {k: int(v) for k, v in relabel_df["action"].value_counts().to_dict().items()}
+    if "plugin_type" in relabel_df.columns:
+        result["plugin_type_counts"] = {k: int(v) for k, v in relabel_df["plugin_type"].value_counts().to_dict().items()}
+    if "orig_type" in relabel_df.columns:
+        result["orig_type_counts"] = {k: int(v) for k, v in relabel_df["orig_type"].value_counts().to_dict().items()}
+    return result
+
 def generate_filter_audit(
     sample: str,
-    missing_type: str,
+    missing_type: str | None,
     run_tag: str,
     n_filtered_total: int,
     n_sc_total: int,
@@ -1302,96 +1597,70 @@ def generate_filter_audit(
     filter_scope: str | None = None,
     truth_filter_enabled: bool | None = None,
     truth_filter_removed: int | None = None,
+    stage3_summary: dict | None = None,
+    relabel_path: Path | None = None,
+    unknown_label: str | None = None,
 ) -> dict | None:
-    """生成filter_audit：统计被过滤类型的构成
-
-    filter_scope:
-        - None / "unsupported_all": 使用所有 plugin_type == Unknown_sc_only 的细胞
-        - "missing_only": 仅统计 orig_type == missing_type 且 plugin_type == Unknown_sc_only 的细胞
-
-    Returns:
-        dict: filter_audit摘要（JSON中保留）
-        CSV文件会保存到out_dir/filter_audit_all_types.csv
-    """
     root = detect_root()
-    relabel_path = root / "data" / "processed" / sample / "stage3_typematch" / "cell_type_relabel.csv"
-    
+    relabel_path = relabel_path or resolve_relabel_path(stage3_summary, root, sample)
     if not relabel_path.exists():
         return None
-    
-    relabel = pd.read_csv(relabel_path)
 
-    # 找出所有被过滤的细胞（与Stage4 filter_scope保持一致）
-    unknown_label = load_stage3_unknown_label(root, sample) or "Unknown_sc_only"
-    mask_unknown = relabel["plugin_type"] == unknown_label
-    if filter_scope == "missing_only":
-        # missing_only 模式：直接过滤所有 orig_type == missing_type 的细胞，不管 plugin_type 是什么
-        # 这与 Stage4 的逻辑保持一致：missing_only 模式下直接过滤 missing_type，不依赖 base_mask
+    relabel = pd.read_csv(relabel_path)
+    unknown_label = unknown_label or load_stage3_unknown_label(root, sample, summary=stage3_summary) or "Unknown_sc_only"
+
+    filter_scope_effective = filter_scope or "unsupported_all"
+    if filter_scope_effective == "missing_only":
         mask_type = relabel["orig_type"] == missing_type
         filtered = relabel[mask_type].copy()
     else:
-        # unsupported_all 模式：只过滤 plugin_type == Unknown_sc_only 的细胞
+        mask_unknown = relabel["plugin_type"] == unknown_label
         filtered = relabel[mask_unknown].copy()
 
-    # 实际filtered数量，用于和Stage4 n_filtered对比
     actual_filtered = int(len(filtered))
-
-    # 统计被过滤细胞的orig_type分布
     type_counts = filtered["orig_type"].value_counts().to_dict()
-    
-    # 计算missing_type的贡献
-    missing_count = type_counts.get(missing_type, 0)
+
+    missing_count = type_counts.get(missing_type, 0) if missing_type is not None else 0
     missing_fraction_of_filtered = missing_count / n_filtered_total if n_filtered_total > 0 else 0.0
-    
-    # 计算非missing类型的误伤
+
     non_missing_filtered = n_filtered_total - missing_count
     non_missing_fraction_of_total = non_missing_filtered / n_sc_total if n_sc_total > 0 else 0.0
-    
-    # Top10被过滤类型（基于实际统计到的filtered集合）
+
     top10_types = list(type_counts.items())[:10]
     denom = float(n_filtered_total) if n_filtered_total > 0 else 1.0
-    top10_list = [{"type": t, "count": int(c), "fraction": float(c/denom)} for t, c in top10_types]
+    top10_list = [{"type": t, "count": int(c), "fraction": float(c / denom)} for t, c in top10_types]
 
-    # 强制检查1：sum(top_types.n_filtered) == n_filtered_total
     sum_top10 = sum(c for _, c in top10_types)
     check1_passed = abs(sum_top10 - n_filtered_total) < 1e-6
-    
-    # 强制检查2：missing_type_contrib
+
     check2_value = missing_fraction_of_filtered
-    
-    # 强制检查3：non_missing_filtered_fraction
     check3_value = non_missing_fraction_of_total
 
-    # 强制检查4：Stage4 n_filtered vs Stage5重建数量（含 truth-filter）
     truth_removed = int(truth_filter_removed or 0)
     expected_stage4_filtered = actual_filtered + truth_removed
-    
-    # 读取weak_th
-    weak_th_effective = load_stage3_weak_th(root, sample)
 
-    # 额外统计：Stage3 视角下所有被标记为 Unknown_sc_only 的规模（不论是否被Stage4丢弃）
+    weak_th_effective = load_stage3_weak_th(root, sample, summary=stage3_summary)
+
+    mask_unknown = relabel["plugin_type"] == unknown_label
     marked_total = int(mask_unknown.sum())
-    marked_missing = int((mask_unknown & (relabel["orig_type"] == missing_type)).sum())
+    marked_missing = int((mask_unknown & (relabel["orig_type"] == missing_type)).sum()) if missing_type else 0
     marked_non_missing = marked_total - marked_missing
-    
-    # 保存全量all_filtered_types到CSV
-    denom = float(n_filtered_total) if n_filtered_total > 0 else 1.0
+
     all_types_df = pd.DataFrame([
-        {"type": t, "count": int(c), "fraction": float(c/denom)}
+        {"type": t, "count": int(c), "fraction": float(c / denom)}
         for t, c in sorted(type_counts.items(), key=lambda x: x[1], reverse=True)
     ])
     csv_path = out_dir / "filter_audit_all_types.csv"
     all_types_df.to_csv(csv_path, index=False, encoding="utf-8")
-    
-    # 计算相对路径
+
     try:
         csv_path_rel = str(csv_path.relative_to(root))
     except ValueError:
-        # 如果不在同一路径下，使用绝对路径
         csv_path_rel = str(csv_path)
-    
+
     return {
         "weak_th_effective": weak_th_effective,
+        "unknown_label_effective": unknown_label,
         "missing_type": missing_type,
         "run_tag": run_tag,
         "source_counts_basis": "sc_total_before_prefilter",
@@ -1404,7 +1673,7 @@ def generate_filter_audit(
         "missing_type_contribution": {
             "count": int(missing_count),
             "fraction_of_filtered": float(missing_fraction_of_filtered),
-            "fraction_of_total": float(missing_count / n_sc_total) if n_sc_total > 0 else 0.0
+            "fraction_of_total": float(missing_count / n_sc_total) if n_sc_total > 0 else 0.0,
         },
         "marked_unknown": {
             "total": int(marked_total),
@@ -1415,7 +1684,7 @@ def generate_filter_audit(
         "non_missing_filtered": {
             "count": int(non_missing_filtered),
             "fraction_of_filtered": float(non_missing_filtered / n_filtered_total) if n_filtered_total > 0 else 0.0,
-            "fraction_of_total": float(non_missing_fraction_of_total)
+            "fraction_of_total": float(non_missing_fraction_of_total),
         },
         "top10_filtered_types": top10_list,
         "filter_audit_path": csv_path_rel if csv_path.exists() else None,
@@ -1423,15 +1692,15 @@ def generate_filter_audit(
             "check1_sum_top10_equals_total": {
                 "passed": check1_passed,
                 "sum_top10": int(sum_top10),
-                "n_filtered_total": int(n_filtered_total)
+                "n_filtered_total": int(n_filtered_total),
             },
             "check2_missing_type_contrib": {
                 "value": float(check2_value),
-                "description": "missing_type_contrib = n_filtered(missing_type)/n_filtered_total"
+                "description": "missing_type_contrib = n_filtered(missing_type)/n_filtered_total",
             },
             "check3_non_missing_filtered_fraction": {
                 "value": float(check3_value),
-                "description": "non_missing_filtered_fraction = (n_filtered_total - n_filtered(missing_type))/n_sc_total"
+                "description": "non_missing_filtered_fraction = (n_filtered_total - n_filtered(missing_type))/n_sc_total",
             },
             "check4_stage4_stage5_n_filtered_match": {
                 "value": bool(expected_stage4_filtered == n_filtered_total),
@@ -1439,9 +1708,9 @@ def generate_filter_audit(
                 "truth_filter_removed": int(truth_removed),
                 "expected_stage4_n_filtered": int(expected_stage4_filtered),
                 "stage4_n_filtered": int(n_filtered_total),
-                "description": "Ensure Stage4 n_filtered equals Stage5 filtered + truth_filter_removed"
+                "description": "Ensure Stage4 n_filtered equals Stage5 filtered + truth_filter_removed",
             },
-        }
+        },
     }
 
 
@@ -1450,6 +1719,9 @@ def run_eval(args: argparse.Namespace):
     sim_dir = Path(args.sim_dir)
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+
+    run_tag = args.run_tag or ""
+    is_route2 = run_tag.startswith("route2")
 
     project_root = detect_root()
     summary_p = stage4_dir / "stage4_summary.json"
@@ -1460,6 +1732,16 @@ def run_eval(args: argparse.Namespace):
 
     with summary_p.open("r", encoding="utf-8") as f:
         s4 = json.load(f)
+
+    stage3_summary, stage3_summary_path = load_stage3_summary_full(project_root, args.sample)
+    unknown_label_effective = load_stage3_unknown_label(project_root, args.sample, summary=stage3_summary) or "Unknown_sc_only"
+    relabel_path = resolve_relabel_path(stage3_summary, project_root, args.sample)
+    relabel_df = None
+    if relabel_path.exists():
+        try:
+            relabel_df = pd.read_csv(relabel_path)
+        except Exception as e:
+            print(f"[WARN] failed to read relabel: {e}")
 
     assign_p, by_spot_p, assignment_source = resolve_eval_paths(stage4_dir, s4, args)
     if not assign_p.exists():
@@ -1483,7 +1765,7 @@ def run_eval(args: argparse.Namespace):
         print(f"[WARN] confidence evaluation failed: {e}")
         confidence_metrics = {"enabled": True, "ready": False, "reason": f"error:{e}"}
     missing_type = sim_info.get("missing_type")
-    rescued_types_final = load_stage3_rescued_types(project_root, args.sample)
+    rescued_types_final = load_stage3_rescued_types(project_root, args.sample, summary=stage3_summary)
     rescued_types_norm = {normalize_type_name(t) for t in rescued_types_final}
     missing_type_eval = missing_type
     missing_type_rescued = False
@@ -1512,19 +1794,22 @@ def run_eval(args: argparse.Namespace):
 
     # 生成filter_audit（仅对route2运行）
     filter_audit = None
-    if args.run_tag == "route2":
+    if is_route2:
         n_filtered = s4.get("n_filtered", 0)
         n_sc_total = s4.get("n_cells_before_prefilter", 0)
         filter_audit = generate_filter_audit(
             args.sample,
             missing_type,
-            args.run_tag,
+            run_tag,
             n_filtered,
             n_sc_total,
             out_dir,
             filter_scope=s4.get("filter_scope"),
             truth_filter_enabled=s4.get("truth_filter_enabled"),
             truth_filter_removed=s4.get("truth_filter_removed"),
+            stage3_summary=stage3_summary,
+            relabel_path=relabel_path,
+            unknown_label=unknown_label_effective,
         )
         # 严格模式下，若Stage4与Stage5重建的filtered数量不一致则直接报错
         if args.strict_config and filter_audit is not None:
@@ -1537,12 +1822,42 @@ def run_eval(args: argparse.Namespace):
                 )
                 raise ValueError(msg)
 
-    # 单细胞 spot 位置准确性评估
+    # Ledger summaries
+    filter_ledger = compute_filter_ledger(
+        stage3_summary=stage3_summary,
+        stage4_summary=s4,
+        relabel_df=relabel_df,
+        missing_type=missing_type,
+        unknown_label=unknown_label_effective,
+        filter_scope=s4.get("filter_scope"),
+        truth_filter_removed=s4.get("truth_filter_removed"),
+    )
+
+    sc_meta_path = Path(confidence_inputs["sc_metadata"]) if confidence_inputs.get("sc_metadata") else None
+    rescue_ledger = compute_rescue_ledger(
+        stage3_summary=stage3_summary,
+        sc_meta_path=sc_meta_path,
+        assignment_df=ca,
+        relabel_df=relabel_df,
+        unknown_label=unknown_label_effective,
+        project_root=project_root,
+        out_dir=out_dir,
+    )
+
+    sim_sc_meta_path = sim_dir / "sc_metadata.csv"
+    sim_missing_summary = compute_sim_missing_summary(sim_info, sim_sc_meta_path, truth_query_p)
+    stage3_grouped_counts = compute_stage3_grouped_counts(relabel_df)
+    sim_checks = {
+        "missing_summary": sim_missing_summary,
+        "stage3_grouped": stage3_grouped_counts,
+    }
+
+    # Cell spot accuracy
     cell_spot_eval = None
     if truth_query_p.exists():
         try:
             # 对于 route2，type_mismatch 是正常的（因为使用了 plugin_type），所以放宽检查
-            eval_strict = args.strict_config and args.run_tag == "baseline"
+            eval_strict = args.strict_config and run_tag == "baseline"
             missing_types_eval = [missing_type_eval] if missing_type_eval else []
             cell_spot_eval, _, _ = eval_cell_spot_accuracy(
                 truth_path=truth_query_p,
@@ -1555,7 +1870,7 @@ def run_eval(args: argparse.Namespace):
                 project_root=detect_root(),
             )
         except Exception as e:
-            if args.strict_config and args.run_tag == "baseline":
+            if args.strict_config and run_tag == "baseline":
                 raise
             else:
                 print(f"[WARN] cell_spot_accuracy evaluation failed: {e}")
@@ -1564,7 +1879,7 @@ def run_eval(args: argparse.Namespace):
     out = {
         "scenario": "S0",
         "sample": args.sample,
-        "run_tag": args.run_tag,
+        "run_tag": run_tag,
         "missing_type_truth": missing_type,
         "leakage": {
             "missing_in_assignment": leak_assign,
@@ -1591,6 +1906,9 @@ def run_eval(args: argparse.Namespace):
             "by_spot_path": str(by_spot_p),
         },
         "filter_audit": filter_audit,
+        "filter_ledger": filter_ledger,
+        "rescue_ledger": rescue_ledger,
+        "sim_checks": sim_checks,
         "scale": {
             "spots": int(n_spots),
             "cells_per_spot": s4.get("cells_per_spot_override", sim_info.get("cells_per_spot")),
@@ -1611,6 +1929,7 @@ def run_eval(args: argparse.Namespace):
         "confidence_metrics": confidence_metrics,
         "sha1": {
             "stage4_summary": sha1_file(summary_p),
+            "stage3_summary": sha1_file(stage3_summary_path) if stage3_summary_path and stage3_summary_path.exists() else None,
             "cell_assignment": sha1_file(assign_p) if assign_p.exists() else None,
             "by_spot": sha1_file(by_spot_p) if by_spot_p.exists() else None,
             "sim_info": sha1_file(sim_info_p),
@@ -1619,7 +1938,7 @@ def run_eval(args: argparse.Namespace):
         },
     }
 
-    out_p = out_dir / f"stage5_route2_s0__{args.run_tag}.json"
+    out_p = out_dir / f"stage5_route2_s0__{run_tag}.json"
     out_p.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"[OK] wrote: {out_p}")
     return out
@@ -1637,16 +1956,36 @@ def compare_runs(baseline_json: Path, route2_json: Path, out_path: Path):
             return None
         return b - a
 
+    delta_filter = {
+        "n_filtered": diff((b.get("coverage") or {}).get("n_filtered"), (r.get("coverage") or {}).get("n_filtered")),
+        "false_filter_nonmissing_fraction_of_total": diff(
+            (b.get("filter_ledger") or {}).get("false_filter_nonmissing_fraction_of_total"),
+            (r.get("filter_ledger") or {}).get("false_filter_nonmissing_fraction_of_total"),
+        ),
+    }
+
+    delta_rescue = {
+        "rescued_cells_in_assignment": diff(
+            (b.get("rescue_ledger") or {}).get("rescued_cells_in_assignment"),
+            (r.get("rescue_ledger") or {}).get("rescued_cells_in_assignment"),
+        )
+    }
+
+    delta_mapping = {
+        "leakage_missing_in_by_spot": diff(b.get("leakage", {}).get("missing_in_by_spot"), r.get("leakage", {}).get("missing_in_by_spot")),
+        "L1_mean": diff(b.get("composition", {}).get("L1_mean"), r.get("composition", {}).get("L1_mean")),
+        "JS_mean": diff(b.get("composition", {}).get("JS_mean"), r.get("composition", {}).get("JS_mean")),
+        "corr_mean": diff(b.get("composition", {}).get("corr_mean"), r.get("composition", {}).get("corr_mean")),
+    }
+
     comp = {
         "scenario": "S0",
         "baseline": baseline_json.name,
         "route2": route2_json.name,
-        "delta": {
-            "leakage_missing_in_by_spot": diff(b["leakage"]["missing_in_by_spot"], r["leakage"]["missing_in_by_spot"]),
-            "L1_mean": diff(b["composition"]["L1_mean"], r["composition"]["L1_mean"]),
-            "JS_mean": diff(b["composition"]["JS_mean"], r["composition"]["JS_mean"]),
-            "corr_mean": diff(b["composition"]["corr_mean"], r["composition"]["corr_mean"]),
-        },
+        "delta": delta_mapping,
+        "delta_filter": delta_filter,
+        "delta_rescue": delta_rescue,
+        "delta_mapping": delta_mapping,
     }
     out_path.write_text(json.dumps(comp, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"[OK] wrote compare: {out_path}")

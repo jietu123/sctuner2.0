@@ -867,6 +867,106 @@ def run_cytospace(
     )
 
 
+def _looks_like_non_type(cols: list[str]) -> bool:
+    if not cols:
+        return False
+    for col in cols:
+        name = str(col)
+        if name.startswith("Unnamed"):
+            continue
+        if name.isdigit():
+            continue
+        return False
+    return True
+
+
+def _canonical_type(name: str, alias_map: dict[str, str]) -> str:
+    return canonicalize_type_name(name, alias_map)
+
+
+def _merge_type_columns(
+    df: pd.DataFrame,
+    type_cols: list[str],
+    alias_map: dict[str, str],
+) -> tuple[pd.DataFrame, list[str]]:
+    groups: dict[str, list[str]] = {}
+    for col in type_cols:
+        canon = _canonical_type(col, alias_map)
+        if not canon:
+            continue
+        groups.setdefault(canon, []).append(col)
+    merged = pd.DataFrame(index=df.index)
+    for canon, cols in groups.items():
+        merged[canon] = df[cols].sum(axis=1)
+    return merged, list(groups.keys())
+
+
+def _load_fraction_table(
+    path: Path,
+    active_type_list: list[str],
+    alias_map: dict[str, str],
+) -> tuple[pd.DataFrame, list[str], str | None]:
+    df = pd.read_csv(path)
+    spot_col = "spot_id"
+    if "spot_id" not in df.columns:
+        if "SpotID" in df.columns:
+            spot_col = "SpotID"
+        else:
+            spot_col = df.columns[0]
+        df = df.rename(columns={spot_col: "spot_id"})
+    df["spot_id"] = df["spot_id"].astype(str).map(lambda x: str(x).split("	")[0])
+
+    total_col = "Total cells" if "Total cells" in df.columns else None
+    type_cols = [c for c in df.columns if c not in {"spot_id", total_col}]
+    if not type_cols:
+        raise ValueError(f"{path} has no type columns")
+
+    if _looks_like_non_type(type_cols):
+        active = [_canonical_type(t, alias_map) for t in active_type_list if t]
+        if len(active) != len(type_cols):
+            raise ValueError(
+                f"{path} columns look unnamed but length mismatch: "
+                f"{len(type_cols)} vs active_type_list {len(active)}"
+            )
+        rename_map = dict(zip(type_cols, active))
+        df = df.rename(columns=rename_map)
+        raw_output_types = list(active)
+        merged_df = df[["spot_id"] + raw_output_types].copy()
+    else:
+        merged_types_df, raw_output_types = _merge_type_columns(df, type_cols, alias_map)
+        merged_df = pd.concat([df[["spot_id"]], merged_types_df], axis=1)
+
+    if total_col is not None:
+        merged_df["Total cells"] = pd.to_numeric(df[total_col], errors="coerce").fillna(0.0)
+
+    return merged_df, raw_output_types, total_col
+
+
+def _align_to_full_types(
+    df: pd.DataFrame,
+    full_type_list: list[str],
+) -> pd.DataFrame:
+    type_cols = [c for c in df.columns if c not in {"spot_id", "Total cells"}]
+    aligned = (
+        df.set_index("spot_id")[type_cols]
+        .reindex(columns=full_type_list, fill_value=0.0)
+        .reset_index()
+    )
+    if "Total cells" in df.columns:
+        aligned["Total cells"] = df["Total cells"].values
+    return aligned
+
+
+def _mass_diff(before: pd.DataFrame, after: pd.DataFrame, type_cols: list[str]) -> dict[str, float]:
+    diffs: dict[str, float] = {}
+    for t in type_cols:
+        if t in before.columns and t in after.columns:
+            diffs[t] = float(after[t].sum() - before[t].sum())
+    return diffs
+
+
+
+
 def build_stage4_outputs(
     output_dir: Path,
     relabel_filtered: pd.DataFrame,
@@ -888,6 +988,9 @@ def build_stage4_outputs(
     cell_type_column: str,
     filter_scope: FilterScope,
     mark_stats: dict,
+    full_type_list: list[str] | None,
+    active_type_list: list[str] | None,
+    alias_map: dict[str, str],
 ) -> dict:
     assigned_path = output_dir / "assigned_locations.csv"
     if assigned_path.exists():
@@ -909,13 +1012,61 @@ def build_stage4_outputs(
 
     # read composition to check missing type presence
     comp_path = output_dir / "cell_type_assignments_by_spot.csv"
+    frac_path = output_dir / "fractional_abundances_by_spot.csv"
     missing_present = 0
+    comp_total = None
+    raw_output_types = []
+    raw_fractional_types = []
+    type_alignment_ok = None
+    type_alignment_diff_max = None
+    missing_key = canonicalize_type_name(missing_type, alias_map)
+
     if comp_path.exists():
-        comp = pd.read_csv(comp_path, index_col=0)
-        if missing_type in comp.columns:
-            missing_present = int(comp[missing_type].sum())
+        comp_raw, raw_output_types, _ = _load_fraction_table(
+            comp_path,
+            active_type_list or [],
+            alias_map,
+        )
+        comp_aligned = comp_raw
+        if full_type_list:
+            comp_aligned = _align_to_full_types(comp_raw, full_type_list)
+            diffs = _mass_diff(comp_raw, comp_aligned, raw_output_types)
+            diff_max = max((abs(v) for v in diffs.values()), default=0.0)
+            type_alignment_diff_max = diff_max
+            if diff_max > 1e-6:
+                raise ValueError("type alignment mismatch in cell_type_assignments_by_spot.csv")
+        comp_aligned.to_csv(comp_path, index=False)
+        if missing_key in comp_aligned.columns:
+            missing_present = int(comp_aligned[missing_key].sum())
+        if "Total cells" in comp_aligned.columns:
+            comp_total = int(comp_aligned["Total cells"].sum())
+
+    if frac_path.exists():
+        frac_raw, raw_fractional_types, _ = _load_fraction_table(
+            frac_path,
+            active_type_list or [],
+            alias_map,
+        )
+        frac_aligned = frac_raw
+        if full_type_list:
+            frac_aligned = _align_to_full_types(frac_raw, full_type_list)
+            diffs = _mass_diff(frac_raw, frac_aligned, raw_fractional_types)
+            diff_max = max((abs(v) for v in diffs.values()), default=0.0)
+            if type_alignment_diff_max is None:
+                type_alignment_diff_max = diff_max
+            else:
+                type_alignment_diff_max = max(type_alignment_diff_max, diff_max)
+            if diff_max > 1e-6:
+                raise ValueError("type alignment mismatch in fractional_abundances_by_spot.csv")
+        frac_aligned.to_csv(frac_path, index=False)
+
+    if active_type_list is not None:
+        active_set = set(active_type_list)
+        raw_set = set(raw_output_types) if raw_output_types else None
+        if raw_set is not None:
+            type_alignment_ok = (raw_set == active_set)
+
     ca_rows = len(assignment)
-    comp_total = int(comp["Total cells"].sum()) if comp_path.exists() else None
 
     summary = {
         "n_cells_before_prefilter": int(n_before),
@@ -936,6 +1087,13 @@ def build_stage4_outputs(
         "cells_per_spot_override": cps_override,
         "cell_type_column": cell_type_column,
         "filter_scope": filter_scope,
+        "type_list": full_type_list,
+        "full_type_list": full_type_list,
+        "active_type_list": active_type_list,
+        "raw_output_types_by_spot": raw_output_types,
+        "raw_output_types_fractional": raw_fractional_types,
+        "type_alignment_ok": type_alignment_ok,
+        "type_alignment_diff_max": type_alignment_diff_max,
         # 这些统计描述的是：在Stage3视角下被标记为“低支持/Unknown”的规模
         # 注意：与实际被Stage4丢弃的 n_filtered 相互独立
         "marked_unknown_total": mark_stats.get("marked_unknown_total"),
@@ -1058,6 +1216,22 @@ def main():
         )
 
     sc_expr, st_expr, st_coords, sc_meta = load_stage1(project_root, args.sample)
+
+    full_type_list = []
+    for t in sc_meta["cell_type"].dropna().tolist():
+        canon = canonicalize_type_name(t, alias_map)
+        if canon and canon not in full_type_list:
+            full_type_list.append(canon)
+    if stage3_summary_path.exists():
+        try:
+            summary = json.loads(stage3_summary_path.read_text(encoding="utf-8"))
+            plugin_types = summary.get("plugin_types", []) or []
+            for t in plugin_types:
+                canon = canonicalize_type_name(t, alias_map)
+                if canon and canon not in full_type_list:
+                    full_type_list.append(canon)
+        except Exception:
+            pass
     print(f"[debug] sc_expr shape={sc_expr.shape}, st_expr shape={st_expr.shape}")
     print(f"[debug] st_expr index sample={list(st_expr.index[:3])}")
     print(f"[debug] st_expr columns sample={list(st_expr.columns[:3])}")
@@ -1111,6 +1285,21 @@ def main():
             n_after = len(relabel_filtered)
             n_filtered = int(n_filtered) + int(truth_filter_removed)
 
+    active_type_list = []
+    if args.cell_type_column == "sc_meta":
+        source_series = sc_meta["cell_type"] if "cell_type" in sc_meta.columns else []
+    else:
+        if args.cell_type_column in relabel_filtered.columns:
+            source_series = relabel_filtered[args.cell_type_column]
+        else:
+            source_series = sc_meta.get("cell_type", [])
+    if hasattr(source_series, "dropna"):
+        source_series = source_series.dropna().tolist()
+    for t in source_series:
+        canon = canonicalize_type_name(t, alias_map)
+        if canon and canon not in active_type_list:
+            active_type_list.append(canon)
+
     out_root = project_root / "result" / args.sample / "stage4_cytospace"
     prep_dir = out_root / "cytospace_input"
     cyto_out_dir = out_root / "cytospace_output"
@@ -1155,6 +1344,9 @@ def main():
         args.cell_type_column,
         args.filter_scope,
         mark_stats,
+        full_type_list,
+        active_type_list,
+        alias_map,
     )
     summary["mapping_cells_per_spot"] = int(mapping_cps) if mapping_cps is not None else None
     summary["truth_filter_enabled"] = bool(filter_to_sim_truth)

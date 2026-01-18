@@ -2,7 +2,7 @@
 import pandas as pd
 import sys
 
-truth_path = sys.argv[1] if len(sys.argv) > 1 else "data/sim/real_brca/S0/t_cells_cd4/seed_42/sim_truth_spot_type_fraction.csv"
+truth_path = sys.argv[1] if len(sys.argv) > 1 else "data/sim/real_brca/S0/t_cells_cd8/seed_42/sim_truth_spot_type_fraction.csv"
 
 truth = pd.read_csv(truth_path, index_col=0)
 

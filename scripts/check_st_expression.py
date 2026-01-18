@@ -3,9 +3,9 @@ import pandas as pd
 import numpy as np
 import sys
 
-st_expr_path = sys.argv[1] if len(sys.argv) > 1 else "data/processed/real_brca_simS0_mt_t_cells_cd4_seed42/stage1_preprocess/exported/st_expression_normalized.csv"
-sc_expr_path = sys.argv[2] if len(sys.argv) > 2 else "data/processed/real_brca_simS0_mt_t_cells_cd4_seed42/stage1_preprocess/exported/sc_expression_normalized.csv"
-sc_meta_path = sys.argv[3] if len(sys.argv) > 3 else "data/processed/real_brca_simS0_mt_t_cells_cd4_seed42/stage1_preprocess/exported/sc_metadata.csv"
+st_expr_path = sys.argv[1] if len(sys.argv) > 1 else "data/processed/real_brca_simS0_seed42/stage1_preprocess/exported/st_expression_normalized.csv"
+sc_expr_path = sys.argv[2] if len(sys.argv) > 2 else "data/processed/real_brca_simS0_seed42/stage1_preprocess/exported/sc_expression_normalized.csv"
+sc_meta_path = sys.argv[3] if len(sys.argv) > 3 else "data/processed/real_brca_simS0_seed42/stage1_preprocess/exported/sc_metadata.csv"
 
 print("Loading data...")
 st_expr = pd.read_csv(st_expr_path, index_col=0, sep=None, engine="python")

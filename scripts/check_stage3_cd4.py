@@ -2,7 +2,7 @@
 import pandas as pd
 import sys
 
-sample = sys.argv[1] if len(sys.argv) > 1 else "real_brca_simS0_mt_t_cells_cd4_seed42"
+sample = sys.argv[1] if len(sys.argv) > 1 else "real_brca_simS0_seed42"
 ts_path = f"data/processed/{sample}/stage3_typematch/type_support.csv"
 relabel_path = f"data/processed/{sample}/stage3_typematch/cell_type_relabel.csv"
 

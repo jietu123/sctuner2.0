@@ -2,7 +2,7 @@
 import json
 import sys
 
-json_path = sys.argv[1] if len(sys.argv) > 1 else "result/real_brca_simS0_mt_t_cells_cd4_seed42/stage5_route2_s0/stage5_route2_s0__route2.json"
+json_path = sys.argv[1] if len(sys.argv) > 1 else "result/real_brca_simS0_seed42/stage5_route2_s0/stage5_route2_s0__route2.json"
 
 with open(json_path, "r", encoding="utf-8") as f:
     data = json.load(f)

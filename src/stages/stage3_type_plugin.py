@@ -72,6 +72,13 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--marker_specificity_mode_overrides", type=str, default=None, help="按类型覆盖特异性模式（如 NK cells=mean,PCs=mean）")
     p.add_argument("--fallback_specificity_mode", type=str, default=None, choices=["mean", "max"], help="回退时特异性计算方式（mean 或 max）")
     p.add_argument("--fallback_specificity_types", type=str, default=None, help="回退时特异性模式应用的类型（逗号分隔）")
+    p.add_argument(
+        "--marker_selection_strategy",
+        type=str,
+        default=None,
+        choices=["expression", "specificity"],
+        help="marker selection strategy: expression (default) or specificity",
+    )
     p.add_argument("--use_permutation_test", type=bool, default=None, help="是否使用置换检验计算p值（默认False）")
     p.add_argument("--z_score_aggregation", type=str, default=None, choices=["max", "topk_mean"], help="V4.2 支持度 z 值聚合方式")
     p.add_argument("--z_topk", type=int, default=None, help="topk_mean 的 k 值")
@@ -82,6 +89,15 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--merge_target_map", type=str, default=None, help="手工指定合并映射（JSON或A=B,B=C）")
     p.add_argument("--unknown_label_prefix", type=str, default=None, help="unknown类型标签前缀")
     p.add_argument("--drop_unknown", type=bool, default=None, help="unknown类型是否从映射中剔除")
+    p.add_argument("--support_margin_min", type=float, default=None, help="strong ?????????top1-top2 z?")
+    p.add_argument("--support_margin_enable", type=bool, default=None, help="????????????")
+    p.add_argument("--conflict_demotion_enable", type=bool, default=None, help="????? strong ???")
+    p.add_argument(
+        "--protect_strong_from_missing",
+        type=bool,
+        default=None,
+        help="?????????? strong????? Keep???? missing_types",
+    )
     return p.parse_args()
 
 
@@ -619,6 +635,7 @@ def select_marker_genes_with_specificity(
     specificity_mode: str = "mean",
     min_marker_genes: int = 2,
     fallback_specificity_mode: str | None = None,
+    selection_strategy: str = "expression",
 ) -> List[str]:
     """
     V4.2: 优化标记基因选择，考虑特异性。
@@ -671,6 +688,10 @@ def select_marker_genes_with_specificity(
         specificity = type_expr / (other_expr_mean + eps)
     
     # 过滤：只保留特异性 >= min_specificity 的基因
+    if selection_strategy not in {"expression", "specificity"}:
+        selection_strategy = "expression"
+
+    # ????????? >= min_specificity ???
     if min_specificity > 0:
         filtered_genes = [g for g in plugin_genes if specificity[g] >= min_specificity]
     else:
@@ -678,8 +699,9 @@ def select_marker_genes_with_specificity(
 
     min_keep = max(2, int(min_marker_genes)) if min_marker_genes is not None else 2
     min_keep = min(min_keep, len(plugin_genes))
+    specificity_rank = specificity
     if len(filtered_genes) < min_keep:
-        # 回退：按特异性排序，补足最少 marker 数
+        # ?????????????? marker ?
         fallback_mode = fallback_specificity_mode or specificity_mode
         if fallback_mode == "max":
             fallback_spec = type_expr / (other_expr_max + eps)
@@ -687,15 +709,20 @@ def select_marker_genes_with_specificity(
             fallback_spec = type_expr / (other_expr_mean + eps)
         ranked = fallback_spec.sort_values(ascending=False)
         filtered_genes = ranked.index[:min_keep].tolist()
-    
+        specificity_rank = fallback_spec
+
     if len(filtered_genes) == 0:
-        # 如果过滤后没有基因，使用所有基因
+        # ????????????????
         filtered_genes = plugin_genes
-    
-    # 在该类型中按平均表达排序，选择 top n_markers
-    type_expr_filtered = type_expr[filtered_genes]
-    top_genes = type_expr_filtered.nlargest(n_markers).index.tolist()
-    
+
+    if selection_strategy == "specificity":
+        ranked = specificity_rank.loc[filtered_genes].sort_values(ascending=False)
+        top_genes = ranked.index[:n_markers].tolist()
+    else:
+        # ??????????????? top n_markers
+        type_expr_filtered = type_expr[filtered_genes]
+        top_genes = type_expr_filtered.nlargest(n_markers).index.tolist()
+
     return top_genes
 
 
@@ -751,6 +778,7 @@ def main():
         "marker_specificity_mode_overrides": None,  # 按类型覆盖特异性模式
         "fallback_specificity_mode": None,  # 回退时特异性计算方式
         "fallback_specificity_types": None,  # 回退时特异性模式应用的类型
+        "marker_selection_strategy": "expression",
         "use_permutation_test": False,  # 是否使用置换检验（默认False，计算成本高）
         "z_score_aggregation": "max",  # z 值聚合方式
         "z_topk": 5,  # topk_mean 的 k 值
@@ -761,6 +789,10 @@ def main():
         "merge_target_map": None,
         "unknown_label_prefix": "Unknown_",
         "drop_unknown": True,
+        "support_margin_min": None,
+        "support_margin_enable": False,
+        "conflict_demotion_enable": False,
+        "protect_strong_from_missing": False,
     }
 
     # V5 系列子模块配置分组：去噪 / 生态位 / 熵质控 / 拯救控制
@@ -878,6 +910,11 @@ def main():
     marker_specificity_mode_overrides = args.marker_specificity_mode_overrides if args.marker_specificity_mode_overrides is not None else stage3_cfg.get("marker_specificity_mode_overrides", defaults["marker_specificity_mode_overrides"])
     fallback_specificity_mode = args.fallback_specificity_mode if args.fallback_specificity_mode is not None else stage3_cfg.get("fallback_specificity_mode", defaults["fallback_specificity_mode"])
     fallback_specificity_types = args.fallback_specificity_types if args.fallback_specificity_types is not None else stage3_cfg.get("fallback_specificity_types", defaults["fallback_specificity_types"])
+    marker_selection_strategy = (
+        args.marker_selection_strategy
+        if args.marker_selection_strategy is not None
+        else stage3_cfg.get("marker_selection_strategy", defaults["marker_selection_strategy"])
+    )
     use_permutation_test = args.use_permutation_test if args.use_permutation_test is not None else stage3_cfg.get("use_permutation_test", defaults["use_permutation_test"])
     z_score_aggregation = args.z_score_aggregation if args.z_score_aggregation is not None else stage3_cfg.get("z_score_aggregation", defaults["z_score_aggregation"])
     z_topk = args.z_topk if args.z_topk is not None else stage3_cfg.get("z_topk", defaults["z_topk"])
@@ -894,6 +931,26 @@ def main():
     )
     unknown_label_prefix = args.unknown_label_prefix if args.unknown_label_prefix is not None else stage3_cfg.get("unknown_label_prefix", defaults["unknown_label_prefix"])
     drop_unknown = args.drop_unknown if args.drop_unknown is not None else stage3_cfg.get("drop_unknown", defaults["drop_unknown"])
+    support_margin_min = (
+        args.support_margin_min
+        if args.support_margin_min is not None
+        else stage3_cfg.get("support_margin_min", defaults["support_margin_min"])
+    )
+    support_margin_enable = (
+        args.support_margin_enable
+        if args.support_margin_enable is not None
+        else stage3_cfg.get("support_margin_enable", defaults["support_margin_enable"])
+    )
+    conflict_demotion_enable = (
+        args.conflict_demotion_enable
+        if args.conflict_demotion_enable is not None
+        else stage3_cfg.get("conflict_demotion_enable", defaults["conflict_demotion_enable"])
+    )
+    protect_strong_from_missing = (
+        args.protect_strong_from_missing
+        if args.protect_strong_from_missing is not None
+        else stage3_cfg.get("protect_strong_from_missing", defaults["protect_strong_from_missing"])
+    )
 
     if mismatch_action not in {"relabel", "mark_unknown", "ignore"}:
         mismatch_action = defaults["mismatch_action"]
@@ -908,6 +965,8 @@ def main():
         marker_specificity_mode = defaults["marker_specificity_mode"]
     if fallback_specificity_mode not in {None, "mean", "max"}:
         fallback_specificity_mode = None
+    if marker_selection_strategy not in {"expression", "specificity"}:
+        marker_selection_strategy = defaults["marker_selection_strategy"]
     # 解析按类型覆盖的特异性/marker 下限配置
     override_map = {}
     if isinstance(marker_specificity_mode_overrides, str):
@@ -1099,7 +1158,8 @@ def main():
             effective_min_marker_specificity = specificity_override_map.get(
                 str(t).strip().lower(), min_marker_specificity
             )
-            if effective_min_marker_specificity > 0:
+            use_specificity_ranking = marker_selection_strategy == "specificity"
+            if effective_min_marker_specificity > 0 or use_specificity_ranking:
                 effective_specificity_mode = override_map.get(str(t).strip().lower(), marker_specificity_mode)
                 effective_min_marker_genes = min_genes_override_map.get(str(t).strip().lower(), min_marker_genes)
                 marker_genes = select_marker_genes_with_specificity(
@@ -1107,6 +1167,7 @@ def main():
                     marker_gene_count, effective_min_marker_specificity, effective_specificity_mode,
                     effective_min_marker_genes,
                     fallback_specificity_mode if (not fallback_specificity_types or str(t).strip().lower() in fallback_specificity_types) else None,
+                    selection_strategy=marker_selection_strategy,
                 )
             else:
                 marker_genes = select_marker_genes(sc_expr, sc_meta, t, type_col, plugin_genes, marker_gene_count)
@@ -1437,6 +1498,36 @@ def main():
         else:
             category = "unsupported"
         row["support_category"] = category
+    # ???????????
+    support_margin_min_value = None
+    if support_margin_min is not None:
+        try:
+            support_margin_min_value = float(support_margin_min)
+        except (TypeError, ValueError):
+            support_margin_min_value = None
+    for row in support_rows:
+        t = row["orig_type"]
+        margin = None
+        if use_fisher_z:
+            z_vals = type_z_values.get(t)
+            if z_vals is not None and len(z_vals) >= 2:
+                top2 = np.partition(z_vals, -2)[-2:]
+                margin = float(np.max(top2) - np.min(top2))
+        row["support_margin"] = margin
+        if support_margin_min_value is not None and margin is not None:
+            row["support_margin_pass"] = "Yes" if margin >= support_margin_min_value else "No"
+        else:
+            row["support_margin_pass"] = ""
+        row["support_margin_downgraded"] = "No"
+        row["conflict_downgraded"] = "No"
+        if support_margin_enable and support_margin_min_value is not None and margin is not None:
+            if row.get("support_category") == "strong" and margin < support_margin_min_value:
+                row["support_category"] = "weak"
+                row["support_margin_downgraded"] = "Yes"
+        if conflict_demotion_enable and use_v42:
+            if str(row.get("Significant", "")).strip().lower() == "yes" and row.get("support_category") == "strong":
+                row["support_category"] = "weak"
+                row["conflict_downgraded"] = "Yes"
     unsupported_types = {row["orig_type"] for row in support_rows if row["support_category"] == "unsupported"}
     # 拯救成功的类型不再视为 unsupported
     if v5_final_rescued:
@@ -1445,9 +1536,21 @@ def main():
     # V4.3: 根据显著缺失结果进行处理决策
     # missing_types 用于 relabel 或标记 Unknown
     missing_types = set()
+    missing_conflicts = []
     if use_v42:
         for row in support_rows:
             if str(row.get("Significant", "")).strip().lower() == "yes":
+                if protect_strong_from_missing and row.get("support_category") == "strong":
+                    missing_conflicts.append(
+                        {
+                            "orig_type": row.get("orig_type"),
+                            "support_category": row.get("support_category"),
+                            "support_score": row.get("support_score"),
+                            "PValue": row.get("PValue"),
+                            "QValue": row.get("QValue"),
+                        }
+                    )
+                    continue
                 missing_types.add(row["orig_type"])
     # 拯救成功的类型不再视为缺失
     if v5_final_rescued:
@@ -1722,6 +1825,15 @@ def main():
 
     # 汇总输出（stage3_summary.json）
     # 结构包含：params / support_overview / action_overview / v5_* / unknown_overview / rare_types / plugin_types
+    unknown_label_effective = "Unknown_sc_only"
+    output_paths = {
+        "stage3_summary": str((out_res / "stage3_summary.json").relative_to(project_root)),
+        "cell_type_relabel": str(relabel_path.relative_to(project_root)),
+        "type_support": str(type_support_path.relative_to(project_root)),
+        "stage3_adjusted_annotations": str(adjusted_path.relative_to(project_root)),
+        "type_prior_matrix": str(prior_path.relative_to(project_root)),
+    }
+
     summary = {
         # 参数快照：用于复现实验与排查差异
         "params": {
@@ -1750,6 +1862,7 @@ def main():
             "marker_specificity_mode_overrides": marker_specificity_mode_overrides if use_v42 else None,
             "fallback_specificity_mode": fallback_specificity_mode if use_v42 else None,
             "fallback_specificity_types": sorted(fallback_specificity_types) if use_v42 and fallback_specificity_types else None,
+            "marker_selection_strategy": marker_selection_strategy if use_v42 else None,
             "use_permutation_test": use_permutation_test if use_v42 else None,
             "z_score_aggregation": z_score_aggregation if use_v42 else None,
             "z_topk": z_topk if use_v42 else None,
@@ -1759,7 +1872,12 @@ def main():
             "relabel_similarity_threshold": relabel_similarity_threshold if use_v42 else None,
             "merge_target_map": merge_target_map if use_v42 else None,
             "unknown_label_prefix": unknown_label_prefix if use_v42 else None,
+            "unknown_label_effective": unknown_label_effective if use_v42 else None,
             "drop_unknown": drop_unknown if use_v42 else None,
+            "support_margin_min": support_margin_min if use_fisher_z else None,
+            "support_margin_enable": support_margin_enable if use_fisher_z else None,
+            "conflict_demotion_enable": conflict_demotion_enable if use_v42 else None,
+            "protect_strong_from_missing": protect_strong_from_missing if use_v42 else None,
             # V5.1 参数
             "v5_denoising_enable": v5_enable if use_v42 else None,
             "v5_p_value_upper_limit": v5_p_upper if use_v42 else None,
@@ -1783,6 +1901,7 @@ def main():
             "by_type_count": dict(action_by_type),
             "by_cell_count": dict(action_by_cell),
             "missing_types": sorted(missing_types),
+            "missing_types_conflicts": missing_conflicts,
         },
         # V5.1 去噪拯救统计
         "v5_denoising": {
@@ -1817,10 +1936,12 @@ def main():
             "cell_fraction": unknown_cells / total_cells if total_cells > 0 else 0.0,
             "prior_mass_fraction": unknown_prior_mass,
             "n_spots_all_unknown": n_spots_all_unknown,
+            "unknown_label_effective": unknown_label_effective,
         },
         # 稀有类型清单与 plugin_type 列表（输出顺序）
         "rare_types": rare_types,
         "plugin_types": plugin_types,
+        "output_paths": output_paths,
     }
     # 写入 summary 结果，作为后续指标与审计的权威来源
     with (out_res / "stage3_summary.json").open("w", encoding="utf-8") as f:
