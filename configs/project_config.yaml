@@ -1,8 +1,9 @@
 # SVTuner environment specification
+# 勿在此文件提交本机绝对路径（如 Rscript 全路径）。需要时复制 project_config.local.yaml.example
+# 为 configs/project_config.local.yaml（已 gitignore），仅在本机填写 rscript_path 等。
 project: SVTuner
 dataset_config_map:
   real_brca: real_brca.yaml
-rscript_path: E:/ANACONDA/envs/cytospace_v1.1.0_py310/Scripts/Rscript.exe
 environment:
   name: cytospace_v1.1.0_py310
   channels:

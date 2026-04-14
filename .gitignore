@@ -18,6 +18,9 @@ __pycache__/
 .venv/
 venv/
 
+# Local machine-only overrides (paths, secrets)
+configs/project_config.local.yaml
+
 # Project outputs and large data
 data/
 logs/

@@ -6,11 +6,11 @@ Stage5 route2 S0 minimal evaluator:
 
 Usage (single run):
   python src/stages/stage5_route2_s0.py \
-    --sample real_brca_simS0_seed42 \
+    --sample real_brca \
     --run_tag route2 \
-    --stage4_dir result/real_brca_simS0_seed42/stage4_cytospace_filtered/cytospace_output \
-    --sim_dir data/sim/real_brca/S0 \
-    --out_dir result/real_brca_simS0_seed42/stage5_route2_s0/default
+    --stage4_dir result/real_brca/stage4_cytospace_route2/cytospace_output \
+    --sim_dir <optional_sim_truth_dir> \
+    --out_dir result/real_brca/stage5_eval_route2
 
 For baseline, pass run_tag=baseline and stage4_dir pointing to the baseline Stage4 output.
 """
@@ -22,11 +22,12 @@ import json
 import hashlib
 import sys
 from pathlib import Path
-from typing import Tuple, List
+from typing import Tuple, List, Sequence
 import re
 
 import numpy as np
 import pandas as pd
+from src.utils.sample_paths import sample_dir_candidates
 
 try:
     import yaml
@@ -441,6 +442,13 @@ def parse_thresholds(value: str | None, default: list[float]) -> list[float]:
     return thresholds if thresholds else default
 
 
+def parse_name_list(value: str | None) -> list[str]:
+    if not value:
+        return []
+    parts = [p for p in re.split(r"[,\s]+", str(value).strip()) if p]
+    return [str(p).strip() for p in parts if str(p).strip()]
+
+
 def build_segment_stats(values: pd.Series, low: float, high: float) -> dict:
     vals = values.dropna()
     total = len(vals)
@@ -842,12 +850,26 @@ def load_by_spot_counts(path: Path) -> pd.DataFrame:
     return df
 
 
-def compute_composition_metrics(pred: pd.DataFrame, truth: pd.DataFrame) -> Tuple[float, float, float, int]:
+def compute_composition_metrics(
+    pred: pd.DataFrame,
+    truth: pd.DataFrame,
+    include_types: list[str] | None = None,
+    exclude_types: list[str] | None = None,
+) -> Tuple[float, float, float, int, list[str]]:
     common_spots = truth.index.intersection(pred.index)
     truth = truth.loc[common_spots]
     pred = pred.loc[common_spots]
 
     common_types = [c for c in truth.columns if c in pred.columns]
+    if include_types:
+        include_set = set(include_types)
+        common_types = [c for c in common_types if c in include_set]
+    if exclude_types:
+        exclude_set = set(exclude_types)
+        common_types = [c for c in common_types if c not in exclude_set]
+    if not common_types:
+        return float("nan"), float("nan"), float("nan"), len(common_spots), []
+
     truth = truth[common_types].fillna(0.0)
     pred = pred[common_types].fillna(0.0)
 
@@ -862,7 +884,7 @@ def compute_composition_metrics(pred: pd.DataFrame, truth: pd.DataFrame) -> Tupl
         js_list.append(js_div(p, q))
         corr_list.append(row_pearson(p, q))
 
-    return float(np.mean(l1_list)), float(np.mean(js_list)), float(np.mean(corr_list)), len(common_spots)
+    return float(np.mean(l1_list)), float(np.mean(js_list)), float(np.mean(corr_list)), len(common_spots), common_types
 
 
 def detect_root() -> Path:
@@ -1326,11 +1348,71 @@ def resolve_relabel_path(stage3_summary: dict | None, root: Path, sample: str) -
     return root / "data" / "processed" / sample / "stage3_typematch" / "cell_type_relabel.csv"
 
 
+def _normalize_missing_type_values(values: Sequence[str] | None, alias_map: dict[str, str]) -> list[str]:
+    out: list[str] = []
+    for v in values or []:
+        vv = str(v).strip()
+        if not vv:
+            continue
+        canon = canonicalize_type_name(vv, alias_map)
+        if canon and canon not in out:
+            out.append(canon)
+    return out
+
+
+def collect_missing_types_from_sim_info_chain(
+    project_root: Path,
+    sim_info: dict | None,
+    alias_map: dict[str, str],
+    max_depth: int = 12,
+) -> list[str]:
+    """Collect missing types from current sim_info and its source_sample chain."""
+    out: list[str] = []
+    visited: set[str] = set()
+    info = sim_info or {}
+
+    def _append_from_info(d: dict) -> None:
+        raw_list: list[str] = []
+        mts = d.get("missing_types")
+        if isinstance(mts, list):
+            raw_list.extend([str(x) for x in mts if str(x).strip()])
+        mt = d.get("missing_type")
+        if mt is not None and str(mt).strip():
+            raw_list.append(str(mt))
+        for canon in _normalize_missing_type_values(raw_list, alias_map):
+            if canon not in out:
+                out.append(canon)
+
+    _append_from_info(info)
+    cur = str(info.get("source_sample") or "").strip()
+
+    for _ in range(max_depth):
+        if not cur or cur in visited:
+            break
+        visited.add(cur)
+        p = None
+        for base in sample_dir_candidates(project_root, cur, sim_group="real_brca"):
+            cand = base / "sim_info.json"
+            if cand.exists():
+                p = cand
+                break
+        if p is None:
+            break
+        try:
+            info = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            break
+        _append_from_info(info)
+        cur = str(info.get("source_sample") or "").strip()
+
+    return out
+
+
 def compute_filter_ledger(
     stage3_summary: dict | None,
     stage4_summary: dict,
     relabel_df: pd.DataFrame | None,
-    missing_type: str | None,
+    missing_types: Sequence[str] | None,
     unknown_label: str | None,
     filter_scope: str | None,
     truth_filter_removed: int | None,
@@ -1341,9 +1423,10 @@ def compute_filter_ledger(
 
     expected_drop = None
     expected_basis = None
+    missing_set = {str(x).strip() for x in (missing_types or []) if str(x).strip()}
     if filter_scope_effective == "missing_only":
-        if relabel_df is not None and missing_type is not None:
-            expected_drop = int((relabel_df["orig_type"] == missing_type).sum())
+        if relabel_df is not None and missing_set:
+            expected_drop = int(relabel_df["orig_type"].isin(missing_set).sum())
             expected_basis = "relabel_missing_type"
     else:
         if stage3_summary:
@@ -1365,12 +1448,12 @@ def compute_filter_ledger(
     missing_count = None
     false_nonmissing = None
     false_nonmissing_fraction = None
-    if relabel_df is not None and missing_type is not None and n_filtered is not None:
+    if relabel_df is not None and missing_set and n_filtered is not None:
         if filter_scope_effective == "missing_only":
-            missing_count = expected_drop if expected_drop is not None else int((relabel_df["orig_type"] == missing_type).sum())
+            missing_count = expected_drop if expected_drop is not None else int(relabel_df["orig_type"].isin(missing_set).sum())
         elif unknown_label:
             filtered = relabel_df[relabel_df["plugin_type"] == unknown_label]
-            missing_count = int((filtered["orig_type"] == missing_type).sum())
+            missing_count = int(filtered["orig_type"].isin(missing_set).sum())
         if missing_count is not None:
             false_nonmissing = int(n_filtered) - int(missing_count)
             if n_sc_total:
@@ -1386,6 +1469,7 @@ def compute_filter_ledger(
         "ledger_check_ok": ledger_check_ok,
         "expected_basis": expected_basis,
         "unknown_label_effective": unknown_label,
+        "missing_types_effective": sorted(missing_set),
         "false_filter_nonmissing_count": false_nonmissing,
         "false_filter_nonmissing_fraction_of_total": false_nonmissing_fraction,
     }
@@ -1515,16 +1599,19 @@ def compute_rescue_ledger(
 
 
 
-def compute_sim_missing_summary(sim_info: dict | None, sc_meta_path: Path | None, truth_query_path: Path | None) -> dict | None:
-    if not sim_info:
-        return None
-    missing_type = sim_info.get("missing_type")
-    if not missing_type:
+def compute_sim_missing_summary(
+    missing_types: Sequence[str] | None,
+    sc_meta_path: Path | None,
+    truth_query_path: Path | None,
+) -> dict | None:
+    missing_list = [str(x).strip() for x in (missing_types or []) if str(x).strip()]
+    if not missing_list:
         return None
 
     if sc_meta_path is None or not sc_meta_path.exists():
         return {
-            "missing_type": missing_type,
+            "missing_type": missing_list[0],
+            "missing_types": missing_list,
             "missing_cells_total": None,
             "missing_cells_present_in_truth": None,
             "missing_cells_in_sim": None,
@@ -1533,7 +1620,8 @@ def compute_sim_missing_summary(sim_info: dict | None, sc_meta_path: Path | None
 
     if truth_query_path is None or not truth_query_path.exists():
         return {
-            "missing_type": missing_type,
+            "missing_type": missing_list[0],
+            "missing_types": missing_list,
             "missing_cells_total": None,
             "missing_cells_present_in_truth": None,
             "missing_cells_in_sim": None,
@@ -1543,7 +1631,8 @@ def compute_sim_missing_summary(sim_info: dict | None, sc_meta_path: Path | None
     sc_meta = pd.read_csv(sc_meta_path)
     if "cell_type" not in sc_meta.columns or "cell_id" not in sc_meta.columns:
         return {
-            "missing_type": missing_type,
+            "missing_type": missing_list[0],
+            "missing_types": missing_list,
             "missing_cells_total": None,
             "missing_cells_present_in_truth": None,
             "missing_cells_in_sim": None,
@@ -1553,24 +1642,45 @@ def compute_sim_missing_summary(sim_info: dict | None, sc_meta_path: Path | None
     truth = pd.read_csv(truth_query_path)
     if "cell_type" not in truth.columns or "cell_id" not in truth.columns:
         return {
-            "missing_type": missing_type,
+            "missing_type": missing_list[0],
+            "missing_types": missing_list,
             "missing_cells_total": None,
             "missing_cells_present_in_truth": None,
             "missing_cells_in_sim": None,
             "reason": "truth_query_missing_columns",
         }
 
-    sc_total = int((sc_meta["cell_type"] == missing_type).sum())
     truth_dedup = truth.drop_duplicates(subset=["cell_id"], keep="first")
-    truth_present = int((truth_dedup["cell_type"] == missing_type).sum())
-    missing_in_sim = sc_total - truth_present
+    per_type: list[dict] = []
+    total_sc = int(len(sc_meta))
+    agg_total = 0
+    agg_present = 0
 
+    for mt in missing_list:
+        sc_total = int((sc_meta["cell_type"] == mt).sum())
+        truth_present = int((truth_dedup["cell_type"] == mt).sum())
+        missing_in_sim = int(sc_total - truth_present)
+        agg_total += sc_total
+        agg_present += truth_present
+        per_type.append(
+            {
+                "missing_type": mt,
+                "missing_cells_total": sc_total,
+                "missing_cells_present_in_truth": truth_present,
+                "missing_cells_in_sim": missing_in_sim,
+                "missing_fraction_of_sc": (float(missing_in_sim) / float(total_sc)) if total_sc else None,
+            }
+        )
+
+    agg_missing = int(agg_total - agg_present)
     return {
-        "missing_type": missing_type,
-        "missing_cells_total": sc_total,
-        "missing_cells_present_in_truth": truth_present,
-        "missing_cells_in_sim": missing_in_sim,
-        "missing_fraction_of_sc": float(missing_in_sim) / float(len(sc_meta)) if len(sc_meta) else None,
+        "missing_type": missing_list[0],
+        "missing_types": missing_list,
+        "missing_cells_total": agg_total,
+        "missing_cells_present_in_truth": agg_present,
+        "missing_cells_in_sim": agg_missing,
+        "missing_fraction_of_sc": (float(agg_missing) / float(total_sc)) if total_sc else None,
+        "by_type": per_type,
     }
 
 
@@ -1589,7 +1699,7 @@ def compute_stage3_grouped_counts(relabel_df: pd.DataFrame | None) -> dict | Non
 
 def generate_filter_audit(
     sample: str,
-    missing_type: str | None,
+    missing_types: Sequence[str] | None,
     run_tag: str,
     n_filtered_total: int,
     n_sc_total: int,
@@ -1610,28 +1720,36 @@ def generate_filter_audit(
     unknown_label = unknown_label or load_stage3_unknown_label(root, sample, summary=stage3_summary) or "Unknown_sc_only"
 
     filter_scope_effective = filter_scope or "unsupported_all"
+    mask_unknown = relabel["plugin_type"] == unknown_label
+    missing_set = {str(x).strip() for x in (missing_types or []) if str(x).strip()}
+    mask_missing = relabel["orig_type"].isin(missing_set) if missing_set else pd.Series(False, index=relabel.index)
+
+    # Recompute Stage4-equivalent filtered set with scope-aware rules.
     if filter_scope_effective == "missing_only":
-        mask_type = relabel["orig_type"] == missing_type
-        filtered = relabel[mask_type].copy()
+        # Oracle fallback: filter all cells of missing_type regardless of unknown mark.
+        filtered = relabel[mask_missing].copy()
+    elif filter_scope_effective == "missing_detected_only":
+        # Mainline route2 semantics: filter only missing_type cells that were marked unknown.
+        filtered = relabel[mask_unknown & mask_missing].copy()
     else:
-        mask_unknown = relabel["plugin_type"] == unknown_label
+        # Legacy/global filtering semantics.
         filtered = relabel[mask_unknown].copy()
 
     actual_filtered = int(len(filtered))
     type_counts = filtered["orig_type"].value_counts().to_dict()
 
-    missing_count = type_counts.get(missing_type, 0) if missing_type is not None else 0
-    missing_fraction_of_filtered = missing_count / n_filtered_total if n_filtered_total > 0 else 0.0
+    missing_count = int(sum(int(type_counts.get(mt, 0)) for mt in missing_set))
+    missing_fraction_of_filtered = (missing_count / actual_filtered) if actual_filtered > 0 else 0.0
 
-    non_missing_filtered = n_filtered_total - missing_count
-    non_missing_fraction_of_total = non_missing_filtered / n_sc_total if n_sc_total > 0 else 0.0
+    non_missing_filtered = int(actual_filtered - missing_count)
+    non_missing_fraction_of_total = (non_missing_filtered / n_sc_total) if n_sc_total > 0 else 0.0
 
     top10_types = list(type_counts.items())[:10]
-    denom = float(n_filtered_total) if n_filtered_total > 0 else 1.0
+    denom = float(actual_filtered) if actual_filtered > 0 else 1.0
     top10_list = [{"type": t, "count": int(c), "fraction": float(c / denom)} for t, c in top10_types]
 
     sum_top10 = sum(c for _, c in top10_types)
-    check1_passed = abs(sum_top10 - n_filtered_total) < 1e-6
+    check1_passed = abs(sum_top10 - actual_filtered) < 1e-6
 
     check2_value = missing_fraction_of_filtered
     check3_value = non_missing_fraction_of_total
@@ -1641,9 +1759,8 @@ def generate_filter_audit(
 
     weak_th_effective = load_stage3_weak_th(root, sample, summary=stage3_summary)
 
-    mask_unknown = relabel["plugin_type"] == unknown_label
     marked_total = int(mask_unknown.sum())
-    marked_missing = int((mask_unknown & (relabel["orig_type"] == missing_type)).sum()) if missing_type else 0
+    marked_missing = int((mask_unknown & relabel["orig_type"].isin(missing_set)).sum()) if missing_set else 0
     marked_non_missing = marked_total - marked_missing
 
     all_types_df = pd.DataFrame([
@@ -1661,10 +1778,13 @@ def generate_filter_audit(
     return {
         "weak_th_effective": weak_th_effective,
         "unknown_label_effective": unknown_label,
-        "missing_type": missing_type,
+        "missing_type": next(iter(missing_set), None),
+        "missing_types": sorted(missing_set),
         "run_tag": run_tag,
+        "filter_scope_effective": filter_scope_effective,
         "source_counts_basis": "sc_total_before_prefilter",
         "total_filtered": int(n_filtered_total),
+        "total_filtered_recomputed": int(actual_filtered),
         "total_sc_cells": int(n_sc_total),
         "truth_filter": {
             "enabled": bool(truth_filter_enabled),
@@ -1683,7 +1803,7 @@ def generate_filter_audit(
         },
         "non_missing_filtered": {
             "count": int(non_missing_filtered),
-            "fraction_of_filtered": float(non_missing_filtered / n_filtered_total) if n_filtered_total > 0 else 0.0,
+            "fraction_of_filtered": float(non_missing_filtered / actual_filtered) if actual_filtered > 0 else 0.0,
             "fraction_of_total": float(non_missing_fraction_of_total),
         },
         "top10_filtered_types": top10_list,
@@ -1692,7 +1812,7 @@ def generate_filter_audit(
             "check1_sum_top10_equals_total": {
                 "passed": check1_passed,
                 "sum_top10": int(sum_top10),
-                "n_filtered_total": int(n_filtered_total),
+                "n_filtered_total": int(actual_filtered),
             },
             "check2_missing_type_contrib": {
                 "value": float(check2_value),
@@ -1764,33 +1884,66 @@ def run_eval(args: argparse.Namespace):
     except Exception as e:
         print(f"[WARN] confidence evaluation failed: {e}")
         confidence_metrics = {"enabled": True, "ready": False, "reason": f"error:{e}"}
-    missing_type = sim_info.get("missing_type")
+    alias_map = load_alias_map(project_root / "configs" / "type_aliases.yaml")
+    missing_types_truth = collect_missing_types_from_sim_info_chain(
+        project_root,
+        sim_info,
+        alias_map=alias_map,
+    )
+    if not missing_types_truth:
+        s4_missing = s4.get("missing_type_list")
+        if isinstance(s4_missing, list):
+            missing_types_truth = _normalize_missing_type_values([str(x) for x in s4_missing], alias_map)
+    if not missing_types_truth:
+        mt_single = sim_info.get("missing_type")
+        missing_types_truth = _normalize_missing_type_values([str(mt_single)] if mt_single else [], alias_map)
+
     rescued_types_final = load_stage3_rescued_types(project_root, args.sample, summary=stage3_summary)
     rescued_types_norm = {normalize_type_name(t) for t in rescued_types_final}
-    missing_type_eval = missing_type
-    missing_type_rescued = False
-    if missing_type and s4.get("filter_mode") != "none":
-        if normalize_type_name(missing_type) in rescued_types_norm:
-            missing_type_eval = None
-            missing_type_rescued = True
+    missing_types_eval = list(missing_types_truth)
+    missing_types_rescued: list[str] = []
+    if missing_types_eval and s4.get("filter_mode") != "none":
+        kept: list[str] = []
+        for mt in missing_types_eval:
+            if normalize_type_name(mt) in rescued_types_norm:
+                missing_types_rescued.append(mt)
+            else:
+                kept.append(mt)
+        missing_types_eval = kept
+    missing_type = missing_types_truth[0] if missing_types_truth else None
+    missing_type_eval = missing_types_eval[0] if len(missing_types_eval) == 1 else None
+    missing_type_rescued = bool(missing_type and missing_type in set(missing_types_rescued))
 
     ca = pd.read_csv(assign_p)
-    if missing_type_eval and "cell_type" in ca.columns:
-        leak_assign = int((ca["cell_type"] == missing_type_eval).sum())
+    if missing_types_eval and "cell_type" in ca.columns:
+        leak_assign = int(ca["cell_type"].isin(missing_types_eval).sum())
     else:
-        leak_assign = 0 if missing_type_eval is None else None
+        leak_assign = 0
 
     by_spot = load_by_spot_counts(by_spot_p)
-    if missing_type_eval and missing_type_eval in by_spot.columns:
-        leak_by_spot = int(by_spot[missing_type_eval].sum())
-    else:
-        leak_by_spot = 0
+    leak_by_spot = int(sum(int(by_spot[mt].sum()) for mt in missing_types_eval if mt in by_spot.columns))
 
     assignment_rows = int(len(ca))
     leak_rate = (leak_by_spot / assignment_rows) if assignment_rows else 0.0
 
     truth = load_by_spot_counts(truth_spot_p)
-    l1_mean, js_mean, corr_mean, n_spots = compute_composition_metrics(by_spot, truth)
+
+    include_types = parse_name_list(getattr(args, "composition_include_types", None))
+    exclude_types = parse_name_list(getattr(args, "composition_exclude_types", None))
+    if getattr(args, "composition_drop_lowconfidence", False):
+        for t in ["LowConfidence", "Unknown_sc_only"]:
+            if t not in exclude_types:
+                exclude_types.append(t)
+
+    # Raw composition metrics (no type exclusion), kept for audit.
+    l1_raw, js_raw, corr_raw, n_spots_raw, types_raw = compute_composition_metrics(by_spot, truth)
+    # Effective composition metrics (optional type include/exclude), used as main composition output.
+    l1_mean, js_mean, corr_mean, n_spots, types_used = compute_composition_metrics(
+        by_spot,
+        truth,
+        include_types=include_types,
+        exclude_types=exclude_types,
+    )
 
     # 生成filter_audit（仅对route2运行）
     filter_audit = None
@@ -1799,7 +1952,7 @@ def run_eval(args: argparse.Namespace):
         n_sc_total = s4.get("n_cells_before_prefilter", 0)
         filter_audit = generate_filter_audit(
             args.sample,
-            missing_type,
+            missing_types_truth,
             run_tag,
             n_filtered,
             n_sc_total,
@@ -1827,7 +1980,7 @@ def run_eval(args: argparse.Namespace):
         stage3_summary=stage3_summary,
         stage4_summary=s4,
         relabel_df=relabel_df,
-        missing_type=missing_type,
+        missing_types=missing_types_truth,
         unknown_label=unknown_label_effective,
         filter_scope=s4.get("filter_scope"),
         truth_filter_removed=s4.get("truth_filter_removed"),
@@ -1845,7 +1998,7 @@ def run_eval(args: argparse.Namespace):
     )
 
     sim_sc_meta_path = sim_dir / "sc_metadata.csv"
-    sim_missing_summary = compute_sim_missing_summary(sim_info, sim_sc_meta_path, truth_query_p)
+    sim_missing_summary = compute_sim_missing_summary(missing_types_truth, sim_sc_meta_path, truth_query_p)
     stage3_grouped_counts = compute_stage3_grouped_counts(relabel_df)
     sim_checks = {
         "missing_summary": sim_missing_summary,
@@ -1858,7 +2011,6 @@ def run_eval(args: argparse.Namespace):
         try:
             # 对于 route2，type_mismatch 是正常的（因为使用了 plugin_type），所以放宽检查
             eval_strict = args.strict_config and run_tag == "baseline"
-            missing_types_eval = [missing_type_eval] if missing_type_eval else []
             cell_spot_eval, _, _ = eval_cell_spot_accuracy(
                 truth_path=truth_query_p,
                 pred_path=assign_p,
@@ -1881,12 +2033,15 @@ def run_eval(args: argparse.Namespace):
         "sample": args.sample,
         "run_tag": run_tag,
         "missing_type_truth": missing_type,
+        "missing_types_truth": missing_types_truth,
         "leakage": {
             "missing_in_assignment": leak_assign,
             "missing_in_by_spot": leak_by_spot,
             "missing_leak_rate": leak_rate,
             "missing_type_eval": missing_type_eval,
+            "missing_types_eval": missing_types_eval,
             "missing_type_rescued": missing_type_rescued,
+            "missing_types_rescued": missing_types_rescued,
             "rescued_types_final": rescued_types_final,
         },
         "composition": {
@@ -1894,6 +2049,20 @@ def run_eval(args: argparse.Namespace):
             "JS_mean": js_mean,
             "corr_mean": corr_mean,
             "n_spots_eval": n_spots,
+        },
+        "composition_raw": {
+            "L1_mean": l1_raw,
+            "JS_mean": js_raw,
+            "corr_mean": corr_raw,
+            "n_spots_eval": n_spots_raw,
+            "types_used": types_raw,
+        },
+        "composition_eval": {
+            "include_types": include_types,
+            "exclude_types": exclude_types,
+            "drop_lowconfidence": bool(getattr(args, "composition_drop_lowconfidence", False)),
+            "types_used": types_used,
+            "n_types_used": int(len(types_used)),
         },
         "coverage": {
             "n_cells_before_prefilter": s4.get("n_cells_before_prefilter"),
@@ -1993,7 +2162,7 @@ def compare_runs(baseline_json: Path, route2_json: Path, out_path: Path):
 
 def parse_args():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--sample", required=False, default="real_brca_simS0_seed42")
+    ap.add_argument("--sample", required=False, default="real_brca")
     ap.add_argument("--run_tag", help="baseline / route2", required=False)
     ap.add_argument("--stage4_dir", help="stage4 output dir for this run", required=False)
     ap.add_argument("--sim_dir", help="sim truth dir (data/sim/<sample_base>/S0)", required=False)
@@ -2065,6 +2234,21 @@ def parse_args():
         "--confidence_svm_c_grid",
         default="1",
         help="comma-separated C values for SVM grid search (e.g. '0.1,1,10')",
+    )
+    ap.add_argument(
+        "--composition_include_types",
+        default="",
+        help="optional whitelist for composition metrics, comma/space separated",
+    )
+    ap.add_argument(
+        "--composition_exclude_types",
+        default="",
+        help="optional blacklist for composition metrics, comma/space separated",
+    )
+    ap.add_argument(
+        "--composition_drop_lowconfidence",
+        action="store_true",
+        help="exclude LowConfidence and Unknown_sc_only from composition metrics",
     )
     ap.add_argument(
         "--strict_config",

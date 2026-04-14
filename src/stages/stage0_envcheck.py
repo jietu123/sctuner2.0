@@ -2,8 +2,8 @@
 """
 Stage 0：环境与项目结构自检
 
-使用方式（在 SVTUNER_PROJECT 根目录或任意目录均可）：
-    python D:/EXPERIMENT/SVTUNER_PROJECT/src/stages/stage0_envcheck.py
+使用方式（在仓库根目录）：
+    python src/stages/stage0_envcheck.py
 
 功能：
 1. 检查关键 Python 包能否 import
@@ -37,9 +37,9 @@ def detect_project_root() -> Path:
     """
     自动推断项目根目录：
     假设本文件路径为：
-        D:/EXPERIMENT/SVTUNER_PROJECT/src/stages/stage0_envcheck.py
+        <repo>/src/stages/stage0_envcheck.py
     则项目根目录为：
-        D:/EXPERIMENT/SVTUNER_PROJECT
+        <repo>
     """
     here = Path(__file__).resolve()
     # .../SVTUNER_PROJECT/src/stages/stage0_envcheck.py
@@ -173,7 +173,12 @@ def check_project_layout(project_root: Path):
         project_root / "src" / "stages" / "stage4_mapping.py",
         project_root / "src" / "stages" / "backends" / "cytospace_backend.py",
     ]
-    cfg = load_yaml(project_root / "configs" / "project_config.yaml")
+    pr = str(project_root.resolve())
+    if pr not in sys.path:
+        sys.path.insert(0, pr)
+    from src.config import load_project_yaml
+
+    cfg = load_project_yaml(project_root)
     rscript_path = (cfg or {}).get("rscript_path")
 
     result = {}

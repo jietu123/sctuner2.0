@@ -427,6 +427,43 @@ def apply_linear_assignment(scRNA_data, st_data, coordinates_data, cell_number_t
         raise ValueError("Invalid point")
     print(f"Number of required processors: {num_iters}")
 
+    if min(num_iters, number_of_processors) <= 1:
+        for idx in range(num_iters):
+            if index_st_list is not None:
+                # called for --single-cell
+                st_norm_data_selected = st_norm_data.iloc[:, index_st_list[idx]]
+                cell_number_to_node_assignment_selected = cell_number_to_node_assignment[index_st_list[idx]]
+            elif subsampled_cell_number_to_node_assignment_list is not None:
+                # called for --sampling-sub-spots
+                st_norm_data_selected = st_norm_data
+                cell_number_to_node_assignment_selected = subsampled_cell_number_to_node_assignment_list[idx]
+            else:
+                raise ValueError("Invalid point")
+
+            scRNA_norm_data_selected = scRNA_norm_data.iloc[:, index_sc_list[idx]]
+
+            mapped_st_index, process_idx = solve_linear_assignment_problem(
+                scRNA_norm_data_selected.to_numpy(),
+                st_norm_data_selected.to_numpy(),
+                cell_number_to_node_assignment_selected,
+                solver_method,
+                solver,
+                seed,
+                distance_metric,
+                process_idx=idx,
+            )
+
+            assigned_locations = coordinates_data.iloc[index_st_list[process_idx]].iloc[mapped_st_index] \
+                if index_st_list is not None \
+                else coordinates_data.iloc[mapped_st_index]
+            assigned_locations_list.append(assigned_locations)
+            cell_ids_selected = scRNA_norm_data.columns.values[index_sc_list[process_idx]]
+            cell_ids_selected_list.append(cell_ids_selected)
+
+        cell_ids_selected = np.concatenate(cell_ids_selected_list, axis=0)
+        assigned_locations = pd.concat(assigned_locations_list)
+        return assigned_locations, cell_ids_selected
+
     with concurrent.futures.ProcessPoolExecutor(max_workers=min(num_iters, number_of_processors)) as executor:
         for idx in range(num_iters):
             if index_st_list is not None:

@@ -67,7 +67,32 @@ message("[Stage1] sample: ", sample_id)
 message("[Stage1] project_root: ", project_root)
 
 # Paths
-input_dir <- file.path(project_root, "data", "raw", sample_id)
+raw_input_dir <- file.path(project_root, "data", "raw", sample_id)
+sim_input_dir <- file.path(project_root, "data", "sim", "real_brca", sample_id)
+sim_input_dir_flat <- file.path(project_root, "data", "sim", sample_id)
+if (dir.exists(sim_input_dir)) {
+  input_dir <- sim_input_dir
+} else if (dir.exists(sim_input_dir_flat)) {
+  input_dir <- sim_input_dir_flat
+} else {
+  sim_root <- file.path(project_root, "data", "sim")
+  sim_group_hit <- NULL
+  if (dir.exists(sim_root)) {
+    sim_groups <- list.dirs(sim_root, recursive = FALSE, full.names = TRUE)
+    for (g in sim_groups) {
+      cand <- file.path(g, sample_id)
+      if (dir.exists(cand)) {
+        sim_group_hit <- cand
+        break
+      }
+    }
+  }
+  if (!is.null(sim_group_hit)) {
+    input_dir <- sim_group_hit
+  } else {
+    input_dir <- raw_input_dir
+  }
+}
 processed_dir <- file.path(project_root, "data", "processed", sample_id, "stage1_preprocess")
 summary_dir <- file.path(project_root, "result", sample_id, "stage1_preprocess")
 qc_dir <- file.path(summary_dir, "qc_plots")

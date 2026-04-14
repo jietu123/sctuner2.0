@@ -12,9 +12,23 @@ import tarfile
 import os
 import subprocess
 from pathlib import Path
+from importlib import resources as importlib_resources
 
 import warnings
-import pkg_resources
+
+
+def _resource_filename(package: str, resource_name: str) -> str:
+    """
+    Resolve package resource path without importing deprecated pkg_resources.
+    Falls back to local package path for editable/dev installs.
+    """
+    try:
+        return str(importlib_resources.files(package).joinpath(resource_name))
+    except Exception:
+        # Fallback for environments where importlib.resources cannot resolve package files.
+        here = Path(__file__).resolve()
+        # common.py -> .../cytospace/common/common.py, target file is .../cytospace/get_cellfracs_seuratv3.R
+        return str((here.parents[1] / resource_name).resolve())
 
 def read_file(file_path):
     # Read file
@@ -128,7 +142,7 @@ def read_visium(file_name,out_dir):
 
 def estimate_cell_type_fractions(scRNA_path, cell_type_path, st_path, output_folder, output_prefix):
     # Get path to R script
-    run_script = pkg_resources.resource_filename("cytospace", "get_cellfracs_seuratv3.R")
+    run_script = _resource_filename("cytospace", "get_cellfracs_seuratv3.R")
 
     # Windows paths
     scRNA_path = scRNA_path.replace("\\", "\\\\")

@@ -11,6 +11,34 @@ import yaml
 # Default R command (Windows conda env recommended to avoid DLL issues)
 DEFAULT_R_CMD = "conda run -n cytospace_v1.1.0_py310 Rscript"
 
+
+def load_project_yaml(project_root: Path) -> dict:
+    """
+    读取 configs/project_config.yaml，并与可选的 configs/project_config.local.yaml 浅层合并（后者覆盖前者）。
+    local 文件用于本机绝对路径等敏感项，应加入 .gitignore，勿提交到 GitHub。
+    """
+    base_path = project_root / "configs" / "project_config.yaml"
+    data = yaml.safe_load(base_path.read_text(encoding="utf-8")) if base_path.exists() else {}
+    local_path = project_root / "configs" / "project_config.local.yaml"
+    if local_path.exists():
+        overlay = yaml.safe_load(local_path.read_text(encoding="utf-8")) or {}
+        data = {**(data or {}), **overlay}
+    return data or {}
+
+
+def load_project_config_yaml(project_root: Path, config_rel: str = "configs/project_config.yaml") -> dict:
+    """
+    若 config_rel 指向默认的 project_config.yaml，则使用 load_project_yaml（含 local 合并）；
+    否则仅加载指定文件（用于 --config 覆盖的少见场景）。
+    """
+    cfg_path = (project_root / config_rel).resolve()
+    default = (project_root / "configs" / "project_config.yaml").resolve()
+    if cfg_path == default:
+        return load_project_yaml(project_root)
+    if cfg_path.exists():
+        return yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
+    return {}
+
 # Default stage selection (can be overridden via CLI)
 # Currently default only Stage1; Stage0 is optional dummy.
 DEFAULT_STAGES = "1"
@@ -38,8 +66,7 @@ class ProjectConfig:
 
     def __init__(self, project_root: Path):
         self.project_root = project_root
-        cfg_path = project_root / "configs" / "project_config.yaml"
-        self.project_cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) if cfg_path.exists() else {}
+        self.project_cfg = load_project_yaml(project_root)
         self._dataset_cfg_map = self.project_cfg.get("dataset_config_map", {}) or {}
         self._dataset_cache: Dict[str, Dict[str, Any]] = {}
 
@@ -188,4 +215,6 @@ __all__ = [
     "LOGS",
     "ProjectConfig",
     "load_project_config",
+    "load_project_yaml",
+    "load_project_config_yaml",
 ]

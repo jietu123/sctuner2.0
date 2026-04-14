@@ -1,0 +1,3 @@
+# Optional simgen presets for `svtuner run --from-scratch`.
+# real_brca simulation presets have been retired.
+{}

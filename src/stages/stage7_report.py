@@ -24,7 +24,8 @@ try:  # pragma: no cover
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt  # type: ignore
-    from matplotlib.patches import Polygon, Rectangle  # type: ignore
+    from matplotlib.patches import FancyBboxPatch, PathPatch, Polygon, Rectangle  # type: ignore
+    from matplotlib.path import Path as MplPath  # type: ignore
     from matplotlib.colors import TwoSlopeNorm  # type: ignore
 except Exception:  # pragma: no cover
     plt = None
@@ -163,6 +164,19 @@ def _ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
+def _sync_curated_visualization(
+    project_root: Path,
+    sample: str,
+    source_path: Path,
+    relative_dir: str,
+    target_name: str,
+    curated_sample: str = "real_brca",
+) -> None:
+    # Curated visualization sync has been retired.
+    # Stage7 now only writes to result/<sample>/stage7_report/.
+    return
+
+
 def _clean_spot_id(value: Any) -> str:
     return str(value).split()[0].split("\t")[0]
 
@@ -181,6 +195,16 @@ def _resolve_stage4_run_dir(stage4_root: Path, run_id: str) -> Path | None:
     fallback = stage4_root / "cytospace_output"
     if fallback.exists():
         return fallback
+    # stage4_cytospace_baseline / stage4_cytospace_route2 (sibling dirs)
+    parent = stage4_root.parent
+    if run_id == "baseline":
+        alt = parent / "stage4_cytospace_baseline" / "cytospace_output"
+        if alt.exists():
+            return alt
+    if run_id == "route2" or (isinstance(run_id, str) and run_id.startswith("route2")):
+        alt = parent / "stage4_cytospace_route2" / "cytospace_output"
+        if alt.exists():
+            return alt
     return None
 
 
@@ -193,6 +217,9 @@ def _resolve_stage5_root(result_root: Path) -> Path | None:
     preferred = result_root / "stage5_route2_s0"
     if preferred.exists():
         return preferred
+    # Prefer stage5_eval_* (new): return result_root so run_dir can resolve stage5_eval_baseline/route2
+    if (result_root / "stage5_eval_baseline").exists() or (result_root / "stage5_eval_route2").exists():
+        return result_root
     candidates = sorted([p for p in result_root.iterdir() if p.is_dir() and p.name.startswith("stage5")])
     return candidates[0] if candidates else None
 
@@ -200,6 +227,14 @@ def _resolve_stage5_root(result_root: Path) -> Path | None:
 def _resolve_stage5_run_dir(stage5_root: Path | None, run_id: str) -> Path | None:
     if stage5_root is None:
         return None
+    # stage5_eval_* layout: stage5_root is result_root
+    if not stage5_root.name.startswith("stage5"):
+        d_bl = stage5_root / "stage5_eval_baseline"
+        d_r2 = stage5_root / "stage5_eval_route2"
+        if run_id == "baseline" and d_bl.exists():
+            return d_bl
+        if (run_id == "route2" or (isinstance(run_id, str) and run_id.startswith("route2"))) and d_r2.exists():
+            return d_r2
     direct = stage5_root / run_id
     if direct.exists():
         return direct
@@ -567,12 +602,97 @@ def _extract_flow_counts(stage4_summary: dict | None, audit: dict | None) -> dic
 
 
 def _add_flow(ax, x0: float, x1: float, y0: float, y1: float, y2: float, y3: float, color: str) -> None:
-    verts = [(x0, y0), (x0, y1), (x1, y3), (x1, y2)]
-    ax.add_patch(Polygon(verts, closed=True, facecolor=color, edgecolor=color, linewidth=0.6, alpha=0.4))
+    ctrl = (x1 - x0) * 0.42
+    verts = [
+        (x0, y0),
+        (x0 + ctrl, y0),
+        (x1 - ctrl, y2),
+        (x1, y2),
+        (x1, y3),
+        (x1 - ctrl, y3),
+        (x0 + ctrl, y1),
+        (x0, y1),
+        (x0, y0),
+    ]
+    codes = [
+        MplPath.MOVETO,
+        MplPath.CURVE4,
+        MplPath.CURVE4,
+        MplPath.CURVE4,
+        MplPath.LINETO,
+        MplPath.CURVE4,
+        MplPath.CURVE4,
+        MplPath.CURVE4,
+        MplPath.CLOSEPOLY,
+    ]
+    patch = PathPatch(
+        MplPath(verts, codes),
+        facecolor=color,
+        edgecolor="white",
+        linewidth=0.8,
+        alpha=0.68,
+        zorder=1.5,
+    )
+    ax.add_patch(patch)
 
 
 def _add_zero_flow(ax, x0: float, x1: float, y: float, color: str) -> None:
     ax.plot([x0, x1], [y, y], color=color, linewidth=1.2, alpha=0.7)
+
+
+def _add_round_box(
+    ax,
+    x: float,
+    y: float,
+    w: float,
+    h: float,
+    color: str,
+    label: str,
+    value: str | None = None,
+    text_color: str = "#18212b",
+    edge: str = "#3d4b59",
+    alpha: float = 1.0,
+) -> None:
+    box = FancyBboxPatch(
+        (x, y),
+        w,
+        h,
+        boxstyle="round,pad=0.010,rounding_size=0.020",
+        linewidth=1.0,
+        edgecolor=edge,
+        facecolor=color,
+        alpha=alpha,
+    )
+    ax.add_patch(box)
+    if value is None:
+        ax.text(x + w / 2, y + h / 2, label, ha="center", va="center", fontsize=9.0, color=text_color, fontweight="bold")
+    else:
+        ax.text(
+            x + w / 2,
+            y + h / 2,
+            f"{label}\n{value}",
+            ha="center",
+            va="center",
+            fontsize=8.6,
+            color=text_color,
+            linespacing=1.15,
+        )
+
+
+def _draw_stat_chip(ax, x: float, y: float, label: str, value: str, color: str) -> None:
+    chip = FancyBboxPatch(
+        (x, y),
+        0.17,
+        0.07,
+        boxstyle="round,pad=0.010,rounding_size=0.025",
+        linewidth=0.8,
+        edgecolor="#d0d7de",
+        facecolor="#ffffff",
+    )
+    ax.add_patch(chip)
+    ax.add_patch(Rectangle((x + 0.012, y + 0.020), 0.018, 0.030, facecolor=color, edgecolor=color, linewidth=0.0))
+    ax.text(x + 0.040, y + 0.046, label, ha="left", va="center", fontsize=7.5, color="#586574")
+    ax.text(x + 0.040, y + 0.024, value, ha="left", va="center", fontsize=8.4, color="#18212b", fontweight="bold")
 
 
 def _draw_flow_panel(
@@ -586,11 +706,11 @@ def _draw_flow_panel(
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.axis("off")
-    ax.set_title(title, fontsize=10, pad=10)
+    ax.set_title(title, fontsize=10.5, pad=8, fontweight="bold")
 
-    x0, x1, x2 = 0.05, 0.42, 0.79
-    w = 0.15
-    base_y = 0.10
+    x0, x1, x2 = 0.06, 0.42, 0.78
+    w = 0.17
+    base_y = 0.17
 
     n_before = counts["n_before"]
     n_filtered = counts["n_filtered"]
@@ -619,12 +739,24 @@ def _draw_flow_panel(
     y_rescued_end = y_rescued_start + h_rescued
 
     colors = {
-        "input": "#9aa0a6",
-        "filtered": "#f28e2b",
-        "kept": "#4e79a7",
-        "rescued": "#59a14f",
-        "unknown": "#e15759",
+        "input": "#c8ced6",
+        "filtered": "#f4a261",
+        "kept": "#5b84b1",
+        "rescued": "#5aa469",
+        "unknown": "#e76f51",
     }
+
+    rail = FancyBboxPatch(
+        (0.015, 0.11),
+        0.97,
+        0.74,
+        boxstyle="round,pad=0.012,rounding_size=0.030",
+        linewidth=0.8,
+        edgecolor="#e5e9ef",
+        facecolor="#fbfcfe",
+        zorder=0,
+    )
+    ax.add_patch(rail)
 
     if h_filtered > 0:
         _add_flow(ax, x0 + w, x1, y_filtered_start, y_filtered_end, y_filtered_start, y_filtered_end, colors["filtered"])
@@ -644,39 +776,35 @@ def _draw_flow_panel(
         _add_zero_flow(ax, x1 + w, x2, y_unknown_start, "#bbbbbb")
 
     if h_before > 0:
-        ax.add_patch(Rectangle((x0, y0_start), w, h_before, facecolor=colors["input"], edgecolor="#333333", linewidth=0.8))
-    if h_filtered > 0 or show_zero_flows:
-        if h_filtered > 0:
-            ax.add_patch(Rectangle((x1, y_filtered_start), w, h_filtered, facecolor=colors["filtered"], edgecolor="#333333", linewidth=0.8))
-    if h_after > 0 or show_zero_flows:
-        if h_after > 0:
-            ax.add_patch(Rectangle((x1, y_after_start), w, h_after, facecolor=colors["kept"], edgecolor="#333333", linewidth=0.8))
-    if h_rescued > 0 or show_zero_flows:
-        if h_rescued > 0:
-            ax.add_patch(Rectangle((x2, y_rescued_start), w, h_rescued, facecolor=colors["rescued"], edgecolor="#333333", linewidth=0.8))
-    if h_unknown > 0 or show_zero_flows:
-        if h_unknown > 0:
-            ax.add_patch(Rectangle((x2, y_unknown_start), w, h_unknown, facecolor=colors["unknown"], edgecolor="#333333", linewidth=0.8))
-
-    def _label(x: float, y: float, text: str) -> None:
-        ax.text(x, y, text, ha="center", va="center", fontsize=8)
-
-    _label(x0 + w / 2, y0_start + max(h_before, 0.02) / 2, f"input\n{n_before}")
+        _add_round_box(ax, x0, y0_start, w, h_before, colors["input"], "input", f"{n_before}")
     if h_filtered > 0:
-        _label(x1 + w / 2, (y_filtered_start + y_filtered_end) / 2, f"{filtered_label}\n{n_filtered}")
+        _add_round_box(ax, x1, y_filtered_start, w, h_filtered, colors["filtered"], filtered_label, f"{n_filtered}")
+    elif show_zero_flows:
+        _add_round_box(ax, x1, max(y_filtered_start, 0.77), w, 0.035, "#f6f6f6", filtered_label, "0", text_color="#808b96", edge="#d0d7de")
     if h_after > 0:
-        _label(x1 + w / 2, (y_after_start + y_after_end) / 2, f"kept\n{n_after}")
+        _add_round_box(ax, x1, y_after_start, w, h_after, colors["kept"], "kept", f"{n_after}", text_color="#0f1f33")
     if h_rescued > 0:
-        _label(x2 + w / 2, (y_rescued_start + y_rescued_end) / 2, f"rescued\n{n_rescued}")
+        _add_round_box(ax, x2, y_rescued_start, w, h_rescued, colors["rescued"], "rescued", f"{n_rescued}")
+    elif show_zero_flows:
+        _add_round_box(ax, x2, 0.77, w, 0.035, "#f6f6f6", "rescued", "0", text_color="#808b96", edge="#d0d7de")
     if h_unknown > 0:
-        _label(x2 + w / 2, (y_unknown_start + y_unknown_end) / 2, f"unknown\n{n_unknown}")
+        _add_round_box(ax, x2, y_unknown_start, w, h_unknown, colors["unknown"], "unknown", f"{n_unknown}")
+    elif show_zero_flows:
+        _add_round_box(ax, x2, 0.71, w, 0.035, "#f6f6f6", "unknown", "0", text_color="#808b96", edge="#d0d7de")
 
     def _flow_label(xa: float, xb: float, y0: float, y1: float, text: str) -> None:
         y = (y0 + y1) / 2
         if y1 <= y0:
             y = y0 + 0.01
-        ax.text((xa + xb) / 2, y, text, ha="center", va="center",
-                fontsize=8, bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="#666666", lw=0.6))
+        ax.text(
+            (xa + xb) / 2,
+            y,
+            text,
+            ha="center",
+            va="center",
+            fontsize=7.8,
+            bbox=dict(boxstyle="round,pad=0.18", fc="white", ec="#bcc6d1", lw=0.6),
+        )
 
     if h_after > 0:
         _flow_label(x0 + w, x1, y_after_start, y_after_end, str(n_after))
@@ -686,6 +814,13 @@ def _draw_flow_panel(
         _flow_label(x1 + w, x2, y_rescued_start, y_rescued_end, str(n_rescued))
     if h_unknown > 0:
         _flow_label(x1 + w, x2, y_unknown_start, y_unknown_end, str(n_unknown))
+
+    total = max(n_before, 1)
+    _draw_stat_chip(ax, 0.06, 0.03, "Input", f"{n_before}", colors["input"])
+    _draw_stat_chip(ax, 0.25, 0.03, "Kept", f"{n_after} ({(n_after/total)*100:.1f}%)", colors["kept"])
+    _draw_stat_chip(ax, 0.44, 0.03, "Filtered", f"{n_filtered} ({(n_filtered/total)*100:.1f}%)", colors["filtered"])
+    _draw_stat_chip(ax, 0.63, 0.03, "Unknown", f"{n_unknown} ({(n_unknown/total)*100:.1f}%)", colors["unknown"])
+    _draw_stat_chip(ax, 0.82, 0.03, "Rescued", f"{n_rescued} ({(n_rescued/total)*100:.1f}%)", colors["rescued"])
 
 
 def plot_filter_rescue(
@@ -702,72 +837,196 @@ def plot_filter_rescue(
     base_counts = _extract_flow_counts(baseline_summary, baseline_audit)
     route_counts = _extract_flow_counts(route_summary, route_audit)
     max_before = max(base_counts["n_before"], route_counts["n_before"], 1)
-    scale = 0.80 / max_before
+    colors = {
+        "input": "#d4d9df",
+        "kept": "#4e79a7",
+        "filtered": "#f28e2b",
+        "rescued": "#59a14f",
+        "unknown": "#e15759",
+    }
 
-    fig, axes = plt.subplots(ncols=2, figsize=FIGSIZE_WIDE)
-    if not isinstance(axes, np.ndarray):
-        axes = np.array([axes])
-    axes = axes.flatten()
-    _draw_flow_panel(axes[0], "Baseline (no filter/rescue)", base_counts, scale, show_zero_flows, "filtered")
-    _draw_flow_panel(axes[1], "Route2 (filter + rescue)", route_counts, scale, show_zero_flows, "filtered\n(marked unknown)")
+    fig, ax = plt.subplots(figsize=(13.8, 5.3))
+    ax.set_xlim(0, 1.08)
+    ax.set_ylim(0, 1)
+    ax.axis("off")
+    fig.patch.set_facecolor("white")
+
+    x_input, x_mid, x_final = 0.15, 0.50, 0.84
+    bar_w = 0.028
+    lane_centers = {"Baseline": 0.73, "Route2": 0.25}
+    lane_height_max = 0.24
+    stage_headers = [
+        (x_input, "Input pool"),
+        (x_mid, "Prefilter decision"),
+        (x_final, "Final pool state"),
+    ]
+
+    for xh, label in stage_headers:
+        ax.text(xh + bar_w / 2, 0.865, label, ha="center", va="bottom", fontsize=10, color="#506070", fontweight="bold")
+
+    def _lane_total_height(n_before: int) -> float:
+        return lane_height_max * (n_before / max_before)
+
+    def _stack_segments(y_bottom: float, total_h: float, segments: list[tuple[str, int]], total_count: int) -> dict[str, tuple[float, float]]:
+        out: dict[str, tuple[float, float]] = {}
+        cur = y_bottom
+        if total_count <= 0:
+            return out
+        for name, val in segments:
+            if val <= 0:
+                continue
+            h = total_h * (val / total_count)
+            out[name] = (cur, cur + h)
+            cur += h
+        return out
+
+    def _node(x: float, seg: tuple[float, float], color: str, label: str, value: int, txt_color: str = "#17212b") -> None:
+        y0, y1 = seg
+        box = FancyBboxPatch(
+            (x, y0),
+            bar_w,
+            y1 - y0,
+            boxstyle="round,pad=0.008,rounding_size=0.018",
+            linewidth=1.0,
+            edgecolor="#435466",
+            facecolor=color,
+            alpha=0.96,
+            zorder=3,
+        )
+        ax.add_patch(box)
+        ax.text(
+            x + bar_w + 0.012,
+            (y0 + y1) / 2,
+            f"{label}\n{value}",
+            ha="left",
+            va="center",
+            fontsize=8.8,
+            color=txt_color,
+            linespacing=1.15,
+        )
+
+    def _zero_marker(x: float, y: float, label: str) -> None:
+        ax.text(x, y, f"{label}\n0", ha="center", va="center", fontsize=7.2, color="#94a3b8")
+
+    def _ribbon(x0: float, seg0: tuple[float, float], x1: float, seg1: tuple[float, float], color: str, alpha: float = 0.70) -> None:
+        _add_flow(ax, x0, x1, seg0[0], seg0[1], seg1[0], seg1[1], color)
 
     def _badge_text(counts: dict[str, int]) -> tuple[str, str]:
         status = "PASS" if counts.get("ledger_ok") else "FAIL"
         diff = counts.get("observed_filtered", 0) - counts.get("expected_filtered", 0)
         text = (
-            f"ledger: {status}\n"
-            f"expected vs observed: {counts.get('expected_filtered', 0)} vs {counts.get('observed_filtered', 0)}\n"
-            f"Δ = {diff:+d}"
+            f"{status}\n"
+            f"exp/obs {counts.get('expected_filtered', 0)}/{counts.get('observed_filtered', 0)}\n"
+            f"Δ {diff:+d}"
         )
-        fc = "#e8f5e9" if status == "PASS" else "#ffebee"
+        fc = "#edf7ee" if status == "PASS" else "#fff1f0"
         return text, fc
 
-    fig.suptitle("Cell flow / ledger overview", fontsize=STYLE["title"], y=0.98)
-    def _pct(val: int, total: int) -> str:
-        if total <= 0:
-            return "0.0%"
-        return f"{(val / total) * 100:.1f}%"
+    def _method_tag(x: float, y: float, label: str, fc: str) -> None:
+        tag = FancyBboxPatch(
+            (x, y),
+            0.10,
+            0.050,
+            boxstyle="round,pad=0.010,rounding_size=0.030",
+            linewidth=0.0,
+            facecolor=fc,
+            zorder=4,
+        )
+        ax.add_patch(tag)
+        ax.text(x + 0.05, y + 0.025, label, ha="center", va="center", fontsize=8.8, fontweight="bold", color="#0f1f33", zorder=5)
 
-    base_summary = (
-        f"Input={base_counts['n_before']}; Filtered={base_counts['n_filtered']} ({_pct(base_counts['n_filtered'], base_counts['n_before'])}); "
-        f"Kept={base_counts['n_after']} ({_pct(base_counts['n_after'], base_counts['n_before'])}); "
-        f"Rescued={base_counts['n_rescued']} ({_pct(base_counts['n_rescued'], base_counts['n_before'])}); "
-        f"Unknown={base_counts['n_unknown']} ({_pct(base_counts['n_unknown'], base_counts['n_before'])})"
-    )
-    route_summary = (
-        f"Input={route_counts['n_before']}; Filtered={route_counts['n_filtered']} ({_pct(route_counts['n_filtered'], route_counts['n_before'])}); "
-        f"Kept={route_counts['n_after']} ({_pct(route_counts['n_after'], route_counts['n_before'])}); "
-        f"Rescued={route_counts['n_rescued']} ({_pct(route_counts['n_rescued'], route_counts['n_before'])}); "
-        f"Unknown={route_counts['n_unknown']} ({_pct(route_counts['n_unknown'], route_counts['n_before'])})"
-    )
-    base_summary = base_summary.replace("; ", ";\n")
-    route_summary = route_summary.replace("; ", ";\n")
-    axes[0].text(0.5, -0.14, base_summary, transform=axes[0].transAxes, ha="center", va="top", fontsize=9)
-    axes[1].text(0.5, -0.14, route_summary, transform=axes[1].transAxes, ha="center", va="top", fontsize=9)
+    def _mini_metric(x: float, y: float, label: str, value: str, color: str) -> None:
+        chip = FancyBboxPatch(
+            (x, y),
+            0.108,
+            0.042,
+            boxstyle="round,pad=0.010,rounding_size=0.020",
+            linewidth=0.8,
+            edgecolor="#d6dde5",
+            facecolor="white",
+            zorder=4,
+        )
+        ax.add_patch(chip)
+        ax.add_patch(Rectangle((x + 0.010, y + 0.011), 0.011, 0.020, facecolor=color, edgecolor=color, zorder=5))
+        ax.text(x + 0.026, y + 0.021, value, ha="left", va="center", fontsize=7.6, color="#111a24", fontweight="bold", zorder=5)
+        ax.text(x + 0.054, y - 0.015, label, ha="center", va="center", fontsize=6.8, color="#000000", zorder=5)
 
-    fig.subplots_adjust(bottom=0.32, top=0.86)
-    base_text, base_fc = _badge_text(base_counts)
-    route_text, route_fc = _badge_text(route_counts)
-    axes[0].text(
-        0.98,
-        0.92,
-        base_text,
-        transform=axes[0].transAxes,
-        ha="right",
-        va="top",
-        fontsize=9,
-        bbox=dict(boxstyle="round,pad=0.3", fc=base_fc, ec="#666666", lw=0.8),
-    )
-    axes[1].text(
-        0.98,
-        0.92,
-        route_text,
-        transform=axes[1].transAxes,
-        ha="right",
-        va="top",
-        fontsize=9,
-        bbox=dict(boxstyle="round,pad=0.3", fc=route_fc, ec="#666666", lw=0.8),
-    )
+    def _draw_lane(name: str, counts: dict[str, int], y_center: float) -> None:
+        n_before = counts["n_before"]
+        n_after = counts["n_after"]
+        n_filtered = counts["n_filtered"]
+        n_unknown = counts["n_unknown"]
+        n_rescued = counts["n_rescued"]
+        total_h = _lane_total_height(n_before)
+        y_bottom = y_center - total_h / 2
+
+        input_seg = {"input": (y_bottom, y_bottom + total_h)}
+        input_split = _stack_segments(y_bottom, total_h, [("kept", n_after), ("filtered", n_filtered)], n_before)
+        mid_segs = _stack_segments(y_bottom, total_h, [("kept", n_after), ("filtered", n_filtered)], n_before)
+        final_segs = _stack_segments(y_bottom, total_h, [("kept", n_after), ("unknown", n_unknown), ("rescued", n_rescued)], n_before)
+
+        # ribbons
+        if "kept" in mid_segs:
+            _ribbon(x_input + bar_w, input_split["kept"], x_mid, mid_segs["kept"], colors["kept"])
+            if "kept" in final_segs:
+                _ribbon(x_mid + bar_w, mid_segs["kept"], x_final, final_segs["kept"], colors["kept"])
+        if "filtered" in mid_segs:
+            _ribbon(x_input + bar_w, input_split["filtered"], x_mid, mid_segs["filtered"], colors["filtered"])
+            if "unknown" in final_segs:
+                unk_h = final_segs["unknown"][1] - final_segs["unknown"][0]
+                seg_mid_unknown = (mid_segs["filtered"][0], mid_segs["filtered"][0] + unk_h)
+                _ribbon(x_mid + bar_w, seg_mid_unknown, x_final, final_segs["unknown"], colors["unknown"])
+            if "rescued" in final_segs:
+                # rescued flows from the top of filtered node
+                rh = final_segs["rescued"][1] - final_segs["rescued"][0]
+                seg_mid_top = (mid_segs["filtered"][1] - rh, mid_segs["filtered"][1])
+                _ribbon(x_mid + bar_w, seg_mid_top, x_final, final_segs["rescued"], colors["rescued"])
+
+        # nodes
+        _node(x_input, input_seg["input"], colors["input"], "Input", n_before)
+        if "kept" in mid_segs:
+            _node(x_mid, mid_segs["kept"], colors["kept"], "Kept", n_after)
+        if "filtered" in mid_segs:
+            _node(x_mid, mid_segs["filtered"], colors["filtered"], "Filtered", n_filtered)
+        elif show_zero_flows:
+            _zero_marker(x_mid + bar_w / 2, y_bottom + total_h + 0.03, "Filtered")
+        if "kept" in final_segs:
+            _node(x_final, final_segs["kept"], colors["kept"], "Final kept", n_after)
+        if "unknown" in final_segs:
+            _node(x_final, final_segs["unknown"], colors["unknown"], "Unknown", n_unknown)
+        elif show_zero_flows:
+            _zero_marker(x_final + bar_w / 2, y_bottom + total_h * 0.72, "Unknown")
+        if "rescued" in final_segs:
+            _node(x_final, final_segs["rescued"], colors["rescued"], "Rescued", n_rescued)
+        elif show_zero_flows:
+            _zero_marker(x_final + bar_w / 2, y_bottom + total_h * 0.93, "Rescued")
+
+        tag_fc = "#eaf2ff" if name == "Baseline" else "#e8fbf5"
+        _method_tag(0.02, y_center + 0.10, name, tag_fc)
+        text, fc = _badge_text(counts)
+        ax.text(
+            1.045,
+            y_center + 0.165,
+            text,
+            ha="right",
+            va="top",
+            fontsize=7.8,
+            bbox=dict(boxstyle="round,pad=0.24", fc=fc, ec="#c4d0db", lw=0.8),
+            zorder=6,
+        )
+
+        total = max(n_before, 1)
+        base_x = 0.13
+        chip_y = y_bottom - 0.090
+        _mini_metric(base_x + 0.00, chip_y, "Input", f"{n_before}", colors["input"])
+        _mini_metric(base_x + 0.115, chip_y, "Kept", f"{n_after} ({(n_after/total)*100:.1f}%)", colors["kept"])
+        _mini_metric(base_x + 0.230, chip_y, "Filtered", f"{n_filtered} ({(n_filtered/total)*100:.1f}%)", colors["filtered"])
+        _mini_metric(base_x + 0.345, chip_y, "Unknown", f"{n_unknown} ({(n_unknown/total)*100:.1f}%)", colors["unknown"])
+        _mini_metric(base_x + 0.460, chip_y, "Rescued", f"{n_rescued} ({(n_rescued/total)*100:.1f}%)", colors["rescued"])
+
+    fig.suptitle("Filter ledger and cell-pool transitions", fontsize=STYLE["title"], y=0.97)
+    _draw_lane("Baseline", base_counts, lane_centers["Baseline"])
+    _draw_lane("Route2", route_counts, lane_centers["Route2"])
     _save_fig(fig, out_path, dpi, tight=False)
 
 
@@ -891,6 +1150,12 @@ def plot_perf_contrast(
     label_fmt: str,
     dpi: int,
 ) -> None:
+    """Deprecated: retained only for historical reference.
+
+    This figure can degrade into placeholder panels when truth / metrics are
+    unavailable. Stage7 therefore only generates it when the required inputs
+    are present.
+    """
     if not _maybe_plot():
         return
 
@@ -1266,6 +1531,204 @@ def plot_relabel_heatmap(
     fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
     _save_fig(fig, out_path, dpi, tight=False)
     return offdiag_max
+
+
+def plot_relabel_transition(
+    out_path: Path,
+    relabel_path: Path,
+    alias_map: Dict[str, str] | None,
+    dpi: int,
+) -> None:
+    if not _maybe_plot() or not relabel_path.exists():
+        return
+    df = pd.read_csv(relabel_path)
+    if "orig_type" not in df.columns or "plugin_type" not in df.columns:
+        return
+
+    ct = pd.crosstab(df["orig_type"], df["plugin_type"])
+    if ct.empty:
+        return
+
+    orig_totals = ct.sum(axis=1).sort_values(ascending=False)
+    plugin_totals = ct.sum(axis=0).sort_values(ascending=False)
+    orig_types = orig_totals.index.tolist()
+    plugin_types = plugin_totals.index.tolist()
+    if "Unknown_sc_only" in plugin_types:
+        plugin_types = [t for t in plugin_types if t != "Unknown_sc_only"] + ["Unknown_sc_only"]
+    ct = ct.reindex(index=orig_types, columns=plugin_types, fill_value=0)
+    total = int(ct.values.sum())
+    if total <= 0:
+        return
+
+    changed_pairs: list[tuple[str, str, int]] = []
+    for src in orig_types:
+        for dst in plugin_types:
+            val = int(ct.at[src, dst])
+            if val > 0 and src != dst:
+                changed_pairs.append((src, dst, val))
+    changed_total = int(sum(v for _, _, v in changed_pairs))
+    unchanged_total = int(total - changed_total)
+
+    palette = [
+        "#4E79A7", "#F28E2B", "#59A14F", "#E15759", "#76B7B2",
+        "#EDC948", "#B07AA1", "#FF9DA7", "#9C755F", "#BAB0AC",
+        "#86BCB6", "#D37295",
+    ]
+    type_colors: Dict[str, str] = {}
+    for idx, t in enumerate(orig_types):
+        type_colors[t] = palette[idx % len(palette)]
+    type_colors["Unknown_sc_only"] = "#D1495B"
+
+    fig, ax = plt.subplots(figsize=(12.8, 6.7))
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis("off")
+    fig.patch.set_facecolor("white")
+
+    x_left = 0.18
+    x_right = 0.78
+    box_w = 0.035
+    y_top = 0.88
+    usable_h = 0.70
+    gap = 0.010
+
+    def _stack_positions(types: List[str], totals: pd.Series) -> Dict[str, tuple[float, float]]:
+        denom = float(totals.loc[types].sum())
+        if denom <= 0:
+            return {}
+        total_gap = gap * max(len(types) - 1, 0)
+        scale_h = max(usable_h - total_gap, 0.1)
+        out: Dict[str, tuple[float, float]] = {}
+        y = y_top
+        for t in types:
+            h = scale_h * (float(totals.get(t, 0.0)) / denom)
+            out[t] = (y - h, y)
+            y = y - h - gap
+        return out
+
+    left_seg = _stack_positions(orig_types, orig_totals)
+    right_seg = _stack_positions(plugin_types, plugin_totals)
+
+    def _subsegments(totals: pd.Series, axis: str) -> Dict[tuple[str, str], tuple[float, float]]:
+        out: Dict[tuple[str, str], tuple[float, float]] = {}
+        if axis == "left":
+            for src in orig_types:
+                y0, y1 = left_seg[src]
+                cur = y0
+                row_total = float(totals.get(src, 0.0))
+                if row_total <= 0:
+                    continue
+                height = y1 - y0
+                for dst in plugin_types:
+                    val = float(ct.at[src, dst])
+                    if val <= 0:
+                        continue
+                    h = height * (val / row_total)
+                    out[(src, dst)] = (cur, cur + h)
+                    cur += h
+        else:
+            for dst in plugin_types:
+                y0, y1 = right_seg[dst]
+                cur = y0
+                col_total = float(totals.get(dst, 0.0))
+                if col_total <= 0:
+                    continue
+                height = y1 - y0
+                for src in orig_types:
+                    val = float(ct.at[src, dst])
+                    if val <= 0:
+                        continue
+                    h = height * (val / col_total)
+                    out[(src, dst)] = (cur, cur + h)
+                    cur += h
+        return out
+
+    left_flow = _subsegments(orig_totals, "left")
+    right_flow = _subsegments(plugin_totals, "right")
+
+    ax.text(0.18, 0.94, "Original labels", ha="center", va="bottom", fontsize=11, fontweight="bold", color="#304254")
+    ax.text(0.78, 0.94, "Plugin labels", ha="center", va="bottom", fontsize=11, fontweight="bold", color="#304254")
+    ax.text(0.48, 0.965, "Type transition: orig_type -> plugin_type", ha="center", va="bottom", fontsize=15, fontweight="bold", color="#17212b")
+    ax.text(
+        0.48,
+        0.935,
+        f"Unchanged: {unchanged_total}/{total}   |   Redirected to Unknown(sc-only): {changed_total}/{total}",
+        ha="center",
+        va="bottom",
+        fontsize=10,
+        color="#55677a",
+    )
+
+    for src in orig_types:
+        for dst in plugin_types:
+            val = int(ct.at[src, dst])
+            if val <= 0:
+                continue
+            color = type_colors.get(src, "#4E79A7")
+            if dst == "Unknown_sc_only":
+                color = "#D1495B"
+            _add_flow(
+                ax,
+                x_left + box_w,
+                x_right,
+                left_flow[(src, dst)][0],
+                left_flow[(src, dst)][1],
+                right_flow[(src, dst)][0],
+                right_flow[(src, dst)][1],
+                color,
+            )
+
+    def _draw_nodes(x: float, segments: Dict[str, tuple[float, float]], totals: pd.Series, side: str) -> None:
+        for t, (y0, y1) in segments.items():
+            fc = "#f3f6f9" if t != "Unknown_sc_only" else "#fdecee"
+            ec = "#7b8a99" if t != "Unknown_sc_only" else "#D1495B"
+            box = FancyBboxPatch(
+                (x, y0),
+                box_w,
+                y1 - y0,
+                boxstyle="round,pad=0.006,rounding_size=0.012",
+                linewidth=1.0,
+                edgecolor=ec,
+                facecolor=fc,
+                zorder=3,
+            )
+            ax.add_patch(box)
+            label = _short_type(t, alias_map)
+            pct = 100.0 * float(totals.get(t, 0.0)) / total
+            txt = f"{label}\n{int(totals.get(t, 0))} ({pct:.1f}%)"
+            y_text = (y0 + y1) / 2
+            if t == "Dendritic cells":
+                y_text -= 0.010
+            if side == "left":
+                ax.text(x - 0.014, y_text, txt, ha="right", va="center", fontsize=8.3, color="#17212b")
+            else:
+                ax.text(x + box_w + 0.014, y_text, txt, ha="left", va="center", fontsize=8.3, color="#17212b")
+
+    _draw_nodes(x_left, left_seg, orig_totals, "left")
+    _draw_nodes(x_right, right_seg, plugin_totals, "right")
+
+    for src, dst, val in changed_pairs:
+        ls = left_flow[(src, dst)]
+        rs = right_flow[(src, dst)]
+        y_mid = ((ls[0] + ls[1]) / 2 + (rs[0] + rs[1]) / 2) / 2
+        label = f"{_short_type(src, alias_map)} -> {_short_type(dst, alias_map)}\n{val}"
+        tag = FancyBboxPatch(
+            (0.45, y_mid - 0.025),
+            0.11,
+            0.05,
+            boxstyle="round,pad=0.006,rounding_size=0.015",
+            linewidth=0.8,
+            edgecolor="#E4B7BE",
+            facecolor="#FFF4F6",
+            zorder=4,
+        )
+        ax.add_patch(tag)
+        ax.text(0.505, y_mid, label, ha="center", va="center", fontsize=8.0, color="#811D2C", zorder=5)
+
+    if not changed_pairs:
+        ax.text(0.50, 0.12, "No relabel transitions beyond the diagonal.", ha="center", va="center", fontsize=10, color="#5d6d7e")
+
+    _save_fig(fig, out_path, dpi, tight=False)
 
 
 def _knn_smooth(values: np.ndarray, coords: np.ndarray, k: int, alpha: float) -> np.ndarray:
@@ -1697,8 +2160,6 @@ def build_report_html(
         return f"<img src=\"{src}\" width=\"{width}\">"
 
     sections = []
-    if figures.get("fig1_main"):
-        sections.append(f"<h2>Figure 1 (main)</h2>{_fig_tag(figures['fig1_main'], 1000)}")
     if figures.get("fig1"):
         sections.append(f"<h2>Figure 1</h2>{_fig_tag(figures['fig1'], 900)}")
     if figures.get("fig1b"):
@@ -1862,6 +2323,13 @@ def main() -> int:
     for p in [fig_dir, table_dir, summary_dir, report_html_dir, report_md_dir]:
         _ensure_dir(p)
 
+    # Deprecated figure cleanup: avoid resurfacing stale placeholder outputs.
+    for stale in fig_dir.glob("fig1_perf_contrast.*"):
+        try:
+            stale.unlink()
+        except Exception:
+            pass
+
     alias_map = load_alias_map(project_root / "configs" / "aliases.yaml")
     dataset_cfg = _load_yaml(dataset_cfg_path)
 
@@ -1943,21 +2411,23 @@ def main() -> int:
         if truth_path and truth_path.exists():
             truth_frac, _, _ = _load_fraction_table(truth_path)
             truth_frac, _ = _canonicalize_fraction_df(truth_frac, alias_map)
-        plot_perf_contrast(
-            fig_dir / "fig1_perf_contrast.png",
-            base_frac,
-            route_frac,
-            truth_frac,
-            base_metrics,
-            route_metrics,
-            delta_mass,
-            alias_map,
-            must_include,
-            args.lollipop_label_fmt,
-            dpi=args.dpi,
-        )
-        if (fig_dir / "fig1_perf_contrast.png").exists():
-            figures["fig1_main"] = "figures/fig1_perf_contrast.png"
+
+        has_truth = truth_frac is not None and not truth_frac.empty
+        has_metrics = bool(base_metrics) and bool(route_metrics)
+        if has_truth and has_metrics:
+            plot_perf_contrast(
+                fig_dir / "fig1_perf_contrast.png",
+                base_frac,
+                route_frac,
+                truth_frac,
+                base_metrics,
+                route_metrics,
+                delta_mass,
+                alias_map,
+                must_include,
+                args.lollipop_label_fmt,
+                dpi=args.dpi,
+            )
 
         comp_types = plot_type_composition(
             fig_dir / "fig1_type_composition.png",
@@ -1983,6 +2453,14 @@ def main() -> int:
             dpi=args.dpi,
         )
         figures["fig1b"] = "figures/fig1_filter_rescue.png"
+        _sync_curated_visualization(
+            project_root,
+            args.sample,
+            fig_dir / "fig1_filter_rescue.png",
+            "02_stage3_mechanism/V004_V005_filter_and_transition",
+            "V004_fig1_filter_rescue__real_brca.png",
+            curated_sample="real_brca",
+        )
 
         relabel_path = project_root / "data" / "processed" / args.sample / "stage3_typematch" / "cell_type_relabel.csv"
         plot_relabel_heatmap(
@@ -2007,6 +2485,20 @@ def main() -> int:
         )
         if (fig_dir / "fig1_relabel_heatmap_counts.png").exists():
             figures["fig1d"] = "figures/fig1_relabel_heatmap_counts.png"
+        plot_relabel_transition(
+            fig_dir / "fig1_relabel_transition.png",
+            relabel_path,
+            alias_map=alias_map,
+            dpi=args.dpi,
+        )
+        _sync_curated_visualization(
+            project_root,
+            args.sample,
+            fig_dir / "fig1_relabel_transition.png",
+            "02_stage3_mechanism/V004_V005_filter_and_transition",
+            "V005_fig1_relabel_transition__real_brca.png",
+            curated_sample="real_brca",
+        )
 
         delta_map_types = []
         for t in top_types:
@@ -2048,6 +2540,13 @@ def main() -> int:
                 dpi=args.dpi,
             )
             figures["fig2"] = "figures/fig2_delta_maps.png"
+            _sync_curated_visualization(
+                project_root,
+                args.sample,
+                fig_dir / "fig2_delta_maps.png",
+                "06_real_data_audit",
+                "V035_fig2_delta_maps.png",
+            )
 
             rescue_types = (
                 route_audit.get("ledger_integrity", {})
@@ -2113,6 +2612,13 @@ def main() -> int:
                     missing_markers.extend([m for m in missing if m not in missing_markers])
                 if used_markers:
                     figures["fig2c"] = "figures/fig2_marker_maps.png"
+                    _sync_curated_visualization(
+                        project_root,
+                        args.sample,
+                        fig_dir / "fig2_marker_maps.png",
+                        "06_real_data_audit",
+                        "V036_fig2_marker_maps.png",
+                    )
 
         compartments = _collect_compartments(dataset_cfg)
         if compartments and coords_df is not None and x_col and y_col:
@@ -2174,6 +2680,13 @@ def main() -> int:
                 )
                 if (fig_dir / "fig2_compartment_maps.png").exists():
                     figures["fig2d"] = "figures/fig2_compartment_maps.png"
+                    _sync_curated_visualization(
+                        project_root,
+                        args.sample,
+                        fig_dir / "fig2_compartment_maps.png",
+                        "06_real_data_audit",
+                        "V037_fig2_compartment_maps.png",
+                    )
                 plot_compartment_summary_table(
                     fig_dir / "compartment_summary_table.png",
                     comp_summary_rows,
@@ -2184,6 +2697,13 @@ def main() -> int:
 
         plot_pipeline_diagram(fig_dir / "fig3_pipeline.png", dpi=args.dpi)
         figures["fig3"] = "figures/fig3_pipeline.png"
+        _sync_curated_visualization(
+            project_root,
+            args.sample,
+            fig_dir / "fig3_pipeline.png",
+            "02_stage3_mechanism",
+            "fig3_pipeline__real_brca.png",
+        )
 
     def _extract_filtered(audit: dict, summary: dict) -> int:
         val = (

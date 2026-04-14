@@ -16,9 +16,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import shutil
 import sys
+import tempfile
 from pathlib import Path
-from typing import Literal
+
+# Redirect numba JIT cache to a writable temp directory.
+# This avoids PermissionError when scanpy/__pycache__ is not writable
+# (common in conda envs on Windows without admin rights).
+_numba_cache = Path(tempfile.gettempdir()) / "numba_cache_svtuner"
+_numba_cache.mkdir(parents=True, exist_ok=True)
+os.environ.setdefault("NUMBA_CACHE_DIR", str(_numba_cache))
+from typing import Literal, Sequence
 
 import hashlib
 import numpy as np
@@ -32,17 +42,20 @@ _ROOT = _HERE.parents[2]
 if str(_ROOT) not in _sys.path:
     _sys.path.insert(0, str(_ROOT))
 
+from src.stages.stage1_io import load_stage1
 from src.utils.type_name import load_alias_map, canonicalize_type_name, normalize_type_name
+from src.utils.sample_paths import sample_dir_candidates
 
 
 FilterMode = Literal["plugin_unknown", "unsupported", "none"]
-FilterScope = Literal["unsupported_all", "missing_only"]
+FilterScope = Literal["unsupported_all", "missing_only", "missing_detected_only"]
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Route2 Stage4 full (CytoSPACE wrapper)")
-    p.add_argument("--sample", default="real_brca_simS0_seed42", help="sample id")
+    p.add_argument("--sample", default="real_brca", help="sample id")
     p.add_argument("--project_root", default=None, help="override project root")
+    p.add_argument("--stage4_suffix", default="", help="suffix appended to stage4_cytospace dir (e.g. '_baseline', '_route2')")
     p.add_argument("--filter_mode", choices=["plugin_unknown", "unsupported", "none"], default="none",
                    help="Filter mode: 'none' for baseline (official CytoSPACE), 'plugin_unknown' or 'unsupported' for Route2")
     p.add_argument("--cell_type_column", choices=["plugin_type", "orig_type", "sc_meta"], default="sc_meta",
@@ -68,12 +81,14 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--filter_scope",
-        choices=["unsupported_all", "missing_only"],
+        choices=["unsupported_all", "missing_only", "missing_detected_only"],
         default="unsupported_all",
         help=(
             "scope of Route2 filtering when filter_mode uses Stage3 plugin/unsupported info; "
             "'unsupported_all' (default) drops all unsupported/Unknown_sc_only cells; "
-            "'missing_only' only drops cells whose orig_type matches the specified missing_type"
+            "'missing_only' drops all cells whose orig_type matches the specified missing_type "
+            "(oracle-style fallback, regardless of Stage3 detection); "
+            "'missing_detected_only' only drops cells that are both Stage3-marked and match the specified missing_type"
         ),
     )
     p.add_argument(
@@ -148,6 +163,18 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="only replace spots with marker support <= threshold (optional)",
     )
+    p.add_argument(
+        "--keep_redundant",
+        action="store_true",
+        help="keep assigned_expression and sc/st_expression_for_cytospace (default: delete to save ~6GB per run)",
+    )
+    p.add_argument(
+        "--sc_expr_source",
+        type=str,
+        choices=["normalized", "data", "counts", "auto"],
+        default="normalized",
+        help="SC expression source from stage1 export used for CytoSPACE input.",
+    )
     return p.parse_args()
 
 
@@ -161,23 +188,6 @@ def detect_root() -> Path:
 
 def _clean_spot_index(idx: pd.Index) -> pd.Index:
     return pd.Index([str(x).split("\t")[0] for x in idx])
-
-
-def load_stage1(root: Path, sample: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    base = root / "data" / "processed" / sample / "stage1_preprocess" / "exported"
-    sc_expr = pd.read_csv(base / "sc_expression_normalized.csv", index_col=0, sep=None, engine="python")
-    st_expr = pd.read_csv(base / "st_expression_normalized.csv", index_col=0, sep=None, engine="python")
-    st_coords = pd.read_csv(base / "st_coordinates.csv", index_col=0, sep=None, engine="python")
-    sc_meta = pd.read_csv(base / "sc_metadata.csv", sep=None, engine="python")
-    if "cell_id" in sc_expr.columns:
-        sc_expr = sc_expr.drop(columns=["cell_id"])
-    if "cell_id" in st_expr.columns:
-        st_expr = st_expr.drop(columns=["cell_id"])
-    sc_expr = sc_expr.apply(pd.to_numeric, errors="coerce").dropna(axis=1, how="all").astype("float32")
-    st_expr = st_expr.apply(pd.to_numeric, errors="coerce").dropna(axis=1, how="all").astype("float32")
-    st_expr.index = _clean_spot_index(st_expr.index)
-    st_coords.index = _clean_spot_index(st_coords.index)
-    return sc_expr, st_expr, st_coords, sc_meta
 
 
 def load_stage3(root: Path, sample: str) -> tuple[pd.DataFrame, pd.DataFrame | None]:
@@ -598,15 +608,104 @@ def build_by_spot_counts_from_assignment(assignment: pd.DataFrame, st_index: pd.
     return counts
 
 
+def _sim_info_candidates(root: Path, sample: str) -> list[Path]:
+    out = [root / "data" / "processed" / sample / "stage1_preprocess" / "exported" / "sim_info.json"]
+    out.extend([p / "sim_info.json" for p in sample_dir_candidates(root, sample, sim_group="real_brca")])
+    return out
+
+
+def _load_sim_info(root: Path, sample: str) -> dict | None:
+    for p in _sim_info_candidates(root, sample):
+        if not p.exists():
+            continue
+        try:
+            return json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+    return None
+
+
+def _normalize_cli_missing_type(value: str | None) -> str | None:
+    if value is None:
+        return None
+    v = str(value).strip()
+    if not v:
+        return None
+    if v.upper() == "__NO_MISSING__":
+        return None
+    return v
+
+
+def collect_missing_types_from_sim_chain(
+    root: Path,
+    sample: str,
+    alias_map: dict[str, str],
+    max_depth: int = 12,
+) -> list[str]:
+    """Collect all missing types from sim_info and source_sample chain."""
+    cur = str(sample)
+    visited: set[str] = set()
+    out: list[str] = []
+
+    for _ in range(max_depth):
+        if not cur or cur in visited:
+            break
+        visited.add(cur)
+        info = _load_sim_info(root, cur)
+        if not info:
+            break
+
+        raw_list: list[str] = []
+        mts = info.get("missing_types")
+        if isinstance(mts, list):
+            raw_list.extend([str(x) for x in mts if str(x).strip()])
+        mt = info.get("missing_type")
+        if mt is not None and str(mt).strip():
+            raw_list.append(str(mt))
+
+        for item in raw_list:
+            canon = canonicalize_type_name(item, alias_map)
+            if canon and canon not in out:
+                out.append(canon)
+
+        parent = info.get("source_sample")
+        if parent is None or not str(parent).strip():
+            break
+        cur = str(parent).strip()
+
+    return out
+
+
+def resolve_effective_missing_types(
+    root: Path,
+    sample: str,
+    cli_missing_type: str | None,
+    alias_map: dict[str, str],
+) -> list[str]:
+    """Union of CLI missing_type and sim chain missing_types (canonicalized)."""
+    out: list[str] = []
+    cli_norm = _normalize_cli_missing_type(cli_missing_type)
+    if cli_norm:
+        canon = canonicalize_type_name(cli_norm, alias_map)
+        if canon:
+            out.append(canon)
+    for mt in collect_missing_types_from_sim_chain(root, sample, alias_map=alias_map):
+        if mt not in out:
+            out.append(mt)
+    return out
+
+
 def load_missing_truth(root: Path, sample: str) -> str | None:
-    sim_info_path = root / "data" / "processed" / sample / "stage1_preprocess" / "exported" / "sim_info.json"
-    if not sim_info_path.exists():
+    data = _load_sim_info(root, sample)
+    if not data:
         return None
-    try:
-        data = json.loads(sim_info_path.read_text(encoding="utf-8"))
-        return data.get("missing_type")
-    except Exception:
-        return None
+    mts = data.get("missing_types")
+    if isinstance(mts, list) and mts:
+        head = str(mts[0]).strip()
+        if head:
+            return head
+    mt = data.get("missing_type")
+    return str(mt).strip() if mt is not None and str(mt).strip() else None
 
 
 def _infer_sim_scenario(sample: str) -> str | None:
@@ -619,12 +718,8 @@ def _infer_sim_scenario(sample: str) -> str | None:
 
 
 def load_sim_truth_cell_ids(root: Path, sample: str) -> set[str] | None:
-    sim_info_path = root / "data" / "processed" / sample / "stage1_preprocess" / "exported" / "sim_info.json"
-    if not sim_info_path.exists():
-        return None
-    try:
-        data = json.loads(sim_info_path.read_text(encoding="utf-8"))
-    except Exception:
+    data = _load_sim_info(root, sample)
+    if not data:
         return None
     output_dir = data.get("output_dir")
     seed = data.get("seed")
@@ -668,17 +763,18 @@ def load_sim_truth_cell_ids(root: Path, sample: str) -> set[str] | None:
 
 
 def load_cells_per_spot_override(root: Path, sample: str) -> int | None:
-    sim_info_path = root / "data" / "processed" / sample / "stage1_preprocess" / "exported" / "sim_info.json"
-    if not sim_info_path.exists():
+    data = _load_sim_info(root, sample)
+    if not data:
         return None
     try:
-        data = json.loads(sim_info_path.read_text(encoding="utf-8"))
         return data.get("cells_per_spot")
     except Exception:
         return None
 
 
-def sha1(path: Path) -> str:
+def sha1(path: Path) -> str | None:
+    if not path.exists():
+        return None
     h = hashlib.sha1()
     with path.open("rb") as f:
         for chunk in iter(lambda: f.read(8192), b""):
@@ -690,7 +786,7 @@ def apply_filter(
     relabel: pd.DataFrame,
     type_support: pd.DataFrame | None,
     mode: FilterMode,
-    missing_type: str | None = None,
+    missing_types: Sequence[str] | None = None,
     filter_scope: FilterScope = "unsupported_all",
 ) -> tuple[pd.DataFrame, int, dict]:
     """
@@ -702,11 +798,13 @@ def apply_filter(
 
     filter_scope 进一步约束过滤范围：
     - "unsupported_all": 按上述规则丢弃所有命中的细胞（当前默认行为）
-    - "missing_only": 只丢弃 orig_type 属于 missing_type 的细胞，用于“只针对缺失类型止漏”
+    - "missing_only": 只丢弃 orig_type 属于 missing_type 的细胞（oracle fallback）
+    - "missing_detected_only": 只丢弃同时满足“被 Stage3 标记”且 orig_type==missing_type 的细胞
     """
-    if filter_scope == "missing_only":
-        if missing_type is None or not str(missing_type).strip():
-            raise ValueError("filter_scope=missing_only requires non-empty missing_type.")
+    missing_list = [str(x).strip() for x in (missing_types or []) if str(x).strip()]
+    missing_set = set(missing_list)
+    if filter_scope in {"missing_only", "missing_detected_only"} and not missing_set:
+        raise ValueError(f"filter_scope={filter_scope} requires non-empty missing_types.")
     if mode == "plugin_unknown":
         base_mask = relabel["plugin_type"] == "Unknown_sc_only"
     elif mode == "unsupported":
@@ -723,29 +821,101 @@ def apply_filter(
 
     # 统计所有被Stage3标记为"低支持/Unknown"的规模（与filter_scope无关）
     col_canonical = "orig_type_canonical" if "orig_type_canonical" in relabel.columns else "orig_type"
-    missing_mask = relabel[col_canonical] == missing_type if missing_type is not None else pd.Series(False, index=relabel.index)
+    missing_mask = relabel[col_canonical].isin(missing_set) if missing_set else pd.Series(False, index=relabel.index)
+    missing_totals_by_type = (
+        relabel.loc[missing_mask, col_canonical].value_counts().to_dict() if missing_set else {}
+    )
     marked_total = int(base_mask.sum())
     marked_missing = int((base_mask & missing_mask).sum())
     marked_non_missing = marked_total - marked_missing
 
-    # 进一步按scope约束：missing_only 只动指定missing_type，其它类型保留
-    if filter_scope == "missing_only" and missing_type is not None:
-        # missing_only 模式：直接过滤指定的 missing_type，不管它是否被标记为 unknown
-        # 这样可以处理 missing_type 被标记为 weak 但仍需过滤的情况
+    # 进一步按scope约束：
+    # - missing_only：直接过滤指定 missing_type（oracle fallback）
+    # - missing_detected_only：仅过滤被 Stage3 标记且命中 missing_type 的细胞
+    if filter_scope == "missing_only" and missing_set:
         mask_drop = missing_mask
+    elif filter_scope == "missing_detected_only" and missing_set:
+        mask_drop = base_mask & missing_mask
     else:
-        # 默认行为：所有unsupported/Unknown_sc_only都被丢弃
+        # 默认行为：所有 unsupported/Unknown_sc_only 都被丢弃
         mask_drop = base_mask
 
     filtered = relabel.loc[~mask_drop].copy()
     n_filtered = int(mask_drop.sum())
+    missing_total = int(missing_mask.sum())
+    oracle_only_filtered = int((missing_mask & ~base_mask).sum()) if missing_set else 0
 
     mark_stats = {
         "marked_unknown_total": marked_total,
         "marked_unknown_missing": marked_missing,
         "marked_unknown_non_missing": marked_non_missing,
+        "missing_type_list": sorted(missing_set),
+        "missing_type_total": missing_total,
+        "missing_type_totals_by_type": {str(k): int(v) for k, v in missing_totals_by_type.items()},
+        "missing_type_stage3_detected": bool(marked_missing > 0),
+        "oracle_only_filtered_missing": oracle_only_filtered,
     }
     return filtered, n_filtered, mark_stats
+
+
+def apply_effective_route2_labels(
+    relabel_filtered: pd.DataFrame,
+    cell_type_column: str,
+    filter_scope: FilterScope,
+    missing_types: Sequence[str] | None,
+) -> tuple[pd.DataFrame, str, dict]:
+    """
+    For Route2 in missing-focused scopes, restore non-missing Unknown labels back to orig_type.
+
+    Rationale:
+    - `missing_only` / `missing_detected_only` semantics are "focus on missing type filtering".
+    - Keeping non-missing cells as `Unknown_sc_only` pollutes downstream mapping and acts like
+      implicit over-filtering in practice.
+    """
+    stats = {
+        "restored_unknown_non_missing": 0,
+        "kept_unknown_missing": 0,
+        "effective_column": cell_type_column,
+    }
+    if cell_type_column != "plugin_type":
+        return relabel_filtered, cell_type_column, stats
+    if filter_scope not in {"missing_only", "missing_detected_only"}:
+        return relabel_filtered, cell_type_column, stats
+    if "plugin_type" not in relabel_filtered.columns:
+        return relabel_filtered, cell_type_column, stats
+
+    # Prefer canonicalized orig type to keep naming consistent with alias map.
+    orig_col = None
+    if "orig_type_canonical" in relabel_filtered.columns:
+        orig_col = "orig_type_canonical"
+    elif "orig_type" in relabel_filtered.columns:
+        orig_col = "orig_type"
+    if orig_col is None:
+        return relabel_filtered, cell_type_column, stats
+
+    unknown_mask = relabel_filtered["plugin_type"].astype(str).eq("Unknown_sc_only")
+    missing_set = {str(x).strip() for x in (missing_types or []) if str(x).strip()}
+    missing_mask = relabel_filtered[orig_col].astype(str).isin(missing_set) if missing_set else pd.Series(False, index=relabel_filtered.index)
+    restore_mask = unknown_mask & ~missing_mask
+    keep_mask = unknown_mask & missing_mask
+
+    if not bool(restore_mask.any()):
+        stats["kept_unknown_missing"] = int(keep_mask.sum())
+        return relabel_filtered, cell_type_column, stats
+
+    out = relabel_filtered.copy()
+    effective_col = "plugin_type_effective"
+    out[effective_col] = out["plugin_type"]
+    out.loc[restore_mask, effective_col] = out.loc[restore_mask, orig_col]
+    if "orig_type" in out.columns:
+        out[effective_col] = out[effective_col].fillna(out["orig_type"])
+    out[effective_col] = out[effective_col].fillna("Unknown_sc_only")
+    out[effective_col] = out[effective_col].astype(str)
+
+    stats["restored_unknown_non_missing"] = int(restore_mask.sum())
+    stats["kept_unknown_missing"] = int(keep_mask.sum())
+    stats["effective_column"] = effective_col
+    return out, effective_col, stats
 
 
 def prepare_cytospace_inputs(
@@ -781,7 +951,10 @@ def prepare_cytospace_inputs(
     fractions_path = work_dir / "cell_type_fractions.csv"
     n_cells_path = work_dir / "n_cells_per_spot.csv"
 
+    # 始终覆盖写入，避免使用旧格式的缓存文件导致 CytoSPACE 报错
+    print(f"[stage4] writing sc expression ({sc_expr_gene_by_cell.shape}) → {sc_expr_path.name}")
     sc_expr_gene_by_cell.to_csv(sc_expr_path, sep=",")
+    print(f"[stage4] writing st expression ({st_expr_gene_by_spot.shape}) → {st_expr_path.name}")
     st_expr_gene_by_spot.to_csv(st_expr_path, sep=",")
     if "row" in st_coords.columns and "col" in st_coords.columns:
         coords_for_cyto = st_coords[["row", "col"]].copy()
@@ -827,20 +1000,68 @@ def prepare_cytospace_inputs(
     return inputs
 
 
+def _patch_datatable_fread() -> None:
+    """Monkeypatch datatable.fread to handle non-ASCII file paths on Windows.
+
+    datatable's C backend cannot parse paths containing Chinese/Unicode characters
+    because it misinterprets the UTF-8 multi-byte sequences as escape chars.
+    The fix: intercept fread calls, read file bytes via Python (which handles
+    Unicode paths correctly), then pass raw bytes to the original fread.
+    """
+    try:
+        import datatable as dt
+    except ImportError:
+        return
+
+    _orig = dt.fread
+
+    def _safe_fread(file=None, *args, **kwargs):
+        if isinstance(file, (str, Path)):
+            p = Path(file)
+            try:
+                if p.is_file() and not all(ord(c) < 128 for c in str(p)):
+                    # Read bytes via Python (handles Unicode paths), pass content to fread
+                    return _orig(p.read_bytes(), *args, **kwargs)
+            except Exception:
+                pass
+        return _orig(file, *args, **kwargs)
+
+    dt.fread = _safe_fread
+
+    # Also patch on any already-imported cytospace submodule
+    for mod_name, mod in list(sys.modules.items()):
+        if "cytospace" in mod_name and hasattr(mod, "dt"):
+            try:
+                mod.dt.fread = _safe_fread
+            except Exception:
+                pass
+
+
 def run_cytospace(
     inputs: dict[str, Path],
     output_dir: Path,
     project_root: Path,
     args: argparse.Namespace,
 ):
+    # Patch datatable BEFORE importing cytospace so non-ASCII paths work
+    _patch_datatable_fread()
+    if not args.keep_redundant:
+        os.environ["CYTOSPACE_SKIP_ASSIGNED_EXPRESSION"] = "1"
+    else:
+        os.environ.pop("CYTOSPACE_SKIP_ASSIGNED_EXPRESSION", None)
+
     sys.path.insert(0, str(project_root / "external" / "cytospace"))
     from cytospace.cytospace import main_cytospace  # type: ignore
 
+    # Re-apply patch on freshly imported cytospace modules
+    _patch_datatable_fread()
+
     output_dir.mkdir(parents=True, exist_ok=True)
+    print(f"[stage4] cytospace output dir: {output_dir}")
     main_cytospace(
         scRNA_path=str(inputs["sc_expr"]),
         cell_type_path=str(inputs["cell_types"]),
-        n_cells_per_spot_path=str(inputs.get("n_cells_per_spot")) if "n_cells_per_spot" in inputs else None,
+        n_cells_per_spot_path=str(inputs["n_cells_per_spot"]) if "n_cells_per_spot" in inputs else None,
         st_cell_type_path=None,
         cell_type_fraction_estimation_path=str(inputs["fractions"]),
         spaceranger_path=None,
@@ -970,7 +1191,7 @@ def _mass_diff(before: pd.DataFrame, after: pd.DataFrame, type_cols: list[str]) 
 def build_stage4_outputs(
     output_dir: Path,
     relabel_filtered: pd.DataFrame,
-    missing_type: str,
+    missing_types: Sequence[str] | None,
     n_before: int,
     n_after: int,
     n_filtered: int,
@@ -1019,7 +1240,12 @@ def build_stage4_outputs(
     raw_fractional_types = []
     type_alignment_ok = None
     type_alignment_diff_max = None
-    missing_key = canonicalize_type_name(missing_type, alias_map)
+    missing_keys: list[str] = []
+    for mt in (missing_types or []):
+        canon = canonicalize_type_name(mt, alias_map)
+        if canon and canon not in missing_keys:
+            missing_keys.append(canon)
+    missing_present_by_type: dict[str, int] = {}
 
     if comp_path.exists():
         comp_raw, raw_output_types, _ = _load_fraction_table(
@@ -1036,8 +1262,10 @@ def build_stage4_outputs(
             if diff_max > 1e-6:
                 raise ValueError("type alignment mismatch in cell_type_assignments_by_spot.csv")
         comp_aligned.to_csv(comp_path, index=False)
-        if missing_key in comp_aligned.columns:
-            missing_present = int(comp_aligned[missing_key].sum())
+        for mk in missing_keys:
+            if mk in comp_aligned.columns:
+                missing_present_by_type[mk] = int(comp_aligned[mk].sum())
+        missing_present = int(sum(missing_present_by_type.values()))
         if "Total cells" in comp_aligned.columns:
             comp_total = int(comp_aligned["Total cells"].sum())
 
@@ -1076,6 +1304,7 @@ def build_stage4_outputs(
         "assigned_locations_rows": int(len(assigned)) if not assigned.empty else 0,
         "by_spot_total_cells": comp_total,
         "missing_present_in_assignment": int(missing_present),
+        "missing_present_in_assignment_by_type": missing_present_by_type,
         "filter_mode": filter_mode,
         "stage3_weak_th": weak_th,
         "stage3_strong_th": strong_th,
@@ -1084,6 +1313,7 @@ def build_stage4_outputs(
         "solver_method": solver_method,
         "seed": int(seed),
         "missing_type_truth": missing_truth,
+        "missing_type_list": missing_keys,
         "cells_per_spot_override": cps_override,
         "cell_type_column": cell_type_column,
         "filter_scope": filter_scope,
@@ -1099,6 +1329,10 @@ def build_stage4_outputs(
         "marked_unknown_total": mark_stats.get("marked_unknown_total"),
         "marked_unknown_missing": mark_stats.get("marked_unknown_missing"),
         "marked_unknown_non_missing": mark_stats.get("marked_unknown_non_missing"),
+        "missing_type_total_in_pool": mark_stats.get("missing_type_total"),
+        "missing_type_total_in_pool_by_type": mark_stats.get("missing_type_totals_by_type"),
+        "missing_type_stage3_detected": mark_stats.get("missing_type_stage3_detected"),
+        "oracle_only_filtered_missing": mark_stats.get("oracle_only_filtered_missing"),
         "sha1": {
             "cell_assignment": sha1(output_dir / "cell_assignment.csv"),
             "sim_info": sha1(project_root / "data" / "processed" / sample / "stage1_preprocess" / "exported" / "sim_info.json"),
@@ -1114,10 +1348,7 @@ def build_stage4_outputs(
 def main():
     args = parse_args()
 
-    # 强校验：missing_only 必须提供 non-empty missing_type
-    if args.filter_scope == "missing_only":
-        if args.missing_type is None or not str(args.missing_type).strip():
-            raise SystemExit("filter_scope=missing_only requires non-empty --missing_type.")
+    # 强校验：依赖 missing_type 的 scope 必须提供 non-empty missing_type
 
     project_root = Path(args.project_root) if args.project_root else detect_root()
 
@@ -1200,22 +1431,43 @@ def main():
     # 加载别名映射，并对 missing_type 做 canonicalize
     alias_map_path = project_root / "configs" / "type_aliases.yaml"
     alias_map = load_alias_map(alias_map_path)
-    missing_type_canonical = canonicalize_type_name(args.missing_type, alias_map)
+    cli_missing_norm = _normalize_cli_missing_type(args.missing_type)
+    missing_type_canonical = canonicalize_type_name(cli_missing_norm, alias_map) if cli_missing_norm else None
+    effective_missing_types = resolve_effective_missing_types(
+        project_root,
+        args.sample,
+        args.missing_type,
+        alias_map,
+    )
 
     # 日志中显式打印 canonicalized missing_type 以及是否命中 alias
-    orig_norm = normalize_type_name(args.missing_type)
-    if missing_type_canonical != orig_norm:
-        print(
-            f"[stage4] missing_type canonicalized: "
-            f"raw='{args.missing_type}' -> normalized='{orig_norm}' -> canonical='{missing_type_canonical}' (via alias map)"
-        )
+    if cli_missing_norm is None:
+        print(f"[stage4] missing_type input disabled (raw='{args.missing_type}')")
     else:
-        print(
-            f"[stage4] missing_type canonicalized: "
-            f"raw='{args.missing_type}' -> normalized='{orig_norm}' (no alias mapping applied)"
+        orig_norm = normalize_type_name(cli_missing_norm)
+        if missing_type_canonical != orig_norm:
+            print(
+                f"[stage4] missing_type canonicalized: "
+                f"raw='{args.missing_type}' -> normalized='{orig_norm}' -> canonical='{missing_type_canonical}' (via alias map)"
+            )
+        else:
+            print(
+                f"[stage4] missing_type canonicalized: "
+                f"raw='{args.missing_type}' -> normalized='{orig_norm}' (no alias mapping applied)"
+            )
+    print(f"[stage4] effective_missing_types={effective_missing_types if effective_missing_types else []}")
+    if args.filter_scope in {"missing_only", "missing_detected_only"} and not effective_missing_types:
+        raise SystemExit(
+            f"filter_scope={args.filter_scope} requires at least one missing type "
+            f"(from --missing_type or sim_info(.missing_types/.missing_type) chain)."
         )
 
-    sc_expr, st_expr, st_coords, sc_meta = load_stage1(project_root, args.sample)
+    sc_expr, st_expr, st_coords, sc_meta = load_stage1(
+        project_root,
+        args.sample,
+        sc_expr_source=args.sc_expr_source,
+    )
+    print(f"[stage4] sc_expr_source={args.sc_expr_source}")
 
     full_type_list = []
     for t in sc_meta["cell_type"].dropna().tolist():
@@ -1238,6 +1490,7 @@ def main():
     print(f"[debug] st_coords index sample={list(st_coords.index[:3])}")
     
     # Baseline (filter_mode=none) 不需要Stage3输出，直接使用所有SC细胞
+    type_support = None
     if args.filter_mode == "none":
         # 对于baseline，使用所有SC细胞，不进行任何过滤
         n_before = len(sc_meta)
@@ -1247,6 +1500,11 @@ def main():
             "marked_unknown_total": 0,
             "marked_unknown_missing": 0,
             "marked_unknown_non_missing": 0,
+            "missing_type_list": list(effective_missing_types),
+            "missing_type_total": 0,
+            "missing_type_totals_by_type": {},
+            "missing_type_stage3_detected": False,
+            "oracle_only_filtered_missing": 0,
         }
         # 创建一个虚拟的relabel_filtered，用于prepare_cytospace_inputs
         # 但实际上cell_type_column=sc_meta时，不会使用这个
@@ -1270,7 +1528,7 @@ def main():
             relabel,
             type_support,
             args.filter_mode,
-            missing_type=missing_type_canonical,
+            missing_types=effective_missing_types,
             filter_scope=args.filter_scope,
         )
         n_after = len(relabel_filtered)
@@ -1285,12 +1543,27 @@ def main():
             n_after = len(relabel_filtered)
             n_filtered = int(n_filtered) + int(truth_filter_removed)
 
+    relabel_for_mapping = relabel_filtered
+    mapping_cell_type_column = args.cell_type_column
+    route2_restore_stats = {
+        "restored_unknown_non_missing": 0,
+        "kept_unknown_missing": 0,
+        "effective_column": args.cell_type_column,
+    }
+    if args.filter_mode != "none":
+        relabel_for_mapping, mapping_cell_type_column, route2_restore_stats = apply_effective_route2_labels(
+            relabel_filtered,
+            args.cell_type_column,
+            args.filter_scope,
+            effective_missing_types,
+        )
+
     active_type_list = []
     if args.cell_type_column == "sc_meta":
         source_series = sc_meta["cell_type"] if "cell_type" in sc_meta.columns else []
     else:
-        if args.cell_type_column in relabel_filtered.columns:
-            source_series = relabel_filtered[args.cell_type_column]
+        if mapping_cell_type_column in relabel_for_mapping.columns:
+            source_series = relabel_for_mapping[mapping_cell_type_column]
         else:
             source_series = sc_meta.get("cell_type", [])
     if hasattr(source_series, "dropna"):
@@ -1300,7 +1573,8 @@ def main():
         if canon and canon not in active_type_list:
             active_type_list.append(canon)
 
-    out_root = project_root / "result" / args.sample / "stage4_cytospace"
+    stage4_dir_name = "stage4_cytospace" + (args.stage4_suffix if args.stage4_suffix else "")
+    out_root = project_root / "result" / args.sample / stage4_dir_name
     prep_dir = out_root / "cytospace_input"
     cyto_out_dir = out_root / "cytospace_output"
 
@@ -1313,10 +1587,10 @@ def main():
         st_expr,
         st_coords,
         sc_meta,
-        relabel_filtered,
+        relabel_for_mapping,
         prep_dir,
         cells_per_spot_override=mapping_cps,
-        cell_type_column=args.cell_type_column,
+        cell_type_column=mapping_cell_type_column,
         rescue_types=rescued_types if rescue_ctrl_enable else None,
         rescue_weight=rescue_weight if rescue_ctrl_enable else None,
     )
@@ -1326,7 +1600,7 @@ def main():
     summary = build_stage4_outputs(
         cyto_out_dir,
         relabel_filtered,
-        args.missing_type,
+        effective_missing_types,
         n_before,
         n_after,
         n_filtered,
@@ -1351,6 +1625,9 @@ def main():
     summary["mapping_cells_per_spot"] = int(mapping_cps) if mapping_cps is not None else None
     summary["truth_filter_enabled"] = bool(filter_to_sim_truth)
     summary["truth_filter_removed"] = int(truth_filter_removed)
+    summary["mapping_cell_type_column"] = mapping_cell_type_column
+    summary["route2_restored_unknown_non_missing"] = int(route2_restore_stats.get("restored_unknown_non_missing", 0))
+    summary["route2_kept_unknown_missing"] = int(route2_restore_stats.get("kept_unknown_missing", 0))
 
     if hotspot_rescue_post and args.filter_mode != "none":
         stage1_export = project_root / "data" / "processed" / args.sample / "stage1_preprocess" / "exported"
@@ -1409,7 +1686,27 @@ def main():
     print("[Stage4 cytospace] summary:")
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
+    # 清理冗余文件，避免重复占用存储（assigned_expression、sc/st_expression_for_cytospace 未被 Stage5 使用）
+    if not args.keep_redundant:
+        _cleanup_redundant_stage4_outputs(cyto_out_dir, prep_dir)
+
+
+def _cleanup_redundant_stage4_outputs(cyto_out_dir: Path, prep_dir: Path) -> None:
+    """删除 Stage5 不依赖的冗余输出，节省约 6GB/run。"""
+    removed = []
+    ae = cyto_out_dir / "assigned_expression"
+    if ae.exists() and ae.is_dir():
+        shutil.rmtree(ae)
+        removed.append("assigned_expression")
+    for name in ("sc_expression_for_cytospace.csv", "st_expression_for_cytospace.csv"):
+        for d in (cyto_out_dir, prep_dir):
+            if d and (d / name).exists():
+                (d / name).unlink()
+                removed.append(name)
+                break
+    if removed:
+        print(f"[Stage4] Cleaned redundant: {removed}")
+
 
 if __name__ == "__main__":
     main()
-

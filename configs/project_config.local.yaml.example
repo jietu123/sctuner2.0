@@ -1,0 +1,6 @@
+# 复制本文件为 project_config.local.yaml（该文件已加入 .gitignore，不会提交）。
+# 仅在需要时填写本机路径，例如 Windows 上 Rscript 不在 PATH 内时：
+#
+# rscript_path: "C:/Users/you/miniconda3/envs/cytospace_v1.1.0_py310/Scripts/Rscript.exe"
+#
+# 多数情况下激活 conda 环境后可直接使用命令行中的 Rscript，无需配置。
