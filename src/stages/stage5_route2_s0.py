@@ -1449,13 +1449,18 @@ def compute_filter_ledger(
     false_nonmissing = None
     false_nonmissing_fraction = None
     if relabel_df is not None and missing_set and n_filtered is not None:
+        actual_filtered = max(0, int(n_filtered) - truth_removed)
         if filter_scope_effective == "missing_only":
             missing_count = expected_drop if expected_drop is not None else int(relabel_df["orig_type"].isin(missing_set).sum())
         elif unknown_label:
             filtered = relabel_df[relabel_df["plugin_type"] == unknown_label]
             missing_count = int(filtered["orig_type"].isin(missing_set).sum())
         if missing_count is not None:
-            false_nonmissing = int(n_filtered) - int(missing_count)
+            # Baseline runs may carry Stage3 relabel metadata even when no
+            # prefiltering was applied. Clamp to the observed filtered count so
+            # false-filter audits cannot become negative.
+            missing_count = min(int(missing_count), actual_filtered)
+            false_nonmissing = max(0, actual_filtered - int(missing_count))
             if n_sc_total:
                 false_nonmissing_fraction = float(false_nonmissing) / float(n_sc_total)
 

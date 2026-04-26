@@ -686,12 +686,34 @@ def resolve_effective_missing_types(
     out: list[str] = []
     cli_norm = _normalize_cli_missing_type(cli_missing_type)
     if cli_norm:
-        canon = canonicalize_type_name(cli_norm, alias_map)
-        if canon:
-            out.append(canon)
+        for item in str(cli_norm).replace(";", ",").split(","):
+            item = item.strip()
+            if not item:
+                continue
+            canon = canonicalize_type_name(item, alias_map)
+            if canon and canon not in out:
+                out.append(canon)
     for mt in collect_missing_types_from_sim_chain(root, sample, alias_map=alias_map):
         if mt not in out:
             out.append(mt)
+    return out
+
+
+def collect_stage3_auto_missing_types(stage3_summary_path: Path, alias_map: dict[str, str]) -> list[str]:
+    if not stage3_summary_path.exists():
+        return []
+    try:
+        summary = json.loads(stage3_summary_path.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    auto_obj = summary.get("auto_missing_detection") or {}
+    raw_types = auto_obj.get("auto_missing_types") or []
+    out: list[str] = []
+    if isinstance(raw_types, list):
+        for item in raw_types:
+            canon = canonicalize_type_name(str(item), alias_map)
+            if canon and canon not in out:
+                out.append(canon)
     return out
 
 
@@ -1439,6 +1461,10 @@ def main():
         args.missing_type,
         alias_map,
     )
+    if args.filter_scope == "missing_detected_only":
+        for mt in collect_stage3_auto_missing_types(stage3_summary_path, alias_map):
+            if mt not in effective_missing_types:
+                effective_missing_types.append(mt)
 
     # 日志中显式打印 canonicalized missing_type 以及是否命中 alias
     if cli_missing_norm is None:

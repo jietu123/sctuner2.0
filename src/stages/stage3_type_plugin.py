@@ -917,6 +917,18 @@ def main():
         # B/T 邻近类型对抗规则（major-type下用于抑制近邻“顶替”）
         "bt_neighbor_guard_enable": False,
         "bt_neighbor_guard_rules": None,
+        "auto_missing_detection": {
+            "enable": False,
+            "method": "fixed_threshold",
+            "min_cells": 50,
+            "support_th": 0.65,
+            "categories": ["weak", "unsupported"],
+            "robust_z_th": -2.0,
+            "soft_z_th": -0.9,
+            "max_fraction_types": 0.3,
+            "max_types": None,
+            "action": "mark_unknown",
+        },
     }
 
     # V5 系列子模块配置分组：去噪 / 生态位 / 熵质控 / 拯救控制
@@ -939,6 +951,11 @@ def main():
     bt_neighbor_guard_cfg = {}
     if isinstance(stage3_cfg, dict):
         bt_neighbor_guard_cfg = stage3_cfg.get("bt_neighbor_guard") or {}
+    auto_missing_cfg = {}
+    if isinstance(stage3_cfg, dict):
+        auto_missing_cfg = stage3_cfg.get("auto_missing_detection") or {}
+    if not isinstance(auto_missing_cfg, dict):
+        auto_missing_cfg = {}
 
     # 将 V5 参数做类型转换与范围裁剪，避免非法值影响流程
     v5_enable = bool(v5_cfg.get("enable", False))
@@ -1123,6 +1140,49 @@ def main():
     )
     if not isinstance(bt_neighbor_guard_rules, list):
         bt_neighbor_guard_rules = []
+    auto_missing_defaults = defaults["auto_missing_detection"]
+    auto_missing_enable = bool(auto_missing_cfg.get("enable", auto_missing_defaults["enable"]))
+    try:
+        auto_missing_min_cells = int(auto_missing_cfg.get("min_cells", auto_missing_defaults["min_cells"]))
+    except (TypeError, ValueError):
+        auto_missing_min_cells = int(auto_missing_defaults["min_cells"])
+    try:
+        auto_missing_support_th = float(auto_missing_cfg.get("support_th", auto_missing_defaults["support_th"]))
+    except (TypeError, ValueError):
+        auto_missing_support_th = float(auto_missing_defaults["support_th"])
+    auto_missing_categories_raw = auto_missing_cfg.get("categories", auto_missing_defaults["categories"])
+    if isinstance(auto_missing_categories_raw, str):
+        auto_missing_categories = {x.strip().lower() for x in auto_missing_categories_raw.split(",") if x.strip()}
+    elif isinstance(auto_missing_categories_raw, list):
+        auto_missing_categories = {str(x).strip().lower() for x in auto_missing_categories_raw if str(x).strip()}
+    else:
+        auto_missing_categories = {str(x).strip().lower() for x in auto_missing_defaults["categories"]}
+    auto_missing_action = str(auto_missing_cfg.get("action", auto_missing_defaults["action"])).strip().lower()
+    if auto_missing_action not in {"mark_unknown", "ignore"}:
+        auto_missing_action = "mark_unknown"
+    auto_missing_method = str(auto_missing_cfg.get("method", auto_missing_defaults["method"])).strip().lower()
+    if auto_missing_method not in {"fixed_threshold", "adaptive_low_support"}:
+        auto_missing_method = "fixed_threshold"
+    try:
+        auto_missing_robust_z_th = float(auto_missing_cfg.get("robust_z_th", auto_missing_defaults["robust_z_th"]))
+    except (TypeError, ValueError):
+        auto_missing_robust_z_th = float(auto_missing_defaults["robust_z_th"])
+    try:
+        auto_missing_soft_z_th = float(auto_missing_cfg.get("soft_z_th", auto_missing_defaults["soft_z_th"]))
+    except (TypeError, ValueError):
+        auto_missing_soft_z_th = float(auto_missing_defaults["soft_z_th"])
+    try:
+        auto_missing_max_fraction_types = float(auto_missing_cfg.get("max_fraction_types", auto_missing_defaults["max_fraction_types"]))
+    except (TypeError, ValueError):
+        auto_missing_max_fraction_types = float(auto_missing_defaults["max_fraction_types"])
+    auto_missing_max_fraction_types = min(max(auto_missing_max_fraction_types, 0.0), 1.0)
+    auto_missing_max_types_raw = auto_missing_cfg.get("max_types", auto_missing_defaults["max_types"])
+    try:
+        auto_missing_max_types = int(auto_missing_max_types_raw) if auto_missing_max_types_raw is not None else None
+    except (TypeError, ValueError):
+        auto_missing_max_types = None
+    if auto_missing_max_types is not None and auto_missing_max_types <= 0:
+        auto_missing_max_types = None
     if mismatch_action not in {"relabel", "mark_unknown", "ignore"}:
         mismatch_action = defaults["mismatch_action"]
     if relabel_similarity_threshold is None:
@@ -2143,6 +2203,123 @@ def main():
     if v5_final_rescued:
         missing_types -= v5_final_rescued
 
+    auto_missing_types = set()
+    auto_missing_records = []
+    for row in support_rows:
+        row["auto_missing"] = "No"
+        row["auto_missing_reason"] = ""
+    if auto_missing_enable and auto_missing_action == "mark_unknown":
+        row_by_type = {row["orig_type"]: row for row in support_rows}
+        candidate_payloads: dict[str, dict] = {}
+
+        if auto_missing_method == "adaptive_low_support":
+            eligible = []
+            for row in support_rows:
+                t = row["orig_type"]
+                try:
+                    n_cells_auto = int(row.get("n_cells", 0))
+                    score_auto = float(row.get("support_score", 0.0))
+                except (TypeError, ValueError):
+                    continue
+                if t in v5_final_rescued or n_cells_auto < auto_missing_min_cells:
+                    continue
+                eligible.append((t, n_cells_auto, score_auto, row))
+
+            if eligible:
+                scores = np.array([x[2] for x in eligible], dtype=float)
+                median_score = float(np.median(scores))
+                mad_score = float(np.median(np.abs(scores - median_score)))
+                robust_scale = 1.4826 * mad_score if mad_score > eps else 1.0
+                adaptive_rows = []
+                for t, n_cells_auto, score_auto, row in eligible:
+                    robust_z = float((score_auto - median_score) / robust_scale)
+                    row["auto_missing_robust_z"] = robust_z
+                    adaptive_rows.append(
+                        {
+                            "orig_type": t,
+                            "n_cells": n_cells_auto,
+                            "support_score": score_auto,
+                            "support_category": row.get("support_category"),
+                            "robust_z": robust_z,
+                        }
+                    )
+
+                hard = [x for x in adaptive_rows if x["robust_z"] <= auto_missing_robust_z_th]
+                selected = hard
+                selector = f"robust_z<={auto_missing_robust_z_th}"
+                if not selected:
+                    selected = [x for x in adaptive_rows if x["robust_z"] <= auto_missing_soft_z_th]
+                    selector = f"soft_robust_z<={auto_missing_soft_z_th}"
+
+                selected = sorted(selected, key=lambda x: (x["support_score"], x["orig_type"]))
+                max_by_fraction = int(np.floor(len(eligible) * auto_missing_max_fraction_types))
+                if auto_missing_max_fraction_types > 0 and max_by_fraction < 1:
+                    max_by_fraction = 1
+                max_allowed = max_by_fraction if max_by_fraction > 0 else len(eligible)
+                if auto_missing_max_types is not None:
+                    max_allowed = min(max_allowed, auto_missing_max_types)
+
+                if len(selected) > max_allowed:
+                    # Keep the low-support candidates closest to the normal
+                    # boundary when the adaptive tail is wider than the safety
+                    # cap. This avoids deleting a large low-support tail while
+                    # preserving the configured scenario difficulty.
+                    selected = sorted(selected, key=lambda x: (x["support_score"], x["orig_type"]), reverse=True)[:max_allowed]
+                    selected = sorted(selected, key=lambda x: (x["support_score"], x["orig_type"]))
+
+                for item in selected:
+                    reason = (
+                        f"method=adaptive_low_support;"
+                        f"{selector};"
+                        f"robust_z={item['robust_z']:.6g};"
+                        f"median={median_score:.6g};"
+                        f"mad={mad_score:.6g};"
+                        f"max_allowed={max_allowed};"
+                        f"n_cells>={auto_missing_min_cells}"
+                    )
+                    candidate_payloads[item["orig_type"]] = {**item, "reason": reason}
+        else:
+            for row in support_rows:
+                t = row["orig_type"]
+                try:
+                    n_cells_auto = int(row.get("n_cells", 0))
+                except (TypeError, ValueError):
+                    n_cells_auto = 0
+                try:
+                    score_auto = float(row.get("support_score", 0.0))
+                except (TypeError, ValueError):
+                    score_auto = 0.0
+                cat_auto = str(row.get("support_category", "")).strip().lower()
+                if (
+                    t not in v5_final_rescued
+                    and n_cells_auto >= auto_missing_min_cells
+                    and score_auto < auto_missing_support_th
+                    and cat_auto in auto_missing_categories
+                ):
+                    reason = (
+                        f"method=fixed_threshold;"
+                        f"n_cells>={auto_missing_min_cells};"
+                        f"support_score<{auto_missing_support_th};"
+                        f"category={cat_auto}"
+                    )
+                    candidate_payloads[t] = {
+                        "orig_type": t,
+                        "n_cells": n_cells_auto,
+                        "support_score": score_auto,
+                        "support_category": row.get("support_category"),
+                        "reason": reason,
+                    }
+
+        for t, payload in candidate_payloads.items():
+            row = row_by_type.get(t)
+            if row is None:
+                continue
+            row["auto_missing"] = "Yes"
+            row["auto_missing_reason"] = payload["reason"]
+            auto_missing_types.add(t)
+            auto_missing_records.append(payload)
+        missing_types |= auto_missing_types
+
     # 生成动作映射：Keep / Dropped / Unknown / Relabel
     # 初始全部 Keep，再应用 unsupported 与 missing_types 规则
     action_map = {row["orig_type"]: "Keep" for row in support_rows}
@@ -2150,6 +2327,9 @@ def main():
         action_map[t] = "Dropped" if drop_unknown else "Unknown"
     for t in v5_final_rescued:
         action_map[t] = "Keep"
+    for t in auto_missing_types:
+        if t not in unsupported_types and t not in v5_final_rescued:
+            action_map[t] = "Dropped" if drop_unknown else "Unknown"
     merge_sources: dict[str, List[str]] = defaultdict(list)
     similarity_target_map: dict[str, str] = {}
 
@@ -2230,25 +2410,24 @@ def main():
         status = support_map.get(orig, "unsupported")
         action = action_map.get(orig, "Keep")
 
-        if mismatch_action in {"relabel", "mark_unknown"} and use_v42:
-            if is_orig_unknown:
-                plugin_type = "Unknown_sc_only"
-                label_status = "unknown_merged"
-            elif action.startswith("Relabel->"):
-                plugin_type = action.split("->", 1)[1].strip()
-                label_status = "v4.3_relabel"
-            elif action in {"Unknown", "Dropped"}:
-                plugin_type = "Unknown_sc_only"
-                label_status = "v4.3_unknown"
-            else:
-                plugin_type = orig
-                label_status = "kept"
+        if is_orig_unknown:
+            plugin_type = "Unknown_sc_only"
+            label_status = "unknown_merged"
+        elif action.startswith("Relabel->"):
+            plugin_type = action.split("->", 1)[1].strip()
+            label_status = "v4.3_relabel"
+        elif action in {"Unknown", "Dropped"}:
+            plugin_type = "Unknown_sc_only"
+            label_status = "stage3_action_unknown"
+        elif mismatch_action in {"relabel", "mark_unknown"} and use_v42:
+            plugin_type = orig
+            label_status = "kept"
         else:
             # V4.2: mismatch detection applied to relabeling when enabled.
             if use_fisher_z and apply_mismatch_to_relabel and mismatch_map.get(orig, False):
                 plugin_type = "Unknown_sc_only"
                 label_status = "v4.2_mismatch_detected"
-            elif is_orig_unknown or status == "unsupported":
+            elif status == "unsupported":
                 plugin_type = "Unknown_sc_only"
                 label_status = "unknown_merged"
             elif status == "strong":
@@ -2476,6 +2655,16 @@ def main():
             "bt_neighbor_guard_enable": bt_neighbor_guard_enable if use_v42 else None,
             "bt_neighbor_guard_rules": bt_neighbor_guard_rules if use_v42 and bt_neighbor_guard_enable else None,
             "scenario_missing_type": scenario_missing_type if use_v42 else None,
+            "auto_missing_detection_enable": auto_missing_enable,
+            "auto_missing_method": auto_missing_method if auto_missing_enable else None,
+            "auto_missing_min_cells": auto_missing_min_cells if auto_missing_enable else None,
+            "auto_missing_support_th": auto_missing_support_th if auto_missing_enable else None,
+            "auto_missing_categories": sorted(auto_missing_categories) if auto_missing_enable else None,
+            "auto_missing_robust_z_th": auto_missing_robust_z_th if auto_missing_enable else None,
+            "auto_missing_soft_z_th": auto_missing_soft_z_th if auto_missing_enable else None,
+            "auto_missing_max_fraction_types": auto_missing_max_fraction_types if auto_missing_enable else None,
+            "auto_missing_max_types": auto_missing_max_types if auto_missing_enable else None,
+            "auto_missing_action": auto_missing_action if auto_missing_enable else None,
             # V5.1 参数
             "v5_denoising_enable": v5_enable if use_v42 else None,
             "v5_p_value_upper_limit": v5_p_upper if use_v42 else None,
@@ -2506,6 +2695,20 @@ def main():
             "by_cell_count": dict(action_by_cell),
             "missing_types": sorted(missing_types),
             "missing_types_conflicts": missing_conflicts,
+        },
+        "auto_missing_detection": {
+            "enabled": auto_missing_enable,
+            "method": auto_missing_method,
+            "min_cells": auto_missing_min_cells,
+            "support_th": auto_missing_support_th,
+            "categories": sorted(auto_missing_categories),
+            "robust_z_th": auto_missing_robust_z_th,
+            "soft_z_th": auto_missing_soft_z_th,
+            "max_fraction_types": auto_missing_max_fraction_types,
+            "max_types": auto_missing_max_types,
+            "action": auto_missing_action,
+            "auto_missing_types": sorted(auto_missing_types),
+            "records": auto_missing_records,
         },
         "bt_neighbor_guard": {
             "enabled": bt_neighbor_guard_enable if use_v42 else False,

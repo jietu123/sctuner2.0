@@ -547,7 +547,7 @@ def main() -> int:
     stage4_missing_arg = ",".join(effective_missing_types) if effective_missing_types else "__NO_MISSING__"
     effective_route2_filter_scope = args.route2_filter_scope
     if (
-        effective_route2_filter_scope in {"missing_only", "missing_detected_only"}
+        effective_route2_filter_scope == "missing_only"
         and not effective_missing_types
     ):
         print(

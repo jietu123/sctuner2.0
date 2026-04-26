@@ -25,3 +25,12 @@ stage3:
   eps: 1.0e-08
   plugin_genes_path: data/processed/human_lymph_node_sim_mt_nk_cd4treg_fill_cd4t/stage1_preprocess/hvg_genes.txt
   gene_weights_path: null
+  auto_missing_detection:
+    enable: true
+    method: adaptive_low_support
+    min_cells: 50
+    robust_z_th: -2.0
+    soft_z_th: -0.9
+    max_fraction_types: 0.3
+    max_types: 2
+    action: mark_unknown
