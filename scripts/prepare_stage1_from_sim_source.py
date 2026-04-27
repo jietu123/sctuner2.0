@@ -3,12 +3,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import shutil
 import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import yaml
 
 _HERE = Path(__file__).resolve()
 _ROOT = _HERE.parents[1]
@@ -32,12 +34,20 @@ def parse_args() -> argparse.Namespace:
     return p.parse_args()
 
 
-def _load_source_sample(raw_dir: Path, override: str | None) -> str:
+def _load_source_sample(raw_dir: Path, override: str | None) -> str | None:
     if override:
         return override
     sim_info = raw_dir / "sim_info.json"
     if not sim_info.exists():
-        raise FileNotFoundError(f"sim_info.json not found: {sim_info}")
+        required = [
+            raw_dir / "brca_scRNA_GEP.txt",
+            raw_dir / "brca_scRNA_celllabels.txt",
+            raw_dir / "brca_STdata_GEP.txt",
+            raw_dir / "brca_STdata_coordinates.txt",
+        ]
+        if all(p.exists() for p in required):
+            return None
+        raise FileNotFoundError(f"sim_info.json not found and raw text inputs are incomplete: {sim_info}")
     info = json.loads(sim_info.read_text(encoding="utf-8"))
     source_sample = str(info.get("source_sample") or "").strip()
     if not source_sample:
@@ -59,11 +69,38 @@ def _copy_sc_exports(src_export: Path, dst_export: Path) -> None:
     print(f"[Stage1-fallback] copied SC exports: {copied}")
 
 
+def _load_qc_config(project_root: Path, sample: str) -> dict:
+    defaults = {
+        "sc_min_genes": 200,
+        "sc_max_genes": 6000,
+        "sc_max_mt": 10,
+        "st_min_genes": 100,
+        "st_max_genes": float("inf"),
+        "st_max_mt": 20,
+        "hvg_nfeatures": 2000,
+        "mt_pattern": "^MT-",
+    }
+    cfg_path = project_root / "configs" / "datasets" / f"{sample}.yaml"
+    if not cfg_path.exists():
+        return defaults
+    with cfg_path.open("r", encoding="utf-8") as f:
+        cfg = yaml.safe_load(f) or {}
+    out = defaults.copy()
+    out.update(cfg.get("qc") or {})
+    return out
+
+
+def _mt_mask(genes: list[str], pattern: str) -> np.ndarray:
+    rx = re.compile(pattern or "^MT-")
+    return np.array([bool(rx.search(str(g))) for g in genes], dtype=bool)
+
+
 def _build_sc_exports_from_raw(
     raw_sc_expr: Path,
     raw_sc_meta: Path,
+    qc: dict,
     scale_factor: float,
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, list[str]]:
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, list[str], list[str]]:
     print(f"[Stage1-fallback] building SC exports from raw: {raw_sc_expr}")
     sc_raw = pd.read_csv(raw_sc_expr, sep="\t", low_memory=False)
     if sc_raw.shape[1] < 2:
@@ -91,25 +128,46 @@ def _build_sc_exports_from_raw(
 
     mat = sc_raw.to_numpy(dtype=np.float32, copy=False)  # genes x cells
     lib = mat.sum(axis=0, dtype=np.float64)
-    denom = np.where(lib > 0.0, lib, 1.0)
-    norm = np.log1p((mat / denom[np.newaxis, :]) * float(scale_factor)).astype(np.float32)
-
-    sc_expr_norm = pd.DataFrame(norm.T, index=common_cells, columns=genes)
-    sc_expr_norm.index.name = "cell_id"
-
-    sc_expr_counts = pd.DataFrame(mat.T, index=common_cells, columns=genes)
-    sc_expr_counts.index.name = "cell_id"
-
     n_count = lib.astype(np.int64)
     n_feature = (mat > 0).sum(axis=0).astype(np.int64)
-    mt_mask = np.char.startswith(np.array(genes, dtype=str), "MT-") | np.char.startswith(np.array(genes, dtype=str), "mt-")
+    mt_mask = _mt_mask(genes, str(qc.get("mt_pattern") or "^MT-"))
     if mt_mask.any():
         mt_sum = mat[mt_mask, :].sum(axis=0, dtype=np.float64)
         pct_mt = np.where(lib > 0, mt_sum / np.where(lib > 0, lib, 1.0) * 100.0, 0.0).astype(np.float32)
     else:
         pct_mt = np.zeros(shape=(mat.shape[1],), dtype=np.float32)
 
-    meta = meta.set_index("cell_id").reindex(common_cells)
+    keep_mask = (
+        (n_feature >= int(qc.get("sc_min_genes", 200)))
+        & (n_feature <= float(qc.get("sc_max_genes", 6000)))
+        & (pct_mt <= float(qc.get("sc_max_mt", 10)))
+    )
+    kept_cells = [c for c, keep in zip(common_cells, keep_mask) if bool(keep)]
+    if not kept_cells:
+        raise ValueError("SC QC removed all cells in Stage1 fallback.")
+    mat = mat[:, keep_mask]
+    lib = lib[keep_mask]
+    n_count = n_count[keep_mask]
+    n_feature = n_feature[keep_mask]
+    pct_mt = pct_mt[keep_mask]
+    denom = np.where(lib > 0.0, lib, 1.0)
+    norm = np.log1p((mat / denom[np.newaxis, :]) * float(scale_factor)).astype(np.float32)
+
+    sc_expr_norm = pd.DataFrame(norm.T, index=kept_cells, columns=genes)
+    sc_expr_norm.index.name = "cell_id"
+
+    sc_expr_counts = pd.DataFrame(mat.T, index=kept_cells, columns=genes)
+    sc_expr_counts.index.name = "cell_id"
+
+    hvg_n = int(qc.get("hvg_nfeatures", 2000))
+    if hvg_n > 0 and hvg_n < len(genes):
+        vars_ = np.var(norm, axis=1)
+        hvg_idx = np.argsort(vars_)[::-1][:hvg_n]
+        hvg_genes = [genes[i] for i in hvg_idx]
+    else:
+        hvg_genes = list(genes)
+
+    meta = meta.set_index("cell_id").reindex(kept_cells)
     sc_meta = pd.DataFrame(
         {
             "orig.ident": "SeuratProject",
@@ -118,10 +176,11 @@ def _build_sc_exports_from_raw(
             "cell_type": meta["cell_type"].fillna("Unknown_sc_only").astype(str).to_numpy(),
             "percent.mt": pct_mt,
         },
-        index=common_cells,
+        index=kept_cells,
     )
     sc_meta.index.name = "cell_id"
-    return sc_expr_norm, sc_expr_counts, sc_meta, genes
+    print(f"[Stage1-fallback] SC QC kept {len(kept_cells)}/{len(common_cells)} cells")
+    return sc_expr_norm, sc_expr_counts, sc_meta, genes, hvg_genes
 
 
 def _read_gene_order_from_sc(sc_expr_csv: Path) -> list[str]:
@@ -134,7 +193,12 @@ def _read_gene_order_from_sc(sc_expr_csv: Path) -> list[str]:
     return genes
 
 
-def _build_st_normalized(raw_st_expr: Path, gene_order: list[str], scale_factor: float) -> tuple[pd.DataFrame, np.ndarray, np.ndarray, np.ndarray]:
+def _build_st_normalized(
+    raw_st_expr: Path,
+    gene_order: list[str],
+    qc: dict,
+    scale_factor: float,
+) -> tuple[pd.DataFrame, np.ndarray, np.ndarray, np.ndarray]:
     print(f"[Stage1-fallback] loading ST counts: {raw_st_expr}")
     st_raw = pd.read_csv(raw_st_expr, sep="\t", low_memory=False)
     if st_raw.shape[1] < 2:
@@ -152,20 +216,34 @@ def _build_st_normalized(raw_st_expr: Path, gene_order: list[str], scale_factor:
     del st_raw
 
     lib = mat.sum(axis=0, dtype=np.float64)
-    denom = np.where(lib > 0.0, lib, 1.0)
-    norm = np.log1p((mat / denom[np.newaxis, :]) * float(scale_factor)).astype(np.float32)
-
-    st_expr_norm = pd.DataFrame(norm.T, index=spot_ids, columns=gene_order)
-    st_expr_norm.index.name = "spot_id"
-
     n_count = lib.astype(np.int64)
     n_feature = (mat > 0).sum(axis=0).astype(np.int64)
-    mt_mask = np.char.startswith(np.array(gene_order, dtype=str), "MT-")
+    mt_mask = _mt_mask(gene_order, str(qc.get("mt_pattern") or "^MT-"))
     if mt_mask.any():
         mt_sum = mat[mt_mask, :].sum(axis=0, dtype=np.float64)
         pct_mt = np.where(lib > 0, mt_sum / np.where(lib > 0, lib, 1.0) * 100.0, 0.0).astype(np.float32)
     else:
         pct_mt = np.zeros(shape=(mat.shape[1],), dtype=np.float32)
+
+    keep_mask = (
+        (n_feature >= int(qc.get("st_min_genes", 100)))
+        & (n_feature <= float(qc.get("st_max_genes", float("inf"))))
+        & (pct_mt <= float(qc.get("st_max_mt", 20)))
+    )
+    if not bool(keep_mask.any()):
+        raise ValueError("ST QC removed all spots in Stage1 fallback.")
+    spot_ids = spot_ids[keep_mask]
+    mat = mat[:, keep_mask]
+    lib = lib[keep_mask]
+    n_count = n_count[keep_mask]
+    n_feature = n_feature[keep_mask]
+    pct_mt = pct_mt[keep_mask]
+    denom = np.where(lib > 0.0, lib, 1.0)
+    norm = np.log1p((mat / denom[np.newaxis, :]) * float(scale_factor)).astype(np.float32)
+
+    st_expr_norm = pd.DataFrame(norm.T, index=spot_ids, columns=gene_order)
+    st_expr_norm.index.name = "spot_id"
+    print(f"[Stage1-fallback] ST QC kept {len(spot_ids)}/{len(keep_mask)} spots")
     return st_expr_norm, n_count, n_feature, pct_mt
 
 
@@ -202,9 +280,9 @@ def main() -> int:
     dst_stage1 = project_root / "data" / "processed" / sample / "stage1_preprocess"
     dst_export = dst_stage1 / "exported"
     dst_export.mkdir(parents=True, exist_ok=True)
-    src_stage1 = project_root / "data" / "processed" / source_sample / "stage1_preprocess"
-    src_export = src_stage1 / "exported"
-    if src_export.exists():
+    src_stage1 = project_root / "data" / "processed" / source_sample / "stage1_preprocess" if source_sample else None
+    src_export = src_stage1 / "exported" if src_stage1 else None
+    if src_export is not None and src_export.exists() and src_export.resolve() != dst_export.resolve():
         _copy_sc_exports(src_export, dst_export)
         # keep Stage3 plugin gene path consistent
         for name in ("hvg_genes.txt", "common_genes.txt"):
@@ -220,9 +298,11 @@ def main() -> int:
                 "source stage1 missing and target raw SC files missing: "
                 "brca_scRNA_GEP.txt / brca_scRNA_celllabels.txt"
             )
-        sc_expr_norm, sc_expr_counts, sc_meta, genes = _build_sc_exports_from_raw(
+        qc = _load_qc_config(project_root, sample)
+        sc_expr_norm, sc_expr_counts, sc_meta, genes, hvg_genes = _build_sc_exports_from_raw(
             raw_sc_expr,
             raw_sc_meta,
+            qc,
             args.scale_factor,
         )
         sc_expr_norm_out = sc_expr_norm.copy()
@@ -241,7 +321,7 @@ def main() -> int:
         sc_meta_out.insert(0, "cell_id", sc_meta_out.index)
         sc_meta_out.to_csv(dst_export / "sc_metadata.csv", index=False)
 
-        (dst_stage1 / "hvg_genes.txt").write_text("\n".join(genes) + "\n", encoding="utf-8")
+        (dst_stage1 / "hvg_genes.txt").write_text("\n".join(hvg_genes) + "\n", encoding="utf-8")
         (dst_stage1 / "common_genes.txt").write_text("\n".join(genes) + "\n", encoding="utf-8")
 
     # keep simulation info available for stage4 summary hash and audit
@@ -255,7 +335,8 @@ def main() -> int:
         raise FileNotFoundError("target raw ST files missing: brca_STdata_GEP.txt / brca_STdata_coordinates.txt")
 
     gene_order = _read_gene_order_from_sc(dst_export / "sc_expression_normalized.csv")
-    st_expr_norm, n_count, n_feature, pct_mt = _build_st_normalized(raw_st_expr, gene_order, args.scale_factor)
+    qc = _load_qc_config(project_root, sample)
+    st_expr_norm, n_count, n_feature, pct_mt = _build_st_normalized(raw_st_expr, gene_order, qc, args.scale_factor)
     st_expr_norm.to_csv(dst_export / "st_expression_normalized.csv")
 
     spot_ids = st_expr_norm.index.astype(str).tolist()

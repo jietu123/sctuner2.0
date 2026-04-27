@@ -270,6 +270,252 @@ def safe_pearson(a: np.ndarray, b: np.ndarray, eps: float = 1e-12) -> float:
     return float(r)
 
 
+def _robust_z_map(values: Dict[str, float], eps: float = 1e-12) -> Dict[str, float]:
+    if not values:
+        return {}
+    arr = np.array(list(values.values()), dtype=float)
+    med = float(np.median(arr))
+    mad = float(np.median(np.abs(arr - med)))
+    scale = 1.4826 * mad if mad > eps else float(np.std(arr))
+    if not np.isfinite(scale) or scale <= eps:
+        scale = 1.0
+    return {k: float((v - med) / scale) for k, v in values.items()}
+
+
+def _select_identity_markers(
+    sc_expr: pd.DataFrame,
+    sc_meta: pd.DataFrame,
+    st_expr: pd.DataFrame,
+    cell_type: str,
+    type_col: str,
+    genes: List[str],
+    top_n: int,
+    min_specificity: float,
+    min_type_mean: float,
+    min_st_detect_frac: float,
+    contrast_type: Optional[str] = None,
+    eps: float = 1e-12,
+) -> Tuple[List[str], pd.DataFrame]:
+    """Select scRNA-specific markers that are also measurable in ST."""
+    ids = sc_meta.loc[sc_meta[type_col] == cell_type, "cell_id"].tolist()
+    ids = [cid for cid in ids if cid in sc_expr.index]
+    if not ids:
+        return [], pd.DataFrame()
+    if contrast_type is not None:
+        other_ids = sc_meta.loc[sc_meta[type_col] == contrast_type, "cell_id"].tolist()
+    else:
+        other_ids = sc_meta.loc[sc_meta[type_col] != cell_type, "cell_id"].tolist()
+    other_ids = [cid for cid in other_ids if cid in sc_expr.index]
+    if not other_ids:
+        return [], pd.DataFrame()
+
+    type_mean = sc_expr.loc[ids, genes].mean(axis=0)
+    other_mean = sc_expr.loc[other_ids, genes].mean(axis=0)
+    specificity = (type_mean + eps) / (other_mean + eps)
+    st_detect_frac = (st_expr.loc[:, genes] > eps).mean(axis=0)
+    marker_df = pd.DataFrame(
+        {
+            "gene": genes,
+            "type_mean": type_mean.reindex(genes).to_numpy(dtype=float),
+            "other_mean": other_mean.reindex(genes).to_numpy(dtype=float),
+            "specificity": specificity.reindex(genes).to_numpy(dtype=float),
+            "st_detect_frac": st_detect_frac.reindex(genes).to_numpy(dtype=float),
+        }
+    )
+    marker_df = marker_df.replace([np.inf, -np.inf], np.nan).dropna()
+    marker_df = marker_df[
+        (marker_df["type_mean"] >= min_type_mean)
+        & (marker_df["specificity"] >= min_specificity)
+        & (marker_df["st_detect_frac"] >= min_st_detect_frac)
+    ].copy()
+    if marker_df.empty:
+        return [], marker_df
+    # Prioritize robustly expressed markers first. Pure specificity ranking tends
+    # to over-select tiny zero-in-neighbor genes in closely related immune types.
+    marker_df = marker_df.sort_values(
+        ["type_mean", "specificity", "st_detect_frac", "gene"],
+        ascending=[False, False, False, True],
+    )
+    selected = marker_df["gene"].head(max(int(top_n), 1)).astype(str).tolist()
+    return selected, marker_df
+
+
+def _st_marker_presence_score(
+    st_expr: pd.DataFrame,
+    markers: List[str],
+    quantile: float,
+    eps: float = 1e-12,
+) -> float:
+    valid = [g for g in markers if g in st_expr.columns]
+    if not valid:
+        return 0.0
+    vals = np.log1p(st_expr.loc[:, valid].clip(lower=0).to_numpy(dtype=float))
+    if vals.size == 0:
+        return 0.0
+    per_gene = np.quantile(vals, min(max(float(quantile), 0.0), 1.0), axis=0)
+    score = float(np.mean(per_gene))
+    if not np.isfinite(score):
+        return 0.0
+    return score
+
+
+def build_masked_missing_diagnostics(
+    sc_expr: pd.DataFrame,
+    sc_meta: pd.DataFrame,
+    st_expr: pd.DataFrame,
+    profiles: Dict[str, np.ndarray],
+    type_col: str,
+    genes: List[str],
+    min_cells: int,
+    neighbor_cosine_th: float,
+    neighbor_cell_ratio_min: float,
+    marker_top_n: int,
+    min_identity_markers: int,
+    min_marker_specificity: float,
+    min_marker_type_mean: float,
+    min_marker_st_detect_frac: float,
+    st_presence_quantile: float,
+    identity_z_th: float,
+    pressure_z_th: float,
+    max_types: Optional[int],
+    eps: float = 1e-12,
+) -> Tuple[pd.DataFrame, List[dict]]:
+    marker_map: Dict[str, List[str]] = {}
+    marker_detail_rows = []
+    n_cells_map = sc_meta.groupby(type_col)["cell_id"].size().to_dict()
+    neighbor_map: Dict[str, Tuple[str, float]] = {}
+
+    for t, prof in profiles.items():
+        top_neighbor = ""
+        top_neighbor_cosine = 0.0
+        for cand, cand_prof in profiles.items():
+            if cand == t:
+                continue
+            cos = weighted_cosine(
+                np.asarray(prof, dtype=float),
+                np.asarray(cand_prof, dtype=float),
+                np.ones(len(genes)),
+                eps=eps,
+            )
+            if cos > top_neighbor_cosine:
+                top_neighbor_cosine = float(cos)
+                top_neighbor = cand
+        neighbor_map[t] = (top_neighbor, top_neighbor_cosine)
+
+    for t in profiles.keys():
+        top_neighbor, top_neighbor_cosine = neighbor_map.get(t, ("", 0.0))
+        contrast_type = top_neighbor if top_neighbor and top_neighbor_cosine >= neighbor_cosine_th else None
+        markers, marker_df = _select_identity_markers(
+            sc_expr,
+            sc_meta,
+            st_expr,
+            t,
+            type_col,
+            genes,
+            marker_top_n,
+            min_marker_specificity,
+            min_marker_type_mean,
+            min_marker_st_detect_frac,
+            contrast_type=contrast_type,
+            eps=eps,
+        )
+        marker_map[t] = markers
+        if marker_df is not None and not marker_df.empty:
+            top_df = marker_df.head(marker_top_n).copy()
+            top_df.insert(0, "cell_type", t)
+            marker_detail_rows.append(top_df)
+
+    identity_score = {
+        t: _st_marker_presence_score(st_expr, markers, st_presence_quantile, eps=eps)
+        for t, markers in marker_map.items()
+    }
+    identity_z = _robust_z_map(identity_score, eps=eps)
+
+    diag_rows = []
+    for t, prof in profiles.items():
+        top_neighbor, top_neighbor_cosine = neighbor_map.get(t, ("", 0.0))
+        top_neighbor_score = 0.0
+        if top_neighbor:
+            top_neighbor_score = identity_score.get(top_neighbor, 0.0)
+        target_n_cells = int(n_cells_map.get(t, 0))
+        neighbor_n_cells = int(n_cells_map.get(top_neighbor, 0)) if top_neighbor else 0
+        pressure = float(top_neighbor_score - identity_score.get(t, 0.0))
+        diag_rows.append(
+            {
+                "cell_type": t,
+                "n_cells": target_n_cells,
+                "n_identity_markers": len(marker_map.get(t, [])),
+                "identity_markers": ",".join(marker_map.get(t, [])),
+                "identity_score": identity_score.get(t, 0.0),
+                "identity_z": identity_z.get(t, 0.0),
+                "top_similar_neighbor": top_neighbor,
+                "top_similar_neighbor_n_cells": neighbor_n_cells,
+                "top_similar_neighbor_cell_ratio": float(neighbor_n_cells / max(target_n_cells, 1)),
+                "top_similar_neighbor_cosine": top_neighbor_cosine,
+                "neighbor_identity_score": top_neighbor_score,
+                "replacement_pressure": pressure,
+            }
+        )
+
+    diag_df = pd.DataFrame(diag_rows)
+    if diag_df.empty:
+        return diag_df, []
+    pressure_z = _robust_z_map(dict(zip(diag_df["cell_type"], diag_df["replacement_pressure"])), eps=eps)
+    diag_df["replacement_pressure_z"] = diag_df["cell_type"].map(pressure_z).astype(float)
+    diag_df["masked_missing_candidate"] = "No"
+    diag_df["masked_missing_reason"] = ""
+
+    candidate_df = diag_df[
+        (diag_df["n_cells"] >= int(min_cells))
+        & (diag_df["n_identity_markers"] >= int(min_identity_markers))
+        & (diag_df["top_similar_neighbor_cosine"] >= float(neighbor_cosine_th))
+        & (diag_df["top_similar_neighbor_cell_ratio"] >= float(neighbor_cell_ratio_min))
+        & (diag_df["identity_z"] <= float(identity_z_th))
+        & (diag_df["replacement_pressure_z"] >= float(pressure_z_th))
+    ].copy()
+    if not candidate_df.empty:
+        candidate_df = candidate_df.sort_values(
+            ["replacement_pressure_z", "top_similar_neighbor_cosine", "n_cells", "cell_type"],
+            ascending=[False, False, False, True],
+        )
+        if max_types is not None:
+            candidate_df = candidate_df.head(int(max_types))
+        for _, item in candidate_df.iterrows():
+            reason = (
+                "method=masked_identity_depletion;"
+                f"identity_z<={identity_z_th};"
+                f"replacement_pressure_z>={pressure_z_th};"
+                f"neighbor_cosine>={neighbor_cosine_th};"
+                f"neighbor_cell_ratio>={neighbor_cell_ratio_min};"
+                f"top_neighbor={item['top_similar_neighbor']};"
+                f"n_identity_markers={int(item['n_identity_markers'])}"
+            )
+            diag_df.loc[diag_df["cell_type"] == item["cell_type"], "masked_missing_candidate"] = "Yes"
+            diag_df.loc[diag_df["cell_type"] == item["cell_type"], "masked_missing_reason"] = reason
+
+    records = []
+    for _, row in diag_df.loc[diag_df["masked_missing_candidate"] == "Yes"].iterrows():
+        records.append(
+            {
+                "orig_type": row["cell_type"],
+                "n_cells": int(row["n_cells"]),
+                "n_identity_markers": int(row["n_identity_markers"]),
+                "identity_markers": row["identity_markers"],
+                "identity_score": float(row["identity_score"]),
+                "identity_z": float(row["identity_z"]),
+                "top_similar_neighbor": row["top_similar_neighbor"],
+                "top_similar_neighbor_n_cells": int(row["top_similar_neighbor_n_cells"]),
+                "top_similar_neighbor_cell_ratio": float(row["top_similar_neighbor_cell_ratio"]),
+                "top_similar_neighbor_cosine": float(row["top_similar_neighbor_cosine"]),
+                "neighbor_identity_score": float(row["neighbor_identity_score"]),
+                "replacement_pressure": float(row["replacement_pressure"]),
+                "replacement_pressure_z": float(row["replacement_pressure_z"]),
+                "reason": row["masked_missing_reason"],
+            }
+        )
+    return diag_df, records
+
+
 def safe_spearman(a: np.ndarray, b: np.ndarray, eps: float = 1e-12) -> float:
     if a.size == 0 or b.size == 0:
         return 0.0
@@ -925,9 +1171,27 @@ def main():
             "categories": ["weak", "unsupported"],
             "robust_z_th": -2.0,
             "soft_z_th": -0.9,
+            "require_masked_for_soft": False,
+            "require_masked_for_hard": False,
             "max_fraction_types": 0.3,
             "max_types": None,
             "action": "mark_unknown",
+        },
+        "masked_missing_detection": {
+            "enable": False,
+            "apply_to_auto_missing": False,
+            "neighbor_cosine_th": 0.90,
+            "neighbor_cell_ratio_min": 1.0,
+            "marker_top_n": 20,
+            "min_identity_markers": 3,
+            "min_marker_specificity": 1.2,
+            "min_marker_type_mean": 0.001,
+            "min_marker_st_detect_frac": 0.005,
+            "st_presence_quantile": 0.90,
+            "identity_z_th": -0.8,
+            "pressure_z_th": 1.0,
+            "min_support_score_for_apply": None,
+            "max_types": None,
         },
     }
 
@@ -956,6 +1220,11 @@ def main():
         auto_missing_cfg = stage3_cfg.get("auto_missing_detection") or {}
     if not isinstance(auto_missing_cfg, dict):
         auto_missing_cfg = {}
+    masked_missing_cfg = {}
+    if isinstance(stage3_cfg, dict):
+        masked_missing_cfg = stage3_cfg.get("masked_missing_detection") or {}
+    if not isinstance(masked_missing_cfg, dict):
+        masked_missing_cfg = {}
 
     # 将 V5 参数做类型转换与范围裁剪，避免非法值影响流程
     v5_enable = bool(v5_cfg.get("enable", False))
@@ -1171,6 +1440,18 @@ def main():
         auto_missing_soft_z_th = float(auto_missing_cfg.get("soft_z_th", auto_missing_defaults["soft_z_th"]))
     except (TypeError, ValueError):
         auto_missing_soft_z_th = float(auto_missing_defaults["soft_z_th"])
+    auto_missing_require_masked_for_soft = bool(
+        auto_missing_cfg.get(
+            "require_masked_for_soft",
+            auto_missing_defaults.get("require_masked_for_soft", False),
+        )
+    )
+    auto_missing_require_masked_for_hard = bool(
+        auto_missing_cfg.get(
+            "require_masked_for_hard",
+            auto_missing_defaults.get("require_masked_for_hard", False),
+        )
+    )
     try:
         auto_missing_max_fraction_types = float(auto_missing_cfg.get("max_fraction_types", auto_missing_defaults["max_fraction_types"]))
     except (TypeError, ValueError):
@@ -1183,6 +1464,71 @@ def main():
         auto_missing_max_types = None
     if auto_missing_max_types is not None and auto_missing_max_types <= 0:
         auto_missing_max_types = None
+    masked_missing_defaults = defaults["masked_missing_detection"]
+    masked_missing_enable = bool(masked_missing_cfg.get("enable", masked_missing_defaults["enable"]))
+    masked_missing_apply = bool(masked_missing_cfg.get("apply_to_auto_missing", masked_missing_defaults["apply_to_auto_missing"]))
+    try:
+        masked_neighbor_cosine_th = float(masked_missing_cfg.get("neighbor_cosine_th", masked_missing_defaults["neighbor_cosine_th"]))
+    except (TypeError, ValueError):
+        masked_neighbor_cosine_th = float(masked_missing_defaults["neighbor_cosine_th"])
+    try:
+        masked_neighbor_cell_ratio_min = float(masked_missing_cfg.get("neighbor_cell_ratio_min", masked_missing_defaults["neighbor_cell_ratio_min"]))
+    except (TypeError, ValueError):
+        masked_neighbor_cell_ratio_min = float(masked_missing_defaults["neighbor_cell_ratio_min"])
+    if masked_neighbor_cell_ratio_min < 0:
+        masked_neighbor_cell_ratio_min = 0.0
+    try:
+        masked_marker_top_n = int(masked_missing_cfg.get("marker_top_n", masked_missing_defaults["marker_top_n"]))
+    except (TypeError, ValueError):
+        masked_marker_top_n = int(masked_missing_defaults["marker_top_n"])
+    try:
+        masked_min_identity_markers = int(masked_missing_cfg.get("min_identity_markers", masked_missing_defaults["min_identity_markers"]))
+    except (TypeError, ValueError):
+        masked_min_identity_markers = int(masked_missing_defaults["min_identity_markers"])
+    try:
+        masked_min_marker_specificity = float(masked_missing_cfg.get("min_marker_specificity", masked_missing_defaults["min_marker_specificity"]))
+    except (TypeError, ValueError):
+        masked_min_marker_specificity = float(masked_missing_defaults["min_marker_specificity"])
+    try:
+        masked_min_marker_type_mean = float(masked_missing_cfg.get("min_marker_type_mean", masked_missing_defaults["min_marker_type_mean"]))
+    except (TypeError, ValueError):
+        masked_min_marker_type_mean = float(masked_missing_defaults["min_marker_type_mean"])
+    try:
+        masked_min_marker_st_detect_frac = float(masked_missing_cfg.get("min_marker_st_detect_frac", masked_missing_defaults["min_marker_st_detect_frac"]))
+    except (TypeError, ValueError):
+        masked_min_marker_st_detect_frac = float(masked_missing_defaults["min_marker_st_detect_frac"])
+    try:
+        masked_st_presence_quantile = float(masked_missing_cfg.get("st_presence_quantile", masked_missing_defaults["st_presence_quantile"]))
+    except (TypeError, ValueError):
+        masked_st_presence_quantile = float(masked_missing_defaults["st_presence_quantile"])
+    masked_st_presence_quantile = min(max(masked_st_presence_quantile, 0.0), 1.0)
+    try:
+        masked_identity_z_th = float(masked_missing_cfg.get("identity_z_th", masked_missing_defaults["identity_z_th"]))
+    except (TypeError, ValueError):
+        masked_identity_z_th = float(masked_missing_defaults["identity_z_th"])
+    try:
+        masked_pressure_z_th = float(masked_missing_cfg.get("pressure_z_th", masked_missing_defaults["pressure_z_th"]))
+    except (TypeError, ValueError):
+        masked_pressure_z_th = float(masked_missing_defaults["pressure_z_th"])
+    masked_min_support_score_for_apply_raw = masked_missing_cfg.get(
+        "min_support_score_for_apply",
+        masked_missing_defaults.get("min_support_score_for_apply"),
+    )
+    try:
+        masked_min_support_score_for_apply = (
+            float(masked_min_support_score_for_apply_raw)
+            if masked_min_support_score_for_apply_raw is not None
+            else None
+        )
+    except (TypeError, ValueError):
+        masked_min_support_score_for_apply = None
+    masked_max_types_raw = masked_missing_cfg.get("max_types", masked_missing_defaults["max_types"])
+    try:
+        masked_max_types = int(masked_max_types_raw) if masked_max_types_raw is not None else None
+    except (TypeError, ValueError):
+        masked_max_types = None
+    if masked_max_types is not None and masked_max_types <= 0:
+        masked_max_types = None
     if mismatch_action not in {"relabel", "mark_unknown", "ignore"}:
         mismatch_action = defaults["mismatch_action"]
     if relabel_similarity_threshold is None:
@@ -2205,9 +2551,24 @@ def main():
 
     auto_missing_types = set()
     auto_missing_records = []
+    masked_missing_types = set()
+    masked_missing_records = []
+    masked_missing_diag_path = out_proc / "masked_missing_diagnostics.csv"
     for row in support_rows:
         row["auto_missing"] = "No"
         row["auto_missing_reason"] = ""
+        row["masked_missing_candidate"] = "No"
+        row["masked_missing_reason"] = ""
+        row["masked_identity_score"] = None
+        row["masked_identity_z"] = None
+        row["masked_neighbor_score"] = None
+        row["masked_replacement_pressure"] = None
+        row["masked_replacement_pressure_z"] = None
+        row["masked_top_neighbor"] = ""
+        row["masked_top_neighbor_n_cells"] = None
+        row["masked_top_neighbor_cell_ratio"] = None
+        row["masked_top_neighbor_cosine"] = None
+        row["masked_identity_markers"] = ""
     if auto_missing_enable and auto_missing_action == "mark_unknown":
         row_by_type = {row["orig_type"]: row for row in support_rows}
         candidate_payloads: dict[str, dict] = {}
@@ -2247,7 +2608,9 @@ def main():
                 hard = [x for x in adaptive_rows if x["robust_z"] <= auto_missing_robust_z_th]
                 selected = hard
                 selector = f"robust_z<={auto_missing_robust_z_th}"
-                if not selected:
+                if selected and auto_missing_require_masked_for_hard:
+                    selected = []
+                if not selected and not auto_missing_require_masked_for_soft:
                     selected = [x for x in adaptive_rows if x["robust_z"] <= auto_missing_soft_z_th]
                     selector = f"soft_robust_z<={auto_missing_soft_z_th}"
 
@@ -2319,6 +2682,76 @@ def main():
             auto_missing_types.add(t)
             auto_missing_records.append(payload)
         missing_types |= auto_missing_types
+
+    if masked_missing_enable:
+        masked_diag_df, masked_missing_records = build_masked_missing_diagnostics(
+            sc_expr=sc_expr,
+            sc_meta=sc_meta,
+            st_expr=st_expr,
+            profiles=profiles,
+            type_col=type_col,
+            genes=plugin_genes,
+            min_cells=auto_missing_min_cells,
+            neighbor_cosine_th=masked_neighbor_cosine_th,
+            neighbor_cell_ratio_min=masked_neighbor_cell_ratio_min,
+            marker_top_n=masked_marker_top_n,
+            min_identity_markers=masked_min_identity_markers,
+            min_marker_specificity=masked_min_marker_specificity,
+            min_marker_type_mean=masked_min_marker_type_mean,
+            min_marker_st_detect_frac=masked_min_marker_st_detect_frac,
+            st_presence_quantile=masked_st_presence_quantile,
+            identity_z_th=masked_identity_z_th,
+            pressure_z_th=masked_pressure_z_th,
+            max_types=masked_max_types,
+            eps=eps,
+        )
+        masked_diag_df.to_csv(masked_missing_diag_path, index=False)
+        masked_missing_types = {str(r["orig_type"]) for r in masked_missing_records}
+        if masked_min_support_score_for_apply is not None and masked_missing_types:
+            support_by_type = {}
+            for row in support_rows:
+                try:
+                    support_by_type[str(row["orig_type"])] = float(row.get("support_score", 0.0))
+                except (TypeError, ValueError):
+                    support_by_type[str(row["orig_type"])] = 0.0
+            filtered_records = []
+            filtered_types = set()
+            for record in masked_missing_records:
+                t = str(record["orig_type"])
+                support_score = support_by_type.get(t, 0.0)
+                if support_score >= masked_min_support_score_for_apply:
+                    filtered_records.append(record)
+                    filtered_types.add(t)
+            masked_missing_records = filtered_records
+            masked_missing_types = filtered_types
+        if not masked_diag_df.empty:
+            diag_by_type = {str(r["cell_type"]): r for _, r in masked_diag_df.iterrows()}
+            for row in support_rows:
+                diag = diag_by_type.get(str(row["orig_type"]))
+                if diag is None:
+                    continue
+                row["masked_missing_candidate"] = str(diag.get("masked_missing_candidate", "No"))
+                row["masked_missing_reason"] = str(diag.get("masked_missing_reason", ""))
+                row["masked_identity_score"] = float(diag.get("identity_score", 0.0))
+                row["masked_identity_z"] = float(diag.get("identity_z", 0.0))
+                row["masked_neighbor_score"] = float(diag.get("neighbor_identity_score", 0.0))
+                row["masked_replacement_pressure"] = float(diag.get("replacement_pressure", 0.0))
+                row["masked_replacement_pressure_z"] = float(diag.get("replacement_pressure_z", 0.0))
+                row["masked_top_neighbor"] = str(diag.get("top_similar_neighbor", ""))
+                row["masked_top_neighbor_n_cells"] = int(diag.get("top_similar_neighbor_n_cells", 0))
+                row["masked_top_neighbor_cell_ratio"] = float(diag.get("top_similar_neighbor_cell_ratio", 0.0))
+                row["masked_top_neighbor_cosine"] = float(diag.get("top_similar_neighbor_cosine", 0.0))
+                row["masked_identity_markers"] = str(diag.get("identity_markers", ""))
+        if masked_missing_apply and masked_missing_types:
+            for row in support_rows:
+                if row["orig_type"] in masked_missing_types:
+                    row["auto_missing"] = "Yes"
+                    row["auto_missing_reason"] = row.get("auto_missing_reason") or row.get("masked_missing_reason", "")
+            auto_missing_types |= masked_missing_types
+            auto_missing_records.extend(
+                {**r, "evidence": "masked_missing_detection"} for r in masked_missing_records
+            )
+            missing_types |= masked_missing_types
 
     # 生成动作映射：Keep / Dropped / Unknown / Relabel
     # 初始全部 Keep，再应用 unsupported 与 missing_types 规则
@@ -2600,6 +3033,9 @@ def main():
         "type_prior_matrix": str(prior_path.relative_to(project_root)),
     }
 
+    if masked_missing_enable:
+        output_paths["masked_missing_diagnostics"] = str(masked_missing_diag_path.relative_to(project_root))
+
     summary = {
         # 参数快照：用于复现实验与排查差异
         "params": {
@@ -2662,9 +3098,25 @@ def main():
             "auto_missing_categories": sorted(auto_missing_categories) if auto_missing_enable else None,
             "auto_missing_robust_z_th": auto_missing_robust_z_th if auto_missing_enable else None,
             "auto_missing_soft_z_th": auto_missing_soft_z_th if auto_missing_enable else None,
+            "auto_missing_require_masked_for_soft": auto_missing_require_masked_for_soft if auto_missing_enable else None,
+            "auto_missing_require_masked_for_hard": auto_missing_require_masked_for_hard if auto_missing_enable else None,
             "auto_missing_max_fraction_types": auto_missing_max_fraction_types if auto_missing_enable else None,
             "auto_missing_max_types": auto_missing_max_types if auto_missing_enable else None,
             "auto_missing_action": auto_missing_action if auto_missing_enable else None,
+            "masked_missing_detection_enable": masked_missing_enable,
+            "masked_missing_apply_to_auto_missing": masked_missing_apply if masked_missing_enable else None,
+            "masked_missing_neighbor_cosine_th": masked_neighbor_cosine_th if masked_missing_enable else None,
+            "masked_missing_neighbor_cell_ratio_min": masked_neighbor_cell_ratio_min if masked_missing_enable else None,
+            "masked_missing_marker_top_n": masked_marker_top_n if masked_missing_enable else None,
+            "masked_missing_min_identity_markers": masked_min_identity_markers if masked_missing_enable else None,
+            "masked_missing_min_marker_specificity": masked_min_marker_specificity if masked_missing_enable else None,
+            "masked_missing_min_marker_type_mean": masked_min_marker_type_mean if masked_missing_enable else None,
+            "masked_missing_min_marker_st_detect_frac": masked_min_marker_st_detect_frac if masked_missing_enable else None,
+            "masked_missing_st_presence_quantile": masked_st_presence_quantile if masked_missing_enable else None,
+            "masked_missing_identity_z_th": masked_identity_z_th if masked_missing_enable else None,
+            "masked_missing_pressure_z_th": masked_pressure_z_th if masked_missing_enable else None,
+            "masked_missing_min_support_score_for_apply": masked_min_support_score_for_apply if masked_missing_enable else None,
+            "masked_missing_max_types": masked_max_types if masked_missing_enable else None,
             # V5.1 参数
             "v5_denoising_enable": v5_enable if use_v42 else None,
             "v5_p_value_upper_limit": v5_p_upper if use_v42 else None,
@@ -2704,11 +3156,31 @@ def main():
             "categories": sorted(auto_missing_categories),
             "robust_z_th": auto_missing_robust_z_th,
             "soft_z_th": auto_missing_soft_z_th,
+            "require_masked_for_soft": auto_missing_require_masked_for_soft,
+            "require_masked_for_hard": auto_missing_require_masked_for_hard,
             "max_fraction_types": auto_missing_max_fraction_types,
             "max_types": auto_missing_max_types,
             "action": auto_missing_action,
             "auto_missing_types": sorted(auto_missing_types),
             "records": auto_missing_records,
+        },
+        "masked_missing_detection": {
+            "enabled": masked_missing_enable,
+            "apply_to_auto_missing": masked_missing_apply,
+            "neighbor_cosine_th": masked_neighbor_cosine_th,
+            "neighbor_cell_ratio_min": masked_neighbor_cell_ratio_min,
+            "marker_top_n": masked_marker_top_n,
+            "min_identity_markers": masked_min_identity_markers,
+            "min_marker_specificity": masked_min_marker_specificity,
+            "min_marker_type_mean": masked_min_marker_type_mean,
+            "min_marker_st_detect_frac": masked_min_marker_st_detect_frac,
+            "st_presence_quantile": masked_st_presence_quantile,
+            "identity_z_th": masked_identity_z_th,
+            "pressure_z_th": masked_pressure_z_th,
+            "min_support_score_for_apply": masked_min_support_score_for_apply,
+            "max_types": masked_max_types,
+            "masked_missing_types": sorted(masked_missing_types),
+            "records": masked_missing_records,
         },
         "bt_neighbor_guard": {
             "enabled": bt_neighbor_guard_enable if use_v42 else False,

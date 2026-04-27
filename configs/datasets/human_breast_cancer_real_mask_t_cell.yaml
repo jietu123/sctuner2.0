@@ -23,14 +23,16 @@ stage3:
   unknown_floor: 0.3
   min_cells_rare_type: 20
   eps: 1.0e-08
-  plugin_genes_path: data/processed/human_lymph_node_sim_mt_nk_cd4treg_fill_cd4t/stage1_preprocess/hvg_genes.txt
+  plugin_genes_path: data/processed/human_breast_cancer_real_mask_t_cell/stage1_preprocess/hvg_genes.txt
   gene_weights_path: null
   auto_missing_detection:
-    enable: false
+    enable: true
     method: adaptive_low_support
     min_cells: 50
     robust_z_th: -2.0
     soft_z_th: -0.9
+    require_masked_for_soft: false
+    require_masked_for_hard: true
     max_fraction_types: 0.3
     max_types: 2
     action: mark_unknown
@@ -47,4 +49,5 @@ stage3:
     st_presence_quantile: 0.9
     identity_z_th: -0.8
     pressure_z_th: 1.0
+    min_support_score_for_apply: 0.8
     max_types: 2

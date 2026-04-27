@@ -26,7 +26,7 @@ stage3:
   plugin_genes_path: data/processed/human_lymph_node_clustered_sim_mt_nk_cell_d100_fill_cd4_t_cell/stage1_preprocess/hvg_genes.txt
   gene_weights_path: null
   auto_missing_detection:
-    enable: true
+    enable: false
     method: adaptive_low_support
     min_cells: 50
     robust_z_th: -2.0
@@ -34,3 +34,17 @@ stage3:
     max_fraction_types: 0.3
     max_types: 1
     action: mark_unknown
+  masked_missing_detection:
+    enable: true
+    apply_to_auto_missing: true
+    neighbor_cosine_th: 0.9
+    neighbor_cell_ratio_min: 1.0
+    marker_top_n: 20
+    min_identity_markers: 3
+    min_marker_specificity: 1.2
+    min_marker_type_mean: 0.001
+    min_marker_st_detect_frac: 0.005
+    st_presence_quantile: 0.9
+    identity_z_th: -0.8
+    pressure_z_th: 1.0
+    max_types: 1

@@ -825,7 +825,7 @@ def apply_filter(
     """
     missing_list = [str(x).strip() for x in (missing_types or []) if str(x).strip()]
     missing_set = set(missing_list)
-    if filter_scope in {"missing_only", "missing_detected_only"} and not missing_set:
+    if filter_scope == "missing_only" and not missing_set:
         raise ValueError(f"filter_scope={filter_scope} requires non-empty missing_types.")
     if mode == "plugin_unknown":
         base_mask = relabel["plugin_type"] == "Unknown_sc_only"
@@ -856,7 +856,7 @@ def apply_filter(
     # - missing_detected_only：仅过滤被 Stage3 标记且命中 missing_type 的细胞
     if filter_scope == "missing_only" and missing_set:
         mask_drop = missing_mask
-    elif filter_scope == "missing_detected_only" and missing_set:
+    elif filter_scope == "missing_detected_only":
         mask_drop = base_mask & missing_mask
     else:
         # 默认行为：所有 unsupported/Unknown_sc_only 都被丢弃
@@ -1482,7 +1482,7 @@ def main():
                 f"raw='{args.missing_type}' -> normalized='{orig_norm}' (no alias mapping applied)"
             )
     print(f"[stage4] effective_missing_types={effective_missing_types if effective_missing_types else []}")
-    if args.filter_scope in {"missing_only", "missing_detected_only"} and not effective_missing_types:
+    if args.filter_scope == "missing_only" and not effective_missing_types:
         raise SystemExit(
             f"filter_scope={args.filter_scope} requires at least one missing type "
             f"(from --missing_type or sim_info(.missing_types/.missing_type) chain)."
