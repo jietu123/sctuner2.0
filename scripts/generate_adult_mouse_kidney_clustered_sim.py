@@ -62,6 +62,12 @@ def parse_args() -> argparse.Namespace:
         help="Keep only top-K cell types by source SC abundance after filtering (0 means no cap).",
     )
     p.add_argument(
+        "--exclude_cell_types",
+        nargs="*",
+        default=[],
+        help="Cell types to exclude before top-K filtering, useful for removing highly similar subtype pairs.",
+    )
+    p.add_argument(
         "--target_sample",
         default="adult_mouse_kidney_clustered_sim",
         help="Target sample id (output: data/sim/<sim_group>/<target_sample>).",
@@ -206,8 +212,11 @@ def _sample_cells_by_type(
     return merged.astype(np.int32, copy=False)
 
 
-def _write_dataset_yaml(project_root: Path, sample: str) -> None:
+def _write_dataset_yaml(project_root: Path, sample: str, sim_group: str) -> None:
     cfg = {
+        "storage": {
+            "group": f"simulation_experiments/{sim_group}",
+        },
         "paths": {
             "sc_expr": "brca_scRNA_GEP.txt",
             "sc_meta": "brca_scRNA_celllabels.txt",
@@ -233,8 +242,56 @@ def _write_dataset_yaml(project_root: Path, sample: str) -> None:
             "unknown_floor": 0.3,
             "min_cells_rare_type": 20,
             "eps": 1.0e-8,
-            "plugin_genes_path": f"data/processed/{sample}/stage1_preprocess/hvg_genes.txt",
+            "plugin_genes_path": (
+                f"data/processed/simulation_experiments/{sim_group}/"
+                f"{sample}/stage1_preprocess/hvg_genes.txt"
+            ),
             "gene_weights_path": None,
+            "auto_missing_detection": {
+                "enable": True,
+                "method": "adaptive_low_support",
+                "min_cells": 50,
+                "robust_z_th": -2.0,
+                "soft_z_th": -0.9,
+                "require_masked_for_soft": False,
+                "require_masked_for_hard": True,
+                "require_confirmation": True,
+                "confirmation_max_support_score": None,
+                "confirmation_use_masked_missing": True,
+                "confirmation_use_marker_identity": True,
+                "confirmation_marker_identity_z_th": -1.5,
+                "confirmation_marker_support_score_th": 0.5,
+                "max_fraction_types": 0.3,
+                "max_types": 2,
+                "action": "mark_unknown",
+            },
+            "masked_missing_detection": {
+                "enable": True,
+                "apply_to_auto_missing": True,
+                "neighbor_cosine_th": 0.9,
+                "neighbor_cell_ratio_min": 1.0,
+                "marker_top_n": 20,
+                "min_identity_markers": 3,
+                "min_marker_specificity": 1.2,
+                "min_marker_type_mean": 0.001,
+                "min_marker_st_detect_frac": 0.005,
+                "st_presence_quantile": 0.9,
+                "identity_z_th": -0.8,
+                "pressure_z_th": 1.0,
+                "min_support_score_for_apply": 0.8,
+                "max_types": 2,
+            },
+            "marker_identity_diagnostics": {
+                "enable": True,
+                "marker_top_n": 80,
+                "min_identity_markers": 5,
+                "min_all_specificity": 1.3,
+                "min_neighbor_specificity": 1.1,
+                "min_marker_type_mean": 0.001,
+                "min_marker_st_detect_frac": 0.005,
+                "st_presence_quantile": 0.9,
+                "depleted_z_th": -0.9,
+            },
         },
     }
     out = project_root / "configs" / "datasets" / f"{sample}.yaml"
@@ -276,6 +333,17 @@ def main() -> int:
         bad = {"", "nan", "na", "none", "unknown"}
         mask = ~obs["cell_type"].str.lower().isin(bad)
         obs = obs.loc[mask].copy()
+
+    exclude_types = {str(x).strip() for x in args.exclude_cell_types if str(x).strip()}
+    if exclude_types:
+        before_exclude_n = len(obs)
+        before_exclude_types = int(obs["cell_type"].nunique())
+        obs = obs.loc[~obs["cell_type"].isin(exclude_types)].copy()
+        print(
+            "[SC] excluded cell types: "
+            f"{sorted(exclude_types)}; types {before_exclude_types} -> {int(obs['cell_type'].nunique())}, "
+            f"cells kept={len(obs)} / {before_exclude_n}"
+        )
 
     if int(args.min_source_cells_per_type) > 0:
         vc_src = obs["cell_type"].value_counts()
@@ -501,6 +569,7 @@ def main() -> int:
         "cell_type_col": args.cell_type_col,
         "params": {
             "drop_unknown": bool(args.drop_unknown),
+            "exclude_cell_types": sorted(exclude_types),
             "min_source_cells_per_type": int(args.min_source_cells_per_type),
             "max_types": int(args.max_types),
             "max_cells_total": int(args.max_cells_total),
@@ -525,7 +594,7 @@ def main() -> int:
     }
     sim_info_path.write_text(json.dumps(sim_info, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    _write_dataset_yaml(project_root, args.target_sample)
+    _write_dataset_yaml(project_root, args.target_sample, args.sim_group)
 
     print("[DONE] clustered simulation generated.")
     print(f"[OUT] {target_dir}")

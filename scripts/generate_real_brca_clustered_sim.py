@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import yaml
 
 _HERE = Path(__file__).resolve()
 _ROOT = _HERE.parents[1]
@@ -17,6 +18,7 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 from src.utils.sample_paths import resolve_sample_dir
+from src.stages.storage import raw_dir, read_dataset_config
 
 
 def parse_args() -> argparse.Namespace:
@@ -67,6 +69,27 @@ def parse_args() -> argparse.Namespace:
         help="Blend weight for assignment-derived fractions when generating ST expression.",
     )
     p.add_argument(
+        "--merge_cell_type",
+        action="append",
+        default=[],
+        metavar="FROM=TO",
+        help=(
+            "Merge one source cell type into a coarse target label. "
+            "Can be provided multiple times, e.g. --merge_cell_type 'B cell=B/Plasma B cell'."
+        ),
+    )
+    p.add_argument(
+        "--exclude_cell_types",
+        nargs="*",
+        default=[],
+        help="Cell types to exclude after optional merging.",
+    )
+    p.add_argument(
+        "--simulation_type_label",
+        default="spatial_clustered_standard_raw",
+        help="Simulation type label written to sim_info.json.",
+    )
+    p.add_argument(
         "--depth_scale",
         type=float,
         default=1.0,
@@ -107,12 +130,114 @@ def write_expr_tsv(path: Path, genes: np.ndarray, spot_ids: list[str], mat: np.n
                 print(f"[WRITE] rows: {i + 1}/{n_rows}")
 
 
+def parse_merge_map(items: list[str]) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for item in items:
+        if "=" not in item:
+            raise ValueError(f"Invalid --merge_cell_type value, expected FROM=TO: {item}")
+        src, dst = item.split("=", 1)
+        src = src.strip()
+        dst = dst.strip()
+        if not src or not dst:
+            raise ValueError(f"Invalid --merge_cell_type value, expected non-empty FROM=TO: {item}")
+        out[src] = dst
+    return out
+
+
+def write_sim_dataset_yaml(project_root: Path, target_sample: str, sim_group: str, source_cfg: dict) -> None:
+    cfg = dict(source_cfg or {})
+    cfg.setdefault("paths", {
+        "sc_expr": "brca_scRNA_GEP.txt",
+        "sc_meta": "brca_scRNA_celllabels.txt",
+        "st_expr": "brca_STdata_GEP.txt",
+        "st_meta": "brca_STdata_coordinates.txt",
+        "svg_marker_whitelist": None,
+    })
+    cfg.setdefault("qc", {
+        "sc_min_genes": 100,
+        "sc_max_genes": 10000,
+        "sc_max_mt": 20,
+        "st_min_genes": 50,
+        "st_max_genes": "Inf",
+        "st_max_mt": 40,
+        "hvg_nfeatures": 2000,
+        "mt_pattern": "^(mt-|MT-)",
+    })
+    cfg.setdefault("gene_filter", {"min_cells_sc": 0, "min_cells_st": 0})
+    cfg.setdefault("stage3", {})
+    cfg["storage"] = {"group": f"simulation_experiments/{sim_group}"}
+    stage3 = cfg["stage3"]
+    stage3["plugin_genes_path"] = (
+        f"data/processed/simulation_experiments/{sim_group}/{target_sample}/stage1_preprocess/hvg_genes.txt"
+    )
+    stage3.setdefault("strong_th", 0.7)
+    stage3.setdefault("weak_th", 0.4)
+    stage3.setdefault("st_cluster_k", 30)
+    stage3.setdefault("unknown_floor", 0.3)
+    stage3.setdefault("min_cells_rare_type", 20)
+    stage3.setdefault("eps", 1.0e-8)
+    auto = stage3.setdefault("auto_missing_detection", {})
+    auto.setdefault("enable", True)
+    auto.setdefault("method", "adaptive_low_support")
+    auto.setdefault("min_cells", 50)
+    auto.setdefault("robust_z_th", -2.0)
+    auto.setdefault("soft_z_th", -0.9)
+    auto.setdefault("require_masked_for_soft", False)
+    auto.setdefault("require_masked_for_hard", True)
+    auto.setdefault("require_confirmation", True)
+    auto.setdefault("confirmation_use_masked_missing", True)
+    auto.setdefault("confirmation_use_marker_identity", True)
+    auto.setdefault("confirmation_marker_identity_z_th", -1.5)
+    auto.setdefault("confirmation_marker_support_score_th", 0.5)
+    auto.setdefault("confirmation_marker_max_support_score", None)
+    auto.setdefault("max_fraction_types", 0.3)
+    auto.setdefault("max_types", 2)
+    auto.setdefault("action", "mark_unknown")
+    masked = stage3.setdefault("masked_missing_detection", {})
+    masked.setdefault("enable", True)
+    masked.setdefault("apply_to_auto_missing", True)
+    masked.setdefault("neighbor_cosine_th", 0.9)
+    masked.setdefault("neighbor_cell_ratio_min", 1.0)
+    masked.setdefault("marker_top_n", 20)
+    masked.setdefault("min_identity_markers", 3)
+    masked.setdefault("min_marker_specificity", 1.2)
+    masked.setdefault("min_marker_type_mean", 0.001)
+    masked.setdefault("min_marker_st_detect_frac", 0.005)
+    masked.setdefault("st_presence_quantile", 0.9)
+    masked.setdefault("identity_z_th", -0.8)
+    masked.setdefault("pressure_z_th", 1.0)
+    masked.setdefault("min_support_score_for_apply", 0.8)
+    masked.setdefault("max_types", 2)
+    diag = stage3.setdefault("marker_identity_diagnostics", {})
+    diag.setdefault("enable", True)
+    diag.setdefault("marker_top_n", 80)
+    diag.setdefault("min_identity_markers", 5)
+    diag.setdefault("min_all_specificity", 1.3)
+    diag.setdefault("min_neighbor_specificity", 1.1)
+    diag.setdefault("min_marker_type_mean", 0.001)
+    diag.setdefault("min_marker_st_detect_frac", 0.005)
+    diag.setdefault("st_presence_quantile", 0.9)
+    diag.setdefault("depleted_z_th", -0.9)
+
+    out = project_root / "configs" / "datasets" / f"{target_sample}.yaml"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(yaml.safe_dump(cfg, sort_keys=False, allow_unicode=True), encoding="utf-8")
+    print(f"[CFG] wrote: {out}")
+
+
 def main() -> int:
     args = parse_args()
     rng = np.random.default_rng(args.seed)
 
     project_root = Path(args.project_root).resolve()
-    src_dir = resolve_sample_dir(project_root, args.source_sample, sim_group=args.sim_group, must_exist=True)
+    source_cfg = read_dataset_config(project_root, args.source_sample)
+    raw_source_dir = raw_dir(project_root, args.source_sample, source_cfg)
+    src_dir = raw_source_dir if raw_source_dir.exists() else resolve_sample_dir(
+        project_root,
+        args.source_sample,
+        sim_group=args.sim_group,
+        must_exist=True,
+    )
     dst_dir = project_root / "data" / "sim" / args.sim_group / args.target_sample
 
     if not src_dir.exists():
@@ -139,6 +264,24 @@ def main() -> int:
     sc_meta = sc_meta[["cell_id", "cell_type"]].drop_duplicates("cell_id")
     sc_meta["cell_id"] = sc_meta["cell_id"].astype(str)
     sc_meta["cell_type"] = sc_meta["cell_type"].astype(str)
+    merge_map = parse_merge_map(args.merge_cell_type)
+    if merge_map:
+        before_types = int(sc_meta["cell_type"].nunique())
+        sc_meta["cell_type"] = sc_meta["cell_type"].replace(merge_map)
+        print(
+            "[SC] merged cell types: "
+            f"{merge_map}; types {before_types} -> {int(sc_meta['cell_type'].nunique())}"
+        )
+    exclude_types = {str(x).strip() for x in args.exclude_cell_types if str(x).strip()}
+    if exclude_types:
+        before_n = len(sc_meta)
+        before_types = int(sc_meta["cell_type"].nunique())
+        sc_meta = sc_meta.loc[~sc_meta["cell_type"].isin(exclude_types)].copy()
+        print(
+            "[SC] excluded cell types: "
+            f"{sorted(exclude_types)}; types {before_types} -> {int(sc_meta['cell_type'].nunique())}, "
+            f"cells kept={len(sc_meta)} / {before_n}"
+        )
 
     print("[STEP] Load SC expression")
     sc_genes, sc_cells, sc_mat = read_expr_tsv(sc_expr_src)
@@ -294,7 +437,12 @@ def main() -> int:
     dominant_spot_dst = dst_dir / "sim_truth_spot_dominant_type.csv"
 
     shutil.copy2(sc_expr_src, sc_expr_dst)
-    shutil.copy2(sc_meta_src, sc_meta_dst)
+    pd.DataFrame({"cell_id": sc_cells_arr, "cell_type": cell_types_arr}).to_csv(
+        sc_meta_dst,
+        sep="\t",
+        index=False,
+        encoding="utf-8",
+    )
     shutil.copy2(st_meta_src, st_meta_dst)
     write_expr_tsv(st_expr_dst, common_genes_arr, st_spots_arr.tolist(), sim_counts)
 
@@ -322,7 +470,7 @@ def main() -> int:
     sim_info = {
         "sample": args.target_sample,
         "source_sample": args.source_sample,
-        "simulation_type": "spatial_clustered_real_brca",
+        "simulation_type": args.simulation_type_label,
         "seed": args.seed,
         "query_id": query_id,
         "missing_type": None,
@@ -338,6 +486,8 @@ def main() -> int:
             "noise_sigma": float(args.noise_sigma),
             "mix_alpha": float(args.mix_alpha),
             "depth_scale": float(args.depth_scale),
+            "merge_cell_type": merge_map,
+            "exclude_cell_types": sorted(exclude_types),
         },
         "files": {
             "sc_expr": str(sc_expr_dst),
@@ -351,6 +501,7 @@ def main() -> int:
         },
     }
     sim_info_dst.write_text(json.dumps(sim_info, indent=2, ensure_ascii=False), encoding="utf-8")
+    write_sim_dataset_yaml(project_root, args.target_sample, args.sim_group, source_cfg)
 
     print("[DONE] clustered simulation generated.")
     print(f"[OUT] {dst_dir}")

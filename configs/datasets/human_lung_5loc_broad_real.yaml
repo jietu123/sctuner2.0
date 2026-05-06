@@ -23,7 +23,7 @@ stage3:
   unknown_floor: 0.3
   min_cells_rare_type: 20
   eps: 1.0e-08
-  plugin_genes_path: data/processed/low_resolution_experiments/human_breast_cancer_wta_120_real/stage1_preprocess/hvg_genes.txt
+  plugin_genes_path: data/processed/low_resolution_experiments/human_lung_5loc_broad_real/stage1_preprocess/hvg_genes.txt
   gene_weights_path: null
   auto_missing_detection:
     enable: true
@@ -31,17 +31,17 @@ stage3:
     min_cells: 50
     robust_z_th: -2.0
     soft_z_th: -0.9
-    require_masked_for_soft: false
+    require_masked_for_soft: true
     require_masked_for_hard: true
-    max_fraction_types: 0.3
-    max_types: 2
-    action: mark_unknown
     require_confirmation: true
-    confirmation_max_support_score: null
     confirmation_use_masked_missing: true
     confirmation_use_marker_identity: true
     confirmation_marker_identity_z_th: -1.5
     confirmation_marker_support_score_th: 0.5
+    confirmation_marker_max_support_score: 0.75
+    max_fraction_types: 0.3
+    max_types: 2
+    action: mark_unknown
   masked_missing_detection:
     enable: true
     apply_to_auto_missing: true
@@ -57,15 +57,5 @@ stage3:
     pressure_z_th: 1.0
     min_support_score_for_apply: 0.8
     max_types: 2
-  marker_identity_diagnostics:
-    enable: true
-    marker_top_n: 80
-    min_identity_markers: 5
-    min_all_specificity: 1.3
-    min_neighbor_specificity: 1.1
-    min_marker_type_mean: 0.001
-    min_marker_st_detect_frac: 0.005
-    st_presence_quantile: 0.9
-    depleted_z_th: -0.9
 storage:
   group: low_resolution_experiments

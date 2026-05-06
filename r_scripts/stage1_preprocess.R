@@ -136,6 +136,19 @@ cfg <- default_cfg
 cfg <- modifyList(cfg, read_yaml_safe(project_cfg_path))
 cfg <- modifyList(cfg, read_yaml_safe(dataset_cfg_path))
 
+storage_group <- cfg$storage$group %||% NULL
+if (!is.null(storage_group) && nzchar(as.character(storage_group))) {
+  grouped_raw_dir <- file.path(project_root, "data", "raw", as.character(storage_group), sample_id)
+  if (dir.exists(grouped_raw_dir)) {
+    input_dir <- grouped_raw_dir
+  }
+  processed_dir <- file.path(project_root, "data", "processed", as.character(storage_group), sample_id, "stage1_preprocess")
+  summary_dir <- file.path(project_root, "result", as.character(storage_group), sample_id, "stage1_preprocess")
+  qc_dir <- file.path(summary_dir, "qc_plots")
+  dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
+  dir.create(summary_dir, recursive = TRUE, showWarnings = FALSE)
+}
+
 resolve_path <- function(p) {
   if (is.null(p)) return(NULL)
   if (grepl("^([A-Za-z]:|/)", p)) return(normalizePath(p, winslash = "/"))

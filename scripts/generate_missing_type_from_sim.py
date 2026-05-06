@@ -95,7 +95,7 @@ def main() -> int:
         if not p.exists():
             raise FileNotFoundError(f"missing file: {p}")
 
-    def collect_missing_types_from_chain(start_sample: str, max_depth: int = 12) -> list[str]:
+    def collect_missing_types_from_chain(start_sample: str, start_dir: Path | None = None, max_depth: int = 12) -> list[str]:
         out: list[str] = []
         cur = str(start_sample).strip()
         seen: set[str] = set()
@@ -104,7 +104,12 @@ def main() -> int:
                 break
             seen.add(cur)
             info = None
-            for base in sample_dir_candidates(root, cur, sim_group=args.sim_group):
+            bases = []
+            if start_dir is not None:
+                bases.append(start_dir)
+                start_dir = None
+            bases.extend(sample_dir_candidates(root, cur, sim_group=args.sim_group))
+            for base in bases:
                 p = base / "sim_info.json"
                 if not p.exists():
                     continue
@@ -129,7 +134,7 @@ def main() -> int:
             cur = str(parent).strip() if parent is not None else ""
         return out
 
-    inherited_missing_types: list[str] = collect_missing_types_from_chain(args.source_sample)
+    inherited_missing_types: list[str] = collect_missing_types_from_chain(args.source_sample, src_dir)
 
     print("[STEP] load truth query")
     truth_q = pd.read_csv(truth_query_src)

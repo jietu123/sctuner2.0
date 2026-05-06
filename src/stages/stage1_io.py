@@ -9,6 +9,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.stages.storage import read_dataset_config, stage1_export_dir
+
 
 def _clean_spot_index(idx: pd.Index) -> pd.Index:
     return pd.Index([str(x).split("\t")[0] for x in idx])
@@ -44,7 +46,8 @@ def load_stage1(
     sc_expr_source: str = "normalized",
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Load Stage1 exports. Normalizes to canonical format: sc_expr=cells x genes, st_expr=spots x genes."""
-    base = root / "data" / "processed" / sample / "stage1_preprocess" / "exported"
+    cfg = read_dataset_config(root, sample)
+    base = stage1_export_dir(root, sample, cfg)
     sc_expr_path = _resolve_sc_expr_path(base, sc_expr_source)
     sc_expr = pd.read_csv(sc_expr_path, index_col=0, sep=None, engine="python")
     st_expr = pd.read_csv(base / "st_expression_normalized.csv", index_col=0, sep=None, engine="python")

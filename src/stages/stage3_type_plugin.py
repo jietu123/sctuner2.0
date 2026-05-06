@@ -52,6 +52,29 @@ def load_yaml(path: Path) -> dict:
         return yaml.safe_load(f) or {}
 
 
+def is_t_nk_like_type(cell_type: object) -> bool:
+    """T/NK lineage labels are too similar for weak support-only confirmation."""
+    key = normalize_type_key(str(cell_type))
+    compact_key = "".join(ch for ch in key if ch.isalnum())
+    tokens = {
+        "tcell",
+        "t",
+        "cd4tcell",
+        "cd8tcell",
+        "cd4t",
+        "cd8t",
+        "cd4treg",
+        "treg",
+        "nkcell",
+        "nk",
+        "nktcell",
+        "nkt",
+    }
+    if key in tokens or compact_key in tokens:
+        return True
+    return any(token in compact_key for token in ("tcell", "treg", "nkcell", "nkt"))
+
+
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Stage 3: type matching / unknown-aware plugin")
     p.add_argument("--sample", default="real_brca", help="sample id")
@@ -514,6 +537,213 @@ def build_masked_missing_diagnostics(
             }
         )
     return diag_df, records
+
+
+def _select_marker_identity_panel(
+    sc_expr: pd.DataFrame,
+    sc_meta: pd.DataFrame,
+    st_expr: pd.DataFrame,
+    cell_type: str,
+    type_col: str,
+    genes: List[str],
+    top_neighbor: str,
+    top_n: int,
+    min_all_specificity: float,
+    min_neighbor_specificity: float,
+    min_type_mean: float,
+    min_st_detect_frac: float,
+    eps: float = 1e-12,
+) -> Tuple[List[str], pd.DataFrame]:
+    """Select a diagnostic identity-marker panel for one cell type.
+
+    This is stricter than support-score marker selection: a gene must be
+    enriched against all non-target cells and, when available, against the
+    nearest expression neighbor. The output is diagnostic only and does not
+    change Stage3 actions.
+    """
+    ids = sc_meta.loc[sc_meta[type_col] == cell_type, "cell_id"].tolist()
+    ids = [cid for cid in ids if cid in sc_expr.index]
+    other_ids = sc_meta.loc[sc_meta[type_col] != cell_type, "cell_id"].tolist()
+    other_ids = [cid for cid in other_ids if cid in sc_expr.index]
+    if not ids or not other_ids:
+        return [], pd.DataFrame()
+
+    neighbor_ids: List[str] = []
+    if top_neighbor:
+        neighbor_ids = sc_meta.loc[sc_meta[type_col] == top_neighbor, "cell_id"].tolist()
+        neighbor_ids = [cid for cid in neighbor_ids if cid in sc_expr.index]
+
+    type_mean = sc_expr.loc[ids, genes].mean(axis=0)
+    all_other_mean = sc_expr.loc[other_ids, genes].mean(axis=0)
+    if neighbor_ids:
+        neighbor_mean = sc_expr.loc[neighbor_ids, genes].mean(axis=0)
+    else:
+        neighbor_mean = all_other_mean.copy()
+
+    specificity_all = (type_mean + eps) / (all_other_mean + eps)
+    specificity_neighbor = (type_mean + eps) / (neighbor_mean + eps)
+    specificity_floor = np.minimum(specificity_all, specificity_neighbor)
+    st_detect_frac = (st_expr.loc[:, genes] > eps).mean(axis=0)
+    panel_df = pd.DataFrame(
+        {
+            "gene": genes,
+            "type_mean": type_mean.reindex(genes).to_numpy(dtype=float),
+            "all_other_mean": all_other_mean.reindex(genes).to_numpy(dtype=float),
+            "neighbor_mean": neighbor_mean.reindex(genes).to_numpy(dtype=float),
+            "specificity_all": specificity_all.reindex(genes).to_numpy(dtype=float),
+            "specificity_neighbor": specificity_neighbor.reindex(genes).to_numpy(dtype=float),
+            "specificity_floor": np.asarray(specificity_floor.reindex(genes), dtype=float),
+            "st_detect_frac": st_detect_frac.reindex(genes).to_numpy(dtype=float),
+        }
+    )
+    panel_df = panel_df.replace([np.inf, -np.inf], np.nan).dropna()
+    panel_df = panel_df[
+        (panel_df["type_mean"] >= float(min_type_mean))
+        & (panel_df["specificity_all"] >= float(min_all_specificity))
+        & (panel_df["specificity_neighbor"] >= float(min_neighbor_specificity))
+        & (panel_df["st_detect_frac"] >= float(min_st_detect_frac))
+    ].copy()
+    if panel_df.empty:
+        return [], panel_df
+
+    panel_df = panel_df.sort_values(
+        ["specificity_floor", "type_mean", "st_detect_frac", "gene"],
+        ascending=[False, False, False, True],
+    )
+    selected = panel_df["gene"].head(max(int(top_n), 1)).astype(str).tolist()
+    return selected, panel_df
+
+
+def build_marker_identity_diagnostics(
+    sc_expr: pd.DataFrame,
+    sc_meta: pd.DataFrame,
+    st_expr: pd.DataFrame,
+    profiles: Dict[str, np.ndarray],
+    support_rows: List[dict],
+    type_col: str,
+    genes: List[str],
+    marker_top_n: int,
+    min_identity_markers: int,
+    min_all_specificity: float,
+    min_neighbor_specificity: float,
+    min_marker_type_mean: float,
+    min_marker_st_detect_frac: float,
+    st_presence_quantile: float,
+    depleted_z_th: float,
+    eps: float = 1e-12,
+) -> Tuple[pd.DataFrame, pd.DataFrame, List[dict]]:
+    """Build marker-identity diagnostics without changing filtering decisions."""
+    n_cells_map = sc_meta.groupby(type_col)["cell_id"].size().to_dict()
+    support_by_type = {str(r.get("orig_type")): r for r in support_rows}
+    neighbor_map: Dict[str, Tuple[str, float]] = {}
+    for t, prof in profiles.items():
+        top_neighbor = ""
+        top_neighbor_cosine = 0.0
+        for cand, cand_prof in profiles.items():
+            if cand == t:
+                continue
+            cos = weighted_cosine(
+                np.asarray(prof, dtype=float),
+                np.asarray(cand_prof, dtype=float),
+                np.ones(len(genes)),
+                eps=eps,
+            )
+            if cos > top_neighbor_cosine:
+                top_neighbor_cosine = float(cos)
+                top_neighbor = cand
+        neighbor_map[t] = (top_neighbor, top_neighbor_cosine)
+
+    marker_map: Dict[str, List[str]] = {}
+    marker_rows = []
+    for t in profiles.keys():
+        top_neighbor, top_neighbor_cosine = neighbor_map.get(t, ("", 0.0))
+        selected, panel_df = _select_marker_identity_panel(
+            sc_expr=sc_expr,
+            sc_meta=sc_meta,
+            st_expr=st_expr,
+            cell_type=t,
+            type_col=type_col,
+            genes=genes,
+            top_neighbor=top_neighbor,
+            top_n=marker_top_n,
+            min_all_specificity=min_all_specificity,
+            min_neighbor_specificity=min_neighbor_specificity,
+            min_type_mean=min_marker_type_mean,
+            min_st_detect_frac=min_marker_st_detect_frac,
+            eps=eps,
+        )
+        marker_map[t] = selected
+        if panel_df is not None and not panel_df.empty:
+            top_df = panel_df.head(max(int(marker_top_n), 1)).copy()
+            top_df.insert(0, "marker_rank", np.arange(1, len(top_df) + 1))
+            top_df.insert(0, "selected_for_panel", top_df["gene"].isin(selected))
+            top_df.insert(0, "top_similar_neighbor_cosine", top_neighbor_cosine)
+            top_df.insert(0, "top_similar_neighbor", top_neighbor)
+            top_df.insert(0, "cell_type", t)
+            marker_rows.append(top_df)
+
+    identity_score = {
+        t: _st_marker_presence_score(st_expr, markers, st_presence_quantile, eps=eps)
+        for t, markers in marker_map.items()
+    }
+    identity_z = _robust_z_map(identity_score, eps=eps)
+    diag_rows = []
+    for t in profiles.keys():
+        top_neighbor, top_neighbor_cosine = neighbor_map.get(t, ("", 0.0))
+        support_row = support_by_type.get(str(t), {})
+        n_markers = len(marker_map.get(t, []))
+        panel_status = "ok" if n_markers >= int(min_identity_markers) else "insufficient_marker_evidence"
+        candidate = panel_status == "ok" and identity_z.get(t, 0.0) <= float(depleted_z_th)
+        reason = ""
+        if candidate:
+            reason = (
+                "method=marker_identity_diagnostics;"
+                f"identity_z<={depleted_z_th};"
+                f"n_identity_markers={n_markers};"
+                "diagnostic_only=true"
+            )
+        elif panel_status != "ok":
+            reason = f"{panel_status};n_identity_markers={n_markers}<min_identity_markers={int(min_identity_markers)}"
+        diag_rows.append(
+            {
+                "cell_type": t,
+                "n_cells": int(n_cells_map.get(t, 0)),
+                "support_score": support_row.get("support_score"),
+                "support_category": support_row.get("support_category"),
+                "auto_missing_robust_z": support_row.get("auto_missing_robust_z"),
+                "n_identity_markers": n_markers,
+                "identity_markers": ",".join(marker_map.get(t, [])),
+                "identity_presence_score": identity_score.get(t, 0.0),
+                "identity_presence_z": identity_z.get(t, 0.0),
+                "identity_depleted_candidate": "Yes" if candidate else "No",
+                "identity_diagnostic_reason": reason,
+                "identity_panel_status": panel_status,
+                "top_similar_neighbor": top_neighbor,
+                "top_similar_neighbor_cosine": top_neighbor_cosine,
+            }
+        )
+
+    diag_df = pd.DataFrame(diag_rows)
+    marker_df = pd.concat(marker_rows, axis=0, ignore_index=True) if marker_rows else pd.DataFrame()
+    records = []
+    if not diag_df.empty:
+        for _, row in diag_df.loc[diag_df["identity_depleted_candidate"] == "Yes"].iterrows():
+            records.append(
+                {
+                    "orig_type": row["cell_type"],
+                    "n_cells": int(row["n_cells"]),
+                    "support_score": float(row["support_score"]) if pd.notna(row["support_score"]) else None,
+                    "support_category": row["support_category"],
+                    "auto_missing_robust_z": float(row["auto_missing_robust_z"]) if pd.notna(row["auto_missing_robust_z"]) else None,
+                    "n_identity_markers": int(row["n_identity_markers"]),
+                    "identity_presence_score": float(row["identity_presence_score"]),
+                    "identity_presence_z": float(row["identity_presence_z"]),
+                    "top_similar_neighbor": row["top_similar_neighbor"],
+                    "top_similar_neighbor_cosine": float(row["top_similar_neighbor_cosine"]),
+                    "reason": row["identity_diagnostic_reason"],
+                }
+            )
+    return diag_df, marker_df, records
 
 
 def safe_spearman(a: np.ndarray, b: np.ndarray, eps: float = 1e-12) -> float:
@@ -1173,6 +1403,13 @@ def main():
             "soft_z_th": -0.9,
             "require_masked_for_soft": False,
             "require_masked_for_hard": False,
+            "require_confirmation": False,
+            "confirmation_max_support_score": None,
+            "confirmation_use_masked_missing": True,
+            "confirmation_use_marker_identity": True,
+            "confirmation_marker_identity_z_th": -1.5,
+            "confirmation_marker_support_score_th": 0.5,
+            "confirmation_marker_max_support_score": None,
             "max_fraction_types": 0.3,
             "max_types": None,
             "action": "mark_unknown",
@@ -1192,6 +1429,17 @@ def main():
             "pressure_z_th": 1.0,
             "min_support_score_for_apply": None,
             "max_types": None,
+        },
+        "marker_identity_diagnostics": {
+            "enable": False,
+            "marker_top_n": 50,
+            "min_identity_markers": 5,
+            "min_all_specificity": 1.5,
+            "min_neighbor_specificity": 1.2,
+            "min_marker_type_mean": 0.001,
+            "min_marker_st_detect_frac": 0.005,
+            "st_presence_quantile": 0.90,
+            "depleted_z_th": -0.9,
         },
     }
 
@@ -1225,6 +1473,11 @@ def main():
         masked_missing_cfg = stage3_cfg.get("masked_missing_detection") or {}
     if not isinstance(masked_missing_cfg, dict):
         masked_missing_cfg = {}
+    marker_identity_cfg = {}
+    if isinstance(stage3_cfg, dict):
+        marker_identity_cfg = stage3_cfg.get("marker_identity_diagnostics") or {}
+    if not isinstance(marker_identity_cfg, dict):
+        marker_identity_cfg = {}
 
     # 将 V5 参数做类型转换与范围裁剪，避免非法值影响流程
     v5_enable = bool(v5_cfg.get("enable", False))
@@ -1452,6 +1705,67 @@ def main():
             auto_missing_defaults.get("require_masked_for_hard", False),
         )
     )
+    auto_missing_require_confirmation = bool(
+        auto_missing_cfg.get(
+            "require_confirmation",
+            auto_missing_defaults.get("require_confirmation", False),
+        )
+    )
+    confirmation_max_support_raw = auto_missing_cfg.get(
+        "confirmation_max_support_score",
+        auto_missing_defaults.get("confirmation_max_support_score"),
+    )
+    try:
+        auto_missing_confirmation_max_support_score = (
+            float(confirmation_max_support_raw) if confirmation_max_support_raw is not None else None
+        )
+    except (TypeError, ValueError):
+        auto_missing_confirmation_max_support_score = None
+    auto_missing_confirmation_use_masked = bool(
+        auto_missing_cfg.get(
+            "confirmation_use_masked_missing",
+            auto_missing_defaults.get("confirmation_use_masked_missing", True),
+        )
+    )
+    auto_missing_confirmation_use_marker = bool(
+        auto_missing_cfg.get(
+            "confirmation_use_marker_identity",
+            auto_missing_defaults.get("confirmation_use_marker_identity", True),
+        )
+    )
+    try:
+        auto_missing_confirmation_marker_identity_z_th = float(
+            auto_missing_cfg.get(
+                "confirmation_marker_identity_z_th",
+                auto_missing_defaults.get("confirmation_marker_identity_z_th", -1.5),
+            )
+        )
+    except (TypeError, ValueError):
+        auto_missing_confirmation_marker_identity_z_th = -1.5
+    confirmation_marker_support_raw = auto_missing_cfg.get(
+        "confirmation_marker_support_score_th",
+        auto_missing_defaults.get("confirmation_marker_support_score_th", 0.5),
+    )
+    try:
+        auto_missing_confirmation_marker_support_score_th = (
+            float(confirmation_marker_support_raw)
+            if confirmation_marker_support_raw is not None
+            else None
+        )
+    except (TypeError, ValueError):
+        auto_missing_confirmation_marker_support_score_th = 0.5
+    confirmation_marker_max_support_raw = auto_missing_cfg.get(
+        "confirmation_marker_max_support_score",
+        auto_missing_defaults.get("confirmation_marker_max_support_score"),
+    )
+    try:
+        auto_missing_confirmation_marker_max_support_score = (
+            float(confirmation_marker_max_support_raw)
+            if confirmation_marker_max_support_raw is not None
+            else None
+        )
+    except (TypeError, ValueError):
+        auto_missing_confirmation_marker_max_support_score = None
     try:
         auto_missing_max_fraction_types = float(auto_missing_cfg.get("max_fraction_types", auto_missing_defaults["max_fraction_types"]))
     except (TypeError, ValueError):
@@ -1529,6 +1843,63 @@ def main():
         masked_max_types = None
     if masked_max_types is not None and masked_max_types <= 0:
         masked_max_types = None
+    marker_identity_defaults = defaults["marker_identity_diagnostics"]
+    marker_identity_enable = bool(marker_identity_cfg.get("enable", marker_identity_defaults["enable"]))
+    try:
+        marker_identity_top_n = int(marker_identity_cfg.get("marker_top_n", marker_identity_defaults["marker_top_n"]))
+    except (TypeError, ValueError):
+        marker_identity_top_n = int(marker_identity_defaults["marker_top_n"])
+    marker_identity_top_n = max(marker_identity_top_n, 1)
+    try:
+        marker_identity_min_markers = int(
+            marker_identity_cfg.get("min_identity_markers", marker_identity_defaults["min_identity_markers"])
+        )
+    except (TypeError, ValueError):
+        marker_identity_min_markers = int(marker_identity_defaults["min_identity_markers"])
+    marker_identity_min_markers = max(marker_identity_min_markers, 1)
+    try:
+        marker_identity_min_all_specificity = float(
+            marker_identity_cfg.get("min_all_specificity", marker_identity_defaults["min_all_specificity"])
+        )
+    except (TypeError, ValueError):
+        marker_identity_min_all_specificity = float(marker_identity_defaults["min_all_specificity"])
+    try:
+        marker_identity_min_neighbor_specificity = float(
+            marker_identity_cfg.get(
+                "min_neighbor_specificity",
+                marker_identity_defaults["min_neighbor_specificity"],
+            )
+        )
+    except (TypeError, ValueError):
+        marker_identity_min_neighbor_specificity = float(marker_identity_defaults["min_neighbor_specificity"])
+    try:
+        marker_identity_min_type_mean = float(
+            marker_identity_cfg.get("min_marker_type_mean", marker_identity_defaults["min_marker_type_mean"])
+        )
+    except (TypeError, ValueError):
+        marker_identity_min_type_mean = float(marker_identity_defaults["min_marker_type_mean"])
+    try:
+        marker_identity_min_st_detect_frac = float(
+            marker_identity_cfg.get(
+                "min_marker_st_detect_frac",
+                marker_identity_defaults["min_marker_st_detect_frac"],
+            )
+        )
+    except (TypeError, ValueError):
+        marker_identity_min_st_detect_frac = float(marker_identity_defaults["min_marker_st_detect_frac"])
+    try:
+        marker_identity_st_presence_quantile = float(
+            marker_identity_cfg.get("st_presence_quantile", marker_identity_defaults["st_presence_quantile"])
+        )
+    except (TypeError, ValueError):
+        marker_identity_st_presence_quantile = float(marker_identity_defaults["st_presence_quantile"])
+    marker_identity_st_presence_quantile = min(max(marker_identity_st_presence_quantile, 0.0), 1.0)
+    try:
+        marker_identity_depleted_z_th = float(
+            marker_identity_cfg.get("depleted_z_th", marker_identity_defaults["depleted_z_th"])
+        )
+    except (TypeError, ValueError):
+        marker_identity_depleted_z_th = float(marker_identity_defaults["depleted_z_th"])
     if mismatch_action not in {"relabel", "mark_unknown", "ignore"}:
         mismatch_action = defaults["mismatch_action"]
     if relabel_similarity_threshold is None:
@@ -1707,9 +2078,11 @@ def main():
 
     # 路径
     # Stage1 导出与 Stage3 输出目录
-    stage1_export = project_root / "data" / "processed" / args.sample / "stage1_preprocess" / "exported"
-    out_proc = project_root / "data" / "processed" / args.sample / "stage3_typematch"
-    out_res = project_root / "result" / args.sample / "stage3_typematch"
+    from src.stages.storage import processed_dir, result_dir, stage1_export_dir
+
+    stage1_export = stage1_export_dir(project_root, args.sample, dataset_cfg)
+    out_proc = processed_dir(project_root, args.sample, dataset_cfg) / "stage3_typematch"
+    out_res = result_dir(project_root, args.sample, dataset_cfg) / "stage3_typematch"
     out_proc.mkdir(parents=True, exist_ok=True)
     out_res.mkdir(parents=True, exist_ok=True)
 
@@ -2551,12 +2924,19 @@ def main():
 
     auto_missing_types = set()
     auto_missing_records = []
+    auto_missing_rejected_records = []
+    auto_missing_candidate_cap = None
     masked_missing_types = set()
     masked_missing_records = []
     masked_missing_diag_path = out_proc / "masked_missing_diagnostics.csv"
+    marker_identity_records = []
+    marker_identity_diag_path = out_proc / "stage3_marker_identity_diagnostics.csv"
+    marker_identity_markers_path = out_proc / "stage3_marker_identity_markers.csv"
     for row in support_rows:
         row["auto_missing"] = "No"
         row["auto_missing_reason"] = ""
+        row["auto_missing_confirmed"] = "No"
+        row["auto_missing_confirmation_reason"] = ""
         row["masked_missing_candidate"] = "No"
         row["masked_missing_reason"] = ""
         row["masked_identity_score"] = None
@@ -2569,6 +2949,14 @@ def main():
         row["masked_top_neighbor_cell_ratio"] = None
         row["masked_top_neighbor_cosine"] = None
         row["masked_identity_markers"] = ""
+        row["marker_identity_candidate"] = "No"
+        row["marker_identity_reason"] = ""
+        row["marker_identity_score"] = None
+        row["marker_identity_z"] = None
+        row["marker_identity_n_markers"] = None
+        row["marker_identity_panel_status"] = ""
+        row["marker_identity_top_neighbor"] = ""
+        row["marker_identity_top_neighbor_cosine"] = None
     if auto_missing_enable and auto_missing_action == "mark_unknown":
         row_by_type = {row["orig_type"]: row for row in support_rows}
         candidate_payloads: dict[str, dict] = {}
@@ -2621,8 +3009,9 @@ def main():
                 max_allowed = max_by_fraction if max_by_fraction > 0 else len(eligible)
                 if auto_missing_max_types is not None:
                     max_allowed = min(max_allowed, auto_missing_max_types)
+                auto_missing_candidate_cap = max_allowed
 
-                if len(selected) > max_allowed:
+                if not auto_missing_require_confirmation and len(selected) > max_allowed:
                     # Keep the low-support candidates closest to the normal
                     # boundary when the adaptive tail is wider than the safety
                     # cap. This avoids deleting a large low-support tail while
@@ -2724,14 +3113,27 @@ def main():
                     filtered_types.add(t)
             masked_missing_records = filtered_records
             masked_missing_types = filtered_types
+        masked_missing_types_after_filter = set(masked_missing_types)
         if not masked_diag_df.empty:
             diag_by_type = {str(r["cell_type"]): r for _, r in masked_diag_df.iterrows()}
             for row in support_rows:
                 diag = diag_by_type.get(str(row["orig_type"]))
                 if diag is None:
                     continue
-                row["masked_missing_candidate"] = str(diag.get("masked_missing_candidate", "No"))
+                masked_candidate_raw = str(diag.get("masked_missing_candidate", "No"))
+                if (
+                    masked_candidate_raw.strip().lower() == "yes"
+                    and masked_min_support_score_for_apply is not None
+                    and str(row["orig_type"]) not in masked_missing_types_after_filter
+                ):
+                    masked_candidate_raw = "No"
                 row["masked_missing_reason"] = str(diag.get("masked_missing_reason", ""))
+                if masked_candidate_raw == "No" and str(diag.get("masked_missing_candidate", "No")).strip().lower() == "yes":
+                    row["masked_missing_reason"] = (
+                        f"{row['masked_missing_reason']};"
+                        f"filtered_by_min_support_score_for_apply>={masked_min_support_score_for_apply:g}"
+                    ).strip(";")
+                row["masked_missing_candidate"] = masked_candidate_raw
                 row["masked_identity_score"] = float(diag.get("identity_score", 0.0))
                 row["masked_identity_z"] = float(diag.get("identity_z", 0.0))
                 row["masked_neighbor_score"] = float(diag.get("neighbor_identity_score", 0.0))
@@ -2755,13 +3157,251 @@ def main():
 
     # 生成动作映射：Keep / Dropped / Unknown / Relabel
     # 初始全部 Keep，再应用 unsupported 与 missing_types 规则
+    if marker_identity_enable:
+        marker_diag_df, marker_panel_df, marker_identity_records = build_marker_identity_diagnostics(
+            sc_expr=sc_expr,
+            sc_meta=sc_meta,
+            st_expr=st_expr,
+            profiles=profiles,
+            support_rows=support_rows,
+            type_col=type_col,
+            genes=plugin_genes,
+            marker_top_n=marker_identity_top_n,
+            min_identity_markers=marker_identity_min_markers,
+            min_all_specificity=marker_identity_min_all_specificity,
+            min_neighbor_specificity=marker_identity_min_neighbor_specificity,
+            min_marker_type_mean=marker_identity_min_type_mean,
+            min_marker_st_detect_frac=marker_identity_min_st_detect_frac,
+            st_presence_quantile=marker_identity_st_presence_quantile,
+            depleted_z_th=marker_identity_depleted_z_th,
+            eps=eps,
+        )
+        marker_diag_df.to_csv(marker_identity_diag_path, index=False)
+        marker_panel_df.to_csv(marker_identity_markers_path, index=False)
+        if not marker_diag_df.empty:
+            marker_diag_by_type = {str(r["cell_type"]): r for _, r in marker_diag_df.iterrows()}
+            for row in support_rows:
+                diag = marker_diag_by_type.get(str(row["orig_type"]))
+                if diag is None:
+                    continue
+                row["marker_identity_candidate"] = str(diag.get("identity_depleted_candidate", "No"))
+                row["marker_identity_reason"] = str(diag.get("identity_diagnostic_reason", ""))
+                row["marker_identity_score"] = float(diag.get("identity_presence_score", 0.0))
+                row["marker_identity_z"] = float(diag.get("identity_presence_z", 0.0))
+                row["marker_identity_n_markers"] = int(diag.get("n_identity_markers", 0))
+                row["marker_identity_panel_status"] = str(diag.get("identity_panel_status", ""))
+                row["marker_identity_top_neighbor"] = str(diag.get("top_similar_neighbor", ""))
+                row["marker_identity_top_neighbor_cosine"] = float(diag.get("top_similar_neighbor_cosine", 0.0))
+                if not auto_missing_enable or auto_missing_action != "mark_unknown":
+                    continue
+                if not auto_missing_confirmation_use_marker:
+                    continue
+                if str(row.get("marker_identity_candidate", "")).strip().lower() != "yes":
+                    continue
+                if is_t_nk_like_type(row["orig_type"]):
+                    continue
+                try:
+                    marker_identity_z_for_candidate = float(row.get("marker_identity_z", 0.0))
+                except (TypeError, ValueError):
+                    marker_identity_z_for_candidate = 0.0
+                if marker_identity_z_for_candidate > auto_missing_confirmation_marker_identity_z_th:
+                    continue
+                t = str(row["orig_type"])
+                if t in v5_final_rescued or t in auto_missing_types:
+                    continue
+                try:
+                    n_cells_marker = int(row.get("n_cells", 0))
+                except (TypeError, ValueError):
+                    n_cells_marker = 0
+                if n_cells_marker < auto_missing_min_cells:
+                    continue
+                try:
+                    score_marker = float(row.get("support_score", 0.0))
+                except (TypeError, ValueError):
+                    score_marker = 0.0
+                if (
+                    auto_missing_confirmation_marker_max_support_score is not None
+                    and score_marker > auto_missing_confirmation_marker_max_support_score
+                ):
+                    row["auto_missing_confirmation_reason"] = (
+                        "rejected_by_marker_support_cap;"
+                        f"support_score>{auto_missing_confirmation_marker_max_support_score:g}"
+                    )
+                    continue
+                reason = (
+                    "method=marker_identity_candidate;"
+                    f"marker_identity_z={marker_identity_z_for_candidate:.6g};"
+                    f"marker_identity_z_th={auto_missing_confirmation_marker_identity_z_th:.6g};"
+                    f"n_cells>={auto_missing_min_cells}"
+                )
+                row["auto_missing"] = "Yes"
+                row["auto_missing_reason"] = reason
+                auto_missing_types.add(t)
+                auto_missing_records.append(
+                    {
+                        "orig_type": t,
+                        "n_cells": n_cells_marker,
+                        "support_score": score_marker,
+                        "support_category": row.get("support_category"),
+                        "robust_z": row.get("auto_missing_robust_z"),
+                        "reason": reason,
+                    }
+                )
+        missing_types |= auto_missing_types
+
+    if auto_missing_require_confirmation and auto_missing_types:
+        confirmed_types = set()
+        confirmed_records = []
+        records_by_type = {str(r.get("orig_type")): r for r in auto_missing_records}
+        row_by_type = {str(row["orig_type"]): row for row in support_rows}
+        for t in sorted(auto_missing_types):
+            row = row_by_type.get(str(t))
+            if row is None:
+                continue
+            evidence = []
+            try:
+                support_score_for_confirmation = float(row.get("support_score", 0.0))
+            except (TypeError, ValueError):
+                support_score_for_confirmation = 0.0
+            if (
+                auto_missing_confirmation_max_support_score is not None
+                and support_score_for_confirmation <= auto_missing_confirmation_max_support_score
+            ):
+                evidence.append(
+                    f"support_score<={auto_missing_confirmation_max_support_score:g}"
+                )
+            if (
+                auto_missing_confirmation_use_masked
+                and str(row.get("masked_missing_candidate", "")).strip().lower() == "yes"
+            ):
+                masked_ambiguous = False
+                if is_t_nk_like_type(t) and is_t_nk_like_type(row.get("masked_top_neighbor", "")):
+                    try:
+                        masked_identity_z_for_confirmation = float(row.get("masked_identity_z", 0.0))
+                    except (TypeError, ValueError):
+                        masked_identity_z_for_confirmation = 0.0
+                    masked_ambiguous = (
+                        support_score_for_confirmation > (
+                            auto_missing_confirmation_marker_support_score_th
+                            if auto_missing_confirmation_marker_support_score_th is not None
+                            else 0.5
+                        )
+                        and masked_identity_z_for_confirmation > auto_missing_confirmation_marker_identity_z_th
+                    )
+                if masked_ambiguous:
+                    row["auto_missing_confirmation_reason"] = (
+                        "immune_similar_guard_blocked_masked_missing;"
+                        f"top_neighbor={row.get('masked_top_neighbor', '')}"
+                    )
+                else:
+                    evidence.append("masked_missing_candidate")
+            if (
+                auto_missing_confirmation_use_marker
+                and str(row.get("marker_identity_candidate", "")).strip().lower() == "yes"
+            ):
+                try:
+                    marker_identity_z_for_confirmation = float(row.get("marker_identity_z", 0.0))
+                except (TypeError, ValueError):
+                    marker_identity_z_for_confirmation = 0.0
+                marker_support_cap_pass = (
+                    auto_missing_confirmation_marker_max_support_score is None
+                    or support_score_for_confirmation <= auto_missing_confirmation_marker_max_support_score
+                )
+                if (
+                    marker_identity_z_for_confirmation <= auto_missing_confirmation_marker_identity_z_th
+                    and marker_support_cap_pass
+                ):
+                    evidence.append(
+                        f"marker_identity_z<={auto_missing_confirmation_marker_identity_z_th:g}"
+                    )
+                elif (
+                    marker_identity_z_for_confirmation <= auto_missing_confirmation_marker_identity_z_th
+                    and not marker_support_cap_pass
+                ):
+                    row["auto_missing_confirmation_reason"] = (
+                        f"rejected_by_marker_support_cap;"
+                        f"support_score>{auto_missing_confirmation_marker_max_support_score:g}"
+                    )
+                elif (
+                    auto_missing_confirmation_marker_support_score_th is not None
+                    and support_score_for_confirmation <= auto_missing_confirmation_marker_support_score_th
+                ):
+                    if is_t_nk_like_type(t):
+                        row["auto_missing_confirmation_reason"] = (
+                            f"immune_similar_guard_blocked_support_channel;"
+                            f"support_score<={auto_missing_confirmation_marker_support_score_th:g}"
+                        )
+                    else:
+                        evidence.append(
+                            f"marker_identity_candidate+support_score<={auto_missing_confirmation_marker_support_score_th:g}"
+                        )
+
+            record = records_by_type.get(str(t), {"orig_type": t})
+            if evidence:
+                reason = "confirmed_by=" + ",".join(evidence)
+                row["auto_missing_confirmed"] = "Yes"
+                row["auto_missing_confirmation_reason"] = reason
+                if row.get("auto_missing_reason"):
+                    row["auto_missing_reason"] = f"{row['auto_missing_reason']};{reason}"
+                else:
+                    row["auto_missing_reason"] = reason
+                confirmed_types.add(t)
+                confirmed_records.append({**record, "confirmation": reason})
+            else:
+                prior_confirmation = str(row.get("auto_missing_confirmation_reason") or "").strip()
+                reason = "rejected_by_confirmation_gate"
+                if prior_confirmation:
+                    reason = f"{reason};{prior_confirmation}"
+                row["auto_missing"] = "No"
+                row["auto_missing_confirmed"] = "No"
+                row["auto_missing_confirmation_reason"] = reason
+                row["auto_missing_reason"] = f"{row.get('auto_missing_reason', '')};{reason}".strip(";")
+                auto_missing_rejected_records.append({**record, "confirmation": reason})
+
+        if auto_missing_candidate_cap is not None and len(confirmed_records) > auto_missing_candidate_cap:
+            confirmed_records = sorted(
+                confirmed_records,
+                key=lambda x: (float(x.get("support_score", 0.0)), str(x.get("orig_type", ""))),
+            )
+            kept_records = confirmed_records[:auto_missing_candidate_cap]
+            kept_types = {str(r.get("orig_type")) for r in kept_records}
+            for record in confirmed_records[auto_missing_candidate_cap:]:
+                t_reject = str(record.get("orig_type"))
+                row = row_by_type.get(t_reject)
+                reason = f"rejected_by_confirmation_cap;max_allowed={auto_missing_candidate_cap}"
+                if row is not None:
+                    row["auto_missing"] = "No"
+                    row["auto_missing_confirmed"] = "No"
+                    row["auto_missing_confirmation_reason"] = reason
+                    row["auto_missing_reason"] = f"{row.get('auto_missing_reason', '')};{reason}".strip(";")
+                auto_missing_rejected_records.append({**record, "confirmation": reason})
+            confirmed_records = kept_records
+            confirmed_types = kept_types
+
+        missing_types -= (auto_missing_types - confirmed_types)
+        auto_missing_types = confirmed_types
+        auto_missing_records = confirmed_records
+
+    if auto_missing_require_confirmation:
+        # In real-data confirmation mode, large unsupported groups should not
+        # bypass the confirmation gate. Keep truly rare unsupported noise on the
+        # old direct-drop path.
+        direct_unsupported_types = {
+            row["orig_type"]
+            for row in support_rows
+            if row["orig_type"] in unsupported_types
+            and int(row.get("n_cells", 0) or 0) < min_cells_rare_type
+        }
+    else:
+        direct_unsupported_types = set(unsupported_types)
+
     action_map = {row["orig_type"]: "Keep" for row in support_rows}
-    for t in unsupported_types:
+    for t in direct_unsupported_types:
         action_map[t] = "Dropped" if drop_unknown else "Unknown"
     for t in v5_final_rescued:
         action_map[t] = "Keep"
     for t in auto_missing_types:
-        if t not in unsupported_types and t not in v5_final_rescued:
+        if t not in v5_final_rescued:
             action_map[t] = "Dropped" if drop_unknown else "Unknown"
     merge_sources: dict[str, List[str]] = defaultdict(list)
     similarity_target_map: dict[str, str] = {}
@@ -3035,6 +3675,9 @@ def main():
 
     if masked_missing_enable:
         output_paths["masked_missing_diagnostics"] = str(masked_missing_diag_path.relative_to(project_root))
+    if marker_identity_enable:
+        output_paths["marker_identity_diagnostics"] = str(marker_identity_diag_path.relative_to(project_root))
+        output_paths["marker_identity_markers"] = str(marker_identity_markers_path.relative_to(project_root))
 
     summary = {
         # 参数快照：用于复现实验与排查差异
@@ -3100,6 +3743,13 @@ def main():
             "auto_missing_soft_z_th": auto_missing_soft_z_th if auto_missing_enable else None,
             "auto_missing_require_masked_for_soft": auto_missing_require_masked_for_soft if auto_missing_enable else None,
             "auto_missing_require_masked_for_hard": auto_missing_require_masked_for_hard if auto_missing_enable else None,
+            "auto_missing_require_confirmation": auto_missing_require_confirmation if auto_missing_enable else None,
+            "auto_missing_confirmation_max_support_score": auto_missing_confirmation_max_support_score if auto_missing_enable else None,
+            "auto_missing_confirmation_use_masked_missing": auto_missing_confirmation_use_masked if auto_missing_enable else None,
+            "auto_missing_confirmation_use_marker_identity": auto_missing_confirmation_use_marker if auto_missing_enable else None,
+            "auto_missing_confirmation_marker_identity_z_th": auto_missing_confirmation_marker_identity_z_th if auto_missing_enable else None,
+            "auto_missing_confirmation_marker_support_score_th": auto_missing_confirmation_marker_support_score_th if auto_missing_enable else None,
+            "auto_missing_confirmation_marker_max_support_score": auto_missing_confirmation_marker_max_support_score if auto_missing_enable else None,
             "auto_missing_max_fraction_types": auto_missing_max_fraction_types if auto_missing_enable else None,
             "auto_missing_max_types": auto_missing_max_types if auto_missing_enable else None,
             "auto_missing_action": auto_missing_action if auto_missing_enable else None,
@@ -3118,6 +3768,15 @@ def main():
             "masked_missing_min_support_score_for_apply": masked_min_support_score_for_apply if masked_missing_enable else None,
             "masked_missing_max_types": masked_max_types if masked_missing_enable else None,
             # V5.1 参数
+            "marker_identity_diagnostics_enable": marker_identity_enable,
+            "marker_identity_marker_top_n": marker_identity_top_n if marker_identity_enable else None,
+            "marker_identity_min_identity_markers": marker_identity_min_markers if marker_identity_enable else None,
+            "marker_identity_min_all_specificity": marker_identity_min_all_specificity if marker_identity_enable else None,
+            "marker_identity_min_neighbor_specificity": marker_identity_min_neighbor_specificity if marker_identity_enable else None,
+            "marker_identity_min_marker_type_mean": marker_identity_min_type_mean if marker_identity_enable else None,
+            "marker_identity_min_marker_st_detect_frac": marker_identity_min_st_detect_frac if marker_identity_enable else None,
+            "marker_identity_st_presence_quantile": marker_identity_st_presence_quantile if marker_identity_enable else None,
+            "marker_identity_depleted_z_th": marker_identity_depleted_z_th if marker_identity_enable else None,
             "v5_denoising_enable": v5_enable if use_v42 else None,
             "v5_p_value_upper_limit": v5_p_upper if use_v42 else None,
             "v5_max_pruning_ratio": v5_prune_ratio if use_v42 else None,
@@ -3158,11 +3817,18 @@ def main():
             "soft_z_th": auto_missing_soft_z_th,
             "require_masked_for_soft": auto_missing_require_masked_for_soft,
             "require_masked_for_hard": auto_missing_require_masked_for_hard,
+            "require_confirmation": auto_missing_require_confirmation,
+            "confirmation_max_support_score": auto_missing_confirmation_max_support_score,
+            "confirmation_use_masked_missing": auto_missing_confirmation_use_masked,
+            "confirmation_use_marker_identity": auto_missing_confirmation_use_marker,
+            "confirmation_marker_identity_z_th": auto_missing_confirmation_marker_identity_z_th,
+            "confirmation_marker_support_score_th": auto_missing_confirmation_marker_support_score_th,
             "max_fraction_types": auto_missing_max_fraction_types,
             "max_types": auto_missing_max_types,
             "action": auto_missing_action,
             "auto_missing_types": sorted(auto_missing_types),
             "records": auto_missing_records,
+            "rejected_records": auto_missing_rejected_records,
         },
         "masked_missing_detection": {
             "enabled": masked_missing_enable,
@@ -3181,6 +3847,20 @@ def main():
             "max_types": masked_max_types,
             "masked_missing_types": sorted(masked_missing_types),
             "records": masked_missing_records,
+        },
+        "marker_identity_diagnostics": {
+            "enabled": marker_identity_enable,
+            "diagnostic_only": True,
+            "marker_top_n": marker_identity_top_n,
+            "min_identity_markers": marker_identity_min_markers,
+            "min_all_specificity": marker_identity_min_all_specificity,
+            "min_neighbor_specificity": marker_identity_min_neighbor_specificity,
+            "min_marker_type_mean": marker_identity_min_type_mean,
+            "min_marker_st_detect_frac": marker_identity_min_st_detect_frac,
+            "st_presence_quantile": marker_identity_st_presence_quantile,
+            "depleted_z_th": marker_identity_depleted_z_th,
+            "identity_depleted_types": sorted(str(r["orig_type"]) for r in marker_identity_records),
+            "records": marker_identity_records,
         },
         "bt_neighbor_guard": {
             "enabled": bt_neighbor_guard_enable if use_v42 else False,

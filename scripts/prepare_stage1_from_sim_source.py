@@ -17,6 +17,7 @@ _ROOT = _HERE.parents[1]
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
+from src.stages.storage import read_dataset_config, result_dir, stage1_dir
 from src.utils.sample_paths import resolve_sample_dir
 
 
@@ -153,12 +154,6 @@ def _build_sc_exports_from_raw(
     denom = np.where(lib > 0.0, lib, 1.0)
     norm = np.log1p((mat / denom[np.newaxis, :]) * float(scale_factor)).astype(np.float32)
 
-    sc_expr_norm = pd.DataFrame(norm.T, index=kept_cells, columns=genes)
-    sc_expr_norm.index.name = "cell_id"
-
-    sc_expr_counts = pd.DataFrame(mat.T, index=kept_cells, columns=genes)
-    sc_expr_counts.index.name = "cell_id"
-
     hvg_n = int(qc.get("hvg_nfeatures", 2000))
     if hvg_n > 0 and hvg_n < len(genes):
         vars_ = np.var(norm, axis=1)
@@ -166,6 +161,11 @@ def _build_sc_exports_from_raw(
         hvg_genes = [genes[i] for i in hvg_idx]
     else:
         hvg_genes = list(genes)
+
+    export_genes = hvg_genes if hvg_n > 0 and hvg_n < len(genes) else genes
+    export_idx = np.array([genes.index(g) for g in export_genes], dtype=np.int32)
+    norm_export = norm[export_idx, :]
+    mat_export = mat[export_idx, :]
 
     meta = meta.set_index("cell_id").reindex(kept_cells)
     sc_meta = pd.DataFrame(
@@ -179,8 +179,17 @@ def _build_sc_exports_from_raw(
         index=kept_cells,
     )
     sc_meta.index.name = "cell_id"
-    print(f"[Stage1-fallback] SC QC kept {len(kept_cells)}/{len(common_cells)} cells")
-    return sc_expr_norm, sc_expr_counts, sc_meta, genes, hvg_genes
+    sc_expr_norm = pd.DataFrame(norm_export.T, index=kept_cells, columns=export_genes)
+    sc_expr_norm.index.name = "cell_id"
+
+    sc_expr_counts = pd.DataFrame(mat_export.T, index=kept_cells, columns=export_genes)
+    sc_expr_counts.index.name = "cell_id"
+
+    print(
+        f"[Stage1-fallback] SC QC kept {len(kept_cells)}/{len(common_cells)} cells; "
+        f"export_genes={len(export_genes)}/{len(genes)}"
+    )
+    return sc_expr_norm, sc_expr_counts, sc_meta, export_genes, hvg_genes
 
 
 def _read_gene_order_from_sc(sc_expr_csv: Path) -> list[str]:
@@ -277,10 +286,12 @@ def main() -> int:
     raw_dir = resolve_sample_dir(project_root, sample, sim_group="real_brca", must_exist=True)
     source_sample = _load_source_sample(raw_dir, args.source_sample)
 
-    dst_stage1 = project_root / "data" / "processed" / sample / "stage1_preprocess"
+    cfg = read_dataset_config(project_root, sample)
+    dst_stage1 = stage1_dir(project_root, sample, cfg)
     dst_export = dst_stage1 / "exported"
     dst_export.mkdir(parents=True, exist_ok=True)
-    src_stage1 = project_root / "data" / "processed" / source_sample / "stage1_preprocess" if source_sample else None
+    src_cfg = read_dataset_config(project_root, source_sample) if source_sample else {}
+    src_stage1 = stage1_dir(project_root, source_sample, src_cfg) if source_sample else None
     src_export = src_stage1 / "exported" if src_stage1 else None
     if src_export is not None and src_export.exists() and src_export.resolve() != dst_export.resolve():
         _copy_sc_exports(src_export, dst_export)
@@ -343,7 +354,7 @@ def main() -> int:
     st_coords = _build_st_coords(raw_st_meta, spot_ids, n_count, n_feature, pct_mt)
     st_coords.to_csv(dst_export / "st_coordinates.csv", index=True, index_label="spot_id")
 
-    summary_dir = project_root / "result" / sample / "stage1_preprocess"
+    summary_dir = result_dir(project_root, sample, cfg) / "stage1_preprocess"
     summary_dir.mkdir(parents=True, exist_ok=True)
     summary = {
         "sample": sample,

@@ -23,7 +23,7 @@ stage3:
   unknown_floor: 0.3
   min_cells_rare_type: 20
   eps: 1.0e-08
-  plugin_genes_path: data/processed/low_resolution_experiments/human_breast_cancer_wta_120_real/stage1_preprocess/hvg_genes.txt
+  plugin_genes_path: data/processed/low_resolution_experiments/human_breast_cancer_real_profile_mask_basal_cell/stage1_preprocess/hvg_genes.txt
   gene_weights_path: null
   auto_missing_detection:
     enable: true
