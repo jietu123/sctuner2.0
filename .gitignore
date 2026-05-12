@@ -11,6 +11,7 @@ __pycache__/
 *.pyd
 *.egg-info/
 .ipynb_checkpoints/
+.numba_cache/
 .Rhistory
 .RData
 .Rproj.user/
@@ -25,6 +26,9 @@ configs/project_config.local.yaml
 data/
 logs/
 result/
+tmp_*.pdf
+tmp_*.txt
+external/CellTrek/
 external/cytospace/cytospace_results*/
 external/cytospace/cytospace_results_brca/
 external/cytospace/data/

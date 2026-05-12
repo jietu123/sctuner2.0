@@ -61,7 +61,7 @@ def _load_sim_info(raw_dir: Path) -> dict:
     p = raw_dir / "sim_info.json"
     if not p.exists():
         raise FileNotFoundError(f"sim_info.json not found: {p}")
-    return json.loads(p.read_text(encoding="utf-8"))
+    return json.loads(p.read_text(encoding="utf-8-sig"))
 
 
 def _parse_missing_types(raw: str | None) -> list[str]:
@@ -153,6 +153,8 @@ def _palette(type_list: list[str]) -> dict[str, str]:
         "#3a86ff",
     ]
     pal = {t: base[i % len(base)] for i, t in enumerate(type_list)}
+    if "B cells" in pal and "Epithelial cells" in pal:
+        pal["B cells"], pal["Epithelial cells"] = pal["Epithelial cells"], pal["B cells"]
     pal["__RemovedMissing__"] = "#bdbdbd"
     pal["__NoType__"] = "#e5e5e5"
     return pal

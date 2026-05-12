@@ -1,0 +1,856 @@
+cell_type,truth_mass,recovered_mass,composition_recovery,group,sample,method
+B cells,141.08877473643497,99.69983513478036,0.7066461192325723,real_brca,real_brca_clustered_sim,CytoSPACE
+Dendritic cells,46.45844192049305,24.57278321921146,0.5289196581595278,real_brca,real_brca_clustered_sim,CytoSPACE
+Endothelial cells,198.02113435233804,148.42609981540716,0.7495467607579367,real_brca,real_brca_clustered_sim,CytoSPACE
+Epithelial cells,291.02282122296583,213.4943203056319,0.7335999266602676,real_brca,real_brca_clustered_sim,CytoSPACE
+Fibroblasts,209.82397535561654,164.55916793815123,0.7842724724819982,real_brca,real_brca_clustered_sim,CytoSPACE
+Monocytes and Macrophages,330.2304853439325,230.74977946134987,0.6987537180918526,real_brca,real_brca_clustered_sim,CytoSPACE
+NK cells,264.0410682355366,166.7325430381652,0.6314644314703053,real_brca,real_brca_clustered_sim,CytoSPACE
+PCs,113.99714196626825,82.61113891735769,0.7246772813111607,real_brca,real_brca_clustered_sim,CytoSPACE
+PVL,128.31135884671235,98.25760061281525,0.765774764572473,real_brca,real_brca_clustered_sim,CytoSPACE
+T cells CD4,361.05132195501176,223.71230727359085,0.6196135941622897,real_brca,real_brca_clustered_sim,CytoSPACE
+T cells CD8,433.95347606469016,227.118243479851,0.5233700292931727,real_brca,real_brca_clustered_sim,CytoSPACE
+B cells,141.08877473643497,99.69983513478036,0.7066461192325723,real_brca,real_brca_clustered_sim,SVTuner + CytoSPACE
+Dendritic cells,46.45844192049305,24.57278321921146,0.5289196581595278,real_brca,real_brca_clustered_sim,SVTuner + CytoSPACE
+Endothelial cells,198.02113435233804,148.42609981540716,0.7495467607579367,real_brca,real_brca_clustered_sim,SVTuner + CytoSPACE
+Epithelial cells,291.02282122296583,213.4943203056319,0.7335999266602676,real_brca,real_brca_clustered_sim,SVTuner + CytoSPACE
+Fibroblasts,209.82397535561654,164.55916793815123,0.7842724724819982,real_brca,real_brca_clustered_sim,SVTuner + CytoSPACE
+Monocytes and Macrophages,330.2304853439325,230.74977946134987,0.6987537180918526,real_brca,real_brca_clustered_sim,SVTuner + CytoSPACE
+NK cells,264.0410682355366,166.7325430381652,0.6314644314703053,real_brca,real_brca_clustered_sim,SVTuner + CytoSPACE
+PCs,113.99714196626825,82.61113891735769,0.7246772813111607,real_brca,real_brca_clustered_sim,SVTuner + CytoSPACE
+PVL,128.31135884671235,98.25760061281525,0.765774764572473,real_brca,real_brca_clustered_sim,SVTuner + CytoSPACE
+T cells CD4,361.05132195501176,223.71230727359085,0.6196135941622897,real_brca,real_brca_clustered_sim,SVTuner + CytoSPACE
+T cells CD8,433.95347606469016,227.118243479851,0.5233700292931727,real_brca,real_brca_clustered_sim,SVTuner + CytoSPACE
+B cells,141.08877473643497,98.5346834057435,0.6983878312772516,real_brca,real_brca_clustered_sim,"Tangram
+(all genes)"
+Dendritic cells,46.45844192049305,24.002128348134843,0.5166365326932625,real_brca,real_brca_clustered_sim,"Tangram
+(all genes)"
+Endothelial cells,198.02113435233804,130.3936297674654,0.6584833997337711,real_brca,real_brca_clustered_sim,"Tangram
+(all genes)"
+Epithelial cells,291.02282122296583,218.25260286489618,0.7499501308788526,real_brca,real_brca_clustered_sim,"Tangram
+(all genes)"
+Fibroblasts,209.82397535561654,130.15371116425683,0.6202995198411815,real_brca,real_brca_clustered_sim,"Tangram
+(all genes)"
+Monocytes and Macrophages,330.23048534393246,233.3593763102201,0.7066560680101298,real_brca,real_brca_clustered_sim,"Tangram
+(all genes)"
+NK cells,264.0410682355366,166.12293190016604,0.6291556575281572,real_brca,real_brca_clustered_sim,"Tangram
+(all genes)"
+PCs,113.99714196626825,75.30208643722617,0.6605611784504918,real_brca,real_brca_clustered_sim,"Tangram
+(all genes)"
+PVL,128.31135884671235,81.06889522338597,0.6318138624050832,real_brca,real_brca_clustered_sim,"Tangram
+(all genes)"
+T cells CD4,361.05132195501176,209.04793412394326,0.578997836074926,real_brca,real_brca_clustered_sim,"Tangram
+(all genes)"
+T cells CD8,433.9534760646901,214.6300836704237,0.49459238261391053,real_brca,real_brca_clustered_sim,"Tangram
+(all genes)"
+B cells,141.08877473643497,109.79694339559006,0.7782117578148897,real_brca,real_brca_clustered_sim,"Tangram
+(marker genes)"
+Dendritic cells,46.45844192049305,23.638693588119942,0.508813739999593,real_brca,real_brca_clustered_sim,"Tangram
+(marker genes)"
+Endothelial cells,198.02113435233804,157.68351947419757,0.7962964154807438,real_brca,real_brca_clustered_sim,"Tangram
+(marker genes)"
+Epithelial cells,291.02282122296583,254.19743209677472,0.8734621945748458,real_brca,real_brca_clustered_sim,"Tangram
+(marker genes)"
+Fibroblasts,209.82397535561654,155.8963189102556,0.7429862037740796,real_brca,real_brca_clustered_sim,"Tangram
+(marker genes)"
+Monocytes and Macrophages,330.23048534393246,240.07312728573814,0.7269865682924574,real_brca,real_brca_clustered_sim,"Tangram
+(marker genes)"
+NK cells,264.0410682355366,184.3498507181388,0.6981862781803715,real_brca,real_brca_clustered_sim,"Tangram
+(marker genes)"
+PCs,113.99714196626825,92.21433699109497,0.8089179728591896,real_brca,real_brca_clustered_sim,"Tangram
+(marker genes)"
+PVL,128.31135884671235,97.52005110028162,0.760026641263961,real_brca,real_brca_clustered_sim,"Tangram
+(marker genes)"
+T cells CD4,361.05132195501176,224.33658730740427,0.621342655921247,real_brca,real_brca_clustered_sim,"Tangram
+(marker genes)"
+T cells CD8,433.9534760646901,227.13918684785907,0.5234182910750531,real_brca,real_brca_clustered_sim,"Tangram
+(marker genes)"
+B cells,141.08877473643497,103.25338538110697,0.7318327455461463,real_brca,real_brca_clustered_sim,novoSpaRc
+Dendritic cells,46.45844192049305,26.391246097236817,0.568061368532368,real_brca,real_brca_clustered_sim,novoSpaRc
+Endothelial cells,198.02113435233804,154.3250576879421,0.779336297575956,real_brca,real_brca_clustered_sim,novoSpaRc
+Epithelial cells,291.02282122296583,226.71133683136992,0.7790156657772074,real_brca,real_brca_clustered_sim,novoSpaRc
+Fibroblasts,209.82397535561654,178.5701325150658,0.8510473229401898,real_brca,real_brca_clustered_sim,novoSpaRc
+Monocytes and Macrophages,330.23048534393246,254.48492997701115,0.7706282165680951,real_brca,real_brca_clustered_sim,novoSpaRc
+NK cells,264.0410682355366,197.34730226410053,0.7474113916553988,real_brca,real_brca_clustered_sim,novoSpaRc
+PCs,113.99714196626825,98.05492119739529,0.8601524521238413,real_brca,real_brca_clustered_sim,novoSpaRc
+PVL,128.31135884671235,101.7409724874636,0.7929225705497268,real_brca,real_brca_clustered_sim,novoSpaRc
+T cells CD4,361.05132195501176,262.2746742660448,0.7264193712015411,real_brca,real_brca_clustered_sim,novoSpaRc
+T cells CD8,433.9534760646901,240.65840457250164,0.5545719019350045,real_brca,real_brca_clustered_sim,novoSpaRc
+B cells,141.08877473643497,55.519995949878854,0.393511078777136,real_brca,real_brca_clustered_sim,SpaOTsc
+Dendritic cells,46.45844192049305,9.636739381409395,0.20742708930922157,real_brca,real_brca_clustered_sim,SpaOTsc
+Endothelial cells,198.02113435233804,128.58430227989865,0.6493463573999593,real_brca,real_brca_clustered_sim,SpaOTsc
+Epithelial cells,291.02282122296583,235.00518928559788,0.807514641972183,real_brca,real_brca_clustered_sim,SpaOTsc
+Fibroblasts,209.82397535561654,165.14359349922893,0.7870577860291617,real_brca,real_brca_clustered_sim,SpaOTsc
+Monocytes and Macrophages,330.23048534393246,268.2568562723088,0.8123321988063017,real_brca,real_brca_clustered_sim,SpaOTsc
+NK cells,264.0410682355366,130.39870122120817,0.4938576490869466,real_brca,real_brca_clustered_sim,SpaOTsc
+PCs,113.99714196626825,53.95937628533679,0.47333972900218296,real_brca,real_brca_clustered_sim,SpaOTsc
+PVL,128.31135884671235,72.7563508004859,0.5670296960022421,real_brca,real_brca_clustered_sim,SpaOTsc
+T cells CD4,361.05132195501176,176.0466409117879,0.48759450584070685,real_brca,real_brca_clustered_sim,SpaOTsc
+T cells CD8,433.9534760646901,175.0180707824237,0.40331067830030126,real_brca,real_brca_clustered_sim,SpaOTsc
+B cells,141.08877473643497,25.053112394892654,0.17756984878275298,real_brca,real_brca_clustered_sim,CellTrek
+Dendritic cells,46.45844192049305,1.3367338722301194,0.0287726797751364,real_brca,real_brca_clustered_sim,CellTrek
+Endothelial cells,198.02113435233804,175.80501847195288,0.8878093696763896,real_brca,real_brca_clustered_sim,CellTrek
+Epithelial cells,291.02282122296583,15.406493203328308,0.05293912394425141,real_brca,real_brca_clustered_sim,CellTrek
+Fibroblasts,209.82397535561654,122.89068162083097,0.5856846502529172,real_brca,real_brca_clustered_sim,CellTrek
+Monocytes and Macrophages,330.23048534393246,93.1036175984487,0.28193525955510135,real_brca,real_brca_clustered_sim,CellTrek
+NK cells,264.0410682355366,79.9353314985166,0.30273825216920675,real_brca,real_brca_clustered_sim,CellTrek
+PCs,113.99714196626825,20.555718755992853,0.18031784307430523,real_brca,real_brca_clustered_sim,CellTrek
+PVL,128.31135884671235,81.8655303474836,0.6380224719253778,real_brca,real_brca_clustered_sim,CellTrek
+T cells CD4,361.05132195501176,138.1171542202915,0.38254161062869996,real_brca,real_brca_clustered_sim,CellTrek
+T cells CD8,433.9534760646901,62.860845521494305,0.1448561861781781,real_brca,real_brca_clustered_sim,CellTrek
+B cells,141.08877477471268,97.38604709536892,0.69024660006349,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CytoSPACE
+Dendritic cells,46.45844191453839,23.34861552777152,0.5025699219685834,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CytoSPACE
+Endothelial cells,198.02113432956224,149.69850293848285,0.7559723533819521,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CytoSPACE
+Fibroblasts,209.82397538232385,159.85830799113978,0.7618686458487846,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CytoSPACE
+Monocytes and Macrophages,330.2304853219973,230.07052149076068,0.6966967972881916,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CytoSPACE
+NK cells,264.0410682011351,169.81392999205673,0.6431345364149936,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CytoSPACE
+PCs,405.0199632393395,129.34402329372466,0.3193522172567357,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CytoSPACE
+PVL,128.31135884359531,99.37304912159345,0.774468059704082,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CytoSPACE
+T cells CD4,361.05132193100206,227.9622869674035,0.6313847176855586,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CytoSPACE
+T cells CD8,433.9534760617935,225.62433512679868,0.5199274751164121,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CytoSPACE
+B cells,141.08877477471268,101.96731580083843,0.7227174235771592,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SVTuner + CytoSPACE
+Dendritic cells,46.4584419145384,26.318347770809176,0.5664922603134757,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SVTuner + CytoSPACE
+Endothelial cells,198.02113432956224,157.98631326557455,0.7978255139304544,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SVTuner + CytoSPACE
+Fibroblasts,209.82397538232385,174.57627304280203,0.832012989577114,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SVTuner + CytoSPACE
+Monocytes and Macrophages,330.2304853219973,246.2246594293151,0.7456145642920556,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SVTuner + CytoSPACE
+NK cells,264.0410682011351,182.97238614708021,0.6929694209830258,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SVTuner + CytoSPACE
+PCs,405.0199632393395,148.9925734600835,0.3678647646610913,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SVTuner + CytoSPACE
+PVL,128.31135884359531,101.48943585714997,0.7909622092059688,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SVTuner + CytoSPACE
+T cells CD4,361.05132193100206,240.6718599257217,0.6665862865105775,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SVTuner + CytoSPACE
+T cells CD8,433.9534760617935,239.59556814707668,0.5521227075341115,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SVTuner + CytoSPACE
+B cells,141.0887747747127,95.97104671475981,0.6802174508071542,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(all genes)"
+Dendritic cells,46.4584419145384,22.850871064259167,0.4918561648342401,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(all genes)"
+Endothelial cells,198.02113432956224,130.9611632239664,0.6613494244811798,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(all genes)"
+Fibroblasts,209.82397538232385,130.02907356506995,0.6197055094783223,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(all genes)"
+Monocytes and Macrophages,330.2304853219973,234.01923145302908,0.7086542334964754,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(all genes)"
+NK cells,264.0410682011351,173.5840045409111,0.6574129006654461,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(all genes)"
+PCs,405.0199632393395,154.02023682172802,0.3802781363908041,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(all genes)"
+PVL,128.31135884359531,80.74766776923694,0.6293103626754045,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(all genes)"
+T cells CD4,361.05132193100206,207.9570893689306,0.575976535016459,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(all genes)"
+T cells CD8,433.9534760617935,207.05760792582817,0.47714241122092976,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(all genes)"
+B cells,141.0887747747127,103.7005345904816,0.7350020209337575,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(marker genes)"
+Dendritic cells,46.4584419145384,22.384905462590865,0.48182643541444037,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(marker genes)"
+Endothelial cells,198.02113432956224,163.20164713164093,0.8241627727474179,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(marker genes)"
+Fibroblasts,209.82397538232385,157.78594083500485,0.7519919520517157,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(marker genes)"
+Monocytes and Macrophages,330.2304853219973,241.80812042936367,0.7322404537957306,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(marker genes)"
+NK cells,264.0410682011351,184.2742541370596,0.697899972123607,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(marker genes)"
+PCs,405.0199632393395,153.84440632767559,0.3798440084217871,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(marker genes)"
+PVL,128.31135884359531,100.2786495620701,0.7815258950246519,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(marker genes)"
+T cells CD4,361.05132193100206,219.47635554827912,0.6078813238363427,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(marker genes)"
+T cells CD8,433.9534760617935,218.78249430312593,0.5041611748075318,real_brca,real_brca_clustered_sim_missing_epithelial_cells,"Tangram
+(marker genes)"
+B cells,141.0887747747127,98.39007159155025,0.6973628607141655,real_brca,real_brca_clustered_sim_missing_epithelial_cells,novoSpaRc
+Dendritic cells,46.4584419145384,25.847053335379172,0.5563478298072404,real_brca,real_brca_clustered_sim_missing_epithelial_cells,novoSpaRc
+Endothelial cells,198.02113432956224,158.66416660329998,0.8012486502538596,real_brca,real_brca_clustered_sim_missing_epithelial_cells,novoSpaRc
+Fibroblasts,209.82397538232385,177.5329656035909,0.8461042894650387,real_brca,real_brca_clustered_sim_missing_epithelial_cells,novoSpaRc
+Monocytes and Macrophages,330.2304853219973,256.6278258971462,0.7771173083760468,real_brca,real_brca_clustered_sim_missing_epithelial_cells,novoSpaRc
+NK cells,264.0410682011351,197.53193412634334,0.7481106460903727,real_brca,real_brca_clustered_sim_missing_epithelial_cells,novoSpaRc
+PCs,405.0199632393395,138.62118631034326,0.34225766355232096,real_brca,real_brca_clustered_sim_missing_epithelial_cells,novoSpaRc
+PVL,128.31135884359531,104.66938104161281,0.8157452464453999,real_brca,real_brca_clustered_sim_missing_epithelial_cells,novoSpaRc
+T cells CD4,361.05132193100206,267.3789184430109,0.7405565419702514,real_brca,real_brca_clustered_sim_missing_epithelial_cells,novoSpaRc
+T cells CD8,433.9534760617935,230.5212992402668,0.5312120122467722,real_brca,real_brca_clustered_sim_missing_epithelial_cells,novoSpaRc
+B cells,141.0887747747127,51.300371538468305,0.3636034944692344,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SpaOTsc
+Dendritic cells,46.4584419145384,9.197229774178748,0.19796681496760715,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SpaOTsc
+Endothelial cells,198.02113432956224,129.744927163896,0.6552074737031066,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SpaOTsc
+Fibroblasts,209.82397538232385,166.33626862164857,0.79274195581589,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SpaOTsc
+Monocytes and Macrophages,330.2304853219973,265.95250591165467,0.8053541927006914,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SpaOTsc
+NK cells,264.0410682011351,135.9039259304467,0.5147075296139952,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SpaOTsc
+PCs,405.0199632393395,102.15288166971102,0.2522169051932523,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SpaOTsc
+PVL,128.31135884359531,74.14834226313967,0.577878240331961,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SpaOTsc
+T cells CD4,361.05132193100206,172.67843853748144,0.4782656316391518,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SpaOTsc
+T cells CD8,433.9534760617935,166.62551421385803,0.38397091717299925,real_brca,real_brca_clustered_sim_missing_epithelial_cells,SpaOTsc
+B cells,141.0887747747127,25.985204635991995,0.1841762725453146,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CellTrek
+Dendritic cells,46.4584419145384,0.4654623402443169,0.010018896912224217,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CellTrek
+Endothelial cells,198.02113432956224,152.8842647036903,0.7720603420504013,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CellTrek
+Fibroblasts,209.82397538232385,117.24858283550549,0.5587949738435031,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CellTrek
+Monocytes and Macrophages,330.2304853219973,113.20687853098858,0.3428117135236746,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CellTrek
+NK cells,264.0410682011351,46.59986390429772,0.17648718141376385,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CellTrek
+PCs,405.0199632393395,34.331954173595214,0.08476607893351504,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CellTrek
+PVL,128.31135884359531,69.507569556399,0.5417101820355984,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CellTrek
+T cells CD4,361.05132193100206,172.893261693517,0.4788606250458692,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CellTrek
+T cells CD8,433.9534760617935,66.89675517835978,0.15415651416243964,real_brca,real_brca_clustered_sim_missing_epithelial_cells,CellTrek
+B cells,141.08877474496973,95.7164678414434,0.6784130630835746,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CytoSPACE
+Dendritic cells,46.45844193156644,9.254110672775763,0.1991911542450589,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CytoSPACE
+Endothelial cells,198.02113431722427,150.93421814193874,0.7622126732197503,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CytoSPACE
+Fibroblasts,209.82397540751273,160.38719363199033,0.764389261620327,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CytoSPACE
+NK cells,264.0410683104393,173.7037641197403,0.6578664646043345,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CytoSPACE
+PCs,735.2504483719962,136.1600807255653,0.18518870818379402,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CytoSPACE
+PVL,128.31135885495152,97.26561708216414,0.7580436989379656,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CytoSPACE
+T cells CD4,361.05132199279694,216.5540147162132,0.5997873474633989,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CytoSPACE
+T cells CD8,433.9534760685429,200.1952098417987,0.46132873886733855,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CytoSPACE
+B cells,141.08877474496973,98.6605040639451,0.6992796148544246,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SVTuner + CytoSPACE
+Dendritic cells,46.45844193156644,30.155469730766747,0.6490848267185958,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SVTuner + CytoSPACE
+Endothelial cells,198.02113431722427,167.3136544286844,0.8449282699323025,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SVTuner + CytoSPACE
+Fibroblasts,209.8239754075127,183.90949407659502,0.8764941838482114,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SVTuner + CytoSPACE
+NK cells,264.0410683104393,202.72110725200065,0.767763547349599,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SVTuner + CytoSPACE
+PCs,735.2504483719962,183.13132693426246,0.2490733971529768,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SVTuner + CytoSPACE
+PVL,128.31135885495155,107.03512457496862,0.8341827686196164,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SVTuner + CytoSPACE
+T cells CD4,361.05132199279694,244.2502192723362,0.6764972301561302,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SVTuner + CytoSPACE
+T cells CD8,433.95347606854284,245.338222947208,0.5653560496159199,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SVTuner + CytoSPACE
+B cells,141.08877474496973,93.99544561502063,0.666214911745641,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(all genes)"
+Dendritic cells,46.45844193156645,21.90156134651559,0.47142264001829237,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(all genes)"
+Endothelial cells,198.02113431722424,128.01341396603385,0.6464633909275562,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(all genes)"
+Fibroblasts,209.8239754075127,129.0769755175407,0.615167905702158,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(all genes)"
+NK cells,264.0410683104393,175.37038684248267,0.6641784475598909,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(all genes)"
+PCs,735.2504483719962,182.3365468892087,0.24799243209295735,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(all genes)"
+PVL,128.31135885495155,79.02930095047846,0.6159181981683822,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(all genes)"
+T cells CD4,361.05132199279694,205.97441527419733,0.5704851436004618,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(all genes)"
+T cells CD8,433.95347606854295,201.20458339822883,0.4636547337310615,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(all genes)"
+B cells,141.08877474496973,99.31049685517799,0.7038865922160737,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(marker genes)"
+Dendritic cells,46.45844193156645,16.427510328778396,0.3535958083350323,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(marker genes)"
+Endothelial cells,198.02113431722424,159.8994332299362,0.8074867047967811,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(marker genes)"
+Fibroblasts,209.8239754075127,155.27444598416386,0.7400224196619825,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(marker genes)"
+NK cells,264.0410683104393,191.41889030104898,0.7249587782912364,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(marker genes)"
+PCs,735.2504483719962,164.9754432086485,0.22437992873576598,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(marker genes)"
+PVL,128.31135885495155,97.73582485847375,0.7617082831221385,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(marker genes)"
+T cells CD4,361.05132199279694,215.0382562505095,0.5955891673893374,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(marker genes)"
+T cells CD8,433.95347606854295,209.33853166497664,0.48239855931448195,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,"Tangram
+(marker genes)"
+B cells,141.08877474496973,93.92876715929472,0.665742312448876,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,novoSpaRc
+Dendritic cells,46.45844193156645,14.935646610384474,0.32148401860709763,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,novoSpaRc
+Endothelial cells,198.02113431722424,164.05647543551413,0.8284796266882317,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,novoSpaRc
+Fibroblasts,209.8239754075127,176.95577216664117,0.8433534433944639,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,novoSpaRc
+NK cells,264.0410683104393,215.12090703392508,0.8147251804821604,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,novoSpaRc
+PCs,735.2504483719962,142.69863566065652,0.19408167105048657,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,novoSpaRc
+PVL,128.31135885495155,104.26823653342123,0.8126189096889727,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,novoSpaRc
+T cells CD4,361.05132199279694,262.7382812691861,0.727703418503001,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,novoSpaRc
+T cells CD8,433.95347606854295,208.43619655772858,0.4803192232634774,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,novoSpaRc
+B cells,141.08877474496973,47.84724795626353,0.3391286659250646,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SpaOTsc
+Dendritic cells,46.45844193156645,9.041703356993976,0.1946191688974946,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SpaOTsc
+Endothelial cells,198.02113431722424,120.47589407534117,0.6083991715871206,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SpaOTsc
+Fibroblasts,209.8239754075127,160.813273791791,0.7664199168825447,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SpaOTsc
+NK cells,264.0410683104393,134.34581018692882,0.5088064938026053,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SpaOTsc
+PCs,735.2504483719962,112.70781268191489,0.15329172927602344,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SpaOTsc
+PVL,128.31135885495155,68.46366752927614,0.5335744874050495,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SpaOTsc
+T cells CD4,361.05132199279694,164.2429955777335,0.4549020750601494,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SpaOTsc
+T cells CD8,433.95347606854295,162.6288024656006,0.3747609166285682,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,SpaOTsc
+B cells,141.08877474496973,10.986538022151196,0.07786968199284686,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CellTrek
+Dendritic cells,46.45844193156645,6.42105523886696,0.13821073139571086,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CellTrek
+Endothelial cells,198.02113431722424,164.91695803651282,0.8328250345860586,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CellTrek
+Fibroblasts,209.8239754075127,160.30807968650598,0.7640122124993642,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CellTrek
+NK cells,264.0410683104393,107.47584495726954,0.4070421531203156,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CellTrek
+PCs,735.2504483719962,35.46340660704861,0.048233097559576166,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CellTrek
+PVL,128.31135885495155,67.0651260666967,0.522674895388723,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CellTrek
+T cells CD4,361.05132199279694,156.01498291171336,0.43211303603764645,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CellTrek
+T cells CD8,433.95347606854295,111.42488500413023,0.25676689126585234,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_macrophages,CellTrek
+B cells,141.08877475961424,100.78994660566755,0.714372541524955,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CytoSPACE
+Dendritic cells,46.45844192717159,7.19973318910391,0.15497147322310625,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CytoSPACE
+Fibroblasts,209.82397541997474,156.37413836180343,0.7452634430779972,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CytoSPACE
+NK cells,264.04106822666233,175.68881756693116,0.6653844371516994,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CytoSPACE
+PCs,933.271582933447,138.6313092495753,0.14854337342387647,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CytoSPACE
+PVL,128.3113588293213,94.94726088796018,0.7399754920704895,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CytoSPACE
+T cells CD4,361.0513219160149,227.3057850676646,0.6295664113938317,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CytoSPACE
+T cells CD8,433.95347598779387,188.81242620634913,0.4350983150361031,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CytoSPACE
+B cells,141.08877475961424,108.89242749964325,0.7718007877322145,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SVTuner + CytoSPACE
+Dendritic cells,46.45844192717159,29.478286232508417,0.6345087138031593,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SVTuner + CytoSPACE
+Fibroblasts,209.82397541997474,189.70309273478028,0.9041058933092782,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SVTuner + CytoSPACE
+NK cells,264.04106822666233,206.93455710922834,0.7837211025505634,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SVTuner + CytoSPACE
+PCs,933.271582933447,207.02563352494428,0.221827855161114,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SVTuner + CytoSPACE
+PVL,128.3113588293213,112.12944295384855,0.8738855544582159,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SVTuner + CytoSPACE
+T cells CD4,361.0513219160149,251.14141566696043,0.6955837035416784,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SVTuner + CytoSPACE
+T cells CD8,433.9534759877939,252.29924194746843,0.581396983566425,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SVTuner + CytoSPACE
+B cells,141.08877475961424,100.0347441707902,0.7090198659760741,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(all genes)"
+Dendritic cells,46.458441927171584,20.18145290249754,0.43439797086036713,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(all genes)"
+Fibroblasts,209.82397541997472,128.3044975460221,0.6114863532120831,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(all genes)"
+NK cells,264.04106822666233,172.91438006550845,0.654876838769159,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(all genes)"
+PCs,933.271582933447,185.22577612756623,0.19846931966509362,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(all genes)"
+PVL,128.3113588293213,80.3022430764382,0.62583892656967,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(all genes)"
+T cells CD4,361.0513219160149,207.2221541520881,0.5739409927996071,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(all genes)"
+T cells CD8,433.9534759877939,193.92216788019675,0.4468731756066204,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(all genes)"
+B cells,141.08877475961424,104.0928204310838,0.7377824395203388,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(marker genes)"
+Dendritic cells,46.458441927171584,14.287049228174222,0.30752321075619904,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(marker genes)"
+Fibroblasts,209.82397541997472,156.92570277086264,0.7478921436731282,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(marker genes)"
+NK cells,264.04106822666233,188.06585739322992,0.7122598717552052,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(marker genes)"
+PCs,933.271582933447,167.43969690884342,0.1794115453323342,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(marker genes)"
+PVL,128.3113588293213,104.66608429910768,0.8157195532340487,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(marker genes)"
+T cells CD4,361.0513219160149,219.2515676091043,0.6072587311011286,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(marker genes)"
+T cells CD8,433.9534759877939,197.98736744210197,0.4562409990873558,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,"Tangram
+(marker genes)"
+B cells,141.08877475961424,93.98012539307611,0.6661063259865896,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,novoSpaRc
+Dendritic cells,46.458441927171584,12.07410189676425,0.2598903750515709,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,novoSpaRc
+Fibroblasts,209.82397541997472,181.73082090351423,0.8661108461974832,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,novoSpaRc
+NK cells,264.04106822666233,211.16298728580352,0.7997353923160682,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,novoSpaRc
+PCs,933.271582933447,142.78937833459136,0.1529987422158271,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,novoSpaRc
+PVL,128.3113588293213,105.52967442276878,0.8224499793751188,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,novoSpaRc
+T cells CD4,361.0513219160149,258.59335844696585,0.7162232700732721,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,novoSpaRc
+T cells CD8,433.9534759877939,183.19274997442136,0.4221483640784897,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,novoSpaRc
+B cells,141.08877475961424,52.74112326642839,0.3738151625194012,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SpaOTsc
+Dendritic cells,46.458441927171584,8.480784155340732,0.18254559997158834,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SpaOTsc
+Fibroblasts,209.82397541997472,162.05294355173893,0.7723280584469944,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SpaOTsc
+NK cells,264.04106822666233,131.16362660611247,0.4967546430827075,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SpaOTsc
+PCs,933.271582933447,116.66689677163002,0.1250085172473849,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SpaOTsc
+PVL,128.3113588293213,70.76274146982266,0.5514924174713999,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SpaOTsc
+T cells CD4,361.0513219160149,166.68811878286468,0.461674306850034,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SpaOTsc
+T cells CD8,433.9534759877939,156.8632639778045,0.3614748415616256,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,SpaOTsc
+B cells,141.08877475961424,0.9626098803019163,0.006822724784037584,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CellTrek
+Dendritic cells,46.458441927171584,1.203303520088211,0.025900643030054984,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CellTrek
+Fibroblasts,209.82397541997472,150.78039503048333,0.7186042239867381,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CellTrek
+NK cells,264.04106822666233,158.14127173648131,0.5989267987687702,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CellTrek
+PCs,933.271582933447,149.19523028823852,0.15986260914458578,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CellTrek
+PVL,128.3113588293213,64.59110441971845,0.5033935031865495,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CellTrek
+T cells CD4,361.0513219160149,246.16516267393143,0.6818010286393372,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CellTrek
+T cells CD8,433.9534759877939,81.07306977863306,0.18682433547533894,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial,CellTrek
+B cells,141.0887747788576,100.8490610894015,0.7147915292869487,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CytoSPACE
+Dendritic cells,46.458441845172864,7.106238715428361,0.15295904109549285,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CytoSPACE
+NK cells,264.0410680035053,185.277163313943,0.7016982801761859,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CytoSPACE
+PCs,1143.0955587408205,140.0057079062278,0.12247944350378843,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CytoSPACE
+PVL,128.31135875974053,76.19497260593546,0.5938287408257319,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CytoSPACE
+T cells CD4,361.0513220066794,221.39736216145963,0.6132019152594705,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CytoSPACE
+T cells CD8,433.9534758652239,183.07221476334524,0.42187060352110956,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CytoSPACE
+B cells,141.0887747788576,113.28793738956617,0.8029550016798541,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SVTuner + CytoSPACE
+Dendritic cells,46.45844184517286,34.36373298775821,0.7396660676283247,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SVTuner + CytoSPACE
+NK cells,264.0410680035053,221.0002153575366,0.8369918249027939,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SVTuner + CytoSPACE
+PCs,1143.0955587408203,239.60050106583304,0.2096067115594129,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SVTuner + CytoSPACE
+PVL,128.31135875974053,116.7020850951437,0.9095226348094804,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SVTuner + CytoSPACE
+T cells CD4,361.05132200667947,261.4436455605084,0.724117679745462,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SVTuner + CytoSPACE
+T cells CD8,433.9534758652239,275.22189720890555,0.6342198242799263,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SVTuner + CytoSPACE
+B cells,141.0887747788576,98.65407838796713,0.6992340711909748,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(all genes)"
+Dendritic cells,46.45844184517286,21.94927692738664,0.4724497003264698,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(all genes)"
+NK cells,264.0410680035053,173.04390190054133,0.6553673760259296,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(all genes)"
+PCs,1143.0955587408203,186.29179433138648,0.162971321957192,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(all genes)"
+PVL,128.31135875974053,78.19161743395809,0.6093896767188767,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(all genes)"
+T cells CD4,361.05132200667947,199.05828266664614,0.5513296047783577,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(all genes)"
+T cells CD8,433.9534758652238,190.3371277652651,0.4386118290348239,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(all genes)"
+B cells,141.0887747788576,102.87009865280356,0.729116110151513,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(marker genes)"
+Dendritic cells,46.45844184517286,16.38557061254115,0.3526930728143577,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(marker genes)"
+NK cells,264.0410680035053,187.31897312055793,0.7094312052929249,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(marker genes)"
+PCs,1143.0955587408203,167.14205787555463,0.1462187973677987,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(marker genes)"
+PVL,128.31135875974053,93.21000890181647,0.7264361456599461,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(marker genes)"
+T cells CD4,361.05132200667947,205.44709979988295,0.5690246435272218,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(marker genes)"
+T cells CD8,433.9534758652238,194.38722058978067,0.44794484063575735,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,"Tangram
+(marker genes)"
+B cells,141.0887747788576,98.27905184331104,0.6965759820180841,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,novoSpaRc
+Dendritic cells,46.45844184517286,14.12018805324793,0.3039315890167989,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,novoSpaRc
+NK cells,264.0410680035053,217.85876556354876,0.8250942446599123,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,novoSpaRc
+PCs,1143.0955587408203,142.96229646363037,0.12506591891679716,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,novoSpaRc
+PVL,128.31135875974053,98.7984661792924,0.76999002375378,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,novoSpaRc
+T cells CD4,361.05132200667947,266.2472301835606,0.7374221168995886,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,novoSpaRc
+T cells CD8,433.9534758652238,174.77907043586723,0.4027599274032539,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,novoSpaRc
+B cells,141.0887747788576,51.10264074260677,0.36220203076187313,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SpaOTsc
+Dendritic cells,46.45844184517286,10.254016780032778,0.22071374701298113,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SpaOTsc
+NK cells,264.0410680035053,132.6788481864223,0.5024932264880133,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SpaOTsc
+PCs,1143.0955587408203,119.43491558270993,0.10448375437157131,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SpaOTsc
+PVL,128.31135875974053,69.8603288179853,0.5444594266108337,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SpaOTsc
+T cells CD4,361.05132200667947,158.41799676657087,0.43876863789364584,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SpaOTsc
+T cells CD8,433.9534758652238,157.56055042800597,0.3630816647196086,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,SpaOTsc
+B cells,141.0887747788576,46.70840037096233,0.33105681471947734,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CellTrek
+Dendritic cells,46.45844184517286,34.40537463171967,0.7405623879160396,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CellTrek
+NK cells,264.0410680035053,139.12774672432647,0.5269170730762212,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CellTrek
+PCs,1143.0955587408203,18.085990906271526,0.015821941366121826,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CellTrek
+PVL,128.31135875974053,64.1151709184393,0.49968429559298166,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CellTrek
+T cells CD4,361.05132200667947,241.416076790705,0.6686475358930795,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CellTrek
+T cells CD8,433.9534758652238,96.88578231709668,0.22326306322106113,real_brca,real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts,CellTrek
+AT2,808.242820077699,462.21353862709964,0.5718745990006636,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CytoSPACE
+B_cell,381.77038989053176,145.08330582393853,0.3800276544902801,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CytoSPACE
+Ciliated,44.62633872208186,20.674167082656076,0.46327275942147034,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CytoSPACE
+DC,172.5689823711981,64.9000119658113,0.3760815592353123,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CytoSPACE
+Endothelia_vascular,326.64062081756106,313.4268540143446,0.9595464680107966,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CytoSPACE
+Erythrocyte,53.85757584802272,16.234523812877278,0.3014343582542306,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CytoSPACE
+Fibroblast,415.36011077454845,405.4908220758296,0.9762391995699468,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CytoSPACE
+Macrophage_alveolar,646.3900131639564,486.0611177470533,0.7519626043847373,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CytoSPACE
+Mast_cell,424.5431483344009,111.74674275660244,0.26321645560649265,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CytoSPACE
+AT2,808.242820077699,462.21353862709964,0.5718745990006636,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SVTuner + CytoSPACE
+B_cell,381.77038989053176,145.08330582393853,0.3800276544902801,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SVTuner + CytoSPACE
+Ciliated,44.62633872208186,20.674167082656076,0.46327275942147034,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SVTuner + CytoSPACE
+DC,172.5689823711981,64.9000119658113,0.3760815592353123,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SVTuner + CytoSPACE
+Endothelia_vascular,326.64062081756106,313.4268540143446,0.9595464680107966,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SVTuner + CytoSPACE
+Erythrocyte,53.85757584802272,16.234523812877278,0.3014343582542306,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SVTuner + CytoSPACE
+Fibroblast,415.36011077454845,405.4908220758296,0.9762391995699468,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SVTuner + CytoSPACE
+Macrophage_alveolar,646.3900131639564,486.0611177470533,0.7519626043847373,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SVTuner + CytoSPACE
+Mast_cell,424.5431483344009,111.74674275660244,0.26321645560649265,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SVTuner + CytoSPACE
+AT2,808.2428200776988,602.6027719313679,0.7455714507596095,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(all genes)"
+B_cell,381.77038989053176,153.2058906962913,0.4013037541759625,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(all genes)"
+Ciliated,44.62633872208187,26.86903906180346,0.6020892556105707,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(all genes)"
+DC,172.56898237119813,63.11960378669094,0.3657644781778909,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(all genes)"
+Endothelia_vascular,326.64062081756106,315.1341195368551,0.9647732077783042,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(all genes)"
+Erythrocyte,53.85757584802272,43.92307367301514,0.8155412303917814,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(all genes)"
+Fibroblast,415.3601107745484,401.0796991965451,0.9656192031743884,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(all genes)"
+Macrophage_alveolar,646.3900131639564,465.5256441732288,0.720193125965188,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(all genes)"
+Mast_cell,424.54314833440094,135.36729491769648,0.3188540327379666,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(all genes)"
+AT2,808.2428200776988,643.9034822277513,0.7966708348437305,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(marker genes)"
+B_cell,381.77038989053176,165.99509770172708,0.4348034894726232,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(marker genes)"
+Ciliated,44.62633872208187,30.616952214549336,0.6860735854944683,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(marker genes)"
+DC,172.56898237119813,61.463738619840136,0.3561690969912011,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(marker genes)"
+Endothelia_vascular,326.64062081756106,311.76873102533216,0.9544701765658984,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(marker genes)"
+Erythrocyte,53.85757584802272,39.92582727917819,0.7413223980195907,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(marker genes)"
+Fibroblast,415.3601107745484,400.789404959064,0.9649203054469687,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(marker genes)"
+Macrophage_alveolar,646.3900131639564,431.1052329050849,0.6669429046326174,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(marker genes)"
+Mast_cell,424.54314833440094,148.89749504837204,0.35072405627681824,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,"Tangram
+(marker genes)"
+AT2,808.2428200776988,560.8216604735183,0.6938776894047817,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,novoSpaRc
+B_cell,381.77038989053176,125.11675525043289,0.327727761407344,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,novoSpaRc
+Ciliated,44.62633872208187,15.9461642562536,0.3573262945804507,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,novoSpaRc
+DC,172.56898237119813,66.93394368414336,0.3878677544737882,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,novoSpaRc
+Endothelia_vascular,326.64062081756106,318.76447731661847,0.9758874340820529,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,novoSpaRc
+Erythrocyte,53.85757584802272,30.39080901393156,0.5642810419037325,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,novoSpaRc
+Fibroblast,415.3601107745484,387.85356023997554,0.9337766198028028,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,novoSpaRc
+Macrophage_alveolar,646.3900131639564,494.8082370886152,0.7654948668940952,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,novoSpaRc
+Mast_cell,424.54314833440094,104.98905055627623,0.24729889286442858,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,novoSpaRc
+AT2,808.2428200776988,385.8822164011723,0.4774335222230323,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SpaOTsc
+B_cell,381.77038989053176,52.287637485821534,0.13696095577452827,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SpaOTsc
+Ciliated,44.62633872208187,8.432053405651654,0.18894790939861109,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SpaOTsc
+DC,172.56898237119813,21.526954321912793,0.12474405322509252,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SpaOTsc
+Endothelia_vascular,326.64062081756106,217.32210821817011,0.6653248076562751,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SpaOTsc
+Erythrocyte,53.85757584802272,13.253598944491245,0.24608606562409596,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SpaOTsc
+Fibroblast,415.3601107745484,208.9902901108222,0.5031544548683424,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SpaOTsc
+Macrophage_alveolar,646.3900131639564,380.09298035883177,0.5880242154397602,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SpaOTsc
+Mast_cell,424.54314833440094,48.4122428791252,0.11403373972483054,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,SpaOTsc
+AT2,808.2428200776988,317.7050070475872,0.39308113744461753,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CellTrek
+B_cell,381.77038989053176,351.68467891009203,0.9211942262230801,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CellTrek
+Ciliated,44.62633872208187,3.558984001220625,0.07975075041187682,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CellTrek
+DC,172.56898237119813,96.20626058765231,0.5574945118509849,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CellTrek
+Endothelia_vascular,326.64062081756106,319.96466242032227,0.979561763076101,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CellTrek
+Erythrocyte,53.85757584802272,5.297222221410172,0.09835612052718576,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CellTrek
+Fibroblast,415.3601107745484,264.28639911242345,0.6362825708506091,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CellTrek
+Macrophage_alveolar,646.3900131639564,491.32670057308775,0.7601087432773549,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CellTrek
+Mast_cell,424.54314833440094,309.13689160610113,0.7281636573783603,human_lung_5loc,human_lung_5loc_fine9_clustered_sim,CellTrek
+AT2,809.2427906199858,464.9077849849537,0.5744972836010976,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CytoSPACE
+B_cell,377.7704193401211,142.0819103614041,0.3761065003702218,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CytoSPACE
+DC,172.56898237107785,64.2166666815883,0.3721217208287302,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CytoSPACE
+Endothelia_vascular,326.64062074803894,314.95871323729943,0.9642362071074112,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CytoSPACE
+Erythrocyte,53.35757584802273,16.553571408595836,0.31023844590963107,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CytoSPACE
+Fibroblast,459.9864495743967,435.95270423104216,0.9477511883978499,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CytoSPACE
+Macrophage_alveolar,642.723346490623,486.3166835778304,0.7566500987294158,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CytoSPACE
+Mast_cell,423.7098150077338,110.20000003783964,0.2600836613516451,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CytoSPACE
+AT2,809.2427906199858,481.63221541707367,0.5951640484162737,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SVTuner + CytoSPACE
+B_cell,377.7704193401211,150.5070651706987,0.3984088151571006,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SVTuner + CytoSPACE
+DC,172.56898237107788,66.01676473027038,0.382552900429774,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SVTuner + CytoSPACE
+Endothelia_vascular,326.64062074803894,312.86137614908876,0.9578152754933101,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SVTuner + CytoSPACE
+Erythrocyte,53.35757584802272,17.00519481622829,0.3187025374740381,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SVTuner + CytoSPACE
+Fibroblast,459.9864495743967,438.4141807412069,0.9531023819220119,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SVTuner + CytoSPACE
+Macrophage_alveolar,642.723346490623,503.7674076163988,0.7838013203768824,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SVTuner + CytoSPACE
+Mast_cell,423.7098150077338,113.79851485058599,0.2685765371012443,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SVTuner + CytoSPACE
+AT2,809.2427906199858,603.4282211878085,0.7456701847482676,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(all genes)"
+B_cell,377.7704193401211,151.9164808617291,0.4021396940689337,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(all genes)"
+DC,172.56898237107788,63.17772785505956,0.36610129460697327,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(all genes)"
+Endothelia_vascular,326.64062074803894,313.71859923845835,0.960439637054363,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(all genes)"
+Erythrocyte,53.35757584802272,43.27329527786972,0.8110056461546183,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(all genes)"
+Fibroblast,459.9864495743968,437.22775806124264,0.9505231262046705,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(all genes)"
+Macrophage_alveolar,642.723346490623,463.96107744906703,0.7218674721905967,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(all genes)"
+Mast_cell,423.7098150077338,135.70213862882514,0.32027140703915064,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(all genes)"
+AT2,809.2427906199858,638.8862059356886,0.7894864351478723,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(marker genes)"
+B_cell,377.7704193401211,166.65400415163765,0.4411515450117673,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(marker genes)"
+DC,172.56898237107788,60.289252508142724,0.34936320351302624,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(marker genes)"
+Endothelia_vascular,326.64062074803894,309.77740403198976,0.9483737917304016,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(marker genes)"
+Erythrocyte,53.35757584802272,40.47473915682347,0.7585565594678969,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(marker genes)"
+Fibroblast,459.9864495743968,433.73240228482905,0.9429243028487919,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(marker genes)"
+Macrophage_alveolar,642.723346490623,430.90468596152164,0.6704357143930328,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(marker genes)"
+Mast_cell,423.7098150077338,148.25181125905084,0.34988996244126386,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,"Tangram
+(marker genes)"
+AT2,809.2427906199858,557.2880555433343,0.6886537167867491,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,novoSpaRc
+B_cell,377.7704193401211,124.83324800028257,0.33044738711500443,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,novoSpaRc
+DC,172.56898237107788,65.57197805993626,0.37997545769225066,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,novoSpaRc
+Endothelia_vascular,326.64062074803894,316.91369669678164,0.9702213275587657,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,novoSpaRc
+Erythrocyte,53.35757584802272,28.995255306304784,0.5434140296945156,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,novoSpaRc
+Fibroblast,459.9864495743968,415.43989490884786,0.9031568110174426,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,novoSpaRc
+Macrophage_alveolar,642.723346490623,492.18666190602374,0.7657830769544085,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,novoSpaRc
+Mast_cell,423.7098150077338,104.35911246565306,0.24629854860395015,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,novoSpaRc
+AT2,809.2427906199858,386.3987461492791,0.4774818517113351,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SpaOTsc
+B_cell,377.7704193401211,52.009562185854506,0.13767505215655415,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SpaOTsc
+DC,172.56898237107788,21.607976993851977,0.12521356211852716,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SpaOTsc
+Endothelia_vascular,326.64062074803894,219.66218606789892,0.6724888826284099,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SpaOTsc
+Erythrocyte,53.35757584802272,12.83696699517943,0.24058377449048096,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SpaOTsc
+Fibroblast,459.9864495743968,232.3250392430615,0.5050693111895375,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SpaOTsc
+Macrophage_alveolar,642.723346490623,378.6933420775298,0.5892011611920724,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SpaOTsc
+Mast_cell,423.7098150077338,48.385671750075446,0.11419530545732645,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,SpaOTsc
+AT2,809.2427906199858,378.83646821503004,0.4681369702716681,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CellTrek
+B_cell,377.7704193401211,363.9340723439477,0.9633736621825967,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CellTrek
+DC,172.56898237107788,76.39909916634589,0.4427162872297854,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CellTrek
+Endothelia_vascular,326.64062074803894,304.4524370824149,0.9320715726818946,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CellTrek
+Erythrocyte,53.35757584802272,3.4583333378884684,0.06481428893506647,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CellTrek
+Fibroblast,459.9864495743968,347.8827181234615,0.756289056874046,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CellTrek
+Macrophage_alveolar,642.723346490623,485.69499510329456,0.7556828264528906,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CellTrek
+Mast_cell,423.7098150077338,234.83308966668034,0.5542309414342785,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated,CellTrek
+AT2,807.4927750988331,493.94570252854936,0.6117029374883173,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CytoSPACE
+B_cell,378.52043487150297,135.30750339575798,0.35746419725447864,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CytoSPACE
+DC,172.56898237094555,58.10952382876935,0.33673214635907195,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CytoSPACE
+Erythrocyte,53.02424252135606,16.963095244733285,0.31991207112296277,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CytoSPACE
+Fibroblast,786.6270703123406,625.2762424832433,0.7948826910253282,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CytoSPACE
+Macrophage_alveolar,642.3900131639563,482.29849332155857,0.7507876577129511,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CytoSPACE
+Mast_cell,417.3764816610653,103.50684120891793,0.24799394732780292,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CytoSPACE
+AT2,807.4927750988331,607.3618788040352,0.7521576632431134,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SVTuner + CytoSPACE
+B_cell,378.52043487150297,198.11569694472973,0.5233949839775082,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SVTuner + CytoSPACE
+DC,172.56898237094555,93.41666670039116,0.541329417470791,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SVTuner + CytoSPACE
+Erythrocyte,53.02424252135606,14.979004330150515,0.2824935089665367,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SVTuner + CytoSPACE
+Fibroblast,786.6270703123406,780.7658242917785,0.9925488884863385,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SVTuner + CytoSPACE
+Macrophage_alveolar,642.3900131639563,607.2388186576009,0.9452806024595158,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SVTuner + CytoSPACE
+Mast_cell,417.3764816610654,153.20826326922162,0.36707449988434154,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SVTuner + CytoSPACE
+AT2,807.4927750988332,605.8988923325151,0.7503458990804667,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(all genes)"
+B_cell,378.52043487150297,157.1531479752568,0.41517744749660834,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(all genes)"
+DC,172.56898237094555,62.60726263588092,0.36279557180967503,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(all genes)"
+Erythrocyte,53.02424252135606,42.61661180945806,0.8037193891509865,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(all genes)"
+Fibroblast,786.6270703123406,564.9897298233384,0.7182434359893078,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(all genes)"
+Macrophage_alveolar,642.3900131639564,462.8944283416487,0.7205816075218229,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(all genes)"
+Mast_cell,417.3764816610654,133.6914523528299,0.32031381313285245,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(all genes)"
+AT2,807.4927750988332,628.7483485882144,0.7786426925135753,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(marker genes)"
+B_cell,378.52043487150297,166.138620142381,0.438915854566162,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(marker genes)"
+DC,172.56898237094555,60.64135699303721,0.3514035729937007,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(marker genes)"
+Erythrocyte,53.02424252135606,39.51660639173523,0.745255462646534,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(marker genes)"
+Fibroblast,786.6270703123406,568.9258383170171,0.7232472155974974,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(marker genes)"
+Macrophage_alveolar,642.3900131639564,427.1114092002921,0.6648786569651745,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(marker genes)"
+Mast_cell,417.3764816610654,144.79077244732315,0.3469068785837864,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,"Tangram
+(marker genes)"
+AT2,807.4927750988332,573.3560542658495,0.710044810240777,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,novoSpaRc
+B_cell,378.52043487150297,127.58862121075384,0.33707195030056064,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,novoSpaRc
+DC,172.56898237094555,65.06277301751857,0.37702472439492585,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,novoSpaRc
+Erythrocyte,53.02424252135606,27.25201122353961,0.5139538054233134,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,novoSpaRc
+Fibroblast,786.6270703123406,569.68319538169,0.7242100060902936,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,novoSpaRc
+Macrophage_alveolar,642.3900131639564,486.9854112960136,0.7580837206628879,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,novoSpaRc
+Mast_cell,417.3764816610654,100.95141145576912,0.24187134611419647,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,novoSpaRc
+AT2,807.4927750988332,382.5795948547266,0.47378701909487764,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SpaOTsc
+B_cell,378.52043487150297,50.70502667763482,0.13395585021677298,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SpaOTsc
+DC,172.56898237094555,20.640228895337,0.11960567079760492,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SpaOTsc
+Erythrocyte,53.02424252135606,12.412458569185258,0.23409025719105772,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SpaOTsc
+Fibroblast,786.6270703123406,339.45172141985165,0.43152814622190394,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SpaOTsc
+Macrophage_alveolar,642.3900131639564,373.6957877217785,0.5817272685813075,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SpaOTsc
+Mast_cell,417.3764816610654,46.338665655351136,0.11102366254785985,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,SpaOTsc
+AT2,807.4927750988332,124.14186904559614,0.15373743626424616,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CellTrek
+B_cell,378.52043487150297,356.5930301324349,0.942070750429863,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CellTrek
+DC,172.56898237094555,87.55086896627638,0.5073383858640452,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CellTrek
+Erythrocyte,53.02424252135606,4.583766234415638,0.08644661416086197,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CellTrek
+Fibroblast,786.6270703123406,736.9148770318918,0.9368033530034634,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CellTrek
+Macrophage_alveolar,642.3900131639564,399.7193552740314,0.6222378104935008,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CellTrek
+Mast_cell,417.3764816610654,288.26942126250555,0.6906700159895389,human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular,CellTrek
+Astro_CTX,551.0895715538627,502.2114429007114,0.9113063807116989,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CytoSPACE
+Ext_L56,1103.5785480898198,978.6363145600794,0.8867844669996509,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CytoSPACE
+Ext_Thal_1,1314.8764897722338,1179.2690232269701,0.8968667645972179,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CytoSPACE
+Inh_Pvalb,978.8577439902894,868.0257244323917,0.8867741301140515,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CytoSPACE
+Inh_Sst,749.590865274272,611.6665934321757,0.8160005968167309,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CytoSPACE
+Micro,2260.4219394087168,1383.8729964006593,0.6122188836844568,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CytoSPACE
+Nb_1,121.09764309703945,88.77380954620762,0.7330762785785211,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CytoSPACE
+Oligo_2,1389.4871988137666,1250.4312784173658,0.8999228488645915,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CytoSPACE
+Astro_CTX,551.0895715538627,502.2114429007114,0.9113063807116989,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SVTuner + CytoSPACE
+Ext_L56,1103.5785480898198,978.6363145600794,0.8867844669996509,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SVTuner + CytoSPACE
+Ext_Thal_1,1314.8764897722338,1179.2690232269701,0.8968667645972179,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SVTuner + CytoSPACE
+Inh_Pvalb,978.8577439902894,868.0257244323917,0.8867741301140515,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SVTuner + CytoSPACE
+Inh_Sst,749.590865274272,611.6665934321757,0.8160005968167309,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SVTuner + CytoSPACE
+Micro,2260.4219394087168,1383.8729964006593,0.6122188836844568,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SVTuner + CytoSPACE
+Nb_1,121.09764309703945,88.77380954620762,0.7330762785785211,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SVTuner + CytoSPACE
+Oligo_2,1389.4871988137666,1250.4312784173658,0.8999228488645915,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SVTuner + CytoSPACE
+Astro_CTX,551.0895715538627,450.25374078224866,0.8170246072933381,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(all genes)"
+Ext_L56,1103.5785480898198,1007.7314201671021,0.9131487939045035,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(all genes)"
+Ext_Thal_1,1314.8764897722338,1165.1686509556405,0.8861430408246739,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(all genes)"
+Inh_Pvalb,978.8577439902895,714.4305982445854,0.7298615172948694,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(all genes)"
+Inh_Sst,749.5908652742719,554.7869470764135,0.7401196743151606,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(all genes)"
+Micro,2260.4219394087168,1254.7235240055331,0.5550837664996938,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(all genes)"
+Nb_1,121.09764309703945,89.3052695533724,0.737464968511478,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(all genes)"
+Oligo_2,1389.4871988137666,1143.6821143329323,0.8230965462001499,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(all genes)"
+Astro_CTX,551.0895715538627,460.50017265902454,0.835617649886913,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(marker genes)"
+Ext_L56,1103.5785480898198,1002.4318163624152,0.9083465949003094,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(marker genes)"
+Ext_Thal_1,1314.8764897722338,1128.350344777301,0.858141698900371,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(marker genes)"
+Inh_Pvalb,978.8577439902895,791.529172988608,0.8086253368767957,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(marker genes)"
+Inh_Sst,749.5908652742719,578.8434709273452,0.7722125465276968,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(marker genes)"
+Micro,2260.4219394087168,1582.4659446779428,0.7000754669245007,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(marker genes)"
+Nb_1,121.09764309703945,93.93191832246302,0.7756709042404099,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(marker genes)"
+Oligo_2,1389.4871988137666,1227.1467841473561,0.8831652318891432,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,"Tangram
+(marker genes)"
+Astro_CTX,551.0895715538627,510.9286453235059,0.9271245033414109,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,novoSpaRc
+Ext_L56,1103.5785480898198,994.9842560913836,0.9015980401337071,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,novoSpaRc
+Ext_Thal_1,1314.8764897722338,1219.8958113249869,0.9277645625379615,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,novoSpaRc
+Inh_Pvalb,978.8577439902895,943.8983766390439,0.964285548573448,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,novoSpaRc
+Inh_Sst,749.5908652742719,712.6237742371037,0.9506836425712817,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,novoSpaRc
+Micro,2260.4219394087168,1385.6345215778304,0.6129981741109299,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,novoSpaRc
+Nb_1,121.09764309703945,79.0361981370714,0.652665040505678,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,novoSpaRc
+Oligo_2,1389.4871988137666,1285.1577967207893,0.9249151757698485,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,novoSpaRc
+Astro_CTX,551.0895715538627,466.6202099260555,0.8467229902579434,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SpaOTsc
+Ext_L56,1103.5785480898198,994.811755996129,0.9014417303761886,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SpaOTsc
+Ext_Thal_1,1314.8764897722338,1141.7425496809615,0.8683268417695543,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SpaOTsc
+Inh_Pvalb,978.8577439902895,630.5736596770975,0.6441933606272342,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SpaOTsc
+Inh_Sst,749.5908652742719,434.3641563778959,0.5794683159845658,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SpaOTsc
+Micro,2260.4219394087168,1441.4893032343136,0.6377080659601896,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SpaOTsc
+Nb_1,121.09764309703945,54.06090116864347,0.44642405736437596,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SpaOTsc
+Oligo_2,1389.4871988137666,1224.0324929201015,0.880923907730192,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,SpaOTsc
+Astro_CTX,551.0895715538627,345.8472066540209,0.6275698625159309,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CellTrek
+Ext_L56,1103.5785480898198,682.1439917205097,0.6181200177379583,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CellTrek
+Ext_Thal_1,1314.8764897722338,1021.2905228541788,0.7767197381642206,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CellTrek
+Inh_Pvalb,978.8577439902895,288.52290886944513,0.29475468794197673,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CellTrek
+Inh_Sst,749.5908652742719,514.1770336294239,0.6859435692846776,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CellTrek
+Micro,2260.4219394087168,1915.1766974530244,0.8472651340280294,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CellTrek
+Nb_1,121.09764309703945,82.40539471586563,0.6804871887542149,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CellTrek
+Oligo_2,1389.4871988137666,805.6330620245336,0.5798060339903232,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim,CellTrek
+Astro_CTX,551.0895715539217,507.9163882169658,0.9216585006041408,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CytoSPACE
+Ext_L56,3364.0004874387264,1382.9821679852537,0.4111123565972563,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CytoSPACE
+Ext_Thal_1,1314.8764897726019,1200.4826961818885,0.9130003506181049,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CytoSPACE
+Inh_Pvalb,978.8577440009792,851.2992680502066,0.8696864005699229,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CytoSPACE
+Inh_Sst,749.5908652771676,593.9227628669278,0.7923292430295555,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CytoSPACE
+Nb_1,121.09764309956778,105.08805692697241,0.8677960547966065,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CytoSPACE
+Oligo_2,1389.487198857036,1260.2266746253779,0.9069724972364012,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CytoSPACE
+Astro_CTX,551.0895715539217,517.4456698691641,0.9389502116872018,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SVTuner + CytoSPACE
+Ext_L56,3364.0004874387264,1656.9311585339638,0.4925478354480006,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SVTuner + CytoSPACE
+Ext_Thal_1,1314.8764897726016,1275.7058195999632,0.9702096200842311,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SVTuner + CytoSPACE
+Inh_Pvalb,978.8577440009792,879.1829957241514,0.8981723862454031,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SVTuner + CytoSPACE
+Inh_Sst,749.5908652771676,577.3073763971804,0.7701633025953646,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SVTuner + CytoSPACE
+Nb_1,121.09764309956778,105.40804340422723,0.8704384388188267,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SVTuner + CytoSPACE
+Oligo_2,1389.4871988570358,1362.4018073573375,0.9805069154131264,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SVTuner + CytoSPACE
+Astro_CTX,551.0895715539216,421.9988743626701,0.7657536925853068,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(all genes)"
+Ext_L56,3364.000487438726,1398.7818079389301,0.41580903842375216,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(all genes)"
+Ext_Thal_1,1314.8764897726016,1083.3881813758235,0.8239467279266569,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(all genes)"
+Inh_Pvalb,978.8577440009792,665.8289288360909,0.6802101050093187,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(all genes)"
+Inh_Sst,749.5908652771677,509.1104027057326,0.6791843741552062,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(all genes)"
+Nb_1,121.09764309956778,79.91790678716205,0.6599460133295303,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(all genes)"
+Oligo_2,1389.487198857036,1107.4113649751978,0.7969928516694015,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(all genes)"
+Astro_CTX,551.0895715539216,426.9279086077306,0.7746978542960101,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(marker genes)"
+Ext_L56,3364.000487438726,1409.1842866320792,0.4189013324742412,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(marker genes)"
+Ext_Thal_1,1314.8764897726016,1123.5689758584256,0.8545053353663192,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(marker genes)"
+Inh_Pvalb,978.8577440009792,686.7695863514853,0.7016030578093871,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(marker genes)"
+Inh_Sst,749.5908652771677,537.2838545907553,0.7167694798309607,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(marker genes)"
+Nb_1,121.09764309956778,84.18664753505747,0.6951964165465906,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(marker genes)"
+Oligo_2,1389.487198857036,1145.5770473858718,0.8244603104859118,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,"Tangram
+(marker genes)"
+Astro_CTX,551.0895715539216,535.235520449362,0.9712314441736657,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,novoSpaRc
+Ext_L56,3364.000487438726,1385.634861941121,0.4119009099776059,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,novoSpaRc
+Ext_Thal_1,1314.8764897726016,1242.8848653130772,0.94524837502268,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,novoSpaRc
+Inh_Pvalb,978.8577440009792,932.7279571177788,0.9528738602050083,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,novoSpaRc
+Inh_Sst,749.5908652771677,682.5541238860469,0.910568892316566,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,novoSpaRc
+Nb_1,121.09764309956778,111.7531456253147,0.9228350177998929,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,novoSpaRc
+Oligo_2,1389.487198857036,1330.1827571330653,0.9573191881344763,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,novoSpaRc
+Astro_CTX,551.0895715539216,456.6473668500911,0.8286263983592914,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SpaOTsc
+Ext_L56,3364.000487438726,1599.7947884994535,0.47556318569903094,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SpaOTsc
+Ext_Thal_1,1314.8764897726016,1199.5588857424189,0.9122977671841055,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SpaOTsc
+Inh_Pvalb,978.8577440009792,612.0112860500252,0.6252300600376238,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SpaOTsc
+Inh_Sst,749.5908652771677,422.85513261631394,0.5641145753023011,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SpaOTsc
+Nb_1,121.09764309956778,54.3199800492315,0.44856347868446156,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SpaOTsc
+Oligo_2,1389.487198857036,1227.0044486820586,0.8830627944549382,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,SpaOTsc
+Astro_CTX,551.0895715539216,372.1641446562892,0.6753242374136899,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CellTrek
+Ext_L56,3364.000487438726,2461.157514962625,0.7316162777480734,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CellTrek
+Ext_Thal_1,1314.8764897726016,1221.5633914581276,0.9290328034303725,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CellTrek
+Inh_Pvalb,978.8577440009792,308.2159565138091,0.31487308385997786,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CellTrek
+Inh_Sst,749.5908652771677,386.9014837803285,0.516150211672161,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CellTrek
+Nb_1,121.09764309956778,35.18447147337536,0.290546294484413,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CellTrek
+Oligo_2,1389.487198857036,996.9689636872814,0.7175085632363997,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56,CellTrek
+Ext_L56,3915.0900587129377,1382.2216768481367,0.3530497781965541,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CytoSPACE
+Ext_Thal_1,1314.8764898693544,1203.7065727136976,0.9154521979728282,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CytoSPACE
+Inh_Pvalb,978.8577440080325,854.9595628075336,0.8734257536818526,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CytoSPACE
+Inh_Sst,749.5908652857031,587.1664243003199,0.7833158746892201,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CytoSPACE
+Nb_1,121.09764314766669,102.52709494265517,0.8466481450645034,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CytoSPACE
+Oligo_2,1389.487198976306,1263.8076718841744,0.9095497049668936,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CytoSPACE
+Ext_L56,3915.090058712937,1812.4349079925626,0.46293568750967373,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SVTuner + CytoSPACE
+Ext_Thal_1,1314.8764898693541,1293.2756277226417,0.9835719458723772,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SVTuner + CytoSPACE
+Inh_Pvalb,978.8577440080325,873.7632285940715,0.8926355580703271,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SVTuner + CytoSPACE
+Inh_Sst,749.590865285703,590.2320242221912,0.7874055722346978,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SVTuner + CytoSPACE
+Nb_1,121.09764314766667,107.04311937762478,0.8839405672585734,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SVTuner + CytoSPACE
+Oligo_2,1389.487198976306,1382.3648993881436,0.9948741524258664,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SVTuner + CytoSPACE
+Ext_L56,3915.090058712937,1399.3366748800097,0.35742132464253795,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(all genes)"
+Ext_Thal_1,1314.8764898693544,1055.4799668935855,0.8027217575381985,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(all genes)"
+Inh_Pvalb,978.8577440080325,643.8777813666273,0.6577848367733236,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(all genes)"
+Inh_Sst,749.590865285703,496.6821853055393,0.6626043730085094,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(all genes)"
+Nb_1,121.09764314766669,76.5762404736052,0.6323512042280459,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(all genes)"
+Oligo_2,1389.4871989763062,1083.9838415175225,0.7801322979557775,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(all genes)"
+Ext_L56,3915.090058712937,1420.0616755116723,0.36271494504995094,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(marker genes)"
+Ext_Thal_1,1314.8764898693544,1090.7300283314398,0.8295304058861181,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(marker genes)"
+Inh_Pvalb,978.8577440080325,659.7253532232268,0.6739746988381726,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(marker genes)"
+Inh_Sst,749.590865285703,525.5045290372145,0.7010551400421895,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(marker genes)"
+Nb_1,121.09764314766669,79.712461656578,0.658249488467554,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(marker genes)"
+Oligo_2,1389.4871989763062,1098.554293538514,0.7906185061279192,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,"Tangram
+(marker genes)"
+Ext_L56,3915.090058712937,1385.6348551313279,0.35392157890407433,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,novoSpaRc
+Ext_Thal_1,1314.8764898693544,1245.2761004217741,0.9470669755039154,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,novoSpaRc
+Inh_Pvalb,978.8577440080325,939.2380550375856,0.9595245691082547,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,novoSpaRc
+Inh_Sst,749.590865285703,683.5957669854656,0.9119585078253539,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,novoSpaRc
+Nb_1,121.09764314766669,113.56557160437323,0.93780166692337,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,novoSpaRc
+Oligo_2,1389.4871989763062,1333.9509166226671,0.9600310946408467,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,novoSpaRc
+Ext_L56,3915.090058712937,1652.7711866030843,0.4221540658879308,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SpaOTsc
+Ext_Thal_1,1314.8764898693544,1192.2868291771817,0.9067671666223547,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SpaOTsc
+Inh_Pvalb,978.8577440080325,593.9209422574445,0.6067489846129989,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SpaOTsc
+Inh_Sst,749.590865285703,407.52284368354077,0.5436603653490566,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SpaOTsc
+Nb_1,121.09764314766669,49.19663372522497,0.40625591420664153,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SpaOTsc
+Oligo_2,1389.4871989763062,1212.816994557436,0.8728522259513937,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,SpaOTsc
+Ext_L56,3915.090058712937,2588.355807366958,0.6611229291154198,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CellTrek
+Ext_Thal_1,1314.8764898693544,1238.496152104481,0.9419106369660146,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CellTrek
+Inh_Pvalb,978.8577440080325,315.9513926592176,0.3227755969580652,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CellTrek
+Inh_Sst,749.590865285703,257.63167243958867,0.343696387417146,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CellTrek
+Nb_1,121.09764314766669,30.33103388772843,0.2504675821869028,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CellTrek
+Oligo_2,1389.4871989763062,923.0686785239516,0.6643232691916955,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56,CellTrek
+Ext_L56,5304.577257262952,1385.5820063117183,0.2612049818700631,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,CytoSPACE
+Ext_Thal_1,1314.8764900185706,1202.0577988653183,0.9141982596771056,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,CytoSPACE
+Inh_Pvalb,978.8577440088828,858.8225193571689,0.8773721458645122,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,CytoSPACE
+Inh_Sst,749.5908655496096,582.0828958524254,0.7765341369596798,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,CytoSPACE
+Nb_1,121.09764315998476,103.4444412321201,0.8542234062760196,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,CytoSPACE
+Ext_L56,5304.577257262952,2307.1600206169405,0.4349375847920793,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,SVTuner + CytoSPACE
+Ext_Thal_1,1314.8764900185706,1309.8517361875868,0.9961785354981038,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,SVTuner + CytoSPACE
+Inh_Pvalb,978.857744008883,931.6496218517827,0.9517722340697222,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,SVTuner + CytoSPACE
+Inh_Sst,749.5908655496096,607.9871097640809,0.8110919405591969,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,SVTuner + CytoSPACE
+Nb_1,121.09764315998476,110.70938985927138,0.9142158919890024,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,SVTuner + CytoSPACE
+Ext_L56,5304.577257262952,1388.968731723028,0.26184343527493575,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,"Tangram
+(all genes)"
+Ext_Thal_1,1314.8764900185706,961.4443794641894,0.7312050879019143,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,"Tangram
+(all genes)"
+Inh_Pvalb,978.8577440088828,582.5456303366343,0.5951279784035175,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,"Tangram
+(all genes)"
+Inh_Sst,749.5908655496097,442.5013578212239,0.5903238395211449,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,"Tangram
+(all genes)"
+Nb_1,121.09764315998476,68.57112166181395,0.5662465418193411,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,"Tangram
+(all genes)"
+Ext_L56,5304.577257262952,1444.9108994769342,0.2723894533722895,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,"Tangram
+(marker genes)"
+Ext_Thal_1,1314.8764900185706,997.1588776323684,0.7583669532476659,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,"Tangram
+(marker genes)"
+Inh_Pvalb,978.8577440088828,590.6928221274457,0.6034511406205776,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,"Tangram
+(marker genes)"
+Inh_Sst,749.5908655496097,470.43901440752757,0.627594379852262,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,"Tangram
+(marker genes)"
+Nb_1,121.09764315998476,68.47939756483157,0.5654891026604204,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,"Tangram
+(marker genes)"
+Ext_L56,5304.577257262952,1385.6347881775337,0.2612149321193017,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,novoSpaRc
+Ext_Thal_1,1314.8764900185706,1244.484553068215,0.9464649817038242,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,novoSpaRc
+Inh_Pvalb,978.8577440088828,963.8262875936437,0.9846438805768872,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,novoSpaRc
+Inh_Sst,749.5908655496097,697.8856614673899,0.9310220995765351,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,novoSpaRc
+Nb_1,121.09764315998476,116.36104026409402,0.960886085209494,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,novoSpaRc
+Ext_L56,5304.577257262952,1804.250469585854,0.34013086850898433,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,SpaOTsc
+Ext_Thal_1,1314.8764900185706,1237.2148714519863,0.9409361874243508,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,SpaOTsc
+Inh_Pvalb,978.8577440088828,672.3387844727778,0.686860566397763,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,SpaOTsc
+Inh_Sst,749.5908655496097,446.41367962509537,0.595543115773935,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,SpaOTsc
+Nb_1,121.09764315998476,45.36214052450911,0.3745914399389275,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,SpaOTsc
+Ext_L56,5304.577257262952,2236.5237320135166,0.4216214833993227,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,CellTrek
+Ext_Thal_1,1314.8764900185706,1162.6888603538466,0.8842570912020987,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,CellTrek
+Inh_Pvalb,978.8577440088828,424.3010877191696,0.4334655268511817,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,CellTrek
+Inh_Sst,749.5908655496097,353.37880162134184,0.47142890590354236,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,CellTrek
+Nb_1,121.09764315998476,34.18032718152349,0.282254272582061,mouse_brain_refined,mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56,CellTrek

@@ -1,121 +1,576 @@
-# SVTuner: A Type-Aware Coordination Layer for Spatial Cell Mapping
+# SVTuner 2.0 项目说明
 
-## 摘要
-SVTuner 项目的核心目标，不是重新发明一个新的空间映射求解器，而是在既有映射器之前加入一层 `type-aware / mismatch-aware` 的前置协调机制，从而缓解单细胞参考与空间转录组之间的细胞类型不匹配问题。当前项目以 CytoSPACE 作为下游映射后端，SVTuner 的主要贡献在于：在不改动 CytoSPACE 核心求解逻辑的前提下，通过前置的类型识别、弱信号处理、缺失类型过滤与输入重组，提升映射结果的生物学合理性与空间解释性。
+SVTuner 是一个面向空间单细胞映射的类型感知协调层。它不是为了替代 CytoSPACE、Tangram、novoSpaRc、SpaOTsc 或 CellTrek 这类映射器，而是在正式映射之前增加一层 `type-aware / mismatch-aware` 判断：先判断单细胞参考中的每一种细胞类型是否应该被允许进入空间映射池，再把经过协调的输入交给下游映射方法。
 
-从研究问题上看，项目针对的是一个在空间转录组映射中反复出现但常被忽略的结构性误差：当单细胞参考中存在、而空间数据中并不存在某类细胞时，传统表达匹配型映射器仍可能把这类细胞“合法地”分配到某些位置。其结果不是简单的数值噪声，而是会直接破坏空间分布图的解释，使得本不应出现的细胞类型在组织中形成伪信号。SVTuner 的工作，就是在映射发生之前，尽可能识别并处理这种错配。
+项目要解决的核心问题是：单细胞参考中存在某类细胞，但空间转录组样本中并不支持或并不存在该类型时，传统表达匹配型映射器仍可能把这类细胞“合法地”分配到 ST spot 上。这个问题不是普通数值噪声，而是会在空间图上形成生物学上不应出现的伪分布。SVTuner 的目标就是在映射发生之前识别并处理这种类型错配。
 
-## 一、项目逻辑
-项目当前的主线可以概括为四个步骤。
+当前代码库已经包含以下完整内容：
 
-### 1. 数据预处理
-第一阶段负责把单细胞参考与空间数据整理为统一、可复用的映射输入。这一步包括表达矩阵对齐、基因集合统一、坐标与元数据标准化，以及针对不同数据源生成后续流程可直接读取的导出文件。对于真实数据与模拟数据，这一阶段共用相同的输入接口，因此后续评估链条可以保持一致。
+- Stage3 类型错配检测与 `plugin_type` 标签生成。
+- CytoSPACE baseline 映射和 SVTuner + CytoSPACE route2 映射。
+- 真实数据 profile-mask 掩盖实验。
+- 可控缺失类型的模拟数据实验。
+- 10% scRNA reference noise 噪声实验。
+- Tangram、novoSpaRc、SpaOTsc、CellTrek 等对照方法接入。
+- 真实数据掩盖可视化、模拟数据三联图和多方法箱线图。
 
-### 2. Stage3: 类型错配识别与前置协调
-这是项目的核心创新点。Stage3 的职责不是做最终映射，而是站在映射之前判断“哪些细胞类型应该进入映射池，哪些不应该”。其思想可以理解为对单细胞参考做一次面向空间观测的条件化筛选。
+## 1. 核心创新逻辑
 
-在当前实现中，Stage3 会综合单细胞与空间数据的支持关系，为每一类细胞生成支持度判断，并进一步产出 `plugin_type` 等下游可直接使用的标签。对于可信度不足、疑似仅存在于单细胞侧而不被空间数据支持的细胞类型，Stage3 会将其标记为不应继续参与映射的对象。对于非缺失类型但暂时信号较弱的情况，系统还保留了“弱信号拯救”的设计空间，因此该模块并不是一个粗暴的硬过滤器，而是一层带有生物学约束的前置协调器。
+SVTuner 的核心创新不是重新设计一个空间分配求解器，而是把“哪些细胞类型应该进入映射池”这个问题从下游映射器中独立出来。
 
-### 3. Stage4: Baseline vs SVTuner + CytoSPACE
-第四阶段仍使用 CytoSPACE 完成实际映射，但会生成两套结果：
+当前逻辑可以分为两层：
 
-- `Baseline`：直接使用原始单细胞类型标签进入 CytoSPACE。
-- `Route2`：使用 Stage3 协调后的标签和过滤结果进入 CytoSPACE。
+1. Stage3 先根据 ST 表达证据判断每个单细胞类型是否被空间样本支持。
+2. Stage4 再根据 Stage3 结果重建或标注单细胞池，然后运行实际映射。
 
-因此，本项目并不是拿一个新算法去替换 CytoSPACE，而是构建一个明确可比较的实验框架：在同一求解器、同一组织、同一参考下，仅改变“输入细胞池是否经过类型错配协调”，观察最终空间映射是否改善。这使得 SVTuner 的贡献能够被单独识别，而不会与下游求解器本身的性能混淆。
+在项目中：
 
-### 4. Stage5: 指标汇总
-第五阶段当前已经分化为两条评估路径：
+- `Baseline` 指直接使用原始单细胞类型标签运行 CytoSPACE。
+- `Route2` 指使用 Stage3 协调后的 `plugin_type` 和过滤结果运行 CytoSPACE。
+- `SVTuner + CytoSPACE` 是当前主结果图中使用的方法名称。
 
-- 对模拟数据，使用真值进行映射质量评估；
-- 对真实数据，生成真实数据条件下的结果汇总与资源统计。
+理想情况下：
 
-此外，项目已经把运行时间、峰值内存、CPU 使用情况纳入比较体系，因此当前评价标准不再局限于“结果是否更好”，而是扩展到“在什么代价下获得改进”。
+- 如果目标细胞类型在 ST 样本中确实缺失，Stage3 应该把它识别为 unsupported 或 missing。
+- Route2 应该阻止该类型进入最终映射结果。
+- 非缺失类型即使信号偏弱，也不应该被粗暴误过滤。
+- 在同一个下游求解器 CytoSPACE 上比较时，baseline 和 route2 的差异应主要来自 SVTuner 的前置协调层。
 
-## 二、为什么需要模拟数据
-真实数据能说明方法在真实生物样本上的可运行性，但无法直接告诉我们“某类细胞本该不存在时，系统究竟有没有错误地把它映射进去”。因此，项目保留了模拟数据链，用于构造可控的缺失类型场景。
+## 2. 主流程结构
 
-这里的模拟并不是随机造点，而是尽量保持组织中细胞类型的空间聚集性。原因很直接：如果模拟数据本身没有空间结构，那么后续空间可视化就失去了解释意义，也无法评估一个方法究竟是在恢复真实组织结构，还是只是在做统计上的重分配。当前项目围绕这一原则，分别在 `real_brca`、`adult_mouse_kidney` 和 `human_lymph_node` 三组数据上建立了聚集型模拟链。
+当前项目主流程可以概括为 Stage1、Stage3、Stage4 和评估可视化四个部分。
 
-## 三、当前已完成的实验体系
-截至目前，项目已经形成了以下三组稳定的模拟场景链，每组均包含一个无缺失基准场景和一组递进缺失场景。
+### 2.1 Stage1：标准化预处理
 
-### 1. Real BRCA
-该组模拟以乳腺癌组织为基础，重点检验免疫与间质相关细胞在缺失条件下的错误映射问题。当前已完成的递进链条包括：
+Stage1 把真实数据或模拟数据整理为统一格式，供后续 Python 阶段读取。核心导出文件通常位于：
 
-- 无缺失基准；
-- 缺失 `B cells`，并使用 `Endothelial cells` 进行补位；
-- 在此基础上继续递进删除 `PCs`、`PVL`、`NK cells`、`T cells CD8`、`Fibroblasts`。
+```text
+stage1_preprocess/exported/
+```
 
-这一组实验的价值在于，它同时包含了免疫细胞、间质细胞和结构性细胞，能够较完整地检验 SVTuner 对“空间中不应出现的细胞类型”的抑制能力。
+常用文件包括：
 
-### 2. Adult Mouse Kidney
-该组模拟建立在更清晰的器官分区结构之上，适合观察缺失类型过滤是否会破坏强空间边界。当前链条包括：
+```text
+sc_expression_normalized.csv
+sc_expression_data.csv
+sc_expression_counts.csv
+st_expression_normalized.csv
+st_coordinates.csv
+sc_metadata.csv
+```
 
-- 无缺失基准；
-- 依次缺失 `CNT`、`CTAL`、`Endo`、`PTS3`、`DCT`、`MTAL`；
-- 缺失后统一使用 `PTS2` 进行补位。
+模拟数据通常从已有模拟源重建 Stage1：
 
-这组数据的意义在于，肾脏组织的空间分区更加明确，因此一旦出现误映射，视觉上非常容易识别。它不仅检验“能不能过滤”，也检验“过滤后组织结构是否仍然自然”。
+```powershell
+python scripts\prepare_stage1_from_sim_source.py --project_root . --sample <sample>
+```
 
-### 3. Human Lymph Node
-该组模拟主要针对免疫组织中多种淋巴样细胞的连续缺失场景，当前已经完成：
+真实低分辨率数据通常使用 R 版 Stage1：
 
-- 无缺失基准；
-- 依次缺失 `NK cell`、`CD4 Treg`、`T cell`、`ILC3`、`Mesenchymal cell`、`CD8 T cell`；
-- 缺失后统一使用 `CD4 T cell` 进行补位。
+```powershell
+Rscript r_scripts\stage1_preprocess.R --sample <sample> --project_root .
+```
 
-这一组的难点在于免疫细胞彼此表达接近、空间上也可能相互伴生，因此它更接近“高相似类型之间的错配过滤”这一困难场景。
+### 2.2 Stage3：类型错配检测
 
-## 四、当前已经取得的主要结果
-### 1. 结果层面的核心现象已经稳定出现
-在多组模拟实验中，项目已经重复观察到同一个现象：当空间数据中人为删除某一细胞类型后，CytoSPACE 基线方法仍可能将该类型映射回空间；而经过 SVTuner 协调后，这类错误映射能够被明显抑制，甚至在多缺失场景下仍保持稳定。
+Stage3 是 SVTuner 的核心模块。它不做最终映射，而是判断单细胞参考中每个细胞类型在 ST 样本中是否有足够支持。
 
-这说明项目当前最重要的科学命题已经有了明确支持：**空间映射中的一部分错误，不是求解器本身的线性分配问题，而是映射开始之前输入细胞池已经包含了不应存在的类型。**
+常用运行命令：
 
-### 2. 从“单缺失过滤”走到了“多缺失过滤”
-项目最开始验证的是单一缺失类型能否被识别和过滤。现在这一目标已经扩展到了递进式多缺失场景，并且在 `real_brca`、`adult_mouse_kidney`、`human_lymph_node` 三组数据上都建立了完整链条。这意味着方法不再只是对单个特例有效，而是具备了处理连续错配累积的能力。
+```powershell
+python -m src.stages.stage3_type_plugin --sample <sample> --sc_expr_source normalized
+```
 
-### 3. 可视化已经成为证据链的一部分
-项目当前不再把可视化视为单纯展示，而是把它作为结果验证的一部分。围绕三组模拟数据，已经分别生成了整合式三方对比图，用于展示：
+主要输出：
 
-- 真值空间分布；
-- CytoSPACE 基线映射；
-- SVTuner + CytoSPACE 映射。
+```text
+stage3_typematch/type_support.csv
+stage3_typematch/sc_metadata_with_plugin_type.csv 或等价 metadata 输出
+```
 
-这些图的意义在于，它们将“过滤是否发生”从 JSON 指标转化为肉眼可解释的空间证据。对于空间方法来说，这是非常关键的，因为许多看似相近的数值指标，在空间图上可能对应完全不同的组织学解释。
+`type_support.csv` 中最关键的列包括：
 
-### 4. 真实数据主线已经跑通
-除了模拟数据链，项目还保留并跑通了真实数据主线，当前以 `real_brca` 为核心真实样本。对于真实数据，由于不存在显式真值，项目已经建立了真实数据汇总与资源统计路径，用于输出基线与优化后结果的类型质量、spot 级结果和资源消耗比较。这使得项目在方法学上形成了一个闭环：模拟数据用于验证“该不该过滤”，真实数据用于验证“在真实样本中能否稳定运行并给出可解释结果”。
+- `orig_type`：原始单细胞类型。
+- `n_cells`：该类型在参考中的细胞数量。
+- `support_score`：该类型在 ST 中的支持分数。
+- `support_category`：强支持、弱支持或不支持等类别。
+- `auto_missing`：是否被自动判定为疑似缺失。
+- `auto_missing_confirmed`：是否最终确认缺失。
+- `auto_missing_confirmation_reason`：确认或拒绝缺失的原因。
+- `masked_missing_candidate`：是否像被掩盖的缺失类型。
+- `marker_identity_candidate`：marker 证据指向的身份候选。
+- `marker_identity_z`：marker 证据 z 分数。
+- `Action`：最终操作，例如 keep、drop、mark unknown 或 relabel。
 
-## 五、当前项目的学术定位
-SVTuner 当前最合适的定位，不是一个替代型映射器，而是一个 **mapping coordination layer**。它不与 CytoSPACE 正面竞争“谁来做线性分配”，而是回答另一个更基础的问题：**哪些细胞应该被允许进入分配过程。**
+Stage3 的主要判断逻辑包括：
 
-这一定位有三个直接优势：
+- 根据单细胞表达选择 marker genes。
+- 过滤非特异 marker，避免弱特异性基因误导类型判断。
+- 比较 marker 在 ST 中的表达支持情况。
+- 结合 `support_score`、marker identity 和缺失候选状态判断是否 missing。
+- 对强支持类型提供保护，避免把真实存在的类型误判为缺失。
+- 对弱支持类型保留拯救空间，而不是一律硬过滤。
+- 为下游生成 `plugin_type`，让 Stage4 可以使用协调后的细胞池。
 
-- 它能够和现有求解器兼容，而不要求完全推翻已有工作；
-- 它把“类型错配”从结果误差中单独剥离出来，形成一个独立可研究的问题；
-- 它使方法具有更好的可迁移性，因为同样的前置协调思想并不依赖单一下游求解器。
+因此 Stage3 的定位是“映射前的类型准入控制”，不是最终空间分配器。
 
-换句话说，SVTuner 的价值不在于再造一个更复杂的求解框架，而在于指出并处理了当前空间映射流程中一个长期被低估的误差来源。
+### 2.3 Stage4：Baseline 与 Route2 映射
 
-## 六、当前版本的边界
-项目目前仍然有清晰边界，这些边界应被如实陈述。
+Stage4 负责实际运行映射。当前主线使用 CytoSPACE，并固定生成两套结果。
 
-- 当前主控脚本聚焦到 Stage1、Stage3、Stage4、Stage5，Stage7 可视化与汇报仍作为相对独立的输出层存在。
-- 当前最稳定的主张是“缺失类型过滤能够改善结果解释性”，而不是“已经完全解决所有空间错配问题”。
-- 当前方法仍建立在 CytoSPACE 的表达匹配框架之上，因此空间连续性不足、类内异质性过大、跨模态偏移等问题并未从根本上消失。
+CytoSPACE baseline：
 
-这些边界并不削弱项目，反而决定了它目前的学术表达应当保持克制：SVTuner 不是一个包治百病的空间映射器，而是一种已经被初步验证有效的前置协调机制。
+```powershell
+python -m src.stages.stage4_cytospace `
+  --sample <sample> `
+  --project_root . `
+  --missing_type "__AUTO__" `
+  --n_processors 1 `
+  --n_subspots 800 `
+  --mapping_cells_per_spot <2-or-5> `
+  --sc_expr_source normalized `
+  --filter_mode none `
+  --cell_type_column sc_meta `
+  --filter_scope unsupported_all `
+  --stage4_suffix _baseline
+```
 
-## 七、下一步工作
-如果从论文推进的角度看，项目下一阶段的重点不再是继续堆积零散脚本，而是围绕以下三个方向收敛：
+SVTuner route2：
 
-1. 将 Stage3 的决策逻辑进一步形式化，明确“保留、拯救、过滤”的统一判据。
-2. 用统一的实验表述整理三组模拟链和真实数据主线，形成可直接写入论文的结果章节。
-3. 将当前已经稳定生成的综合可视化、资源统计和真实数据汇总纳入同一叙事框架，使项目从“已经跑通”转变为“已经具备论文组织结构”。
+```powershell
+python -m src.stages.stage4_cytospace `
+  --sample <sample> `
+  --project_root . `
+  --missing_type "__AUTO__" `
+  --n_processors 1 `
+  --n_subspots 800 `
+  --mapping_cells_per_spot <2-or-5> `
+  --sc_expr_source normalized `
+  --filter_mode plugin_unknown `
+  --cell_type_column plugin_type `
+  --filter_scope missing_only `
+  --stage4_suffix _route2
+```
 
-## 结论
-截至当前版本，SVTuner 已经从最初的流程性尝试，演化为一个结构清晰的方法学项目。它解决的问题明确，流程边界明确，实验链条明确，且已经在多组模拟数据和真实数据主线上得到可重复的支持性结果。项目的核心主张可以概括为一句话：
+主要输出：
 
-**在空间细胞映射中，先处理细胞类型错配，再做映射，能够比直接映射更接近生物学真实。**
+```text
+result/<sample>/stage4_cytospace_baseline/cytospace_output/cell_assignment.csv
+result/<sample>/stage4_cytospace_route2/cytospace_output/cell_assignment.csv
+result/<sample>/stage4_cytospace_*/cytospace_output/fractional_abundances_by_spot.csv
+result/<sample>/stage4_cytospace_*/stage4_summary.json
+```
+
+`stage4_summary.json` 用来记录：
+
+- 映射前后细胞数量。
+- 过滤掉的细胞数量。
+- 缺失类型是否仍出现在最终 assignment 中。
+- Stage3 是否检测到缺失类型。
+- 是否存在非缺失类型被误标 unknown。
+- route2 是否恢复了非缺失 unknown 细胞。
+
+### 2.4 评估与可视化
+
+模拟数据有真值，因此可以计算映射质量指标。真实数据没有显式真值，因此主要依靠 marker signature、空间表达模式和映射叠加图进行解释。
+
+当前主方法对比指标是 `composition_recovery`，它比较每个 spot 的预测细胞类型组成和模拟真值组成：
+
+```text
+composition_recovery = sum(min(predicted_fraction, truth_fraction))，再按 truth mass 加权
+```
+
+无噪声方法对比图：
+
+```powershell
+python scripts\plot_method_comparison_composition_recovery.py `
+  --project_root . `
+  --out_dir visualizations\method_comparison\no_noise `
+  --output_prefix composition_recovery_7mapping_methods_no_noise
+```
+
+10% scRNA reference noise 方法对比图：
+
+```powershell
+python scripts\plot_method_comparison_composition_recovery.py `
+  --project_root . `
+  --out_dir visualizations\method_comparison\scnoise10 `
+  --output_prefix composition_recovery_7mapping_methods_scnoise10 `
+  --sample_suffix _scnoise10 `
+  --title "Spatial cell-type composition recovery, 10% sc noise"
+```
+
+## 3. 模拟数据构造
+
+模拟数据不是随机生成的点，而是在真实 ST 空间结构基础上构造可控缺失类型场景。核心原则是：保留真实空间坐标、尽量保留细胞类型聚集结构，并生成可用于评估的真值文件。
+
+当前模拟数据组包括：
+
+```text
+real_brca
+human_lung_5loc
+mouse_brain_refined
+```
+
+### 3.1 构造原则
+
+模拟数据构造遵循以下逻辑：
+
+1. 使用真实或真实风格的 ST 坐标作为空间骨架。
+2. 构造 spot 级细胞类型组成真值。
+3. 为每个 query cell 记录真实 spot 或类型来源。
+4. 在指定场景中移除目标缺失类型。
+5. 使用替代类型进行填补或重平衡，保证 ST 表达矩阵仍可运行。
+6. 保存 truth 文件，用于评价 baseline、route2 和其他映射方法是否把缺失类型错误映射回来。
+
+关键真值文件：
+
+```text
+data/sim/<group>/<sample>/sim_truth_spot_type_fraction.csv
+data/sim/<group>/<sample>/sim_truth_query_cell_spot.csv
+data/sim/<group>/<sample>/sim_info.json
+```
+
+### 3.2 当前 12 个无噪声模拟场景
+
+```text
+real_brca_clustered_sim
+real_brca_clustered_sim_missing_epithelial_cells
+real_brca_clustered_sim_missing_epithelial_monocytes_macrophages
+real_brca_clustered_sim_missing_epithelial_monocytes_endothelial
+real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts
+
+human_lung_5loc_fine9_clustered_sim
+human_lung_5loc_fine9_clustered_sim_missing_ciliated
+human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular
+
+mouse_brain_refined8_balanced_clustered_sim
+mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56
+mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56
+mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56
+```
+
+`real_brca` 主要检验乳腺癌场景中的 epithelial、immune、endothelial 和 fibroblast 相关缺失类型。`human_lung_5loc` 主要检验肺组织细粒度类型，例如 `Ciliated` 和 `Endothelia_vascular`。`mouse_brain_refined` 主要检验脑组织细粒度类型，例如 `Micro`、`Astro_CTX` 和 `Oligo_2`。
+
+## 4. 真实数据 profile-mask 掩盖实验
+
+真实数据没有显式真值。为了在真实组织结构中构造可解释的缺失类型压力测试，项目建立了 profile-mask 场景：保留真实 ST 坐标和表达背景，同时对指定目标类型进行掩盖，使 Stage3 和 route2 可以检验该类型是否被识别为不应参与映射。
+
+当前真实 profile-mask 场景包括：
+
+```text
+adult_mouse_kidney_real_profile_mask_endo
+ffpe_mouse_brain_sagittal_real_profile_mask_astrocyte
+human_breast_cancer_real_profile_mask_basal_cell
+human_breast_cancer_visium_ff_wta_real_profile_mask_macrophage
+human_breast_cancer_wta_120_real_profile_mask_endothelial_cell
+human_cervical_cancer_real_profile_mask_epithelial_cell
+human_heart_ff_real_profile_mask_endothelial_cell
+human_intestine_cancer_real_profile_mask_endothelial_cell
+human_lymph_node_real_profile_mask_b_cell
+mouse_embryo_real_profile_mask_erythroid
+```
+
+真实掩盖场景可视化脚本：
+
+```powershell
+python scripts\render_real_profile_mask_visualization.py --project_root . --sample <profile_mask_sample>
+```
+
+输出目录：
+
+```text
+visualizations/masked_scenarios/real/<sample>/
+```
+
+当前真实数据掩盖图采用四面板标准：
+
+- A：原始真实 ST 的目标 marker signature score。
+- B：profile-mask 后真实 ST 的目标 marker signature score。
+- C：baseline 映射后目标类型叠加到 ST 表达信号上的空间图。
+- D：route2 映射后目标类型叠加到 ST 表达信号上的空间图。
+
+可视化标准已经统一为深紫色表达背景和青色空心轮廓叠加。每个面板底部统计标注和 D 面板额外文字标注已经删除，以保证图面简洁。
+
+## 5. 10% scRNA Reference Noise 场景
+
+噪声实验用于检验 Stage3 和各映射方法在参考表达被扰动时是否仍稳定。
+
+噪声构造方式：
+
+- 只扰动 scRNA reference 表达矩阵。
+- ST 表达矩阵、空间坐标和 truth 文件保持不变。
+- 对 sc expression 中约 10% 的元素进行扰动。
+- 每个表达矩阵独立生成 mask，避免不同矩阵维度不一致导致错误。
+
+生成脚本：
+
+```powershell
+python scripts\generate_sc_noise_from_processed_sim.py `
+  --project_root . `
+  --sim_group <group> `
+  --source_sample <source_sample> `
+  --target_sample <source_sample>_scnoise10 `
+  --noise_fraction 0.10 `
+  --seed 42 `
+  --overwrite
+```
+
+生成文件包括：
+
+```text
+data/sim/<group>/<sample>_scnoise10
+data/processed/simulation_experiments/<group>/<sample>_scnoise10
+configs/datasets/<sample>_scnoise10.yaml
+result/<sample>_scnoise10/sc_noise_generation_summary.json
+```
+
+当前 12 个 `_scnoise10` 场景已经完成 7 方法运行。需要如实记录的 Stage3 诊断现象是：
+
+- 最终 route2 映射层面，缺失类型没有残留在最终 assignment 中。
+- 如果严格按 Stage3 自动检测逻辑，10% noise 下有两个诊断问题：一个 human lung 双缺失场景漏检 `Endothelia_vascular`，一个 no-missing mouse brain 场景误标 `Inh_Sst`。
+- route2 最终通过恢复或 truth-aware 过滤避免了实际错误过滤，但 Stage3 诊断结果需要在后续论文表述中区分清楚。
+
+## 6. 多方法对照实验
+
+当前正式对照实验包含 7 种方法：
+
+1. `CytoSPACE`
+2. `SVTuner + CytoSPACE`
+3. `Tangram (all genes)`
+4. `Tangram (marker genes)`
+5. `novoSpaRc`
+6. `SpaOTsc`
+7. `CellTrek`
+
+早期使用过的 Pearson correlation 和 Euclidean distance 已经从正式对照中移除，因为它们更像简单相似度 baseline，而不是完整空间映射方法。对应脚本、日志和结果目录已经删除。
+
+### 6.1 Tangram
+
+Marker genes 版本：
+
+```powershell
+python scripts\run_tangram_marker_mapping.py `
+  --project_root . `
+  --group <group> `
+  --sample <sample> `
+  --top_n_marker 50 `
+  --num_epochs 200 `
+  --device cpu
+```
+
+All genes 版本：
+
+```powershell
+python scripts\run_tangram_marker_mapping.py `
+  --project_root . `
+  --group <group> `
+  --sample <sample> `
+  --gene_mode all `
+  --num_epochs 200 `
+  --device cpu
+```
+
+输出目录：
+
+```text
+result/<sample>/stage4_mapping/tangram_marker/
+result/<sample>/stage4_mapping/tangram_all/
+```
+
+### 6.2 CellTrek
+
+当前项目使用 Python runner 生成标准化 CellTrek-style 对照结果：
+
+```powershell
+python scripts\run_celltrek_mapping.py `
+  --project_root . `
+  --group <group> `
+  --sample <sample> `
+  --max_genes 2000 `
+  --n_pcs 30 `
+  --ntree 500
+```
+
+输出目录：
+
+```text
+result/<sample>/stage4_mapping/celltrek/
+```
+
+### 6.3 novoSpaRc
+
+```powershell
+python scripts\run_novosparc_mapping.py `
+  --project_root . `
+  --group <group> `
+  --sample <sample> `
+  --max_genes 500 `
+  --n_pcs 30 `
+  --alpha_linear 0.5 `
+  --epsilon 0.005
+```
+
+输出目录：
+
+```text
+result/<sample>/stage4_mapping/novosparc/
+```
+
+### 6.4 SpaOTsc
+
+```powershell
+python scripts\run_spaotsc_mapping.py `
+  --project_root . `
+  --group <group> `
+  --sample <sample> `
+  --max_genes 500 `
+  --n_pcs 30 `
+  --alpha 0.1 `
+  --epsilon 0.1 `
+  --rho inf `
+  --niter 10
+```
+
+输出目录：
+
+```text
+result/<sample>/stage4_mapping/spaotsc/
+```
+
+### 6.5 标准化输出
+
+所有外部方法 runner 都尽量输出统一文件：
+
+```text
+cell_assignment.csv
+spot_type_fraction.csv
+metrics_simulation.json
+run.log
+```
+
+这样后续评估脚本可以用同一套逻辑读取不同方法的结果。
+
+## 7. 当前方法对比结果
+
+无噪声正式图：
+
+```text
+visualizations/method_comparison/no_noise/composition_recovery_7mapping_methods_no_noise_boxplot.png
+```
+
+10% sc-noise 正式图：
+
+```text
+visualizations/method_comparison/scnoise10/composition_recovery_7mapping_methods_scnoise10_boxplot.png
+```
+
+无噪声均值排序：
+
+1. `SVTuner + CytoSPACE`: 0.6536
+2. `novoSpaRc`: 0.6226
+3. `Tangram (marker genes)`: 0.5935
+4. `CytoSPACE`: 0.5848
+5. `Tangram (all genes)`: 0.5674
+6. `CellTrek`: 0.4988
+7. `SpaOTsc`: 0.4843
+
+10% sc-noise 均值排序：
+
+1. `SVTuner + CytoSPACE`: 0.6554
+2. `novoSpaRc`: 0.6212
+3. `Tangram (marker genes)`: 0.6000
+4. `CytoSPACE`: 0.5882
+5. `Tangram (all genes)`: 0.5671
+6. `CellTrek`: 0.4861
+7. `SpaOTsc`: 0.4807
+
+这些数值来自 12 个模拟场景的 scenario-level composition recovery。
+
+## 8. 当前可视化资产
+
+主要可视化目录：
+
+```text
+visualizations/masked_scenarios/real/
+visualizations/simulations/real_brca/
+visualizations/simulations/human_lung_5loc/
+visualizations/simulations/mouse_brain_refined/
+visualizations/method_comparison/no_noise/
+visualizations/method_comparison/scnoise10/
+```
+
+模拟数据可视化通常是三联图：
+
+- truth 空间分布。
+- CytoSPACE baseline 映射。
+- SVTuner + CytoSPACE route2 映射。
+
+真实 profile-mask 可视化是四面板图。方法对比可视化是基于 12 个场景的箱线图。
+
+## 9. 环境和运行注意事项
+
+主环境：
+
+```powershell
+conda activate cytospace_v1.1.0_py310
+```
+
+常用起始命令：
+
+```powershell
+Set-Location "E:\AAA文件\Experiment\SVTuner\sctuner2.0"
+$py = "E:\ANACONDA\envs\cytospace_v1.1.0_py310\python.exe"
+```
+
+运行 CytoSPACE 主线时，通常建议禁用 user site：
+
+```powershell
+$env:PYTHONNOUSERSITE = "1"
+$env:CYTOSPACE_SKIP_ASSIGNED_EXPRESSION = "1"
+```
+
+运行 Tangram、novoSpaRc 和 SpaOTsc 时，不能启用 `PYTHONNOUSERSITE=1`，因为这些包安装在 user site：
+
+```powershell
+Remove-Item Env:PYTHONNOUSERSITE -ErrorAction SilentlyContinue
+```
+
+减少线程争用：
+
+```powershell
+$env:OMP_NUM_THREADS = "1"
+$env:MKL_NUM_THREADS = "1"
+$env:NUMBA_CACHE_DIR = Join-Path $PWD ".numba_cache"
+```
+
+## 10. 仓库和存储策略
+
+仓库追踪代码、配置、文档和精选可视化。大型运行数据和本地中间产物不进入 Git。
+
+`.gitignore` 当前忽略：
+
+```text
+data/
+logs/
+result/
+.numba_cache/
+tmp_*.pdf
+tmp_*.txt
+external/CellTrek/
+```
+
+这意味着仓库保留可复现流程和正式图表，而原始大矩阵、每次运行的详细结果和本地缓存留在本机。
+
+## 11. 当前项目状态
+
+当前检查点已经完成：
+
+- 真实 profile-mask 掩盖场景可视化。
+- `real_brca`、`human_lung_5loc`、`mouse_brain_refined` 模拟场景可视化。
+- 无噪声 7 方法对照实验。
+- 10% scRNA reference noise 7 方法对照实验。
+- Pearson correlation 和 Euclidean distance 从正式对照中移除。
+- 当前正式方法集固定为 CytoSPACE、SVTuner + CytoSPACE、Tangram all genes、Tangram marker genes、novoSpaRc、SpaOTsc 和 CellTrek。
+
+下一步可以进入论文级结果组织：整理主图、补充图、方法表、噪声鲁棒性表述和 Stage3 诊断边界。

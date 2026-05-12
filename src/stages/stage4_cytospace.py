@@ -619,7 +619,7 @@ def _load_sim_info(root: Path, sample: str) -> dict | None:
         if not p.exists():
             continue
         try:
-            return json.loads(p.read_text(encoding="utf-8"))
+            return json.loads(p.read_text(encoding="utf-8-sig"))
         except Exception:
             continue
     return None
