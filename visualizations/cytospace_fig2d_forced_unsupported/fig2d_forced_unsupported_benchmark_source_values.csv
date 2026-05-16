@@ -1,0 +1,49 @@
+pair_id,cell_type,method,nes,pval,forced_unsupported_type
+melanoma_slide1,CD4 T cells,CytoSPACE,2.50414621515578,0.0001370050691875,none
+melanoma_slide1,CD8 T cells,CytoSPACE,1.95905537150089,0.0002804262478968,none
+melanoma_slide1,CD4 T cells,SVTuner + CytoSPACE,2.58116448476078,0.0001419647927314,macrophages
+melanoma_slide1,CD8 T cells,SVTuner + CytoSPACE,2.12564227989732,0.0001362212232665,macrophages
+melanoma_slide1,CD4 T cells,Tangram,-1.13822650940517,0.227645851656406,none
+melanoma_slide1,CD8 T cells,Tangram,2.31022991000169,0.0002865329512893,none
+melanoma_slide1,CD4 T cells,CellTrek,-1.28431726517713,0.0889478924659808,none
+melanoma_slide1,CD8 T cells,CellTrek,-1.78867266875448,0.0005833171300797,none
+melanoma_slide2,CD4 T cells,CytoSPACE,2.55339535121987,0.0001318391562294,none
+melanoma_slide2,CD8 T cells,CytoSPACE,1.85355316184743,0.000263852242744,none
+melanoma_slide2,CD4 T cells,SVTuner + CytoSPACE,2.128914616742,0.0001290988897495,non_malignant_unresolved
+melanoma_slide2,CD8 T cells,SVTuner + CytoSPACE,2.12373556858832,0.0001332800213248,non_malignant_unresolved
+melanoma_slide2,CD4 T cells,Tangram,-1.13905909252044,0.233338173370118,none
+melanoma_slide2,CD8 T cells,Tangram,1.4088778945252,0.018694885361552,none
+melanoma_slide2,CD4 T cells,CellTrek,1.32749203430975,0.0619637750238322,none
+melanoma_slide2,CD8 T cells,CellTrek,2.52513420160589,0.0001930501930501,none
+brca_er_her2_fresh_frozen,CD4 T cells,CytoSPACE,0.991759571973429,0.472338516746411,none
+brca_er_her2_fresh_frozen,CD8 T cells,CytoSPACE,-1.31827056848535,0.0988642230252968,none
+brca_er_her2_fresh_frozen,CD4 T cells,SVTuner + CytoSPACE,0.962604482218131,0.516138287189786,t_cells
+brca_er_her2_fresh_frozen,CD8 T cells,SVTuner + CytoSPACE,-1.33648250885439,0.0849655172413793,t_cells
+brca_er_her2_fresh_frozen,CD4 T cells,Tangram,-1.60049159515305,0.0099408919935518,none
+brca_er_her2_fresh_frozen,CD8 T cells,Tangram,-1.5184335470494,0.0269709543568465,none
+brca_er_her2_fresh_frozen,CD4 T cells,CellTrek,-0.905550748761339,0.62406216505895,none
+brca_er_her2_fresh_frozen,CD8 T cells,CellTrek,0.74313921777858,0.883472962680883,none
+brca_her2_ffpe,CD4 T cells,CytoSPACE,1.08472816965508,0.335517145246724,none
+brca_her2_ffpe,CD8 T cells,CytoSPACE,-1.07329585002461,0.326310749341633,none
+brca_her2_ffpe,CD4 T cells,SVTuner + CytoSPACE,1.24321130899911,0.164282795259501,plasma_cells
+brca_her2_ffpe,CD8 T cells,SVTuner + CytoSPACE,0.867038175746585,0.683847669074196,plasma_cells
+brca_her2_ffpe,CD4 T cells,Tangram,-1.8772211292817,0.000142005112184,none
+brca_her2_ffpe,CD8 T cells,Tangram,-0.994015452342894,0.462448559670782,none
+brca_her2_ffpe,CD4 T cells,CellTrek,-2.10503738165086,0.0001942879347192,none
+brca_her2_ffpe,CD8 T cells,CellTrek,1.6160351639043,0.0099833610648918,none
+brca_tnbc_fresh_frozen,CD4 T cells,CytoSPACE,2.09779471241445,0.0001217285453438,none
+brca_tnbc_fresh_frozen,CD8 T cells,CytoSPACE,1.34045314416027,0.0811287477954145,none
+brca_tnbc_fresh_frozen,CD4 T cells,SVTuner + CytoSPACE,1.88359051305733,0.0003870967741935,t_cells
+brca_tnbc_fresh_frozen,CD8 T cells,SVTuner + CytoSPACE,1.91020240822259,0.0002948113207547,t_cells
+brca_tnbc_fresh_frozen,CD4 T cells,Tangram,1.72251958362474,0.0042576823398741,none
+brca_tnbc_fresh_frozen,CD8 T cells,Tangram,0.838957071497212,0.755476736907991,none
+brca_tnbc_fresh_frozen,CD4 T cells,CellTrek,0.844199156240513,0.724526600541028,none
+brca_tnbc_fresh_frozen,CD8 T cells,CellTrek,-0.817222395972677,0.787905346187555,none
+crc_fresh_frozen,CD4 T cells,CytoSPACE,-1.8572641130304,0.0022301516503122,none
+crc_fresh_frozen,CD8 T cells,CytoSPACE,1.11468738439736,0.318149634175124,none
+crc_fresh_frozen,CD4 T cells,SVTuner + CytoSPACE,-1.80946033513024,0.0004595588235294,fibroblasts
+crc_fresh_frozen,CD8 T cells,SVTuner + CytoSPACE,1.83010325218045,0.0007114905727499,fibroblasts
+crc_fresh_frozen,CD4 T cells,Tangram,-0.928553547028707,0.583661417322835,none
+crc_fresh_frozen,CD8 T cells,Tangram,-1.22567361885689,0.153639331668907,none
+crc_fresh_frozen,CD4 T cells,CellTrek,0.792353003497545,0.81061841910129,none
+crc_fresh_frozen,CD8 T cells,CellTrek,-1.43304122760087,0.0420963651732882,none

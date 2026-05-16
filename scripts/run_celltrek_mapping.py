@@ -28,13 +28,20 @@ _ROOT = _HERE.parents[1]
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from scripts.run_similarity_mapping import (  # noqa: E402
-    _common_genes,
+from scripts.run_tangram_marker_mapping import (  # noqa: E402
     _eval_against_truth,
     _json_write,
     _load_inputs,
     _processed_export_dir,
 )
+
+
+def _common_genes(sc_expr: pd.DataFrame, st_expr: pd.DataFrame) -> list[str]:
+    st_genes = set(st_expr.columns)
+    genes = [str(g) for g in sc_expr.columns if g in st_genes]
+    if not genes:
+        raise ValueError("no common genes between sc and ST expression matrices.")
+    return genes
 
 
 def parse_args() -> argparse.Namespace:

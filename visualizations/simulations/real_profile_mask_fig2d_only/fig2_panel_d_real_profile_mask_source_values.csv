@@ -1,0 +1,81 @@
+sample,source_sample,target_type,scenario_label,method,metric,metric_label,direction,low_support_quantile,raw_low_support_mean,value,meaning
+adult_mouse_kidney_real_profile_mask_endo,adult_mouse_kidney_real,Endo,"Mouse kidney
+Endo",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1549230586433712,0.8658585457412623,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+adult_mouse_kidney_real_profile_mask_endo,adult_mouse_kidney_real,Endo,"Mouse kidney
+Endo",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1513792265119348,0.8685235732708734,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+adult_mouse_kidney_real_profile_mask_endo,adult_mouse_kidney_real,Endo,"Mouse kidney
+Endo",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1848638412125701,0.8439788313369547,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+adult_mouse_kidney_real_profile_mask_endo,adult_mouse_kidney_real,Endo,"Mouse kidney
+Endo",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0557871862138073,0.9471605765420704,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+ffpe_mouse_brain_sagittal_real_profile_mask_astrocyte,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
+Microglia",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.2001291689440906,0.8332436423321247,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+ffpe_mouse_brain_sagittal_real_profile_mask_astrocyte,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
+Microglia",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1579470103989849,0.8635973762352368,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+ffpe_mouse_brain_sagittal_real_profile_mask_astrocyte,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
+Microglia",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1357495470355512,0.8804758079015972,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+ffpe_mouse_brain_sagittal_real_profile_mask_astrocyte,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
+Microglia",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0494727551618648,0.9528594192478732,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_real_profile_mask_basal_cell,human_breast_cancer_real,Basal cell,"BRCA
+Basal cell",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1669131927409407,0.8569617742097152,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_real_profile_mask_basal_cell,human_breast_cancer_real,Basal cell,"BRCA
+Basal cell",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1583552510132809,0.8632930175136182,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_real_profile_mask_basal_cell,human_breast_cancer_real,Basal cell,"BRCA
+Basal cell",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.214707075554075,0.8232437433888011,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_real_profile_mask_basal_cell,human_breast_cancer_real,Basal cell,"BRCA
+Basal cell",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0386485804803898,0.96278955056915,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_visium_ff_wta_real_profile_mask_macrophage,human_breast_cancer_visium_ff_wta_real,Macrophage,"BRCA FF WTA
+Macrophage",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.146461025120746,0.8722494512141653,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_visium_ff_wta_real_profile_mask_macrophage,human_breast_cancer_visium_ff_wta_real,Macrophage,"BRCA FF WTA
+Macrophage",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1357696800981263,0.8804602002701848,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_visium_ff_wta_real_profile_mask_macrophage,human_breast_cancer_visium_ff_wta_real,Macrophage,"BRCA FF WTA
+Macrophage",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1134618027362574,0.8980999595518834,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_visium_ff_wta_real_profile_mask_macrophage,human_breast_cancer_visium_ff_wta_real,Macrophage,"BRCA FF WTA
+Macrophage",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0327194415629661,0.9683172018980808,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_wta_120_real_profile_mask_endothelial_cell,human_breast_cancer_wta_120_real,Endothelial cell,"BRCA WTA120
+Endothelial cell",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1703765428015287,0.8544258735793708,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_wta_120_real_profile_mask_endothelial_cell,human_breast_cancer_wta_120_real,Endothelial cell,"BRCA WTA120
+Endothelial cell",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1594559971059588,0.8624734379709396,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_wta_120_real_profile_mask_endothelial_cell,human_breast_cancer_wta_120_real,Endothelial cell,"BRCA WTA120
+Endothelial cell",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.153361874925514,0.8670305666767263,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_breast_cancer_wta_120_real_profile_mask_endothelial_cell,human_breast_cancer_wta_120_real,Endothelial cell,"BRCA WTA120
+Endothelial cell",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0708935651450487,0.9337996160846792,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_cervical_cancer_real_profile_mask_epithelial_cell,human_cervical_cancer_real,Epithelial cell,"Cervical
+Epithelial cell",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1137479835852562,0.8978691901025122,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_cervical_cancer_real_profile_mask_epithelial_cell,human_cervical_cancer_real,Epithelial cell,"Cervical
+Epithelial cell",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1093979032509636,0.9013898413451245,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_cervical_cancer_real_profile_mask_epithelial_cell,human_cervical_cancer_real,Epithelial cell,"Cervical
+Epithelial cell",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.121235606925513,0.8918732100758487,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_cervical_cancer_real_profile_mask_epithelial_cell,human_cervical_cancer_real,Epithelial cell,"Cervical
+Epithelial cell",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0590145550077823,0.9442740850645356,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1252243554116456,0.8887116557605667,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0991663510236083,0.9097803977248224,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.2028514756676889,0.8313578361326045,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0232958169000967,0.977234523472726,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_intestine_cancer_real_profile_mask_endothelial_cell,human_intestine_cancer_real,Endothelial cell,"Intestine
+Endothelial cell",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1216465571565712,0.8915464444834109,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_intestine_cancer_real_profile_mask_endothelial_cell,human_intestine_cancer_real,Endothelial cell,"Intestine
+Endothelial cell",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.117355316427358,0.894970458633883,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_intestine_cancer_real_profile_mask_endothelial_cell,human_intestine_cancer_real,Endothelial cell,"Intestine
+Endothelial cell",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1363704026652802,0.8799947602072066,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_intestine_cancer_real_profile_mask_endothelial_cell,human_intestine_cancer_real,Endothelial cell,"Intestine
+Endothelial cell",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0478239635861066,0.9543587804363316,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_lymph_node_real_profile_mask_b_cell,human_lymph_node_real,B cell,"Lymph node
+B cell",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.108447937385834,0.9021623535683616,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_lymph_node_real_profile_mask_b_cell,human_lymph_node_real,B cell,"Lymph node
+B cell",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0829832088105845,0.9233753504805275,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_lymph_node_real_profile_mask_b_cell,human_lymph_node_real,B cell,"Lymph node
+B cell",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0852557918904369,0.9214417536146686,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+human_lymph_node_real_profile_mask_b_cell,human_lymph_node_real,B cell,"Lymph node
+B cell",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0112138509949873,0.9889105049501118,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+mouse_embryo_real_profile_mask_erythroid,mouse_embryo_real,Erythroid,"Mouse embryo
+Erythroid",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.8404330188293514,0.5433503907879638,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+mouse_embryo_real_profile_mask_erythroid,mouse_embryo_real,Erythroid,"Mouse embryo
+Erythroid",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.8084364346623932,0.5529638647137102,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+mouse_embryo_real_profile_mask_erythroid,mouse_embryo_real,Erythroid,"Mouse embryo
+Erythroid",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.6335727045421179,0.6121551842899425,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+mouse_embryo_real_profile_mask_erythroid,mouse_embryo_real,Erythroid,"Mouse embryo
+Erythroid",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.2535526558476019,0.7977327440815322,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.

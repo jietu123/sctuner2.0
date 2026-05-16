@@ -90,6 +90,8 @@ def _read_json(path: Path) -> dict[str, Any]:
 def _processed_export_dir(project_root: Path, group: str, sample: str) -> Path:
     candidates = [
         project_root / "data" / "processed" / "simulation_experiments" / group / sample / "stage1_preprocess" / "exported",
+        project_root / "data" / "processed" / group / sample / "stage1_preprocess" / "exported",
+        project_root / "data" / "processed" / "low_resolution_experiments" / sample / "stage1_preprocess" / "exported",
         project_root / "data" / "processed" / sample / "stage1_preprocess" / "exported",
     ]
     for cand in candidates:
@@ -118,14 +120,14 @@ def _load_inputs(export_dir: Path, cell_type_column: str) -> tuple[pd.DataFrame,
     st_expr_path = export_dir / "st_expression_normalized.csv"
     sc_meta_path = export_dir / "sc_metadata.csv"
     sim_info_path = export_dir / "sim_info.json"
-    for p in [sc_expr_path, st_expr_path, sc_meta_path, sim_info_path]:
+    for p in [sc_expr_path, st_expr_path, sc_meta_path]:
         if not p.exists():
             raise FileNotFoundError(f"required input missing: {p}")
 
     sc_expr = pd.read_csv(sc_expr_path, index_col=0)
     st_expr = pd.read_csv(st_expr_path, index_col=0)
     sc_meta = pd.read_csv(sc_meta_path)
-    sim_info = _read_json(sim_info_path)
+    sim_info = _read_json(sim_info_path) if sim_info_path.exists() else {}
 
     if cell_type_column not in sc_meta.columns:
         candidates = [c for c in ["cell_type", "sc_meta", "orig_type", "type", "label"] if c in sc_meta.columns]

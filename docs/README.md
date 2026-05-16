@@ -516,6 +516,16 @@ visualizations/method_comparison/scnoise10/
 conda activate cytospace_v1.1.0_py310
 ```
 
+当前项目采用双环境策略：
+
+- `cytospace_v1.1.0_py310` 是主环境，用于 Stage3、Stage4、CytoSPACE、Tangram、CellTrek、novoSpaRc、SpaOTsc、模拟实验、噪声实验和常规可视化。
+- `cytospace_fig2c_r40` 是论文 Fig.2c / Fig.2i 复现用 R 环境，用于 Seurat/Rscript 相关步骤。它只服务论文复现，不作为主流程运行环境。
+
+不建议把这两个环境强行合并。主流程依赖 Python 3.10 和多种映射方法，R/Seurat 依赖在 Windows 上容易与主环境 runtime 冲突。隔离 R 复现环境能降低主流程被破坏的风险。
+
+项目内曾经存在的 `external/r_fig2c_libs` 只是局部 R 包库缓存，不是环境本体。当前已经不再作为必需目录；如果需要重跑 R 复现，应优先使用 `cytospace_fig2c_r40` 环境。
+
+
 常用起始命令：
 
 ```powershell
