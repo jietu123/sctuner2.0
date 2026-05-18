@@ -1,7 +1,0 @@
-pair_id,forced_unsupported_type
-melanoma_slide1,macrophages
-melanoma_slide2,non_malignant_unresolved
-brca_er_her2_fresh_frozen,t_cells
-brca_her2_ffpe,plasma_cells
-brca_tnbc_fresh_frozen,t_cells
-crc_fresh_frozen,fibroblasts

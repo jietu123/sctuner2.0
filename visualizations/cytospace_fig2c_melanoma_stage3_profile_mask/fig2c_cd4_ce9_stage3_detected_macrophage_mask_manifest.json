@@ -1,0 +1,12 @@
+{
+  "sample": "cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages",
+  "strict_stage3_profile_mask_target": "Macrophages",
+  "readout_cell_type": "CD4 T cells",
+  "gene_set": "EcoTyper CD4 T cells CE9",
+  "filter_rule": "Route2 uses Stage3 auto-detected missing type with filter_scope=missing_detected_only; no forced whitelist.",
+  "baseline_stage4_summary": "result/cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages/stage4_cytospace_baseline_strictfig2c/cytospace_output/stage4_summary.json",
+  "route2_stage4_summary": "result/cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages/stage4_cytospace_route2_strictfig2c/cytospace_output/stage4_summary.json",
+  "metrics_csv": "visualizations\\cytospace_fig2c_melanoma_stage3_profile_mask\\fig2c_cd4_ce9_stage3_detected_macrophage_mask_metrics.csv",
+  "png": "visualizations\\cytospace_fig2c_melanoma_stage3_profile_mask\\fig2c_cd4_ce9_stage3_detected_macrophage_mask_baseline_vs_route2.png",
+  "pdf": "visualizations\\cytospace_fig2c_melanoma_stage3_profile_mask\\fig2c_cd4_ce9_stage3_detected_macrophage_mask_baseline_vs_route2.pdf"
+}

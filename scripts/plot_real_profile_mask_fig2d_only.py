@@ -18,7 +18,7 @@ VIS_DIR = PROJECT_ROOT / "visualizations" / "simulations" / "real_profile_mask_f
 
 BASELINE = "CytoSPACE"
 ROUTE2 = "SVTuner + CytoSPACE"
-METHOD_ORDER = [BASELINE, ROUTE2, "Tangram"]
+METHOD_ORDER = [ROUTE2, BASELINE, "Tangram"]
 COLORS = {
     BASELINE: "#d81b60",
     ROUTE2: "#2a9d8f",
@@ -106,13 +106,13 @@ def main() -> int:
         ax_low.set_ylim(low_lo - low_span * 0.45, low_hi + low_span * 0.70)
 
     yb = hi + span * 0.08
-    bracket_specs = [(2, ROUTE2, yb), (3, "Tangram", yb + span * 0.075)]
+    bracket_specs = [(2, BASELINE, yb), (3, "Tangram", yb + span * 0.075)]
     for x2, method, y_bracket in bracket_specs:
-        paired = pivot[[BASELINE, method]].dropna()
+        paired = pivot[[ROUTE2, method]].dropna()
         pvalue = float(
             wilcoxon(
+                paired[ROUTE2].to_numpy(dtype=float),
                 paired[method].to_numpy(dtype=float),
-                paired[BASELINE].to_numpy(dtype=float),
                 alternative="greater",
                 zero_method="wilcox",
             ).pvalue
@@ -129,7 +129,7 @@ def main() -> int:
     ax.set_xticks(positions)
     ax.tick_params(axis="x", labelbottom=False, bottom=False)
     ax_low.set_xticks(positions)
-    ax_low.set_xticklabels(["CytoSPACE", "SVTuner +\nCytoSPACE", "Tangram"], fontsize=8.0, rotation=42, ha="right", rotation_mode="anchor")
+    ax_low.set_xticklabels(["SVTuner +\nCytoSPACE", "CytoSPACE", "Tangram"], fontsize=8.0, rotation=42, ha="right", rotation_mode="anchor")
     ax.set_ylabel("Suppression enrichment index", fontsize=8.8)
     ax.tick_params(axis="y", labelsize=8.0)
     ax_low.tick_params(axis="y", labelsize=7.0)

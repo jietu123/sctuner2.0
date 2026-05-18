@@ -7,13 +7,13 @@ adult_mouse_kidney_real_profile_mask_endo,adult_mouse_kidney_real,Endo,"Mouse ki
 Endo",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1848638412125701,0.8439788313369547,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
 adult_mouse_kidney_real_profile_mask_endo,adult_mouse_kidney_real,Endo,"Mouse kidney
 Endo",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0557871862138073,0.9471605765420704,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
-ffpe_mouse_brain_sagittal_real_profile_mask_astrocyte,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
+ffpe_mouse_brain_sagittal_real_profile_mask_microglia,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
 Microglia",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.2001291689440906,0.8332436423321247,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
-ffpe_mouse_brain_sagittal_real_profile_mask_astrocyte,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
+ffpe_mouse_brain_sagittal_real_profile_mask_microglia,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
 Microglia",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1579470103989849,0.8635973762352368,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
-ffpe_mouse_brain_sagittal_real_profile_mask_astrocyte,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
+ffpe_mouse_brain_sagittal_real_profile_mask_microglia,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
 Microglia",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1357495470355512,0.8804758079015972,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
-ffpe_mouse_brain_sagittal_real_profile_mask_astrocyte,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
+ffpe_mouse_brain_sagittal_real_profile_mask_microglia,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
 Microglia",CellTrek,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0494727551618648,0.9528594192478732,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
 human_breast_cancer_real_profile_mask_basal_cell,human_breast_cancer_real,Basal cell,"BRCA
 Basal cell",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1669131927409407,0.8569617742097152,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.

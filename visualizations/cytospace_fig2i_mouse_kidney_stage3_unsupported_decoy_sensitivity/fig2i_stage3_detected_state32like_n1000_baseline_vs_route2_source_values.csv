@@ -1,0 +1,57 @@
+method,stage4_dir,epithelial_type,state_label,states,known_distance_rank,predicted_mean_nearest5_distance_to_state32,n_assignments,anchor_types,n_anchor_assignments
+CytoSPACE,stage4_cytospace_baseline,Nephron,19,State_19,15.0,3.4038444489875057,278,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,18,State_18,14.0,3.431867777811443,614,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,"3,4",State_3;State_4,14.0,3.3687587226880495,2256,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,17,State_17,13.0,4.474514608633142,34,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,1,State_1,12.0,2.3234037578079643,28,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,2,State_2,12.0,3.6167140643832547,273,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,"5,6",State_5;State_6,11.0,3.534605686822609,1895,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,16,State_16,10.0,4.236125573063412,1018,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,"7,8",State_7;State_8,9.0,3.575759678079603,362,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,9A,State_9A,8.0,4.184430108575816,83,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,9B,State_9B,8.0,4.645749902205111,107,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,15,State_15,7.0,4.497728167847581,632,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,10,State_10,6.0,4.694862177222373,212,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,11,State_11,4.0,3.905773546770748,754,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Nephron,13,State_13,2.0,3.772709878841425,958,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,20,State_20,14.0,3.6688203036638423,212,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,21,State_21,13.0,3.054724106068738,220,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,22,State_22,13.0,3.7134043599272233,99,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,23,State_23,11.0,4.011321561582507,322,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,24,State_24,11.0,2.920925282345451,67,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,25,State_25,9.0,3.6950146680742164,94,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,26,State_26,8.0,5.075458728957461,476,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,27,State_27,6.0,4.574789018564639,246,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,28,State_28,5.0,5.045611793875424,1149,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,29,State_29,5.0,4.209358022407967,1363,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,30,State_30,3.0,3.256412322894134,176,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,31,State_31,3.0,2.0606724996859986,206,State_32;Unsupported_decoy_State32like,1258
+CytoSPACE,stage4_cytospace_baseline,Ureteric,32,State_32,1.0,0.8497622714301715,158,State_32;Unsupported_decoy_State32like,1258
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,19,State_19,15.0,26.686121831617147,299,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,18,State_18,14.0,25.587409601482094,660,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,"3,4",State_3;State_4,14.0,26.43428940447862,2427,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,17,State_17,13.0,22.789493934735987,36,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,1,State_1,12.0,20.38210019597945,30,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,2,State_2,12.0,20.789599929482943,294,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,"5,6",State_5;State_6,11.0,23.251384857954797,2039,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,16,State_16,10.0,22.04665369142548,1096,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,"7,8",State_7;State_8,9.0,23.746898936991634,389,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,9A,State_9A,8.0,17.94587286818114,89,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,9B,State_9B,8.0,17.62991162962142,116,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,15,State_15,7.0,18.55984863985594,680,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,10,State_10,6.0,17.485856684435138,228,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,11,State_11,4.0,10.745616134052698,812,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Nephron,13,State_13,2.0,8.949506360435011,1031,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,20,State_20,14.0,27.517034858324582,228,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,21,State_21,13.0,27.12684827675623,236,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,22,State_22,13.0,28.48246753466034,106,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,23,State_23,11.0,24.907649089287357,346,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,24,State_24,11.0,26.37971070031193,72,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,25,State_25,9.0,25.956210759773,101,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,26,State_26,8.0,15.503042132289455,512,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,27,State_27,6.0,18.283176237667348,265,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,28,State_28,5.0,12.652152544378714,1237,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,29,State_29,5.0,7.395000974411046,1465,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,30,State_30,3.0,4.587312269479847,189,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,31,State_31,3.0,2.69467062961062,222,State_32,170
+SVTuner + CytoSPACE,stage4_cytospace_route2,Ureteric,32,State_32,1.0,1.2530331707491849,170,State_32,170

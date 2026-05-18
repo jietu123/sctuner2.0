@@ -144,10 +144,10 @@ def _panel(ax: plt.Axes, df: pd.DataFrame, method: str, color: str, state_colors
 def main() -> int:
     parser = argparse.ArgumentParser(description="Plot Fig.2k-style CytoSPACE vs Route2 mapped result.")
     parser.add_argument("--project_root", default=".")
-    parser.add_argument("--sample", default="cytospace_fig2k_breast_forced_unsupported")
+    parser.add_argument("--sample", default="cytospace_fig2k_breast_state_decoy_stage3_detected")
     parser.add_argument("--source_xlsx", default="data/raw/cytospace_fig2c_melanoma/41587_2023_1697_MOESM3_ESM.xlsx")
-    parser.add_argument("--out_dir", default="visualizations/cytospace_fig2k_tcell_states_route2")
-    parser.add_argument("--out_prefix", default="fig2k_mapping_baseline_vs_route2")
+    parser.add_argument("--out_dir", default="visualizations/cytospace_fig2k_tcell_states_stage3_decoy")
+    parser.add_argument("--out_prefix", default="fig2k_stage3_decoy_baseline_vs_route2")
     args = parser.parse_args()
 
     root = Path(args.project_root).resolve()

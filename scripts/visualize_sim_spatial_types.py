@@ -108,7 +108,12 @@ def _make_palette(type_cols: list[str]) -> dict[str, str]:
         "#fb5607",
         "#3a86ff",
     ]
-    return {t: base[i % len(base)] for i, t in enumerate(type_cols)}
+    palette = {t: base[i % len(base)] for i, t in enumerate(type_cols)}
+    # Keep real_brca color semantics aligned with missing_type_triptych:
+    # red should represent Epithelial cells and light purple B cells.
+    if "B cells" in palette and "Epithelial cells" in palette:
+        palette["B cells"], palette["Epithelial cells"] = palette["Epithelial cells"], palette["B cells"]
+    return palette
 
 
 def plot_dominant_map(

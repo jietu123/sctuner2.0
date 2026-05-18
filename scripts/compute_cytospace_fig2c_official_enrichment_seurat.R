@@ -37,11 +37,20 @@ slide_label <- if (length(args) >= 5 && nzchar(args[[5]])) {
 
 expr_dir <- file.path(cytospace_dir, "assigned_expression")
 loc_path <- file.path(cytospace_dir, "assigned_locations.csv")
-gene_set_path <- file.path(
+default_gene_set_path <- file.path(
   project_root,
   "data", "raw", "cytospace_fig2c_melanoma", "prepared", "gene_sets",
   "tcell_exhaustion_zheng_cell2017.txt"
 )
+if (length(args) >= 6 && file.exists(args[[6]])) {
+  gene_set_path <- normalizePath(args[[6]], winslash = "/", mustWork = TRUE)
+  gene_set_name <- if (length(args) >= 7 && nzchar(args[[7]])) args[[7]] else tools::file_path_sans_ext(basename(gene_set_path))
+  cell_types_arg <- if (length(args) >= 8 && nzchar(args[[8]])) strsplit(args[[8]], "\\|")[[1]] else c("CD4 T cells", "CD8 T cells")
+} else {
+  gene_set_path <- default_gene_set_path
+  gene_set_name <- if (length(args) >= 6 && nzchar(args[[6]])) args[[6]] else "Exhaustion"
+  cell_types_arg <- if (length(args) >= 7 && nzchar(args[[7]])) strsplit(args[[7]], "\\|")[[1]] else c("CD4 T cells", "CD8 T cells")
+}
 
 stopifnot(file.exists(file.path(expr_dir, "matrix.mtx")))
 stopifnot(file.exists(file.path(expr_dir, "genes.tsv")))
@@ -65,11 +74,11 @@ meta <- read.csv(loc_path, stringsAsFactors = FALSE, check.names = FALSE)
 rownames(meta) <- meta$UniqueCID
 meta <- meta[colnames(counts), , drop = FALSE]
 
-exhaustion_genes <- unique(readLines(gene_set_path, warn = FALSE))
-exhaustion_genes <- exhaustion_genes[nzchar(exhaustion_genes)]
-exhaustion_genes <- intersect(exhaustion_genes, rownames(counts))
-if (length(exhaustion_genes) < 10) {
-  stop("Too few exhaustion genes found in assigned expression: ", length(exhaustion_genes))
+signature_genes <- unique(readLines(gene_set_path, warn = FALSE))
+signature_genes <- signature_genes[nzchar(signature_genes)]
+signature_genes <- intersect(signature_genes, rownames(counts))
+if (length(signature_genes) < 10) {
+  stop("Too few signature genes found in assigned expression: ", length(signature_genes))
 }
 
 melanoma <- meta[meta$CellType %in% tumor_labels, , drop = FALSE]
@@ -150,7 +159,7 @@ compute_for_type <- function(cell_type) {
 
   set.seed(1)
   fg <- suppressWarnings(fgsea(
-    pathways = list(Exhaustion = exhaustion_genes),
+    pathways = list(Signature = signature_genes),
     stats = stats,
     nperm = 10000,
     minSize = 1,
@@ -172,11 +181,11 @@ compute_for_type <- function(cell_type) {
   ranked_out <- data.frame(
     gene = names(stats),
     avg_log2FC_close_vs_far = as.numeric(stats),
-    in_exhaustion_gene_set = names(stats) %in% exhaustion_genes,
+    in_signature_gene_set = names(stats) %in% signature_genes,
     stringsAsFactors = FALSE
   )
 
-  curve_out <- running_enrichment(stats, exhaustion_genes)
+  curve_out <- running_enrichment(stats, signature_genes)
   curve_out$CellType <- cell_type
 
   prefix <- gsub("[^A-Za-z0-9]+", "_", tolower(cell_type))
@@ -188,7 +197,7 @@ compute_for_type <- function(cell_type) {
     method = "CytoSPACE",
     slide = slide_label,
     cell_type = cell_type,
-    pathway = fg$pathway,
+    pathway = gene_set_name,
     ES = fg$ES,
     NES = fg$NES,
     pval = fg$pval,
@@ -196,14 +205,14 @@ compute_for_type <- function(cell_type) {
     n_mapped_cells = nrow(target_meta),
     n_close = sum(distance_group == "close"),
     n_far = sum(distance_group == "far"),
-    n_exhaustion_genes_used = length(exhaustion_genes),
+    n_exhaustion_genes_used = length(signature_genes),
     seurat_version = as.character(packageVersion("Seurat")),
     fgsea_version = as.character(packageVersion("fgsea")),
     stringsAsFactors = FALSE
   )
 }
 
-results <- do.call(rbind, lapply(c("CD4 T cells", "CD8 T cells"), compute_for_type))
+results <- do.call(rbind, lapply(cell_types_arg, compute_for_type))
 write.csv(results, file.path(out_dir, "fig2c_official_enrichment_summary.csv"), row.names = FALSE)
 
 message("[OK] wrote: ", file.path(out_dir, "fig2c_official_enrichment_summary.csv"))

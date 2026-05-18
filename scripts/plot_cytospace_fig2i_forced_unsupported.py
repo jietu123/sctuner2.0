@@ -71,13 +71,28 @@ def _load_assigned(root: Path, sample: str, stage4_dir: str) -> pd.DataFrame:
     return df
 
 
-def _compute_distances(root: Path, sample: str, table_s8: pd.DataFrame) -> pd.DataFrame:
+def _parse_csv_list(raw: str | None) -> list[str]:
+    if not raw:
+        return []
+    return [x.strip() for x in str(raw).split(",") if x.strip()]
+
+
+def _compute_distances(
+    root: Path,
+    sample: str,
+    table_s8: pd.DataFrame,
+    baseline_anchor_extra_types: list[str] | None = None,
+) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
+    baseline_anchor_extra_types = baseline_anchor_extra_types or []
     for stage4_dir, method, _, _, _ in METHODS:
         assigned = _load_assigned(root, sample, stage4_dir)
-        anchor = assigned[assigned["CellType"].astype(str).eq("State_32")][["row", "col"]].to_numpy(dtype=float)
+        anchor_types = ["State_32"]
+        if stage4_dir == "stage4_cytospace_baseline":
+            anchor_types.extend(baseline_anchor_extra_types)
+        anchor = assigned[assigned["CellType"].astype(str).isin(anchor_types)][["row", "col"]].to_numpy(dtype=float)
         if len(anchor) < 5:
-            raise ValueError(f"{method} has too few State_32 assignments: {len(anchor)}")
+            raise ValueError(f"{method} has too few State_32-like anchor assignments: {len(anchor)}")
         for _, row in table_s8.iterrows():
             states = _state_list(row[STATE_COL])
             xy = assigned[assigned["CellType"].astype(str).isin(states)][["row", "col"]].to_numpy(dtype=float)
@@ -99,6 +114,8 @@ def _compute_distances(root: Path, sample: str, table_s8: pd.DataFrame) -> pd.Da
                     "known_distance_rank": float(row[X_COL]),
                     "predicted_mean_nearest5_distance_to_state32": mean_distance,
                     "n_assignments": n_assignments,
+                    "anchor_types": ";".join(anchor_types),
+                    "n_anchor_assignments": int(len(anchor)),
                 }
             )
     return pd.DataFrame(rows)
@@ -182,20 +199,37 @@ def _apply_axis_style(ax: plt.Axes) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Plot Fig.2i-style forced unsupported kidney benchmark.")
     parser.add_argument("--project_root", default=".")
-    parser.add_argument("--sample", default="cytospace_fig2i_mouse_kidney_forced_unsupported")
+    parser.add_argument("--sample", default="cytospace_fig2i_mouse_kidney_stage3_unsupported_decoy_n1000")
     parser.add_argument(
         "--source_xlsx",
         default="data/raw/cytospace_fig2c_melanoma/41587_2023_1697_MOESM3_ESM.xlsx",
     )
-    parser.add_argument("--out_dir", default="visualizations/cytospace_fig2i_mouse_kidney_forced_unsupported")
-    parser.add_argument("--out_prefix", default="fig2i_forced_unsupported_baseline_vs_route2")
+    parser.add_argument(
+        "--out_dir",
+        default="visualizations/cytospace_fig2i_mouse_kidney_stage3_unsupported_decoy_sensitivity",
+    )
+    parser.add_argument("--out_prefix", default="fig2i_stage3_detected_state32like_n1000_baseline_vs_route2")
+    parser.add_argument(
+        "--baseline_anchor_extra_types",
+        default="",
+        help="Comma-separated extra baseline CellType labels treated as State_32-like anchor contamination.",
+    )
+    parser.add_argument(
+        "--title",
+        default="Kidney epithelial spatial ordering under unsupported-state perturbation",
+    )
     args = parser.parse_args()
 
     root = Path(args.project_root).resolve()
     out_dir = (root / args.out_dir).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
     table_s8 = pd.read_excel(root / args.source_xlsx, sheet_name="Table S8", header=7)
-    distances = _compute_distances(root, args.sample, table_s8)
+    distances = _compute_distances(
+        root,
+        args.sample,
+        table_s8,
+        baseline_anchor_extra_types=_parse_csv_list(args.baseline_anchor_extra_types),
+    )
     distances.to_csv(out_dir / f"{args.out_prefix}_source_values.csv", index=False)
 
     plt.rcParams.update({"font.family": "Arial", "pdf.fonttype": 42, "ps.fonttype": 42})
@@ -208,7 +242,7 @@ def main() -> int:
     axes[1].legend(frameon=False, fontsize=5.8, loc="lower right", handlelength=1.7)
     fig.text(0.56, 0.18, "Known distance (rank)", ha="center", va="center", fontsize=7.2)
     fig.suptitle(
-        "Kidney epithelial spatial ordering under unsupported-state perturbation",
+        args.title,
         fontsize=8.0,
         y=0.98,
     )
@@ -256,7 +290,7 @@ def main() -> int:
     axes4[1, 0].set_ylabel("Predicted distance to State 32\n(mean nearest-5 Euclidean)", fontsize=6.8)
     fig4.text(0.55, 0.075, "Known distance (rank)", ha="center", va="center", fontsize=7.2)
     fig4.suptitle(
-        "Kidney epithelial spatial ordering under unsupported-state perturbation",
+        args.title,
         fontsize=8.0,
         y=0.985,
     )

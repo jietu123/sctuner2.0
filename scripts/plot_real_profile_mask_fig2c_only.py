@@ -13,7 +13,7 @@ FOUNDATION_DIR = PROJECT_ROOT / "result" / "real_profile_mask_foundation"
 VIS_DIR = PROJECT_ROOT / "visualizations" / "simulations" / "real_profile_mask_fig2c_only"
 
 # Use the previously identified representative scenario where route2 shows cleaner low-support suppression.
-REPRESENTATIVE_SAMPLE = "ffpe_mouse_brain_sagittal_real_profile_mask_astrocyte"
+REPRESENTATIVE_SAMPLE = "ffpe_mouse_brain_sagittal_real_profile_mask_microglia"
 SCENARIO_LABEL = "Mouse brain  Microglia"
 
 # Warm orange/yellow palette closer to paper Fig.2c.
