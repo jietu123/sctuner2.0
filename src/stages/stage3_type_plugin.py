@@ -39,7 +39,6 @@ from src.config import load_project_config_yaml
 # 1) 读取项目与数据集配置，统一 Stage3 参数来源（defaults + dataset + CLI）。
 # 2) 计算类型支持度：V4.1 Fisher r->z 与 V4.2 显著性检验/多重校正。
 # 3) 生成 Unknown / Dropped / Relabel 与 type_prior_matrix。
-# 4) V5.x 进行去噪、生态位拯救、熵质控与拯救控制。
 # 5) 输出 stage3_summary.json 与 data/processed 下的中间文件。
 # ----------------------------
 # 配置与路径
@@ -121,27 +120,6 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--merge_target_map", type=str, default=None, help="手工指定合并映射（JSON或A=B,B=C）")
     p.add_argument("--unknown_label_prefix", type=str, default=None, help="unknown类型标签前缀")
     p.add_argument("--drop_unknown", type=bool, default=None, help="unknown类型是否从映射中剔除")
-    p.add_argument("--support_margin_min", type=float, default=None, help="strong ?????????top1-top2 z?")
-    p.add_argument("--support_margin_enable", type=bool, default=None, help="????????????")
-    p.add_argument("--conflict_demotion_enable", type=bool, default=None, help="????? strong ???")
-    p.add_argument(
-        "--protect_strong_from_missing",
-        type=bool,
-        default=None,
-        help="?????????? strong????? Keep???? missing_types",
-    )
-    p.add_argument(
-        "--protect_weak_sc_fraction_th",
-        type=float,
-        default=None,
-        help="SC中占比超过此阈值的weak类型即使被mismatch检测标记也不丢弃（例如0.05表示5%%）。None表示禁用。",
-    )
-    p.add_argument(
-        "--drop_weak_mismatch_types",
-        type=bool,
-        default=None,
-        help="whether weak mismatch types can enter the hard-filter path",
-    )
     p.add_argument(
         "--sc_expr_source",
         type=str,
@@ -804,22 +782,6 @@ def aggregate_z_values(z_values: np.ndarray, method: str = "max", topk: int = 5)
     raise ValueError(f"Unknown z-score aggregation method: {method}")
 
 
-def compute_normalized_entropy(z_values: np.ndarray, temperature: float = 1.0, eps: float = 1e-12) -> float:
-    if z_values.size <= 1:
-        return 0.0
-    # Softmax with temperature, then normalize entropy by log(K).
-    temp = max(eps, float(temperature))
-    logits = z_values / temp
-    logits = logits - np.max(logits)
-    exp_vals = np.exp(logits)
-    probs = exp_vals / (np.sum(exp_vals) + eps)
-    entropy = -np.sum(probs * np.log(probs + eps))
-    entropy_max = np.log(float(z_values.size))
-    if entropy_max <= eps:
-        return 0.0
-    return float(entropy / entropy_max)
-
-
 # ----------------------------
 # V4.1: Fisher r→z 变换支持度计算
 # - 将相关系数转为 z 值，得到更稳定的支持度统计量。
@@ -980,51 +942,6 @@ def compute_fisher_z_support_score(
 
 
 # ----------------------------
-# V5.1: Signal denoising (marker pruning)
-# - 通过 CV 评估 marker 噪声，按比例剪枝，提升弱信号的可辨识性。
-# ----------------------------
-
-def compute_marker_noise_scores_cv(
-    st_expr: pd.DataFrame,
-    marker_genes: List[str],
-    eps: float = 1e-10,
-) -> pd.Series:
-    # Use inverse CV as a stability score (higher = less noisy).
-    available = [g for g in marker_genes if g in st_expr.columns]
-    if not available:
-        return pd.Series(dtype=float)
-    sub = st_expr[available]
-    mean = sub.mean(axis=0)
-    std = sub.std(axis=0)
-    cv = std / (mean + eps)
-    noise = 1.0 / (cv + eps)
-    return noise.sort_values(ascending=False)
-
-
-def prune_noisy_markers(
-    marker_genes: List[str],
-    st_expr: pd.DataFrame,
-    max_pruning_ratio: float,
-    min_markers_left: int,
-    eps: float = 1e-10,
-) -> Tuple[List[str], List[str]]:
-    # Drop the noisiest markers up to the configured pruning ratio.
-    n_total = len(marker_genes)
-    if n_total <= min_markers_left:
-        return marker_genes, []
-    max_pruning_ratio = max(0.0, min(1.0, max_pruning_ratio))
-    drop_n = int(n_total * max_pruning_ratio)
-    drop_n = min(drop_n, n_total - min_markers_left)
-    if drop_n <= 0:
-        return marker_genes, []
-    noise_scores = compute_marker_noise_scores_cv(st_expr, marker_genes, eps=eps)
-    if noise_scores.empty:
-        return marker_genes, []
-    drop_genes = noise_scores.head(drop_n).index.tolist()
-    drop_set = set(drop_genes)
-    kept = [g for g in marker_genes if g not in drop_set]
-    return kept, drop_genes
-
 
 # ----------------------------
 # V4.2: 显著性检验和多重比较校正
@@ -1317,7 +1234,6 @@ def select_marker_genes_with_specificity(
 # 主流程
 # - 加载配置与数据。
 # - 计算支持度与显著性，并生成 Unknown/Drop/Relabel。
-# - 应用 V5 拯救链，输出汇总与中间文件。
 # ----------------------------
 
 def main():
@@ -1375,18 +1291,6 @@ def main():
         "merge_target_map": None,
         "unknown_label_prefix": "Unknown_",
         "drop_unknown": True,
-        "support_margin_min": None,
-        "support_margin_enable": False,
-        "conflict_demotion_enable": False,
-        "protect_strong_from_missing": False,
-        "protect_weak_sc_fraction_th": None,
-        "drop_weak_mismatch_types": False,
-        "presence_gate_enable": True,
-        "presence_gate_types": ["NK cells", "Epithelial cells"],
-        "presence_gate_score_min": None,
-        "presence_gate_margin_min": None,
-        "presence_gate_score_overrides": "NK cells=1.0,Epithelial cells=2.0",
-        "presence_gate_margin_overrides": "NK cells=0.05,Epithelial cells=0.2",
         # discriminative marker：mismatch 检测时仅用高特异性基因，减少相似类型误判
         "discriminative_specificity_for_mismatch": 0.0,  # 0=关闭，>0 时仅用 specificity>= 该值的基因
         "discriminative_specificity_overrides": None,  # 如 "B cells=5.0"
@@ -1443,23 +1347,6 @@ def main():
         },
     }
 
-    # V5 系列子模块配置分组：去噪 / 生态位 / 熵质控 / 拯救控制
-    v5_cfg = {}
-    if isinstance(stage3_cfg, dict):
-        v5_cfg = stage3_cfg.get("V5_denoising") or stage3_cfg.get("v5_denoising") or {}
-
-    v5_niche_cfg = {}
-    if isinstance(stage3_cfg, dict):
-        v5_niche_cfg = stage3_cfg.get("V5_niche_rescue") or stage3_cfg.get("v5_niche_rescue") or {}
-
-    v5_entropy_cfg = {}
-    if isinstance(stage3_cfg, dict):
-        v5_entropy_cfg = stage3_cfg.get("V5_entropy_qc") or stage3_cfg.get("v5_entropy_qc") or {}
-
-    v5_rescue_ctrl_cfg = {}
-    if isinstance(stage3_cfg, dict):
-        v5_rescue_ctrl_cfg = stage3_cfg.get("V5_rescue_control") or stage3_cfg.get("v5_rescue_control") or {}
-
     bt_neighbor_guard_cfg = {}
     if isinstance(stage3_cfg, dict):
         bt_neighbor_guard_cfg = stage3_cfg.get("bt_neighbor_guard") or {}
@@ -1479,70 +1366,6 @@ def main():
     if not isinstance(marker_identity_cfg, dict):
         marker_identity_cfg = {}
 
-    # 将 V5 参数做类型转换与范围裁剪，避免非法值影响流程
-    v5_enable = bool(v5_cfg.get("enable", False))
-    try:
-        v5_p_upper = float(v5_cfg.get("p_value_upper_limit", 0.2))
-    except (TypeError, ValueError):
-        v5_p_upper = 0.2
-    if v5_p_upper > 1.0:
-        v5_p_upper = 1.0
-    try:
-        v5_prune_ratio = float(v5_cfg.get("max_pruning_ratio", 0.3))
-    except (TypeError, ValueError):
-        v5_prune_ratio = 0.3
-    try:
-        v5_min_markers_left = int(v5_cfg.get("min_markers_left", 10))
-    except (TypeError, ValueError):
-        v5_min_markers_left = 10
-    if v5_min_markers_left < 2:
-        v5_min_markers_left = 2
-
-    v5_niche_enable = bool(v5_niche_cfg.get("enable", False))
-    try:
-        v5_niche_anchor_p = float(v5_niche_cfg.get("anchor_p_threshold", 0.01))
-    except (TypeError, ValueError):
-        v5_niche_anchor_p = 0.01
-    try:
-        v5_niche_corr_th = float(v5_niche_cfg.get("correlation_threshold", 0.35))
-    except (TypeError, ValueError):
-        v5_niche_corr_th = 0.35
-    v5_niche_metric = str(v5_niche_cfg.get("correlation_metric", "spearman")).strip().lower()
-    if v5_niche_metric not in {"spearman", "pearson"}:
-        v5_niche_metric = "spearman"
-    try:
-        v5_niche_p_upper = float(v5_niche_cfg.get("p_value_upper_limit", v5_p_upper))
-    except (TypeError, ValueError):
-        v5_niche_p_upper = v5_p_upper
-    if v5_niche_p_upper > 1.0:
-        v5_niche_p_upper = 1.0
-    if v5_niche_p_upper < 0.0:
-        v5_niche_p_upper = 0.0
-
-    v5_entropy_enable = bool(v5_entropy_cfg.get("enable", False))
-    try:
-        v5_entropy_threshold = float(v5_entropy_cfg.get("entropy_threshold", 0.9))
-    except (TypeError, ValueError):
-        v5_entropy_threshold = 0.9
-    try:
-        v5_entropy_temperature = float(v5_entropy_cfg.get("temperature", 1.0))
-    except (TypeError, ValueError):
-        v5_entropy_temperature = 1.0
-    if v5_entropy_temperature <= 0:
-        v5_entropy_temperature = 1.0
-
-    v5_rescue_ctrl_enable = bool(v5_rescue_ctrl_cfg.get("enable", False))
-    try:
-        v5_rescue_prior_weight = float(v5_rescue_ctrl_cfg.get("prior_weight", 1.0))
-    except (TypeError, ValueError):
-        v5_rescue_prior_weight = 1.0
-    if v5_rescue_prior_weight < 0:
-        v5_rescue_prior_weight = 0.0
-    if v5_rescue_prior_weight > 1:
-        v5_rescue_prior_weight = 1.0
-
-    # 从配置读取（配置优先，然后 CLI 覆盖）
-    # 读取 V4/V5 参数：dataset 配置优先，CLI 覆盖
     strong_th = args.strong_th if args.strong_th is not None else stage3_cfg.get("strong_th", defaults["strong_th"])
     weak_th = args.weak_th if args.weak_th is not None else stage3_cfg.get("weak_th", defaults["weak_th"])
     min_effect_size = (
@@ -1598,62 +1421,6 @@ def main():
     )
     unknown_label_prefix = args.unknown_label_prefix if args.unknown_label_prefix is not None else stage3_cfg.get("unknown_label_prefix", defaults["unknown_label_prefix"])
     drop_unknown = args.drop_unknown if args.drop_unknown is not None else stage3_cfg.get("drop_unknown", defaults["drop_unknown"])
-    support_margin_min = (
-        args.support_margin_min
-        if args.support_margin_min is not None
-        else stage3_cfg.get("support_margin_min", defaults["support_margin_min"])
-    )
-    support_margin_enable = (
-        args.support_margin_enable
-        if args.support_margin_enable is not None
-        else stage3_cfg.get("support_margin_enable", defaults["support_margin_enable"])
-    )
-    conflict_demotion_enable = (
-        args.conflict_demotion_enable
-        if args.conflict_demotion_enable is not None
-        else stage3_cfg.get("conflict_demotion_enable", defaults["conflict_demotion_enable"])
-    )
-    protect_strong_from_missing = (
-        args.protect_strong_from_missing
-        if args.protect_strong_from_missing is not None
-        else stage3_cfg.get("protect_strong_from_missing", defaults["protect_strong_from_missing"])
-    )
-    protect_weak_sc_fraction_th = (
-        args.protect_weak_sc_fraction_th
-        if args.protect_weak_sc_fraction_th is not None
-        else stage3_cfg.get("protect_weak_sc_fraction_th", defaults["protect_weak_sc_fraction_th"])
-    )
-    drop_weak_mismatch_types = (
-        args.drop_weak_mismatch_types
-        if args.drop_weak_mismatch_types is not None
-        else stage3_cfg.get("drop_weak_mismatch_types", defaults["drop_weak_mismatch_types"])
-    )
-    presence_gate_enable = bool(stage3_cfg.get("presence_gate_enable", defaults["presence_gate_enable"]))
-    presence_gate_types_raw = stage3_cfg.get("presence_gate_types", defaults["presence_gate_types"])
-    if isinstance(presence_gate_types_raw, str):
-        presence_gate_types = {
-            normalize_type_key(t) for t in presence_gate_types_raw.split(",") if str(t).strip()
-        }
-    elif isinstance(presence_gate_types_raw, list):
-        presence_gate_types = {normalize_type_key(t) for t in presence_gate_types_raw if str(t).strip()}
-    else:
-        presence_gate_types = {normalize_type_key(t) for t in defaults["presence_gate_types"]}
-    presence_gate_score_min = stage3_cfg.get("presence_gate_score_min", defaults["presence_gate_score_min"])
-    presence_gate_margin_min = stage3_cfg.get("presence_gate_margin_min", defaults["presence_gate_margin_min"])
-    try:
-        presence_gate_score_min = float(presence_gate_score_min) if presence_gate_score_min is not None else None
-    except (TypeError, ValueError):
-        presence_gate_score_min = None
-    try:
-        presence_gate_margin_min = float(presence_gate_margin_min) if presence_gate_margin_min is not None else None
-    except (TypeError, ValueError):
-        presence_gate_margin_min = None
-    presence_gate_score_overrides = parse_float_override_map(
-        stage3_cfg.get("presence_gate_score_overrides", defaults["presence_gate_score_overrides"])
-    )
-    presence_gate_margin_overrides = parse_float_override_map(
-        stage3_cfg.get("presence_gate_margin_overrides", defaults["presence_gate_margin_overrides"])
-    )
     bt_neighbor_guard_enable = bool(
         bt_neighbor_guard_cfg.get("enable", defaults["bt_neighbor_guard_enable"])
     )
@@ -2401,7 +2168,6 @@ def main():
             row_data["PValue"] = type_p_values.get(t, None)
             row_data["QValue"] = None  # 稍后通过多重比较校正填充
             row_data["Significant"] = ""  # 稍后判定
-            # 对 discriminative override 类型，不应用 protect_strong_from_missing（信任 p 值）
             # 仅当该类型启用了 discriminative override 且 missing 用更窄 marker 时，才视为 used_discriminative
             # （marker_override 会扩展 support 的 marker，导致两者不同，但不应误判为 discriminative）
             row_data["used_discriminative_for_missing"] = (
@@ -2547,223 +2313,11 @@ def main():
                 }
             )
 
-    # V5 灰区定义：
-    # 1) p 在 [alpha, upper_limit) 之间：统计不确定，进入拯救候选
-    # 2) p < alpha 但支持度 <= min_effect_size：统计显著但效应太弱
-    # upper_limit 由 V5 配置控制，用于限制“过于不显著”的类型
-    def _in_v5_grey_zone(p_val: float, support_score: float, upper_limit: float) -> bool:
-        if p_val is None:
-            return False
-        if p_val >= alpha and p_val < upper_limit:
-            return True
-        if p_val < alpha and support_score <= min_effect_size:
-            return True
-        return False
 
-    def _pre_v5_support_category(support_score: float, n_cells: int) -> str:
-        if n_cells < min_cells_rare_type and support_score >= strong_th:
-            return "weak"
-        elif support_score >= strong_th:
-            return "strong"
-        elif support_score >= weak_th:
-            return "weak"
-        else:
-            return "unsupported"
-
-    # V5.1: 信号提纯拯救（只针对灰区 P 值）
-    # 思路：对灰区类型做 marker 剪枝，重新计算支持度/显著性；若转为显著则拯救
-    v5_denoising_rescued: set[str] = set()
-    if v5_enable and use_v42:
-        if v5_p_upper < alpha:
-            v5_p_upper = alpha
-        # 遍历所有类型，筛出灰区候选
-        for row in support_rows:
-            row["V5_blocked_reason"] = ""
-            p_val = row.get("PValue", None)
-            if p_val is None:
-                continue
-            try:
-                p_val = float(p_val)
-            except (TypeError, ValueError):
-                continue
-            pre_v5_category = _pre_v5_support_category(
-                float(row.get("support_score", 0.0)),
-                int(row.get("n_cells", 0)),
-            )
-            if pre_v5_category == "unsupported":
-                row["V5_blocked_reason"] = "unsupported_no_rescue"
-                continue
-            if not _in_v5_grey_zone(p_val, row.get("support_score", 0.0), v5_p_upper):
-                continue
-            t = row["orig_type"]
-            marker_genes = marker_genes_map.get(t, [])
-            if not marker_genes:
-                continue
-            # 计算噪声并剪枝 marker
-            cleaned_genes, dropped_genes = prune_noisy_markers(
-                marker_genes,
-                st_expr,
-                max_pruning_ratio=v5_prune_ratio,
-                min_markers_left=v5_min_markers_left,
-                eps=eps,
-            )
-            if len(cleaned_genes) < 2:
-                continue
-            type_cells = type_cells_map.get(t, [])
-            type_cells = [cid for cid in type_cells if cid in sc_expr.index]
-            if len(type_cells) == 0:
-                continue
-            # 用剪枝后的 marker 重新评估支持度与 p 值
-            type_profile = sc_expr.loc[type_cells, cleaned_genes].mean(axis=0)
-            corr_v5 = support_denoise_correlation if (support_denoise_bootstrap > 0 or support_denoise_profile != "mean") else "pearson"
-            score_new, z_vals = compute_fisher_z_support_score(
-                type_profile,
-                st_expr,
-                cleaned_genes,
-                eps=eps,
-                return_all_z=True,
-                agg_method=z_score_aggregation,
-                agg_topk=z_topk,
-                correlation=corr_v5,
-            )
-            effective_use_permutation = use_permutation_test or z_score_aggregation != "max"
-            p_new = compute_p_value(
-                z_vals,
-                len(cleaned_genes),
-                n_spots,
-                use_permutation=effective_use_permutation,
-                type_profile=type_profile,
-                st_expr=st_expr,
-                marker_genes=cleaned_genes,
-                eps=eps,
-                score_aggregation=z_score_aggregation,
-                z_topk=z_topk,
-            )
-            row["V5_denoising"] = True
-            row["V5_p_value"] = p_new
-            row["V5_support_score"] = score_new
-            row["V5_marker_pruned"] = len(dropped_genes)
-            row["V5_marker_left"] = len(cleaned_genes)
-            row["V5_rescued"] = "Yes" if p_new < alpha else "No"
-            # 记录是否被成功拯救
-            if p_new < alpha:
-                v5_denoising_rescued.add(t)
-
-    # V5.2: niche co-occurrence rescue
-    # 以高置信 anchor 类型为参照，基于 z 向量相关性判定拯救
-    v5_niche_rescued: set[str] = set()
-    v5_niche_anchor_map: dict[str, str] = {}
-    v5_niche_corr_map: dict[str, float] = {}
-    if v5_niche_enable and use_v42:
-        if v5_niche_p_upper < alpha:
-            v5_niche_p_upper = alpha
-        anchor_types = []
-        # 先筛出 anchor（极显著存在的类型）
-        for row in support_rows:
-            p_val = row.get("PValue", None)
-            if p_val is None:
-                continue
-            try:
-                p_val = float(p_val)
-            except (TypeError, ValueError):
-                continue
-            pre_v5_category = _pre_v5_support_category(
-                float(row.get("support_score", 0.0)),
-                int(row.get("n_cells", 0)),
-            )
-            if pre_v5_category == "unsupported":
-                continue
-            if p_val < v5_niche_anchor_p:
-                t = row["orig_type"]
-                z_vals = type_z_values.get(t)
-                if z_vals is not None and z_vals.size > 0:
-                    anchor_types.append(t)
-        # 再对灰区类型计算与 anchor 的相关性
-        for row in support_rows:
-            p_val = row.get("PValue", None)
-            if p_val is None:
-                continue
-            try:
-                p_val = float(p_val)
-            except (TypeError, ValueError):
-                continue
-            pre_v5_category = _pre_v5_support_category(
-                float(row.get("support_score", 0.0)),
-                int(row.get("n_cells", 0)),
-            )
-            if pre_v5_category == "unsupported":
-                row["V5_blocked_reason"] = "unsupported_no_rescue"
-                continue
-            if not _in_v5_grey_zone(p_val, row.get("support_score", 0.0), v5_niche_p_upper):
-                continue
-            t = row["orig_type"]
-            if t in v5_denoising_rescued:
-                continue
-            z_c = type_z_values.get(t)
-            if z_c is None or z_c.size == 0:
-                continue
-            best_anchor = None
-            best_corr = -2.0
-            for anchor in anchor_types:
-                if anchor == t:
-                    continue
-                z_a = type_z_values.get(anchor)
-                if z_a is None or z_a.size == 0:
-                    continue
-                if v5_niche_metric == "pearson":
-                    corr = safe_pearson(z_c, z_a, eps=eps)
-                else:
-                    corr = safe_spearman(z_c, z_a, eps=eps)
-                if corr > best_corr:
-                    best_corr = corr
-                    best_anchor = anchor
-            if best_anchor is None:
-                row["V5_blocked_reason"] = "no_valid_nonself_anchor"
-                continue
-            # 记录 anchor 与相关系数，用于审计与 summary
-            row["V5_niche"] = True
-            row["V5_niche_anchor"] = best_anchor
-            row["V5_niche_corr"] = best_corr
-            row["V5_niche_rescued"] = "Yes" if best_corr > v5_niche_corr_th else "No"
-            if best_corr > v5_niche_corr_th:
-                v5_niche_rescued.add(t)
-                v5_niche_anchor_map[t] = best_anchor
-                v5_niche_corr_map[t] = best_corr
-
-    # V5.3: 熵质控（过滤分布过于弥散的拯救类型）
-    # 熵越低表示信号集中（更可能真实），熵过高则撤销拯救
-    v5_rescued_types = v5_denoising_rescued | v5_niche_rescued
-    v5_final_rescued = set(v5_rescued_types)
-    v5_entropy_values: dict[str, float] = {}
-    v5_entropy_pass: dict[str, bool] = {}
-    if v5_entropy_enable and use_v42 and v5_rescued_types:
-        # 对每个已拯救类型计算归一化熵
-        for t in sorted(v5_rescued_types):
-            z_vals = type_z_values.get(t)
-            if z_vals is None or z_vals.size == 0:
-                v5_entropy_pass[t] = False
-                continue
-            entropy = compute_normalized_entropy(
-                z_vals, temperature=v5_entropy_temperature, eps=eps
-            )
-            v5_entropy_values[t] = entropy
-            v5_entropy_pass[t] = entropy < v5_entropy_threshold
-        v5_final_rescued = {t for t in v5_rescued_types if v5_entropy_pass.get(t, False)}
-    # 回填熵质控结果，便于审计与可视化
+    # Core support-category assignment. Rare cell types with high support are
+    # kept as weak rather than strong to avoid overconfident downstream use.
     for row in support_rows:
-        t = row["orig_type"]
-        if t in v5_entropy_values:
-            row["V5_entropy"] = v5_entropy_values[t]
-            row["V5_entropy_pass"] = "Yes" if v5_entropy_pass.get(t, False) else "No"
-            row["V5_final_rescued"] = "Yes" if t in v5_final_rescued else "No"
-
-    # 支持度分档 + 稀有类型保护
-    # 根据 strong/weak/unsupported 将类型分层，稀有类型避免被判 strong
-    # V5 去噪后的分数（移除了噪声 marker）更可靠：若去噪后分数更高，优先使用
-    for row in support_rows:
-        raw_score = row["support_score"]
-        v5_score = row.get("V5_support_score")
-        score = v5_score if (v5_score is not None and v5_score > raw_score) else raw_score
+        score = row["support_score"]
         n_cells = row["n_cells"]
         if n_cells < min_cells_rare_type and score >= strong_th:
             category = "weak"
@@ -2774,112 +2328,20 @@ def main():
         else:
             category = "unsupported"
         row["support_category"] = category
-    # ???????????
-    support_margin_min_value = None
-    if support_margin_min is not None:
-        try:
-            support_margin_min_value = float(support_margin_min)
-        except (TypeError, ValueError):
-            support_margin_min_value = None
-    for row in support_rows:
-        t = row["orig_type"]
-        margin = None
-        row["presence_gate_applied"] = "No"
-        row["presence_gate_pass"] = ""
-        row["presence_gate_reason"] = ""
-        row["presence_gate_downgraded"] = "No"
-        if use_fisher_z:
-            z_vals = type_z_values.get(t)
-            if z_vals is not None and len(z_vals) >= 2:
-                top2 = np.partition(z_vals, -2)[-2:]
-                margin = float(np.max(top2) - np.min(top2))
-        row["support_margin"] = margin
-        if support_margin_min_value is not None and margin is not None:
-            row["support_margin_pass"] = "Yes" if margin >= support_margin_min_value else "No"
-        else:
-            row["support_margin_pass"] = ""
-        row["support_margin_downgraded"] = "No"
-        row["conflict_downgraded"] = "No"
-        if support_margin_enable and support_margin_min_value is not None and margin is not None:
-            if row.get("support_category") == "strong" and margin < support_margin_min_value:
-                row["support_category"] = "weak"
-                row["support_margin_downgraded"] = "Yes"
-        if conflict_demotion_enable and use_v42:
-            if str(row.get("Significant", "")).strip().lower() == "yes" and row.get("support_category") == "strong":
-                row["support_category"] = "weak"
-                row["conflict_downgraded"] = "Yes"
-        gate_key = normalize_type_key(t)
-        if (
-            presence_gate_enable
-            and use_v42
-            and row.get("used_discriminative_for_missing")
-            and gate_key in presence_gate_types
-            and str(row.get("Significant", "")).strip().lower() == "no"
-            and row.get("support_category") == "strong"
-        ):
-            score_min_eff = presence_gate_score_overrides.get(gate_key, presence_gate_score_min)
-            margin_min_eff = presence_gate_margin_overrides.get(gate_key, presence_gate_margin_min)
-            score_val = row.get("support_score")
-            try:
-                score_val = float(score_val) if score_val is not None else None
-            except (TypeError, ValueError):
-                score_val = None
-            score_ok = True if score_min_eff is None or score_val is None else score_val >= score_min_eff
-            margin_ok = True if margin_min_eff is None or margin is None else margin >= margin_min_eff
-            row["presence_gate_applied"] = "Yes"
-            row["presence_gate_pass"] = "Yes" if (score_ok and margin_ok) else "No"
-            reasons = []
-            if not score_ok:
-                reasons.append(f"score<{score_min_eff}")
-            if not margin_ok:
-                reasons.append(f"margin<{margin_min_eff}")
-            row["presence_gate_reason"] = ";".join(reasons)
-            if not (score_ok and margin_ok):
-                row["support_category"] = "weak"
-                row["presence_gate_downgraded"] = "Yes"
-    # 强制 unsupported：用于噪声实验等场景，已知 missing type 可显式指定
-    force_unsupported = stage3_cfg.get("force_unsupported_types") or []
-    if isinstance(force_unsupported, str):
-        force_unsupported = [force_unsupported]
-    force_unsupported_set = {str(t).strip() for t in force_unsupported if t}
-    for row in support_rows:
-        if row["orig_type"] in force_unsupported_set:
-            row["support_category"] = "unsupported"
+
     unsupported_types = {row["orig_type"] for row in support_rows if row["support_category"] == "unsupported"}
-    # 拯救成功的类型不再视为 unsupported
-    if v5_final_rescued:
-        unsupported_types -= v5_final_rescued
 
     # V4.3: 根据显著缺失结果进行处理决策
     # missing_types 用于 relabel 或标记 Unknown
     missing_types = set()
     missing_conflicts = []
-    # 预计算 SC 总细胞数，用于 protect_weak_sc_fraction_th
-    _total_sc_cells = sum(row.get("n_cells", 0) for row in support_rows) or 1
     if use_v42:
         for row in support_rows:
-            gate_applied = str(row.get("presence_gate_applied", "")).strip().lower() == "yes"
-            gate_failed = str(row.get("presence_gate_pass", "")).strip().lower() == "no"
-            if gate_applied and gate_failed and row.get("used_discriminative_for_missing"):
-                missing_types.add(row["orig_type"])
-                missing_conflicts.append(
-                    {
-                        "orig_type": row.get("orig_type"),
-                        "support_category": row.get("support_category"),
-                        "support_score": row.get("support_score"),
-                        "PValue": row.get("PValue"),
-                        "QValue": row.get("QValue"),
-                        "presence_gate": "failed",
-                        "presence_gate_reason": row.get("presence_gate_reason"),
-                    }
-                )
-                continue
             if str(row.get("Significant", "")).strip().lower() == "yes":
-                # discriminative override 类型：信任 p 值，不因 support 高而保护
                 if row.get("used_discriminative_for_missing"):
                     missing_types.add(row["orig_type"])
                     continue
-                if protect_strong_from_missing and row.get("support_category") == "strong":
+                if row.get("support_category") == "weak":
                     missing_conflicts.append(
                         {
                             "orig_type": row.get("orig_type"),
@@ -2887,41 +2349,11 @@ def main():
                             "support_score": row.get("support_score"),
                             "PValue": row.get("PValue"),
                             "QValue": row.get("QValue"),
+                            "protected_by": "keep_weak_mismatch",
                         }
                     )
                     continue
-                # 方案B：SC占比超过阈值的weak类型不因mismatch被丢弃
-                if row.get("support_category") == "weak":
-                    sc_frac = row.get("n_cells", 0) / _total_sc_cells
-                    protected_by = None
-                    if not drop_weak_mismatch_types:
-                        protected_by = "keep_weak_mismatch"
-                    elif protect_weak_sc_fraction_th is not None and protect_weak_sc_fraction_th > 0 and sc_frac >= protect_weak_sc_fraction_th:
-                        protected_by = "protect_weak_sc_fraction_th"
-                    if protected_by is not None:
-                        if protected_by == "protect_weak_sc_fraction_th":
-                            print(
-                                f"[Stage3] protect_weak_sc_fraction_th: '{row['orig_type']}' "
-                                f"(weak, SC frac={sc_frac:.3f} >= {protect_weak_sc_fraction_th}) "
-                                f"protected from mismatch drop."
-                            )
-                        missing_conflicts.append(
-                            {
-                                "orig_type": row.get("orig_type"),
-                                "support_category": row.get("support_category"),
-                                "support_score": row.get("support_score"),
-                                "PValue": row.get("PValue"),
-                                "QValue": row.get("QValue"),
-                                "protected_by": protected_by,
-                                "sc_fraction": sc_frac,
-                            }
-                        )
-                        continue
                 missing_types.add(row["orig_type"])
-    # 拯救成功的类型不再视为缺失
-    if v5_final_rescued:
-        missing_types -= v5_final_rescued
-
     auto_missing_types = set()
     auto_missing_records = []
     auto_missing_rejected_records = []
@@ -2970,7 +2402,7 @@ def main():
                     score_auto = float(row.get("support_score", 0.0))
                 except (TypeError, ValueError):
                     continue
-                if t in v5_final_rescued or n_cells_auto < auto_missing_min_cells:
+                if n_cells_auto < auto_missing_min_cells:
                     continue
                 eligible.append((t, n_cells_auto, score_auto, row))
 
@@ -3043,8 +2475,7 @@ def main():
                     score_auto = 0.0
                 cat_auto = str(row.get("support_category", "")).strip().lower()
                 if (
-                    t not in v5_final_rescued
-                    and n_cells_auto >= auto_missing_min_cells
+                    n_cells_auto >= auto_missing_min_cells
                     and score_auto < auto_missing_support_th
                     and cat_auto in auto_missing_categories
                 ):
@@ -3207,7 +2638,7 @@ def main():
                 if marker_identity_z_for_candidate > auto_missing_confirmation_marker_identity_z_th:
                     continue
                 t = str(row["orig_type"])
-                if t in v5_final_rescued or t in auto_missing_types:
+                if t in auto_missing_types:
                     continue
                 try:
                     n_cells_marker = int(row.get("n_cells", 0))
@@ -3398,11 +2829,8 @@ def main():
     action_map = {row["orig_type"]: "Keep" for row in support_rows}
     for t in direct_unsupported_types:
         action_map[t] = "Dropped" if drop_unknown else "Unknown"
-    for t in v5_final_rescued:
-        action_map[t] = "Keep"
     for t in auto_missing_types:
-        if t not in v5_final_rescued:
-            action_map[t] = "Dropped" if drop_unknown else "Unknown"
+        action_map[t] = "Dropped" if drop_unknown else "Unknown"
     merge_sources: dict[str, List[str]] = defaultdict(list)
     similarity_target_map: dict[str, str] = {}
 
@@ -3553,11 +2981,8 @@ def main():
     adjusted_df.to_csv(adjusted_path, index=False)
 
     # plugin_type 列顺序（非 Unknown 按字母排序，Unknown_sc_only 最后）
-    # rescued_plugin_types 用于后续 prior 的权重控制
     plugin_types = sorted([t for t in relabel_df["plugin_type"].unique() if t != "Unknown_sc_only"])
     plugin_types.append("Unknown_sc_only")
-    rescued_plugin_types = [t for t in plugin_types if t in v5_final_rescued]
-
     # type_prior_matrix
     # 构建 spot × plugin_type 的先验分布，供 Stage4 使用
     # 注意：Unknown_sc_only 作为兜底类型参与归一化
@@ -3590,14 +3015,6 @@ def main():
             n_spots_all_unknown += 1
         else:
             prior = sims_pos / total
-            # V5 拯救控制：对被拯救类型下调 prior 权重，避免过拟合
-            if v5_rescue_ctrl_enable and rescued_plugin_types and v5_rescue_prior_weight < 1.0:
-                for idx, t in enumerate(plugin_types):
-                    if t in rescued_plugin_types:
-                        prior[idx] *= v5_rescue_prior_weight
-                prior_sum = prior.sum()
-                if prior_sum > eps:
-                    prior = prior / prior_sum
             # Unknown 保底：保证 Unknown_sc_only 有最低占比
             uf = unknown_floor
             if uf < 0 or uf > 1:
@@ -3663,7 +3080,7 @@ def main():
             support_score_def = "fisher_z_max"
 
     # 汇总输出（stage3_summary.json）
-    # 结构包含：params / support_overview / action_overview / v5_* / unknown_overview / rare_types / plugin_types
+    # 结构包含：params / support_overview / action_overview / unknown_overview / rare_types / plugin_types
     unknown_label_effective = "Unknown_sc_only"
     output_paths = {
         "stage3_summary": str((out_res / "stage3_summary.json").relative_to(project_root)),
@@ -3719,18 +3136,6 @@ def main():
             "unknown_label_prefix": unknown_label_prefix if use_v42 else None,
             "unknown_label_effective": unknown_label_effective if use_v42 else None,
             "drop_unknown": drop_unknown if use_v42 else None,
-            "support_margin_min": support_margin_min if use_fisher_z else None,
-            "support_margin_enable": support_margin_enable if use_fisher_z else None,
-            "conflict_demotion_enable": conflict_demotion_enable if use_v42 else None,
-            "protect_strong_from_missing": protect_strong_from_missing if use_v42 else None,
-            "protect_weak_sc_fraction_th": protect_weak_sc_fraction_th if use_v42 else None,
-            "drop_weak_mismatch_types": drop_weak_mismatch_types if use_v42 else None,
-            "presence_gate_enable": presence_gate_enable if use_v42 else None,
-            "presence_gate_types": sorted(presence_gate_types) if use_v42 and presence_gate_types else None,
-            "presence_gate_score_min": presence_gate_score_min if use_v42 else None,
-            "presence_gate_margin_min": presence_gate_margin_min if use_v42 else None,
-            "presence_gate_score_overrides": presence_gate_score_overrides if use_v42 else None,
-            "presence_gate_margin_overrides": presence_gate_margin_overrides if use_v42 else None,
             "bt_neighbor_guard_enable": bt_neighbor_guard_enable if use_v42 else None,
             "bt_neighbor_guard_rules": bt_neighbor_guard_rules if use_v42 and bt_neighbor_guard_enable else None,
             "scenario_missing_type": scenario_missing_type if use_v42 else None,
@@ -3767,7 +3172,6 @@ def main():
             "masked_missing_pressure_z_th": masked_pressure_z_th if masked_missing_enable else None,
             "masked_missing_min_support_score_for_apply": masked_min_support_score_for_apply if masked_missing_enable else None,
             "masked_missing_max_types": masked_max_types if masked_missing_enable else None,
-            # V5.1 参数
             "marker_identity_diagnostics_enable": marker_identity_enable,
             "marker_identity_marker_top_n": marker_identity_top_n if marker_identity_enable else None,
             "marker_identity_min_identity_markers": marker_identity_min_markers if marker_identity_enable else None,
@@ -3777,20 +3181,6 @@ def main():
             "marker_identity_min_marker_st_detect_frac": marker_identity_min_st_detect_frac if marker_identity_enable else None,
             "marker_identity_st_presence_quantile": marker_identity_st_presence_quantile if marker_identity_enable else None,
             "marker_identity_depleted_z_th": marker_identity_depleted_z_th if marker_identity_enable else None,
-            "v5_denoising_enable": v5_enable if use_v42 else None,
-            "v5_p_value_upper_limit": v5_p_upper if use_v42 else None,
-            "v5_max_pruning_ratio": v5_prune_ratio if use_v42 else None,
-            "v5_min_markers_left": v5_min_markers_left if use_v42 else None,
-            "v5_niche_enable": v5_niche_enable if use_v42 else None,
-            "v5_niche_anchor_p_threshold": v5_niche_anchor_p if use_v42 else None,
-            "v5_niche_correlation_metric": v5_niche_metric if use_v42 else None,
-            "v5_niche_correlation_threshold": v5_niche_corr_th if use_v42 else None,
-            "v5_niche_p_value_upper_limit": v5_niche_p_upper if use_v42 else None,
-            "v5_entropy_enable": v5_entropy_enable if use_v42 else None,
-            "v5_entropy_threshold": v5_entropy_threshold if use_v42 else None,
-            "v5_entropy_temperature": v5_entropy_temperature if use_v42 else None,
-            "v5_rescue_control_enable": v5_rescue_ctrl_enable if use_v42 else None,
-            "v5_rescue_prior_weight": v5_rescue_prior_weight if use_v42 else None,
             # V6 支持度去噪
             "v6_support_denoise_bootstrap": support_denoise_bootstrap if use_fisher_z else None,
             "v6_support_denoise_percentile": support_denoise_percentile if use_fisher_z else None,
@@ -3867,35 +3257,6 @@ def main():
             "applied_count": len(bt_neighbor_guard_applied),
             "applied": bt_neighbor_guard_applied,
         },
-        # V5.1 去噪拯救统计
-        "v5_denoising": {
-            "rescued_types": sorted(v5_denoising_rescued),
-            "rescued_count": len(v5_denoising_rescued),
-        },
-        # V5.2 生态位拯救统计
-        "v5_niche_rescue": {
-            "rescued_types": sorted(v5_niche_rescued),
-            "rescued_count": len(v5_niche_rescued),
-            "anchor_map": v5_niche_anchor_map,
-            "correlations": {k: v5_niche_corr_map[k] for k in sorted(v5_niche_corr_map)},
-        },
-        # V5.3 熵质控统计
-        "v5_entropy_qc": {
-            "enabled": v5_entropy_enable,
-            "threshold": v5_entropy_threshold,
-            "temperature": v5_entropy_temperature,
-            "rescued_types_before": sorted(v5_rescued_types),
-            "rescued_types_final": sorted(v5_final_rescued),
-            "rejected_types": sorted(set(v5_rescued_types) - set(v5_final_rescued)),
-            "entropy": {k: v5_entropy_values[k] for k in sorted(v5_entropy_values)},
-        },
-        # V5 拯救控制（prior 权重调整）
-        "v5_rescue_control": {
-            "enabled": v5_rescue_ctrl_enable,
-            "prior_weight": v5_rescue_prior_weight,
-            "rescued_types": rescued_plugin_types,
-        },
-        # Unknown 占比与 prior 统计
         "unknown_overview": {
             "cell_fraction": unknown_cells / total_cells if total_cells > 0 else 0.0,
             "prior_mass_fraction": unknown_prior_mass,

@@ -1,0 +1,6 @@
+sample,target,target_detected,stage3_missing,sc_n,spot_n,sc_spatial_raw_overlap,truth_target_spots,source_vs_masked_signature_corr,target_signature_drop_on_truth_spots,baseline_highres_pred_spots,baseline_highres_overlap_truth,baseline_highres_precision,baseline_highres_recall,baseline_highres_iou,route2_highres_pred_spots,route2_highres_overlap_truth,route2_highres_precision,route2_highres_recall,route2_highres_iou
+highres_humanbreastcancerpatient1_profile_mask_monocytes_and_macrophages,Monocytes and Macrophages,True,Monocytes and Macrophages,5200,2561,0,411,0.9569,0.4735,403,234,0.5806,0.5693,0.4034,0,0,NA,0.0,0.0
+highres_humancoloncancerpatient1_profile_mask_fibroblasts,Fibroblasts,True,Fibroblasts,5200,2561,0,459,0.9586,0.5734,367,303,0.8256,0.6601,0.5793,0,0,NA,0.0,0.0
+highres_humanlungcancerpatient1_profile_mask_plasma_cells,Plasma cells,True,Plasma cells,5200,2561,0,141,0.9457,0.4437,114,58,0.5088,0.4113,0.2944,0,0,NA,0.0,0.0
+highres_humanmelanomapatient1_profile_mask_fibroblasts,Fibroblasts,True,Fibroblasts,5200,2561,0,928,0.9528,0.3794,923,623,0.675,0.6713,0.5073,0,0,NA,0.0,0.0
+highres_humanmelanomapatient2_profile_mask_b_cells,B cells,True,B cells;NK cells,5200,2561,0,150,0.965,0.5203,112,41,0.3661,0.2733,0.1855,0,0,NA,0.0,0.0

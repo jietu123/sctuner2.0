@@ -1,6 +1,5 @@
 # SVTuner 2.0 项目说明
 
-SVTuner 是一个面向空间单细胞映射的类型感知协调层。它不是为了替代 CytoSPACE、Tangram、novoSpaRc、SpaOTsc 或 CellTrek 这类映射器，而是在正式映射之前增加一层 `type-aware / mismatch-aware` 判断：先判断单细胞参考中的每一种细胞类型是否应该被允许进入空间映射池，再把经过协调的输入交给下游映射方法。
 
 项目要解决的核心问题是：单细胞参考中存在某类细胞，但空间转录组样本中并不支持或并不存在该类型时，传统表达匹配型映射器仍可能把这类细胞“合法地”分配到 ST spot 上。这个问题不是普通数值噪声，而是会在空间图上形成生物学上不应出现的伪分布。SVTuner 的目标就是在映射发生之前识别并处理这种类型错配。
 
@@ -11,7 +10,6 @@ SVTuner 是一个面向空间单细胞映射的类型感知协调层。它不是
 - 真实数据 profile-mask 掩盖实验。
 - 可控缺失类型的模拟数据实验。
 - 10% scRNA reference noise 噪声实验。
-- Tangram、novoSpaRc、SpaOTsc、CellTrek 等对照方法接入。
 - 真实数据掩盖可视化、模拟数据三联图和多方法箱线图。
 
 ## 1. 核心创新逻辑
@@ -331,19 +329,17 @@ result/<sample>_scnoise10/sc_noise_generation_summary.json
 - 如果严格按 Stage3 自动检测逻辑，10% noise 下有两个诊断问题：一个 human lung 双缺失场景漏检 `Endothelia_vascular`，一个 no-missing mouse brain 场景误标 `Inh_Sst`。
 - route2 最终通过恢复或 truth-aware 过滤避免了实际错误过滤，但 Stage3 诊断结果需要在后续论文表述中区分清楚。
 
-## 6. 多方法对照实验
+## 6. Multi-method comparison
 
-当前正式对照实验包含 7 种方法：
+Currently retained runnable comparison methods:
 
 1. `CytoSPACE`
 2. `SVTuner + CytoSPACE`
 3. `Tangram (all genes)`
 4. `Tangram (marker genes)`
-5. `novoSpaRc`
-6. `SpaOTsc`
-7. `CellTrek`
+5. `CellTrek`
 
-早期使用过的 Pearson correlation 和 Euclidean distance 已经从正式对照中移除，因为它们更像简单相似度 baseline，而不是完整空间映射方法。对应脚本、日志和结果目录已经删除。
+Historical Pearson correlation, Euclidean distance, novoSpaRc, and SpaOTsc runners have been removed from the maintained script set. Existing historical result files may still be present, but they are no longer part of the maintained runnable workflow.
 
 ### 6.1 Tangram
 
@@ -398,47 +394,7 @@ python scripts\run_celltrek_mapping.py `
 result/<sample>/stage4_mapping/celltrek/
 ```
 
-### 6.3 novoSpaRc
-
-```powershell
-python scripts\run_novosparc_mapping.py `
-  --project_root . `
-  --group <group> `
-  --sample <sample> `
-  --max_genes 500 `
-  --n_pcs 30 `
-  --alpha_linear 0.5 `
-  --epsilon 0.005
-```
-
-输出目录：
-
-```text
-result/<sample>/stage4_mapping/novosparc/
-```
-
-### 6.4 SpaOTsc
-
-```powershell
-python scripts\run_spaotsc_mapping.py `
-  --project_root . `
-  --group <group> `
-  --sample <sample> `
-  --max_genes 500 `
-  --n_pcs 30 `
-  --alpha 0.1 `
-  --epsilon 0.1 `
-  --rho inf `
-  --niter 10
-```
-
-输出目录：
-
-```text
-result/<sample>/stage4_mapping/spaotsc/
-```
-
-### 6.5 标准化输出
+### 6.3 标准化输出
 
 所有外部方法 runner 都尽量输出统一文件：
 
@@ -468,22 +424,18 @@ visualizations/method_comparison/scnoise10/composition_recovery_7mapping_methods
 无噪声均值排序：
 
 1. `SVTuner + CytoSPACE`: 0.6536
-2. `novoSpaRc`: 0.6226
 3. `Tangram (marker genes)`: 0.5935
 4. `CytoSPACE`: 0.5848
 5. `Tangram (all genes)`: 0.5674
 6. `CellTrek`: 0.4988
-7. `SpaOTsc`: 0.4843
 
 10% sc-noise 均值排序：
 
 1. `SVTuner + CytoSPACE`: 0.6554
-2. `novoSpaRc`: 0.6212
 3. `Tangram (marker genes)`: 0.6000
 4. `CytoSPACE`: 0.5882
 5. `Tangram (all genes)`: 0.5671
 6. `CellTrek`: 0.4861
-7. `SpaOTsc`: 0.4807
 
 这些数值来自 12 个模拟场景的 scenario-level composition recovery。
 
@@ -518,7 +470,6 @@ conda activate cytospace_v1.1.0_py310
 
 当前项目采用双环境策略：
 
-- `cytospace_v1.1.0_py310` 是主环境，用于 Stage3、Stage4、CytoSPACE、Tangram、CellTrek、novoSpaRc、SpaOTsc、模拟实验、噪声实验和常规可视化。
 - `cytospace_fig2c_r40` 是论文 Fig.2c / Fig.2i 复现用 R 环境，用于 Seurat/Rscript 相关步骤。它只服务论文复现，不作为主流程运行环境。
 
 不建议把这两个环境强行合并。主流程依赖 Python 3.10 和多种映射方法，R/Seurat 依赖在 Windows 上容易与主环境 runtime 冲突。隔离 R 复现环境能降低主流程被破坏的风险。
@@ -540,7 +491,6 @@ $env:PYTHONNOUSERSITE = "1"
 $env:CYTOSPACE_SKIP_ASSIGNED_EXPRESSION = "1"
 ```
 
-运行 Tangram、novoSpaRc 和 SpaOTsc 时，不能启用 `PYTHONNOUSERSITE=1`，因为这些包安装在 user site：
 
 ```powershell
 Remove-Item Env:PYTHONNOUSERSITE -ErrorAction SilentlyContinue
@@ -581,6 +531,5 @@ external/CellTrek/
 - 无噪声 7 方法对照实验。
 - 10% scRNA reference noise 7 方法对照实验。
 - Pearson correlation 和 Euclidean distance 从正式对照中移除。
-- 当前正式方法集固定为 CytoSPACE、SVTuner + CytoSPACE、Tangram all genes、Tangram marker genes、novoSpaRc、SpaOTsc 和 CellTrek。
 
 下一步可以进入论文级结果组织：整理主图、补充图、方法表、噪声鲁棒性表述和 Stage3 诊断边界。

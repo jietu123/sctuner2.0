@@ -25,7 +25,7 @@ from src.utils.sample_paths import resolve_sample_dir, sample_dir_candidates
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="SVTuner mainline runner (Stage1 -> Stage3 -> Stage4 -> Stage5, no Stage7)"
+        description="SVTuner mainline runner (Stage1 -> Stage3 -> Stage4 baseline + route2)"
     )
     p.add_argument("--sample", default="real_brca", help="dataset sample id")
     p.add_argument("--project_root", default=".", help="project root")
@@ -58,17 +58,10 @@ def parse_args() -> argparse.Namespace:
 
     p.add_argument("--stage3_sc_expr_source", choices=["normalized", "data", "counts", "auto"], default="normalized")
     p.add_argument("--stage4_sc_expr_source", choices=["normalized", "data", "counts", "auto"], default="normalized")
-    p.add_argument("--stage5_sim_dir", default=None, help="optional override of Stage5 truth/sim directory")
-    p.add_argument(
-        "--strict_stage5_truth",
-        action="store_true",
-        help="fail if Stage5 truth files are missing (default: skip Stage5 gracefully)",
-    )
 
     p.add_argument("--skip_stage1", action="store_true")
     p.add_argument("--skip_stage3", action="store_true")
     p.add_argument("--skip_stage4", action="store_true")
-    p.add_argument("--skip_stage5", action="store_true")
     p.add_argument("--progress_width", type=int, default=36, help="overall progress bar width")
     p.add_argument("--heartbeat_sec", type=int, default=30, help="heartbeat interval (seconds) for long-running commands")
     p.add_argument("--monitor_sec", type=float, default=1.0, help="resource polling interval in seconds")
@@ -385,23 +378,6 @@ def infer_sim_dir_from_dataset(project_root: Path, sample: str) -> Path:
     return resolve_sample_dir(project_root, sample, sim_group="real_brca", must_exist=True)
 
 
-def resolve_stage5_truth_dir(project_root: Path, sample: str, preferred: Path | None) -> Path | None:
-    """Pick a directory that contains Stage5 truth files."""
-    stage1_export = project_root / "data" / "processed" / sample / "stage1_preprocess" / "exported"
-    candidates = []
-    if preferred is not None:
-        candidates.append(preferred)
-    candidates.append(stage1_export)
-    for c in candidates:
-        if c is None:
-            continue
-        if not c.exists():
-            continue
-        if (c / "sim_info.json").exists() and (c / "sim_truth_spot_type_fraction.csv").exists():
-            return c
-    return None
-
-
 def _parse_missing_type_arg(raw: str | None) -> list[str]:
     if raw is None:
         return []
@@ -537,7 +513,7 @@ def main() -> int:
     rscript = args.rscript or project_cfg.get("rscript_path") or "Rscript"
     if str(rscript).lower().endswith("rscript.exe"):
         rscript = resolve_rscript_path(str(rscript))
-    sim_dir = Path(args.stage5_sim_dir).resolve() if args.stage5_sim_dir else infer_sim_dir_from_dataset(project_root, args.sample)
+    sim_dir = infer_sim_dir_from_dataset(project_root, args.sample)
     cli_missing_types = _parse_missing_type_arg(args.missing_type)
     inferred_missing_types = _infer_missing_types_from_source_chain(project_root, args.sample, sim_dir)
     effective_missing_types: list[str] = []
@@ -556,12 +532,10 @@ def main() -> int:
         )
         effective_route2_filter_scope = "unsupported_all"
 
-    stage_order = ["stage1", "stage3", "stage4", "stage5"]
+    stage_order = ["stage1", "stage3", "stage4"]
     stage_status: dict[str, str] = {}
     cmd_perf_all: list[dict[str, Any]] = []
     stage_cmd_perf: dict[str, list[dict[str, Any]]] = {k: [] for k in stage_order}
-    stage5_mode = "skipped"
-    stage5_outputs: dict[str, str] = {}
     total_stages = len(stage_order)
     done_stages = 0
 
@@ -738,151 +712,6 @@ def main() -> int:
         done_stages += 1
         _print_progress(done_stages, total_stages, "stage4", stage_status["stage4"], args.progress_width)
 
-        if not args.skip_stage5:
-            _print_progress(done_stages, total_stages, "stage5", "running", args.progress_width)
-            stage5_truth_dir = resolve_stage5_truth_dir(project_root, args.sample, sim_dir)
-            if stage5_truth_dir is None:
-                if args.strict_stage5_truth:
-                    msg = (
-                        "[ERROR] Stage5 truth files not found (need sim_info.json + sim_truth_spot_type_fraction.csv). "
-                        f"checked around: {sim_dir}"
-                    )
-                    raise FileNotFoundError(msg)
-                print(
-                    "[INFO] sim truth not found; switching to real-data Stage5 summary "
-                    "(src.stages.stage5_real_summary)"
-                )
-                stage4_baseline = result_root / "stage4_cytospace_baseline" / "cytospace_output"
-                stage4_route2 = result_root / "stage4_cytospace_route2" / "cytospace_output"
-                m = run_cmd(
-                    [
-                        str(py),
-                        "-m",
-                        "src.stages.stage5_real_summary",
-                        "--sample",
-                        args.sample,
-                        "--project_root",
-                        str(project_root),
-                        "--baseline_dir",
-                        str(stage4_baseline),
-                        "--route2_dir",
-                        str(stage4_route2),
-                        "--out_dir",
-                        str(result_root / "stage5_real_summary"),
-                    ],
-                    cwd=project_root,
-                    label="stage5_real_summary",
-                    heartbeat_sec=args.heartbeat_sec,
-                    monitor_sec=args.monitor_sec,
-                    quiet_subprocess=args.quiet_subprocess,
-                    log_file=log_dir / "stage5_real_summary.log",
-                )
-                cmd_perf_all.append(m)
-                stage_cmd_perf["stage5"].append(m)
-                stage_status["stage5"] = "ok_real_summary"
-                stage5_mode = "real_summary"
-                stage5_outputs = {
-                    "stage5_real_summary_json": str(result_root / "stage5_real_summary" / "stage5_real_summary.json"),
-                    "stage5_real_type_mass_csv": str(result_root / "stage5_real_summary" / "stage5_real_type_mass.csv"),
-                    "stage5_real_spot_metrics_csv": str(result_root / "stage5_real_summary" / "stage5_real_spot_metrics.csv"),
-                }
-            else:
-                stage4_baseline = result_root / "stage4_cytospace_baseline" / "cytospace_output"
-                stage4_route2 = result_root / "stage4_cytospace_route2" / "cytospace_output"
-
-                stage5_baseline = result_root / "stage5_eval_baseline"
-                stage5_route2 = result_root / "stage5_eval_route2"
-                stage5_compare = result_root / "stage5_compare_baseline_vs_route2.json"
-
-                m = run_cmd(
-                    [
-                        str(py),
-                        "-m",
-                        "src.stages.stage5_route2_s0",
-                        "--sample",
-                        args.sample,
-                        "--run_tag",
-                        "baseline",
-                        "--stage4_dir",
-                        str(stage4_baseline),
-                        "--sim_dir",
-                        str(stage5_truth_dir),
-                        "--out_dir",
-                        str(stage5_baseline),
-                    ],
-                    cwd=project_root,
-                    label="stage5_sim_baseline",
-                    heartbeat_sec=args.heartbeat_sec,
-                    monitor_sec=args.monitor_sec,
-                    quiet_subprocess=args.quiet_subprocess,
-                    log_file=log_dir / "stage5_sim_baseline.log",
-                )
-                cmd_perf_all.append(m)
-                stage_cmd_perf["stage5"].append(m)
-
-                m = run_cmd(
-                    [
-                        str(py),
-                        "-m",
-                        "src.stages.stage5_route2_s0",
-                        "--sample",
-                        args.sample,
-                        "--run_tag",
-                        "route2",
-                        "--stage4_dir",
-                        str(stage4_route2),
-                        "--sim_dir",
-                        str(stage5_truth_dir),
-                        "--out_dir",
-                        str(stage5_route2),
-                    ],
-                    cwd=project_root,
-                    label="stage5_sim_route2",
-                    heartbeat_sec=args.heartbeat_sec,
-                    monitor_sec=args.monitor_sec,
-                    quiet_subprocess=args.quiet_subprocess,
-                    log_file=log_dir / "stage5_sim_route2.log",
-                )
-                cmd_perf_all.append(m)
-                stage_cmd_perf["stage5"].append(m)
-
-                baseline_json = stage5_baseline / "stage5_route2_s0__baseline.json"
-                route2_json = stage5_route2 / "stage5_route2_s0__route2.json"
-                if baseline_json.exists() and route2_json.exists():
-                    m = run_cmd(
-                        [
-                            str(py),
-                            "-m",
-                            "src.stages.stage5_route2_s0",
-                            "--compare_baseline",
-                            str(baseline_json),
-                            "--compare_route2",
-                            str(route2_json),
-                            "--compare_out",
-                            str(stage5_compare),
-                        ],
-                        cwd=project_root,
-                        label="stage5_sim_compare",
-                        heartbeat_sec=args.heartbeat_sec,
-                        monitor_sec=args.monitor_sec,
-                        quiet_subprocess=args.quiet_subprocess,
-                        log_file=log_dir / "stage5_sim_compare.log",
-                    )
-                    cmd_perf_all.append(m)
-                    stage_cmd_perf["stage5"].append(m)
-                stage_status["stage5"] = "ok"
-                stage5_mode = "sim_truth_eval"
-                stage5_outputs = {
-                    "stage5_baseline_json": str(result_root / "stage5_eval_baseline" / "stage5_route2_s0__baseline.json"),
-                    "stage5_route2_json": str(result_root / "stage5_eval_route2" / "stage5_route2_s0__route2.json"),
-                    "stage5_compare_json": str(result_root / "stage5_compare_baseline_vs_route2.json"),
-                }
-        else:
-            stage_status["stage5"] = "skipped"
-            stage5_mode = "skipped"
-        done_stages += 1
-        _print_progress(done_stages, total_stages, "stage5", stage_status["stage5"], args.progress_width)
-
         stage_perf = {k: _aggregate_stage_perf(v) for k, v in stage_cmd_perf.items()}
         overall_perf = _aggregate_stage_perf(cmd_perf_all)
         stage4_resource_cmp = _build_stage4_resource_comparison(cmd_perf_all)
@@ -909,8 +738,6 @@ def main() -> int:
             "stage4_filter_scope_effective": effective_route2_filter_scope,
             "stage4_resource_comparison_json": str(stage4_resource_cmp_json),
             "stage4_resource_comparison_csv": str(stage4_resource_cmp_csv),
-            "stage5_mode": stage5_mode,
-            "stage5_outputs": stage5_outputs,
             "performance": {
                 "monitoring_enabled": bool(psutil is not None),
                 "monitoring_reason": monitoring_reason,

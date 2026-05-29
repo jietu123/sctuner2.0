@@ -1,15 +1,14 @@
-#!/usr/bin/env python3
 """
-清理冗余存储：删除 pipeline 未使用的 Stage4 大文件
+Clean redundant Stage4 storage files that are not needed for retained outputs.
 
-可安全删除（Stage5 及后续不依赖）：
-- assigned_expression/ (matrix.mtx 等) ~146 GB
-- sc_expression_for_cytospace.csv ~22 GB
-- st_expression_for_cytospace.csv ~14 GB
+Safe to delete:
+- assigned_expression/ (large CytoSPACE expression export)
+- sc_expression_for_cytospace.csv
+- st_expression_for_cytospace.csv
 
 Usage:
-    python scripts/cleanup_redundant_storage.py --dry-run   # 仅列出，不删除
-    python scripts/cleanup_redundant_storage.py            # 执行删除
+    python scripts/cleanup_redundant_storage.py --dry-run
+    python scripts/cleanup_redundant_storage.py
 """
 from __future__ import annotations
 
@@ -21,7 +20,7 @@ RESULT = ROOT / "result"
 
 
 def find_redundant() -> list[tuple[Path, str]]:
-    """返回 (路径, 类型) 列表。"""
+    """Return a list of (path, item_type) pairs."""
     items: list[tuple[Path, str]] = []
     if not RESULT.exists():
         return items

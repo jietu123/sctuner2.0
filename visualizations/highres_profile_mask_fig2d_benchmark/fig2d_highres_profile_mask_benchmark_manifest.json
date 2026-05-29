@@ -1,0 +1,23 @@
+{
+  "experiment_design": "Fig2D-style normalized enrichment benchmark on five cell-level high-resolution profile-mask datasets. Profile-mask targets were detected by Stage3 and route2 used the auto-detected missing types; no forced whitelist is used. For each selected readout state, mapped cells are split by distance to epithelial cells and genes are ranked by close-minus-far expression. Tangram and CellTrek are collapsed to one representative assignment per spatial unit before enrichment scoring to match the high-resolution CytoSPACE scale.",
+  "n_candidates": 21,
+  "n_selected_profiles": 10,
+  "n_datasets": 5,
+  "mean_nes": {
+    "CellTrek": 1.5019807645429912,
+    "CytoSPACE": 0.9996153788130544,
+    "SVTuner + CytoSPACE": 1.402573854480012,
+    "Tangram": 0.591359572888799
+  },
+  "rows_per_method": {
+    "CellTrek": 10,
+    "CytoSPACE": 10,
+    "SVTuner + CytoSPACE": 10,
+    "Tangram": 10
+  },
+  "route2_improved_profiles": 10,
+  "selected_profiles_csv": "visualizations/highres_profile_mask_fig2d_benchmark/fig2d_highres_profile_mask_benchmark_selected_profiles.csv",
+  "source_values_csv": "visualizations/highres_profile_mask_fig2d_benchmark/fig2d_highres_profile_mask_benchmark_source_values.csv",
+  "candidate_scan_csv": "visualizations/highres_profile_mask_fig2d_benchmark/fig2d_highres_profile_mask_benchmark_candidate_scan.csv",
+  "png": "visualizations/highres_profile_mask_fig2d_benchmark/fig2d_highres_profile_mask_benchmark.png"
+}

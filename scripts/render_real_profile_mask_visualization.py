@@ -482,7 +482,14 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     out_png = out_dir / f"{slug}_mask_ABCD_expression_identical_cyan_outline.png"
 
-    plt.rcParams.update({"font.family": "DejaVu Sans"})
+    plt.rcParams.update(
+        {
+            "font.family": "DejaVu Sans",
+            "svg.fonttype": "none",
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+        }
+    )
     fig, axes = plt.subplots(1, 4, figsize=(15.8, 5.0), dpi=220)
     ax_a, ax_b, ax_c, ax_d = axes
 

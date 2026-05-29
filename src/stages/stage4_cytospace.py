@@ -66,6 +66,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--distance_metric", default="Pearson_correlation", help="CytoSPACE distance_metric")
     p.add_argument("--seed", type=int, default=42, help="random seed")
     p.add_argument("--sampling_sub_spots", action="store_true", default=True, help="enable sub-spot sampling to reduce memory")
+    p.add_argument("--no_sampling_sub_spots", action="store_false", dest="sampling_sub_spots",
+                   help="disable sub-spot sampling; useful for reproducing CytoSPACE paper-style full mappings")
     p.add_argument("--n_subspots", type=int, default=800, help="number of selected sub-spots when sampling_sub_spots is on")
     p.add_argument(
         "--n_processors",
@@ -1712,13 +1714,13 @@ def main():
     print("[Stage4 cytospace] summary:")
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
-    # 清理冗余文件，避免重复占用存储（assigned_expression、sc/st_expression_for_cytospace 未被 Stage5 使用）
+    # Remove bulky intermediate files that are not needed for retained Stage4 outputs.
     if not args.keep_redundant:
         _cleanup_redundant_stage4_outputs(cyto_out_dir, prep_dir)
 
 
 def _cleanup_redundant_stage4_outputs(cyto_out_dir: Path, prep_dir: Path) -> None:
-    """删除 Stage5 不依赖的冗余输出，节省约 6GB/run。"""
+    """Delete redundant Stage4 intermediates to reduce storage usage."""
     removed = []
     ae = cyto_out_dir / "assigned_expression"
     if ae.exists() and ae.is_dir():

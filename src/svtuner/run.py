@@ -1,6 +1,3 @@
-"""
-核心流水线：Stage1（R 或 Python）→ 复制 sim truth → Stage3 → Stage4 baseline+route2 → Stage5。
-"""
 from __future__ import annotations
 
 import os
@@ -12,6 +9,7 @@ from typing import Any, Dict, List, Optional
 
 import pandas as pd
 import yaml
+
 from src.utils.sample_paths import resolve_sample_dir, sample_dir_candidates
 
 TRUTH_FILES = (
@@ -22,7 +20,7 @@ TRUTH_FILES = (
 
 
 def _env_for_r_subprocess() -> dict:
-    """Windows 下为 R 子进程继承环境，并默认打开 conda 建议的 DLL 搜索修正（与 README 一致）。"""
+    """Return an environment suitable for launching R subprocesses on Windows."""
     env = os.environ.copy()
     if os.name == "nt" and not env.get("CONDA_DLL_SEARCH_MODIFICATION_ENABLE"):
         env["CONDA_DLL_SEARCH_MODIFICATION_ENABLE"] = "1"
@@ -46,12 +44,12 @@ def load_presets(project_root: Path) -> Dict[str, Any]:
 def load_dataset_yaml(project_root: Path, sample: str) -> Dict[str, Any]:
     cfg_path = project_root / "configs" / "datasets" / f"{sample}.yaml"
     if not cfg_path.exists():
-        raise FileNotFoundError(f"未找到数据集配置: {cfg_path}")
+        raise FileNotFoundError(f"Dataset config not found: {cfg_path}")
     return yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
 
 
 def prepare_stage1_python(project_root: Path, sim_dir: Path, sample: str) -> None:
-    """用 Python 准备 Stage1 导出（无需 R）：复制 sim 数据并转置表达矩阵。"""
+    """Prepare Stage1 exports from simulation CSV files without running the R preprocessor."""
     export_dir = project_root / "data" / "processed" / sample / "stage1_preprocess" / "exported"
     export_dir.mkdir(parents=True, exist_ok=True)
 
@@ -83,7 +81,7 @@ def prepare_stage1_python(project_root: Path, sim_dir: Path, sample: str) -> Non
         if hvg_src.resolve() != hvg_dst.resolve():
             shutil.copy2(hvg_src, hvg_dst)
         else:
-            print("  [info] hvg_genes.txt 已在目标样本目录，跳过复制")
+            print("  [info] hvg_genes.txt already exists in target sample directory; skipped copy")
 
     print("  [OK] Stage1 (Python) done: copied + transposed")
 
@@ -103,7 +101,7 @@ def run_simgen(project_root: Path, preset: Dict[str, Any]) -> None:
     module = sg.get("module")
     args_dict = sg.get("args") or {}
     if not module:
-        raise ValueError("preset 中 simgen.module 为空")
+        raise ValueError("preset simgen.module is empty")
     cmd: List[str] = [sys.executable, "-m", module]
     for k, v in args_dict.items():
         cmd.append(f"--{k}")
@@ -111,7 +109,7 @@ def run_simgen(project_root: Path, preset: Dict[str, Any]) -> None:
     print(f"\n[SimGen] {' '.join(cmd)}")
     ret = subprocess.run(cmd, cwd=project_root)
     if ret.returncode != 0:
-        raise RuntimeError("SimGen 失败")
+        raise RuntimeError("SimGen failed")
 
 
 def run_pipeline(
@@ -126,20 +124,20 @@ def run_pipeline(
     n_processors: Optional[int] = None,
     n_subspots: Optional[int] = None,
 ) -> None:
+    """Run the maintained CLI pipeline through Stage4 only."""
     project_root = project_root.resolve()
     presets = load_presets(project_root)
     dcfg = load_dataset_yaml(project_root, sample)
     pipe = dcfg.get("pipeline") or {}
 
     mt = missing_type or pipe.get("missing_type") or "T cells CD8"
-    # 默认 1：与 stage4_cytospace 一致，降低 Windows 上多进程 + 大矩阵时的 MemoryError 风险
     n_proc = n_processors if n_processors is not None else int(pipe.get("n_processors", 1))
     n_sub = n_subspots if n_subspots is not None else int(pipe.get("n_subspots", 500))
 
     paths = dcfg.get("paths") or {}
     st_expr = paths.get("st_expr")
     if not st_expr:
-        raise ValueError("configs/datasets/<sample>.yaml 缺少 paths.st_expr")
+        raise ValueError("configs/datasets/<sample>.yaml is missing paths.st_expr")
     st_expr_path = _resolve_path(project_root, str(st_expr))
     if st_expr_path.exists():
         sim_dir = st_expr_path.parent
@@ -155,19 +153,19 @@ def run_pipeline(
     if from_scratch and not skip_simgen:
         if sample not in presets or "simgen" not in (presets.get(sample) or {}):
             raise FileNotFoundError(
-                f"configs/pipeline_presets.yaml 中无 {sample} 的 simgen 配置，无法 --from-scratch。"
-                " 请添加 preset 或先手动运行 simgen。"
+                f"No simgen preset found for {sample} in configs/pipeline_presets.yaml; "
+                "add a preset or run simgen manually first."
             )
         run_simgen(project_root, presets[sample])
     elif from_scratch and skip_simgen:
-        print("[WARN] --from-scratch 与 --skip-simgen 同时指定，跳过 SimGen。")
+        print("[WARN] --from-scratch and --skip-simgen were both set; skipping SimGen")
 
     if not sim_dir.is_dir():
-        raise FileNotFoundError(f"sim 目录不存在（由 st_expr 推导）: {sim_dir}")
+        raise FileNotFoundError(f"Simulation/source directory not found: {sim_dir}")
 
     if not skip_stage1:
         if use_python_stage1:
-            print("\n[Stage1] Python 准备 ...")
+            print("\n[Stage1] Python preparation ...")
             prepare_stage1_python(project_root, sim_dir, sample)
         else:
             print("\n[Stage1] R preprocess ...")
@@ -178,13 +176,13 @@ def run_pipeline(
             rscript = project_root / "r_scripts" / "stage1_preprocess.R"
             cmd = [rscript_exe, str(rscript), "--sample", sample, "--project_root", str(project_root), "--export_csv"]
             resolved = rscript_exe if os.path.isabs(str(rscript_exe)) else shutil.which(str(rscript_exe))
-            print(f"  [info] Rscript 解析为: {resolved or rscript_exe!r}（与 scripts/run_s1_mt_*.py 相同调用方式）")
+            print(f"  [info] Rscript resolved to: {resolved or rscript_exe!r}")
             ret = subprocess.run(cmd, cwd=project_root, env=_env_for_r_subprocess())
             if ret.returncode != 0:
-                raise RuntimeError("Stage1 (R) 失败，可改用 --use-python-stage1")
+                raise RuntimeError("Stage1 (R) failed; retry with --use-python-stage1 if appropriate")
             print("  [OK] Stage1 (R) done")
     else:
-        print("\n[Stage1] 跳过 (--skip-stage1)")
+        print("\n[Stage1] skipped (--skip-stage1)")
 
     copy_truth_to_export(project_root, sim_dir, sample)
 
@@ -194,7 +192,7 @@ def run_pipeline(
         cwd=project_root,
     )
     if ret.returncode != 0:
-        raise RuntimeError("Stage3 失败")
+        raise RuntimeError("Stage3 failed")
 
     print("\n[Stage4] CytoSPACE baseline ...")
     cmd_baseline = [
@@ -216,7 +214,7 @@ def run_pipeline(
     ]
     ret = subprocess.run(cmd_baseline, cwd=project_root)
     if ret.returncode != 0:
-        raise RuntimeError("Stage4 baseline 失败")
+        raise RuntimeError("Stage4 baseline failed")
 
     print("\n[Stage4] CytoSPACE route2 ...")
     cmd_route2 = [
@@ -242,30 +240,11 @@ def run_pipeline(
     ]
     ret = subprocess.run(cmd_route2, cwd=project_root)
     if ret.returncode != 0:
-        raise RuntimeError("Stage4 route2 失败")
+        raise RuntimeError("Stage4 route2 failed")
 
     base_result = project_root / "result" / sample
-    print("\n[Stage5] evaluation ...")
-    for run_tag, suffix in [("baseline", "_baseline"), ("route2", "_route2")]:
-        stage4_dir = base_result / f"stage4_cytospace{suffix}" / "cytospace_output"
-        out_dir = base_result / f"stage5_eval_{run_tag}"
-        cmd = [
-            sys.executable,
-            "-m",
-            "src.stages.stage5_route2_s0",
-            "--sample",
-            sample,
-            "--run_tag",
-            run_tag,
-            "--stage4_dir",
-            str(stage4_dir),
-            "--sim_dir",
-            str(sim_dir),
-            "--out_dir",
-            str(out_dir),
-        ]
-        ret = subprocess.run(cmd, cwd=project_root)
-        if ret.returncode != 0:
-            raise RuntimeError(f"Stage5 {run_tag} 失败")
-
-    print(f"\n[DONE] Pipeline 完成。结果目录: result/{sample}/")
+    baseline_out = base_result / "stage4_cytospace_baseline" / "cytospace_output"
+    route2_out = base_result / "stage4_cytospace_route2" / "cytospace_output"
+    print("\n[DONE] Pipeline completed. Stage4 mapping outputs:")
+    print(f"  baseline: {baseline_out}")
+    print(f"  route2:   {route2_out}")

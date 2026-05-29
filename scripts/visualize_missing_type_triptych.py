@@ -277,6 +277,14 @@ def main() -> int:
     baseline_panel["dominant"] = baseline_panel["dominant"].fillna("__NoType__")
     route2_panel["dominant"] = route2_panel["dominant"].fillna("__NoType__")
 
+    plt.rcParams.update(
+        {
+            "font.family": "Arial",
+            "svg.fonttype": "none",
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+        }
+    )
     fig, axes = plt.subplots(1, 3, figsize=(24, 8), dpi=180)
     fig.patch.set_facecolor("#e6e6e6")
     _plot_panel(
