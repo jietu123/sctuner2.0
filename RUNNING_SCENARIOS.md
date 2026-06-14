@@ -36,19 +36,16 @@ Get-ChildItem configs\datasets -Filter *.yaml |
 
 ```text
 human_lung_5loc_fine9_clustered_sim
-human_lung_5loc_fine9_clustered_sim_missing_ciliated
-human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular
+human_lung_5loc_fine9_clustered_sim_missing_at2
+human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast
 
-mouse_brain_refined8_balanced_clustered_sim
-mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56
-mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56
-mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56
+mouse_brain_refined7_balanced_clustered_sim
+mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_ext_l56
+mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_ext_l56
 
-real_brca_clustered_sim
-real_brca_clustered_sim_missing_epithelial_cells
-real_brca_clustered_sim_missing_epithelial_monocytes_endothelial
-real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts
-real_brca_clustered_sim_missing_epithelial_monocytes_macrophages
+real_brca7_candidate_stable_control
+real_brca7_candidate_stable_control_missing_epithelial_cells
+real_brca7_candidate_stable_control_missing_epithelial_cells_pcs
 ```
 
 真实数据场景示例包括：
@@ -99,7 +96,7 @@ if ($LASTEXITCODE -ne 0) { throw "Stage3 failed: $sample" }
 
 ```powershell
 $group = "human_lung_5loc"
-$sample = "human_lung_5loc_fine9_clustered_sim_missing_ciliated"
+$sample = "human_lung_5loc_fine9_clustered_sim_missing_at2"
 
 Import-Csv "data\processed\simulation_experiments\$group\$sample\stage3_typematch\type_support.csv" |
   Select-Object orig_type,n_cells,support_score,support_category,auto_missing,auto_missing_confirmed,auto_missing_confirmation_reason,masked_missing_candidate,marker_identity_candidate,marker_identity_z,Action |
@@ -234,10 +231,10 @@ python scripts\run_project_mainline.py --sample $sample --project_root .
 验证样本：
 
 ```text
-human_lung_5loc_fine9_clustered_sim_missing_ciliated
+human_lung_5loc_fine9_clustered_sim_missing_at2
 ```
 
-预期结果：`Ciliated` 被识别为确认缺失类型，其他类型不应被确认缺失。
+预期结果：`AT2` 被识别为确认缺失类型，其他类型不应被确认缺失。
 
 ```powershell
 $ErrorActionPreference = 'Stop'
@@ -247,7 +244,7 @@ $envPrefix = "E:\ANACONDA\envs\cytospace_v1.1.0_py310"
 $py = "$envPrefix\python.exe"
 
 $simGroup = "human_lung_5loc"
-$simSample = "human_lung_5loc_fine9_clustered_sim_missing_ciliated"
+$simSample = "human_lung_5loc_fine9_clustered_sim_missing_at2"
 
 Remove-Item "data\processed\simulation_experiments\$simGroup\$simSample" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item "result\simulation_experiments\$simGroup\$simSample" -Recurse -Force -ErrorAction SilentlyContinue

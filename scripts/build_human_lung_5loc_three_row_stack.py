@@ -161,13 +161,13 @@ def _build() -> None:
 
     rows = [
         vis_root / "human_lung_5loc_fine9_clustered_sim" / "mapping_triptych_no_missing.png",
-        vis_root / "human_lung_5loc_fine9_clustered_sim_missing_ciliated" / "missing_type_triptych.png",
-        vis_root / "human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular" / "missing_type_triptych.png",
+        vis_root / "human_lung_5loc_fine9_clustered_sim_missing_at2" / "missing_type_triptych.png",
+        vis_root / "human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast" / "missing_type_triptych.png",
     ]
     row_labels = [
         "No missing",
-        "- Ciliated",
-        "- Ciliated\n- Endothelia vascular",
+        "- AT2",
+        "- AT2\n- Fibroblast",
     ]
     col_titles = [
         "Truth (no missing type)",

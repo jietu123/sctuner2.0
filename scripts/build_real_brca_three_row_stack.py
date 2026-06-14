@@ -162,14 +162,16 @@ def _build() -> None:
     out = vis_root / "real_brca_triptych_stack_3rows.png"
 
     rows = [
-        vis_root / "real_brca_clustered_sim" / "mapping_triptych_no_missing.png",
-        vis_root / "real_brca_clustered_sim_missing_epithelial_cells" / "missing_type_triptych.png",
-        vis_root / "real_brca_clustered_sim_missing_epithelial_monocytes_macrophages" / "missing_type_triptych.png",
+        vis_root / "real_brca7_candidate_stable_control" / "mapping_triptych_no_missing.png",
+        vis_root / "real_brca7_candidate_stable_control_missing_epithelial_cells" / "missing_type_triptych.png",
+        vis_root
+        / "real_brca7_candidate_stable_control_missing_epithelial_cells_pcs"
+        / "missing_type_triptych.png",
     ]
     row_labels = [
         "No missing",
         "- Epithelial cells",
-        "- Epithelial cells\n- Monocytes & Macrophages",
+        "- Epithelial cells\n- PCs",
     ]
     col_titles = [
         "Truth (no missing type)",
@@ -181,7 +183,14 @@ def _build() -> None:
         if not p.exists():
             raise FileNotFoundError(p)
 
-    truth_csv = root / "data" / "sim" / "real_brca" / "real_brca_clustered_sim" / "sim_truth_spot_type_fraction.csv"
+    truth_csv = (
+        root
+        / "data"
+        / "sim"
+        / "real_brca"
+        / "real_brca7_candidate_stable_control"
+        / "sim_truth_spot_type_fraction.csv"
+    )
     if not truth_csv.exists():
         raise FileNotFoundError(truth_csv)
 
@@ -193,7 +202,7 @@ def _build() -> None:
     target_h = max(img.size[1] for row in all_panels for img in row)
     all_panels = [[img.resize((target_w, target_h), Image.Resampling.LANCZOS) for img in row] for row in all_panels]
 
-    left_w = 330
+    left_w = 430
     right_w = legend.size[0] + 36
     top_title_h = 68
     top_header_h = 44

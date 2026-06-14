@@ -53,7 +53,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--route2_filter_scope",
         choices=["unsupported_all", "missing_only", "missing_detected_only"],
-        default="missing_only",
+        default="unsupported_all",
+        help=(
+            "Stage4 route2 filtering rule. The mainline default is unsupported_all so filtering "
+            "depends only on Stage3/plugin decisions; missing_only is retained for explicit "
+            "oracle diagnostics and must not be used for end-to-end simulation benchmarks."
+        ),
     )
 
     p.add_argument("--stage3_sc_expr_source", choices=["normalized", "data", "counts", "auto"], default="normalized")
@@ -520,8 +525,12 @@ def main() -> int:
     for t in cli_missing_types + inferred_missing_types:
         if t not in effective_missing_types:
             effective_missing_types.append(t)
-    stage4_missing_arg = ",".join(effective_missing_types) if effective_missing_types else "__NO_MISSING__"
     effective_route2_filter_scope = args.route2_filter_scope
+    stage4_missing_arg = (
+        ",".join(effective_missing_types)
+        if effective_route2_filter_scope in {"missing_only", "missing_detected_only"} and effective_missing_types
+        else "__NO_MISSING__"
+    )
     if (
         effective_route2_filter_scope == "missing_only"
         and not effective_missing_types

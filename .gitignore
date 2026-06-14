@@ -3,6 +3,7 @@
 Thumbs.db
 .idea/
 .vscode/
+docs/
 
 # Python/R artifacts
 __pycache__/

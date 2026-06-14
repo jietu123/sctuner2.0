@@ -223,7 +223,7 @@ def _run_stage4(
                 "--filter_mode",
                 "plugin_unknown",
                 "--filter_scope",
-                "missing_only",
+                "unsupported_all",
                 "--cell_type_column",
                 "plugin_type",
                 "--stage4_suffix",

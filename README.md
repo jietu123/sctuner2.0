@@ -123,7 +123,7 @@ python -m src.stages.stage4_cytospace `
   --sc_expr_source normalized `
   --filter_mode plugin_unknown `
   --cell_type_column plugin_type `
-  --filter_scope missing_only `
+  --filter_scope unsupported_all `
   --stage4_suffix _route2
 ```
 
@@ -209,20 +209,17 @@ mouse_brain_refined
 Representative samples:
 
 ```text
-real_brca_clustered_sim
-real_brca_clustered_sim_missing_epithelial_cells
-real_brca_clustered_sim_missing_epithelial_monocytes_macrophages
-real_brca_clustered_sim_missing_epithelial_monocytes_endothelial
-real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts
+real_brca7_candidate_stable_control
+real_brca7_candidate_stable_control_missing_epithelial_cells
+real_brca7_candidate_stable_control_missing_epithelial_cells_pcs
 
 human_lung_5loc_fine9_clustered_sim
-human_lung_5loc_fine9_clustered_sim_missing_ciliated
-human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular
+human_lung_5loc_fine9_clustered_sim_missing_at2
+human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast
 
-mouse_brain_refined8_balanced_clustered_sim
-mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56
-mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56
-mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56
+mouse_brain_refined7_balanced_clustered_sim
+mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_ext_l56
+mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_ext_l56
 ```
 
 Simulation truth files are expected under `data/sim/<group>/<sample>/` and copied into Stage1 exports when needed:
@@ -235,7 +232,7 @@ sim_truth_spot_type_fraction.csv
 
 ### 3. 10% scRNA reference-noise scenarios
 
-The `_scnoise10` scenarios perturb the single-cell reference expression while keeping ST expression, coordinates, and truth unchanged. They are used for robustness checks across the same method set.
+The `_scnoise10` scenarios perturb the single-cell reference expression while keeping ST expression, coordinates, and truth unchanged. They are used for Stage3 filtering robustness and the same seven-method composition-recovery benchmark as the 0% noise scenarios. Per-scenario mapping visualizations are not retained for the 10% noise experiment.
 
 Generator:
 
@@ -249,6 +246,10 @@ python scripts\generate_sc_noise_from_processed_sim.py `
   --seed 42 `
   --overwrite
 ```
+
+### 3.1 Simulation benchmark scope
+
+The benchmark covers control, single-missing, and double-missing scenarios for real BRCA, human lung, and mouse brain at both 0% and 10% scRNA-seq reference noise. This gives nine scenarios per noise level.
 
 ### 4. CytoSPACE Fig.2-style profile-mask experiments
 
@@ -290,8 +291,9 @@ Main high-resolution visualization outputs:
 
 ```text
 visualizations/highres_profile_mask_mapping/highres_profile_mask_mapping_stack_5x4.png
-visualizations/highres_profile_mask_fig2c_only/fig2_panel_c_highres_cell_profile_mask.png
-visualizations/highres_profile_mask_fig2d_benchmark/fig2d_highres_profile_mask_benchmark.png
+visualizations/highres_targeted_validation_fig2c/targeted_fig2c_monocytes_and_macrophages_ecotyper_monocytes_and_macrophages_ce9_humancoloncancerpatient1.png
+visualizations/highres_profile_mask_fig2d/all_candidates/fig2d_highres_profile_mask_benchmark.png
+visualizations/highres_profile_mask_fig2d/targeted_validation/targeted_fig2d_highres_fixed_panel.png
 visualizations/highres_profile_mask_fig2c_expression_enrichment/
 ```
 
@@ -325,6 +327,24 @@ python scripts\run_tangram_marker_mapping.py `
   --device cpu
 ```
 
+### novoSpaRc and SpaOTsc
+
+Both optimal-transport methods use the maintained unified runner:
+
+```powershell
+python scripts\run_ot_mapping.py `
+  --method novosparc `
+  --project_root . `
+  --group <group> `
+  --sample <sample>
+
+python scripts\run_ot_mapping.py `
+  --method spaotsc `
+  --project_root . `
+  --group <group> `
+  --sample <sample>
+```
+
 ### CellTrek-style runner
 
 ```powershell
@@ -352,7 +372,7 @@ metrics_simulation.json
 run.log
 ```
 
-Pearson correlation, Euclidean distance, novoSpaRc, and SpaOTsc were used during exploration but are no longer part of the maintained runnable script set.
+The complete nine-scenario benchmark can be resumed with `scripts/run_nine_scenario_method_benchmark.py`. Pass `--sample_suffix _scnoise10` for the 10% noise scenarios. Pearson correlation and Euclidean distance remain exploratory methods and are not part of the retained seven-method comparison.
 
 ## Key Visualization Outputs
 
@@ -374,8 +394,9 @@ visualizations/cytospace_fig2i_mouse_kidney_stage3_unsupported_decoy_sensitivity
 visualizations/cytospace_fig2k_tcell_states_stage3_decoy/fig2k_stage3_detected_cd4_state_decoy_baseline_vs_route2.png
 
 visualizations/highres_profile_mask_mapping/highres_profile_mask_mapping_stack_5x4.png
-visualizations/highres_profile_mask_fig2c_only/fig2_panel_c_highres_cell_profile_mask.png
-visualizations/highres_profile_mask_fig2d_benchmark/fig2d_highres_profile_mask_benchmark.png
+visualizations/highres_targeted_validation_fig2c/targeted_fig2c_monocytes_and_macrophages_ecotyper_monocytes_and_macrophages_ce9_humancoloncancerpatient1.png
+visualizations/highres_profile_mask_fig2d/all_candidates/fig2d_highres_profile_mask_benchmark.png
+visualizations/highres_profile_mask_fig2d/targeted_validation/targeted_fig2d_highres_fixed_panel.png
 ```
 
 Simulation overview figures compare truth, CytoSPACE baseline mapping, and SVTuner + CytoSPACE route2 mapping. Real profile-mask and Fig.2-style figures focus on whether route2 suppresses unsupported target-like signal or improves downstream biological readouts after Stage3-detected profile masking.

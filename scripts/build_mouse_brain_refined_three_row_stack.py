@@ -160,14 +160,14 @@ def _build() -> None:
     out = vis_root / "mouse_brain_refined_triptych_stack_3rows.png"
 
     rows = [
-        vis_root / "mouse_brain_refined8_balanced_clustered_sim" / "mapping_triptych_no_missing.png",
-        vis_root / "mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56" / "missing_type_triptych.png",
-        vis_root / "mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56" / "missing_type_triptych.png",
+        vis_root / "mouse_brain_refined7_balanced_clustered_sim" / "mapping_triptych_no_missing.png",
+        vis_root / "mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_ext_l56" / "missing_type_triptych.png",
+        vis_root / "mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_ext_l56" / "missing_type_triptych.png",
     ]
     row_labels = [
         "No missing",
         "- Microglia",
-        "- Microglia\n- Astro_ctx",
+        "- Microglia\n- Oligo_2",
     ]
     col_titles = [
         "Truth (no missing type)",
@@ -179,7 +179,7 @@ def _build() -> None:
         if not p.exists():
             raise FileNotFoundError(p)
 
-    truth_csv = root / "data" / "sim" / "mouse_brain_refined" / "mouse_brain_refined8_balanced_clustered_sim" / "sim_truth_spot_type_fraction.csv"
+    truth_csv = root / "data" / "sim" / "mouse_brain_refined" / "mouse_brain_refined7_balanced_clustered_sim" / "sim_truth_spot_type_fraction.csv"
     if not truth_csv.exists():
         raise FileNotFoundError(truth_csv)
 

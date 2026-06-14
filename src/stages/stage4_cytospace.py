@@ -43,6 +43,12 @@ if str(_ROOT) not in _sys.path:
     _sys.path.insert(0, str(_ROOT))
 
 from src.stages.stage1_io import load_stage1
+from src.stages.storage import (
+    processed_dir,
+    read_dataset_config,
+    result_dir,
+    stage1_export_dir,
+)
 from src.utils.type_name import load_alias_map, canonicalize_type_name, normalize_type_name
 from src.utils.sample_paths import sample_dir_candidates
 
@@ -193,7 +199,8 @@ def _clean_spot_index(idx: pd.Index) -> pd.Index:
 
 
 def load_stage3(root: Path, sample: str) -> tuple[pd.DataFrame, pd.DataFrame | None]:
-    base = root / "data" / "processed" / sample / "stage3_typematch"
+    cfg = read_dataset_config(root, sample)
+    base = processed_dir(root, sample, cfg) / "stage3_typematch"
     relabel = pd.read_csv(base / "cell_type_relabel.csv")
     ts_path = base / "type_support.csv"
     ts = pd.read_csv(ts_path) if ts_path.exists() else None
@@ -1359,8 +1366,8 @@ def build_stage4_outputs(
         "oracle_only_filtered_missing": mark_stats.get("oracle_only_filtered_missing"),
         "sha1": {
             "cell_assignment": sha1(output_dir / "cell_assignment.csv"),
-            "sim_info": sha1(project_root / "data" / "processed" / sample / "stage1_preprocess" / "exported" / "sim_info.json"),
-            "sc_metadata": sha1(project_root / "data" / "processed" / sample / "stage1_preprocess" / "exported" / "sc_metadata.csv"),
+            "sim_info": sha1(stage1_export_dir(project_root, sample, read_dataset_config(project_root, sample)) / "sim_info.json"),
+            "sc_metadata": sha1(stage1_export_dir(project_root, sample, read_dataset_config(project_root, sample)) / "sc_metadata.csv"),
         },
         "cell_assignment_path": str(output_dir / "cell_assignment.csv"),
         "cytospace_output": str(output_dir),
@@ -1394,7 +1401,8 @@ def main():
         if args.hotspot_rescue_qvalue_min is not None
         else stage4_cfg.get("hotspot_rescue_qvalue_min", "final_fdr")
     )
-    stage3_summary_path = project_root / "result" / args.sample / "stage3_typematch" / "stage3_summary.json"
+    storage_cfg = read_dataset_config(project_root, args.sample)
+    stage3_summary_path = result_dir(project_root, args.sample, storage_cfg) / "stage3_typematch" / "stage3_summary.json"
     final_fdr = resolve_final_fdr(stage3_cfg, stage3_summary_path)
     qvalue_min = resolve_qvalue_min(qvalue_min_cfg, final_fdr)
     rescue_min_genes = (

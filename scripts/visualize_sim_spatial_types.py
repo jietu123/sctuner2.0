@@ -27,7 +27,11 @@ def parse_args() -> argparse.Namespace:
         description="Visualize simulated cell-type spatial distribution from truth spot-type fractions."
     )
     p.add_argument("--project_root", default=".", help="Project root path.")
-    p.add_argument("--sample", default="real_brca_clustered_sim", help="Sample id under data/sim or data/raw.")
+    p.add_argument(
+        "--sample",
+        default="real_brca7_candidate_stable_control",
+        help="Sample id under data/sim or data/raw.",
+    )
     p.add_argument(
         "--truth_spot_csv",
         default=None,

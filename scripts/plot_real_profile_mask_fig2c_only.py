@@ -51,7 +51,7 @@ def _draw_row(fig: plt.Figure, cell, df: pd.DataFrame, score_col: str, title: st
     ax_curve.set_yticks([0.0])
     ax_curve.set_yticklabels(["0"], fontsize=7.8)
     ax_curve.set_ylabel("Enrichment", fontsize=7.4)
-    ax_curve.text(0.965, 0.90, f"NES = {running[np.argmax(np.abs(running))]:.3f}", transform=ax_curve.transAxes, ha="right", va="top", fontsize=7.0)
+    ax_curve.text(0.965, 0.90, f"Peak ES = {running[np.argmax(np.abs(running))]:.3f}", transform=ax_curve.transAxes, ha="right", va="top", fontsize=7.0)
     sns.despine(ax=ax_curve, top=True, right=True)
     ax_curve.tick_params(axis="x", bottom=False, labelbottom=False)
 
@@ -86,7 +86,7 @@ def main() -> int:
     _draw_row(fig, outer[1, 0], spot_df, "route2_reconstructed_score", "SVTuner + CytoSPACE")
 
     fig.text(0.015, 0.975, "c", ha="left", va="top", fontsize=12.0, weight="bold")
-    fig.text(0.048, 0.976, "Spatial enrichment of mapped target-like signal", ha="left", va="top", fontsize=8.7, weight="bold")
+    fig.text(0.048, 0.976, "Mapped target suppression follows residual ST support", ha="left", va="top", fontsize=8.7, weight="bold")
     fig.text(0.048, 0.952, SCENARIO_LABEL, ha="left", va="top", fontsize=7.2, color="#444444")
     fig.text(0.075, 0.900, "CytoSPACE", ha="left", va="bottom", fontsize=7.9, color="#555555")
     fig.text(0.075, 0.443, "SVTuner + CytoSPACE", ha="left", va="bottom", fontsize=7.9, color="#555555")

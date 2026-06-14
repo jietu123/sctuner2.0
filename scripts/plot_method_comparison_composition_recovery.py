@@ -12,18 +12,18 @@ import seaborn as sns
 
 
 SCENARIOS: list[tuple[str, str]] = [
-    ("real_brca", "real_brca_clustered_sim"),
-    ("real_brca", "real_brca_clustered_sim_missing_epithelial_cells"),
-    ("real_brca", "real_brca_clustered_sim_missing_epithelial_monocytes_macrophages"),
-    ("real_brca", "real_brca_clustered_sim_missing_epithelial_monocytes_endothelial"),
-    ("real_brca", "real_brca_clustered_sim_missing_epithelial_monocytes_endothelial_fibroblasts"),
+    ("real_brca", "real_brca7_candidate_stable_control"),
+    ("real_brca", "real_brca7_candidate_stable_control_missing_epithelial_cells"),
+    (
+        "real_brca",
+        "real_brca7_candidate_stable_control_missing_epithelial_cells_pcs",
+    ),
     ("human_lung_5loc", "human_lung_5loc_fine9_clustered_sim"),
-    ("human_lung_5loc", "human_lung_5loc_fine9_clustered_sim_missing_ciliated"),
-    ("human_lung_5loc", "human_lung_5loc_fine9_clustered_sim_missing_ciliated_endothelia_vascular"),
-    ("mouse_brain_refined", "mouse_brain_refined8_balanced_clustered_sim"),
-    ("mouse_brain_refined", "mouse_brain_refined8_balanced_clustered_sim_missing_micro_fill_ext_l56"),
-    ("mouse_brain_refined", "mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_fill_ext_l56"),
-    ("mouse_brain_refined", "mouse_brain_refined8_balanced_clustered_sim_missing_micro_astro_ctx_oligo_2_fill_ext_l56"),
+    ("human_lung_5loc", "human_lung_5loc_fine9_clustered_sim_missing_at2"),
+    ("human_lung_5loc", "human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast"),
+    ("mouse_brain_refined", "mouse_brain_refined7_balanced_clustered_sim"),
+    ("mouse_brain_refined", "mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_ext_l56"),
+    ("mouse_brain_refined", "mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_ext_l56"),
 ]
 
 
@@ -107,13 +107,21 @@ def _composition_recovery(pred: pd.DataFrame, truth: pd.DataFrame) -> tuple[floa
     return scenario_score, pd.DataFrame(rows)
 
 
-def build_tables(project_root: Path, sample_suffix: str = "") -> tuple[pd.DataFrame, pd.DataFrame]:
+def build_tables(
+    project_root: Path,
+    sample_suffix: str = "",
+    methods: list[tuple[str, str]] | None = None,
+    groups: set[str] | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    selected_methods = methods or METHODS
     scenario_rows: list[dict[str, Any]] = []
     cell_type_rows: list[pd.DataFrame] = []
     for group, sample in SCENARIOS:
+        if groups is not None and group not in groups:
+            continue
         eval_sample = f"{sample}{sample_suffix}"
         truth = _load_fraction(_truth_path(project_root, group, eval_sample))
-        for method_label, method_dir in METHODS:
+        for method_label, method_dir in selected_methods:
             pred = _load_fraction(_prediction_path(project_root, eval_sample, method_dir))
             score, per_type = _composition_recovery(pred, truth)
             scenario_rows.append(
@@ -130,7 +138,7 @@ def build_tables(project_root: Path, sample_suffix: str = "") -> tuple[pd.DataFr
             cell_type_rows.append(per_type)
     scenario_df = pd.DataFrame(scenario_rows)
     per_type_df = pd.concat(cell_type_rows, ignore_index=True)
-    order = [m[0] for m in METHODS]
+    order = [m[0] for m in selected_methods]
     scenario_df["method"] = pd.Categorical(scenario_df["method"], order, ordered=True)
     per_type_df["method"] = pd.Categorical(per_type_df["method"], order, ordered=True)
     return scenario_df, per_type_df
@@ -147,7 +155,7 @@ def plot(df: pd.DataFrame, out_png: Path, out_pdf: Path | None = None, title: st
             "axes.labelweight": "bold",
         }
     )
-    order = [m[0] for m in METHODS]
+    order = [str(x) for x in df["method"].dropna().drop_duplicates().tolist()]
     fig, ax = plt.subplots(figsize=(10.8, 5.8), dpi=220, constrained_layout=True)
     sns.boxplot(
         data=df,
@@ -222,6 +230,11 @@ def parse_args() -> argparse.Namespace:
         default="Spatial cell-type composition recovery, no sc noise",
         help="Figure title.",
     )
+    p.add_argument(
+        "--groups",
+        default="",
+        help="Comma-separated simulation groups to include. Empty uses all configured groups.",
+    )
     return p.parse_args()
 
 
@@ -230,7 +243,13 @@ def main() -> int:
     project_root = Path(args.project_root).resolve()
     out_dir = project_root / args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
-    scenario_df, per_type_df = build_tables(project_root, args.sample_suffix)
+    selected_groups = {x.strip() for x in args.groups.split(",") if x.strip()} or None
+    scenario_df, per_type_df = build_tables(
+        project_root,
+        args.sample_suffix,
+        methods=METHODS,
+        groups=selected_groups,
+    )
     prefix = args.output_prefix
     scenario_df.to_csv(out_dir / f"{prefix}_scenario.csv", index=False, encoding="utf-8")
     per_type_df.to_csv(out_dir / f"{prefix}_cell_type.csv", index=False, encoding="utf-8")

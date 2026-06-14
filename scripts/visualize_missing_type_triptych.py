@@ -31,7 +31,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument(
         "--sample",
         required=True,
-        help="Simulation sample id, e.g. real_brca_clustered_sim_mt_b_cells_d100_fill_endo",
+        help="Simulation sample id, e.g. real_brca7_candidate_stable_control_missing_epithelial_cells",
     )
     p.add_argument(
         "--missing_type",

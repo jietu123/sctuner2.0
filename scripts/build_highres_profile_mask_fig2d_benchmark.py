@@ -60,32 +60,18 @@ def _scan_candidates(root: Path, nperm: int, seed: int, min_gene_overlap: int) -
     return out
 
 
-def _select_for_benchmark(candidates: pd.DataFrame, max_per_dataset: int) -> pd.DataFrame:
-    selected_rows = []
-    for raw_sample, sub in candidates.groupby("raw_sample", sort=False):
-        sub = sub.copy()
-        preferred = sub[
-            (sub["delta_NES"] > 0)
-            & (sub["route2_highres_NES"] > 0)
-            & (sub["route2_highres_NES"] < 5.0)
-            & (sub["route2_peak_frac"] < 0.65)
-        ].copy()
-        if preferred.empty:
-            preferred = sub.copy()
-        preferred = preferred.sort_values(
-            ["delta_NES", "route2_highres_NES", "gene_set_overlap"],
-            ascending=[False, False, False],
-        )
-        chosen = preferred.head(max_per_dataset).copy()
-        chosen["selection_note"] = np.where(chosen["delta_NES"] > 0, "route2_improved", "fallback_best_delta")
-        selected_rows.append(chosen)
-    selected = pd.concat(selected_rows, ignore_index=True)
-    return selected
+def _include_all_candidates(candidates: pd.DataFrame) -> pd.DataFrame:
+    included = candidates.copy()
+    included["inclusion_note"] = "all_valid_candidates"
+    return included.sort_values(
+        ["raw_sample", "readout_cell_type", "gene_set"],
+        kind="mergesort",
+    ).reset_index(drop=True)
 
 
-def _to_long(selected: pd.DataFrame) -> pd.DataFrame:
+def _to_long(included: pd.DataFrame) -> pd.DataFrame:
     rows = []
-    for _, row in selected.iterrows():
+    for _, row in included.iterrows():
         for method, prefix in [
             ("CytoSPACE", "baseline_highres"),
             ("SVTuner + CytoSPACE", "route2_highres"),
@@ -99,7 +85,7 @@ def _to_long(selected: pd.DataFrame) -> pd.DataFrame:
                     "gene_set": row["gene_set"],
                     "gene_set_overlap": row["gene_set_overlap"],
                     "candidate_label": row["candidate_label"],
-                    "selection_note": row["selection_note"],
+                    "inclusion_note": row["inclusion_note"],
                     "method": method,
                     "nes": row[f"{prefix}_NES"],
                     "pval": row[f"{prefix}_pval"],
@@ -248,10 +234,10 @@ def _evaluate_generic_method(
     }
 
 
-def _add_generic_methods(root: Path, selected: pd.DataFrame, long_df: pd.DataFrame, nperm: int, seed: int) -> pd.DataFrame:
+def _add_generic_methods(root: Path, included: pd.DataFrame, long_df: pd.DataFrame, nperm: int, seed: int) -> pd.DataFrame:
     gene_sets = _read_gene_sets(root)
     rows = long_df.to_dict("records")
-    for idx, row in selected.reset_index(drop=True).iterrows():
+    for idx, row in included.reset_index(drop=True).iterrows():
         gene_set_name = str(row["gene_set"])
         if gene_set_name not in gene_sets:
             continue
@@ -276,7 +262,7 @@ def _add_generic_methods(root: Path, selected: pd.DataFrame, long_df: pd.DataFra
                     "gene_set": row["gene_set"],
                     "gene_set_overlap": row["gene_set_overlap"],
                     "candidate_label": row["candidate_label"],
-                    "selection_note": row["selection_note"],
+                    "inclusion_note": row["inclusion_note"],
                     "method": method_label,
                     "nes": rec["NES"],
                     "pval": rec["pval"],
@@ -386,11 +372,13 @@ def main() -> int:
         description="Build a Fig2D-style NES benchmark on five high-resolution profile-mask datasets."
     )
     parser.add_argument("--project_root", default=".")
-    parser.add_argument("--out_dir", default="visualizations/highres_profile_mask_fig2d_benchmark")
+    parser.add_argument(
+        "--out_dir",
+        default="visualizations/highres_profile_mask_fig2d/all_candidates",
+    )
     parser.add_argument("--out_prefix", default="fig2d_highres_profile_mask_benchmark")
     parser.add_argument("--nperm", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=19)
-    parser.add_argument("--max_per_dataset", type=int, default=2)
     parser.add_argument("--min_gene_overlap", type=int, default=8)
     args = parser.parse_args()
 
@@ -399,30 +387,37 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     candidates = _scan_candidates(root, args.nperm, args.seed, args.min_gene_overlap)
-    selected = _select_for_benchmark(candidates, args.max_per_dataset)
-    long_df = _to_long(selected)
-    long_df = _add_generic_methods(root, selected, long_df, args.nperm, args.seed)
+    included = _include_all_candidates(candidates)
+    long_df = _to_long(included)
+    long_df = _add_generic_methods(root, included, long_df, args.nperm, args.seed)
 
     candidates.to_csv(out_dir / f"{args.out_prefix}_candidate_scan.csv", index=False)
-    selected.to_csv(out_dir / f"{args.out_prefix}_selected_profiles.csv", index=False)
+    included.to_csv(out_dir / f"{args.out_prefix}_all_profiles.csv", index=False)
     long_df.to_csv(out_dir / f"{args.out_prefix}_source_values.csv", index=False)
     png = _plot(long_df, out_dir, args.out_prefix)
+    baseline_nes = included["baseline_highres_NES"].to_numpy(float)
+    route2_nes = included["route2_highres_NES"].to_numpy(float)
+    delta_nes = route2_nes - baseline_nes
     summary = {
         "experiment_design": (
             "Fig2D-style normalized enrichment benchmark on five cell-level high-resolution profile-mask datasets. "
             "Profile-mask targets were detected by Stage3 and route2 used the auto-detected missing types; no forced whitelist is used. "
-            "For each selected readout state, mapped cells are split by distance to epithelial cells and genes are ranked by close-minus-far expression. "
+            "All valid dataset/readout/gene-set combinations are included without filtering or ranking by mapping outcome. "
+            "For each readout state, mapped cells are split by distance to epithelial cells and genes are ranked by close-minus-far expression. "
             "Tangram and CellTrek are collapsed to one representative assignment per spatial unit before enrichment scoring to match the high-resolution CytoSPACE scale."
         ),
         "n_candidates": int(len(candidates)),
-        "n_selected_profiles": int(len(selected)),
-        "n_datasets": int(selected["raw_sample"].nunique()),
+        "n_included_profiles": int(len(included)),
+        "n_datasets": int(included["raw_sample"].nunique()),
         "mean_nes": long_df.groupby("method")["nes"].mean().to_dict(),
         "rows_per_method": long_df.groupby("method").size().to_dict(),
         "route2_improved_profiles": int(
-            (selected["route2_highres_NES"].to_numpy(float) > selected["baseline_highres_NES"].to_numpy(float)).sum()
+            (route2_nes > baseline_nes).sum()
         ),
-        "selected_profiles_csv": str((out_dir / f"{args.out_prefix}_selected_profiles.csv").relative_to(root)).replace("\\", "/"),
+        "route2_non_improved_profiles": int((route2_nes <= baseline_nes).sum()),
+        "mean_delta_nes": float(delta_nes.mean()),
+        "median_delta_nes": float(np.median(delta_nes)),
+        "all_profiles_csv": str((out_dir / f"{args.out_prefix}_all_profiles.csv").relative_to(root)).replace("\\", "/"),
         "source_values_csv": str((out_dir / f"{args.out_prefix}_source_values.csv").relative_to(root)).replace("\\", "/"),
         "candidate_scan_csv": str((out_dir / f"{args.out_prefix}_candidate_scan.csv").relative_to(root)).replace("\\", "/"),
         "png": str(png.relative_to(root)).replace("\\", "/"),

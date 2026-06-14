@@ -42,7 +42,7 @@ Endothelial cell",CellTrek,low_support_suppression_score,Low-support suppression
 human_cervical_cancer_real_profile_mask_epithelial_cell,human_cervical_cancer_real,Epithelial cell,"Cervical
 Epithelial cell",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1137479835852562,0.8978691901025122,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
 human_cervical_cancer_real_profile_mask_epithelial_cell,human_cervical_cancer_real,Epithelial cell,"Cervical
-Epithelial cell",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1093979032509636,0.9013898413451245,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+Epithelial cell",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1193840349793006,0.8933484566076482,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
 human_cervical_cancer_real_profile_mask_epithelial_cell,human_cervical_cancer_real,Epithelial cell,"Cervical
 Epithelial cell",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.121235606925513,0.8918732100758487,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
 human_cervical_cancer_real_profile_mask_epithelial_cell,human_cervical_cancer_real,Epithelial cell,"Cervical
@@ -50,7 +50,7 @@ Epithelial cell",CellTrek,low_support_suppression_score,Low-support suppression 
 human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
 Endothelial cell",CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.1252243554116456,0.8887116557605667,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
 human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
-Endothelial cell",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0991663510236083,0.9097803977248224,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
+Endothelial cell",SVTuner + CytoSPACE,low_support_suppression_score,Low-support suppression score,higher,0.2,0.0990677273485372,0.9098620359024328,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
 human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
 Endothelial cell",Tangram,low_support_suppression_score,Low-support suppression score,higher,0.2,0.2028514756676889,0.8313578361326045,Reciprocal transform of the mean reconstructed target-like score inside the lowest-support 20% of masked-ST spots. Higher is better.
 human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF

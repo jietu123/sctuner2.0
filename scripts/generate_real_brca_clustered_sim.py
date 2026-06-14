@@ -29,7 +29,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--source_sample", default="real_brca", help="Source sample id.")
     p.add_argument(
         "--target_sample",
-        default="real_brca_clustered_sim",
+        default="real_brca9_strong_clustered_sim",
         help="Target sample name under data/sim/<sim_group>/.",
     )
     p.add_argument(
@@ -76,6 +76,16 @@ def parse_args() -> argparse.Namespace:
         help=(
             "Merge one source cell type into a coarse target label. "
             "Can be provided multiple times, e.g. --merge_cell_type 'B cell=B/Plasma B cell'."
+        ),
+    )
+    p.add_argument(
+        "--replace_cell_type",
+        action="append",
+        default=[],
+        metavar="FROM=TO",
+        help=(
+            "Replace cells of FROM with sampled real expression profiles from TO, then label them as TO. "
+            "This reduces the type set without relabeling mismatched expression. Can be repeated."
         ),
     )
     p.add_argument(
@@ -130,16 +140,18 @@ def write_expr_tsv(path: Path, genes: np.ndarray, spot_ids: list[str], mat: np.n
                 print(f"[WRITE] rows: {i + 1}/{n_rows}")
 
 
-def parse_merge_map(items: list[str]) -> dict[str, str]:
+def parse_type_map(items: list[str], option_name: str) -> dict[str, str]:
     out: dict[str, str] = {}
     for item in items:
         if "=" not in item:
-            raise ValueError(f"Invalid --merge_cell_type value, expected FROM=TO: {item}")
+            raise ValueError(f"Invalid {option_name} value, expected FROM=TO: {item}")
         src, dst = item.split("=", 1)
         src = src.strip()
         dst = dst.strip()
         if not src or not dst:
-            raise ValueError(f"Invalid --merge_cell_type value, expected non-empty FROM=TO: {item}")
+            raise ValueError(f"Invalid {option_name} value, expected non-empty FROM=TO: {item}")
+        if src == dst:
+            raise ValueError(f"Invalid {option_name} value, FROM and TO are identical: {item}")
         out[src] = dst
     return out
 
@@ -264,7 +276,21 @@ def main() -> int:
     sc_meta = sc_meta[["cell_id", "cell_type"]].drop_duplicates("cell_id")
     sc_meta["cell_id"] = sc_meta["cell_id"].astype(str)
     sc_meta["cell_type"] = sc_meta["cell_type"].astype(str)
-    merge_map = parse_merge_map(args.merge_cell_type)
+    original_cell_types = sc_meta.set_index("cell_id")["cell_type"].copy()
+    merge_map = parse_type_map(args.merge_cell_type, "--merge_cell_type")
+    replacement_map = parse_type_map(args.replace_cell_type, "--replace_cell_type")
+    overlap = set(merge_map).intersection(replacement_map)
+    if overlap:
+        raise ValueError(
+            "A source type cannot be both merged and expression-replaced: "
+            + ", ".join(sorted(overlap))
+        )
+    known_types = set(sc_meta["cell_type"])
+    for src, dst in replacement_map.items():
+        if src not in known_types:
+            raise ValueError(f"Replacement source type not found: {src}")
+        if dst not in known_types:
+            raise ValueError(f"Replacement donor type not found: {dst}")
     if merge_map:
         before_types = int(sc_meta["cell_type"].nunique())
         sc_meta["cell_type"] = sc_meta["cell_type"].replace(merge_map)
@@ -292,7 +318,40 @@ def main() -> int:
         raise ValueError("No overlapping cells between SC expression and metadata.")
     sc_cells_arr = sc_cells_arr[keep_mask]
     sc_mat = sc_mat[:, keep_mask]
-    cell_types_arr = np.array([meta_map[c] for c in sc_cells_arr], dtype=object)
+
+    replacement_audit: dict[str, dict[str, object]] = {}
+    if replacement_map:
+        aligned_original_types = np.array(
+            [original_cell_types.get(c, "") for c in sc_cells_arr],
+            dtype=object,
+        )
+        for src, dst in replacement_map.items():
+            replace_idx = np.where(aligned_original_types == src)[0]
+            donor_idx = np.where(aligned_original_types == dst)[0]
+            if replace_idx.size == 0:
+                raise ValueError(f"No aligned source cells available for replacement: {src}")
+            if donor_idx.size == 0:
+                raise ValueError(f"No aligned donor cells available for replacement: {dst}")
+            sampled_donor_idx = rng.choice(donor_idx, size=replace_idx.size, replace=True)
+            sc_mat[:, replace_idx] = sc_mat[:, sampled_donor_idx].copy()
+            replacement_audit[src] = {
+                "replacement_type": dst,
+                "n_replaced_cells": int(replace_idx.size),
+                "n_available_donor_cells": int(donor_idx.size),
+                "sampling_with_replacement": True,
+            }
+            print(
+                f"[SC] expression replacement: {src} -> {dst}; "
+                f"replaced={replace_idx.size}, donors={donor_idx.size}"
+            )
+
+        sc_meta["cell_type"] = sc_meta["cell_type"].replace(replacement_map)
+
+    effective_meta_map = dict(zip(sc_meta["cell_id"], sc_meta["cell_type"]))
+    cell_types_arr = np.array([effective_meta_map[c] for c in sc_cells_arr], dtype=object)
+
+    sc_expr_dst = dst_dir / "brca_scRNA_GEP.txt"
+    write_expr_tsv(sc_expr_dst, sc_genes, sc_cells_arr.tolist(), sc_mat)
 
     print("[STEP] Load ST expression")
     st_genes, st_spots, st_mat = read_expr_tsv(st_expr_src)
@@ -426,7 +485,6 @@ def main() -> int:
     sim_counts = rng.poisson(np.clip(expected, 0.0, None)).astype(np.int32)
 
     print("[STEP] Write target sample files")
-    sc_expr_dst = dst_dir / "brca_scRNA_GEP.txt"
     sc_meta_dst = dst_dir / "brca_scRNA_celllabels.txt"
     st_expr_dst = dst_dir / "brca_STdata_GEP.txt"
     st_meta_dst = dst_dir / "brca_STdata_coordinates.txt"
@@ -436,7 +494,6 @@ def main() -> int:
     sim_info_dst = dst_dir / "sim_info.json"
     dominant_spot_dst = dst_dir / "sim_truth_spot_dominant_type.csv"
 
-    shutil.copy2(sc_expr_src, sc_expr_dst)
     pd.DataFrame({"cell_id": sc_cells_arr, "cell_type": cell_types_arr}).to_csv(
         sc_meta_dst,
         sep="\t",
@@ -487,6 +544,7 @@ def main() -> int:
             "mix_alpha": float(args.mix_alpha),
             "depth_scale": float(args.depth_scale),
             "merge_cell_type": merge_map,
+            "replace_cell_type": replacement_audit,
             "exclude_cell_types": sorted(exclude_types),
         },
         "files": {
