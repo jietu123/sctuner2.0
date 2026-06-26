@@ -15,7 +15,7 @@ The repository also contains benchmarking utilities and curated visualizations f
 configs/datasets/      Dataset YAML files for real, simulated, profile-mask, Fig.2-style, and high-resolution scenarios.
 r_scripts/             R preprocessing entry point for standard real-data Stage1 export.
 scripts/               Data construction, mapping wrappers, metric calculation, and visualization scripts.
-src/stages/            Core pipeline stages: environment check, Stage1 IO helpers, Stage3 type diagnostics, Stage4 CytoSPACE mapping.
+src/stages/            Core pipeline stages: environment check, Stage1 IO helpers, Stage3A/3B diagnostics, Stage4 CytoSPACE mapping.
 src/svtuner/           Command-line wrapper and bundle helper.
 src/utils/             Shared path and cell-type-name utilities.
 visualizations/        Curated figures retained for paper-level inspection.
@@ -90,6 +90,62 @@ Current Stage3 logic is intentionally simplified to the mechanisms used in the r
 - Generate `plugin_type` labels and a type prior matrix for downstream route2 mapping.
 
 Unused legacy rescue/protection branches were removed from the maintained workflow. The retained Stage3 output is therefore easier to audit: unsupported-type decisions are represented directly in `type_support.csv`, `stage3_summary.json`, and `stage3_adjusted_annotations.csv`.
+
+### Stage3B: ST-Only Unsupported Regions
+
+Stage3B covers the reciprocal failure mode: expression regions present in ST
+but unsupported by any cell type in the SC reference. It is currently an
+independent diagnostic stage and does not modify Stage3A labels. By default it
+does not alter Stage4; the optional Stage4 integration below applies its blank
+mask before mapping.
+
+```powershell
+python -m src.stages.stage3b_st_unsupported `
+  --sample <sample> `
+  --n_spatial_permutations 200
+```
+
+When the package is installed, the equivalent unified command is:
+
+```powershell
+svtuner stage3b --sample <sample>
+```
+
+Stage3B self-calibrates two complementary evidence families from the SC
+reference: supported-mixture reconstruction error and reference-orthogonal
+positive residual. It selects the evidence family by spatial coherence, applies
+two-model correction, spot-level FDR control, and max-statistic spatial
+permutation. It does not read simulation truth, `missing_type`, or type
+whitelists. The only decision-level control is the FDR level; calibration
+count, permutation count, and optional gene count are compute-budget settings.
+
+Main Stage3B outputs:
+
+```text
+data/processed/<sample>/stage3b_st_unsupported/spot_unsupported_scores.csv
+data/processed/<sample>/stage3b_st_unsupported/unsupported_regions.csv
+data/processed/<sample>/stage3b_st_unsupported/unsupported_region_residual_genes.csv
+data/processed/<sample>/stage3b_st_unsupported/supported_mixture_weights.csv
+result/<sample>/stage3b_st_unsupported/stage3b_summary.json
+```
+
+To preserve detected unsupported regions as blanks, Stage4 must apply the
+Stage3B mask before constructing CytoSPACE inputs:
+
+```powershell
+python -m src.stages.stage4_cytospace `
+  --sample <sample> `
+  --filter_mode none `
+  --cell_type_column sc_meta `
+  --stage3b_blank_regions `
+  --stage4_suffix _stage3b_blank
+```
+
+In this mode, masked spots are excluded from ST expression, coordinates, and
+mapping capacity before CytoSPACE runs. The final spot-level tables restore
+those spot IDs as explicit all-zero rows for complete-coordinate reporting.
+`stage4_summary.json` records the mask hash, removed capacity, assignment
+violations, and zero-row audit.
 
 ### Stage4: CytoSPACE Baseline and Route2
 

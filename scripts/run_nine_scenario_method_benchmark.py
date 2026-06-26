@@ -27,6 +27,36 @@ SCENARIOS = [
     ),
 ]
 
+COMPOSITE_SCENARIOS = [
+    ("real_brca", "real_brca7_endothelial_marker_control_sc_missing_endothelial_cells"),
+    (
+        "real_brca",
+        "real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells",
+    ),
+    (
+        "real_brca",
+        "real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells",
+    ),
+    ("human_lung_5loc", "human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell"),
+    (
+        "human_lung_5loc",
+        "human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell",
+    ),
+    (
+        "human_lung_5loc",
+        "human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell",
+    ),
+    ("mouse_brain_refined", "mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56"),
+    (
+        "mouse_brain_refined",
+        "mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56",
+    ),
+    (
+        "mouse_brain_refined",
+        "mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56",
+    ),
+]
+
 METHODS = [
     "tangram_all",
     "tangram_marker",
@@ -55,6 +85,12 @@ def parse_args() -> argparse.Namespace:
         "--sample_suffix",
         default="",
         help="Suffix appended to all scenario ids, for example _scnoise10.",
+    )
+    p.add_argument(
+        "--scenario_preset",
+        choices=["standard", "composite"],
+        default="standard",
+        help="Scenario set to run.",
     )
     p.add_argument("--force", action="store_true")
     return p.parse_args()
@@ -132,8 +168,9 @@ def main() -> int:
     completed = 0
     skipped = 0
     started = time.perf_counter()
+    scenarios = COMPOSITE_SCENARIOS if args.scenario_preset == "composite" else SCENARIOS
     for method in selected:
-        for group, base_sample in SCENARIOS:
+        for group, base_sample in scenarios:
             sample = f"{base_sample}{args.sample_suffix}"
             output = _output_path(root, sample, method)
             if output.exists() and not args.force:

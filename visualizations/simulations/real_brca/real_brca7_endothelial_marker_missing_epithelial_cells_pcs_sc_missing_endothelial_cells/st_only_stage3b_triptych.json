@@ -1,0 +1,12 @@
+{
+  "sample": "real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells",
+  "target_type": "Endothelial cells",
+  "truth_spots": 2518,
+  "baseline_spots": 2518,
+  "stage3b_blank_spots": 382,
+  "stage3b_mapping_source": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\result\\real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells\\stage4_cytospace_stage3b_blank\\cytospace_output\\cell_type_assignments_by_spot.csv",
+  "stage3b_blank_manifest": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\result\\real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells\\stage4_cytospace_stage3b_blank\\cytospace_output\\stage3b_blank_spots.csv",
+  "stage3b_blank_nonzero_rows": 0,
+  "png": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\simulations\\real_brca\\real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells\\st_only_stage3b_triptych.png",
+  "pdf": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\simulations\\real_brca\\real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells\\st_only_stage3b_triptych.pdf"
+}

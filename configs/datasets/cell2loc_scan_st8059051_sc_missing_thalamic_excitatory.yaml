@@ -1,0 +1,30 @@
+paths:
+  sc_expr: unused_stage1_direct.csv
+  sc_meta: unused_stage1_direct.csv
+  st_expr: unused_stage1_direct.csv
+  st_meta: unused_stage1_direct.csv
+  svg_marker_whitelist: null
+qc:
+  sc_min_genes: 5
+  sc_max_genes: 10000
+  sc_max_mt: 100
+  st_min_genes: 5
+  st_max_genes: .inf
+  st_max_mt: 100
+  hvg_nfeatures: 0
+  mt_pattern: ^(mt-|MT-)
+gene_filter:
+  min_cells_sc: 0
+  min_cells_st: 0
+stage3b:
+  fdr: 0.05
+  n_calibration: 0
+  n_spatial_permutations: 200
+  random_seed: 42
+  sc_expr_source: counts
+  sc_profile_source: counts
+  expression_scale: linear
+  sc_profile_scale: linear
+  max_genes: 0
+storage:
+  group: cell2location_mouse_brain

@@ -32,6 +32,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--project_root", default=".", help="project root")
     p.add_argument("--source_sample", default=None, help="optional source sample id override")
     p.add_argument("--scale_factor", type=float, default=10000.0, help="log-normalize scale factor")
+    p.add_argument(
+        "--rebuild_sc_from_raw",
+        action="store_true",
+        help="rebuild SC exports from target raw files instead of copying source Stage1",
+    )
     return p.parse_args()
 
 
@@ -68,6 +73,55 @@ def _copy_sc_exports(src_export: Path, dst_export: Path) -> None:
     if not (dst_export / "sc_expression_normalized.csv").exists():
         raise FileNotFoundError(f"required source file missing: {src_export / 'sc_expression_normalized.csv'}")
     print(f"[Stage1-fallback] copied SC exports: {copied}")
+
+
+def _reference_drop_types(raw_dir: Path) -> list[str]:
+    sim_info = raw_dir / "sim_info.json"
+    if not sim_info.exists():
+        return []
+    info = json.loads(sim_info.read_text(encoding="utf-8"))
+    values = info.get("sc_reference_drop_types") or []
+    if not isinstance(values, list):
+        raise ValueError("sim_info.sc_reference_drop_types must be a list")
+    return list(dict.fromkeys(str(x).strip() for x in values if str(x).strip()))
+
+
+def _filter_sc_exports_for_reference_dropout(
+    export_dir: Path,
+    drop_types: list[str],
+) -> dict[str, int]:
+    if not drop_types:
+        return {}
+    metadata_path = export_dir / "sc_metadata.csv"
+    metadata = pd.read_csv(metadata_path, index_col=0)
+    metadata.index = metadata.index.astype(str)
+    if "cell_type" not in metadata.columns:
+        raise ValueError(f"SC metadata lacks cell_type: {metadata_path}")
+    counts = metadata["cell_type"].astype(str).value_counts()
+    missing = sorted(set(drop_types).difference(counts.index))
+    if missing:
+        raise ValueError(f"Reference-drop types absent from copied Stage1 metadata: {missing}")
+    keep_ids = metadata.index[~metadata["cell_type"].astype(str).isin(drop_types)]
+    removed = {cell_type: int(counts[cell_type]) for cell_type in drop_types}
+    metadata.loc[keep_ids].to_csv(metadata_path)
+
+    expression_names = (
+        "sc_expression_normalized.csv",
+        "sc_expression_data.csv",
+        "sc_expression_counts.csv",
+    )
+    for name in expression_names:
+        path = export_dir / name
+        if not path.exists():
+            continue
+        expression = pd.read_csv(path, index_col=0)
+        expression.index = expression.index.astype(str)
+        missing_ids = keep_ids.difference(expression.index)
+        if len(missing_ids):
+            raise ValueError(f"{name} is missing {len(missing_ids)} retained SC cells")
+        expression.loc[keep_ids].to_csv(path)
+    print(f"[Stage1-fallback] applied SC reference dropout: {removed}")
+    return removed
 
 
 def _load_qc_config(project_root: Path, sample: str) -> dict:
@@ -293,13 +347,22 @@ def main() -> int:
     src_cfg = read_dataset_config(project_root, source_sample) if source_sample else {}
     src_stage1 = stage1_dir(project_root, source_sample, src_cfg) if source_sample else None
     src_export = src_stage1 / "exported" if src_stage1 else None
-    if src_export is not None and src_export.exists() and src_export.resolve() != dst_export.resolve():
+    if (
+        not args.rebuild_sc_from_raw
+        and src_export is not None
+        and src_export.exists()
+        and src_export.resolve() != dst_export.resolve()
+    ):
         _copy_sc_exports(src_export, dst_export)
         # keep Stage3 plugin gene path consistent
         for name in ("hvg_genes.txt", "common_genes.txt"):
             s = src_stage1 / name
             if s.exists():
                 shutil.copy2(s, dst_stage1 / name)
+        _filter_sc_exports_for_reference_dropout(
+            dst_export,
+            _reference_drop_types(raw_dir),
+        )
     else:
         print(f"[Stage1-fallback] source stage1 export not found, rebuild SC from raw: {src_export}")
         raw_sc_expr = raw_dir / "brca_scRNA_GEP.txt"

@@ -1,0 +1,1324 @@
+spot_id,unsupported_core,region_kind,expected_behavior,expected_type,region_score
+CACCATCGGAGGAGAC-1,False,supported_marker_region,map,Astrocyte,0.9079002141952515
+CATCATCTACCCGGAC-1,False,supported_marker_region,map,Microglia,0.2701006233692169
+CACTCAGCTCTTGAGG-1,False,supported_marker_region,map,Microglia,0.3480946719646454
+CAAACTATTGAGCTTC-1,False,supported_marker_region,map,Astrocyte,0.927770733833313
+CGAAACATAGATGGCA-1,False,supported_marker_region,map,Astrocyte,0.8929473757743835
+CCCGCAGGGCCCAAAG-1,False,supported_marker_region,map,Astrocyte,0.8768642544746399
+GCGGTCCCTAGACGCA-1,False,supported_marker_region,map,Astrocyte,0.8508820533752441
+AATCCAAGGGCCTGAG-1,False,supported_marker_region,map,Microglia,0.40419596433639526
+GAAATTCACATCGCTG-1,False,supported_marker_region,map,Astrocyte,0.9774452447891235
+TGCGGCATAGTTCAAC-1,False,supported_marker_region,map,Astrocyte,0.9345629215240479
+GAAACAGCCATGCAGT-1,False,supported_marker_region,map,Inhibitory neuron,0.2762797772884369
+AGTTTCGCAGGTCGGA-1,False,supported_marker_region,map,Astrocyte,0.8933171033859253
+AACCGTTGTGTTTGCT-1,False,supported_marker_region,map,Microglia,0.30200621485710144
+TGCGGTGAAATTTCAT-1,False,supported_marker_region,map,Microglia,0.2555125057697296
+TTGTATCACACAGAAT-1,False,supported_marker_region,map,Microglia,0.35323598980903625
+AGGTACGATATTGCCA-1,False,supported_marker_region,map,Astrocyte,0.8633890748023987
+GTCTTAGTACAGCCGG-1,False,supported_marker_region,map,Microglia,0.2629498243331909
+TAGTTAAGATAGGATA-1,False,supported_marker_region,map,Microglia,0.2979598641395569
+CAGGAAGACTTTATAT-1,False,supported_marker_region,map,Microglia,0.25602012872695923
+AACTCCTAATCCCATG-1,False,supported_marker_region,map,Microglia,0.2827739715576172
+TCTCGAACGAGGTCAC-1,False,supported_marker_region,map,Microglia,0.3112376034259796
+TGGGATGCACTCATTC-1,False,supported_marker_region,map,Astrocyte,0.9130638837814331
+ACTATATGCTGTGTTC-1,False,supported_marker_region,map,Astrocyte,0.9223865866661072
+GAGCTCTCGGACCTAA-1,False,supported_marker_region,map,Astrocyte,0.9131968021392822
+AGATACGACTTCATAT-1,False,supported_marker_region,map,Astrocyte,0.9347383379936218
+AACCCAGAGACGGAGA-1,False,supported_marker_region,map,Microglia,0.2999453544616699
+GAAGAACGGTGCAGGT-1,False,supported_marker_region,map,Astrocyte,0.8486242890357971
+GAGTACGGGTATACAA-1,False,supported_marker_region,map,Inhibitory neuron,0.2748122811317444
+CGCTTTCATACCGGTG-1,True,unsupported_core,blank,Blank,
+GTTCTTCCCTCGATGT-1,True,unsupported_core,blank,Blank,
+TATCCTGCATGGGAAT-1,True,unsupported_core,blank,Blank,
+GAAGTGCTGGATAGCT-1,True,unsupported_core,blank,Blank,
+GTGCAACAAATGTGGC-1,False,supported_marker_region,map,Microglia,0.24163244664669037
+CATGCGTTAGACAGAA-1,True,unsupported_core,blank,Blank,
+AACAGGAAATCGAATA-1,False,supported_marker_region,map,Astrocyte,0.863798975944519
+GAATGTATGGCAGGTC-1,False,supported_marker_region,map,Microglia,0.2430853694677353
+TCACTCGTGCAACGGC-1,False,supported_marker_region,map,Microglia,0.2565552294254303
+CGGTGGGCTCCAGCCT-1,False,supported_marker_region,map,Microglia,0.2582784593105316
+TCCGGAGGAAGGGCTG-1,False,supported_marker_region,map,Astrocyte,0.8942728638648987
+TCCGAAGTAGTCACCA-1,False,supported_marker_region,map,Inhibitory neuron,0.2655828297138214
+CATGTAGGAGCGCCAA-1,False,supported_marker_region,map,Microglia,0.2953445613384247
+CCGAAAGTGGTGAGCA-1,False,supported_marker_region,map,Astrocyte,0.9499741196632385
+CCTACGGCTCAGTCGA-1,False,supported_marker_region,map,Microglia,0.325128436088562
+CCTCACCAATCTTGAC-1,False,supported_marker_region,map,Microglia,0.24737274646759033
+AGGACATCGCACGTCG-1,False,supported_marker_region,map,Microglia,0.25301146507263184
+TCGCTGTGCGTAAATC-1,False,supported_marker_region,map,Microglia,0.24272623658180237
+CCCTCATTCTGGAATT-1,False,supported_marker_region,map,Astrocyte,0.871863603591919
+CTTACACTGGGAAATA-1,False,supported_marker_region,map,Inhibitory neuron,0.26723262667655945
+ACCAAGAACGCGTGTC-1,True,unsupported_core,blank,Blank,
+GCCTTCAGCCCTACCG-1,True,unsupported_core,blank,Blank,
+GATGCTACAAGCGCCT-1,True,unsupported_core,blank,Blank,
+CCGGGACCCGCAGAGA-1,False,supported_marker_region,map,Astrocyte,0.8636772036552429
+GTTCCAGTCTGACCAT-1,False,supported_marker_region,map,Inhibitory neuron,0.29513657093048096
+ATGATCGGGAATAGAC-1,False,supported_marker_region,map,Astrocyte,0.8657132983207703
+CATGGCAGGAAGATCG-1,False,supported_marker_region,map,Inhibitory neuron,0.2527298629283905
+CGTCTGGAAGGGCCCG-1,True,unsupported_core,blank,Blank,
+AACTGATATTAGGCCT-1,False,supported_marker_region,map,Microglia,0.24550656974315643
+CGAGCTGGGCTTTAGG-1,False,supported_marker_region,map,Inhibitory neuron,0.2501034736633301
+GATTCCGCGTTTCCGT-1,False,supported_marker_region,map,Inhibitory neuron,0.34718459844589233
+TAATAAACAAGGAGAT-1,False,supported_marker_region,map,Inhibitory neuron,0.25267258286476135
+AACCTTTACGACGTCT-1,False,supported_marker_region,map,Astrocyte,0.8615479469299316
+AGTCCCGCCTTTAATT-1,False,supported_marker_region,map,Inhibitory neuron,0.28720274567604065
+TATCACTTCGAGTAAC-1,False,supported_marker_region,map,Microglia,0.2618882358074188
+TGACACTTCTCTTTGC-1,True,unsupported_core,blank,Blank,
+ACCAAACACCCAGCGA-1,False,supported_marker_region,map,Inhibitory neuron,0.2797233760356903
+GAGGCATTTGCAGCAG-1,False,supported_marker_region,map,Microglia,0.2419416606426239
+GGCAAGCCAGGGATAG-1,False,supported_marker_region,map,Inhibitory neuron,0.2877300977706909
+TGAATGAGATACAGCA-1,False,supported_marker_region,map,Astrocyte,0.8501045107841492
+CCCGCGCAATGCACCC-1,False,supported_marker_region,map,Astrocyte,0.910729169845581
+TTCGGCTAGAGATGGT-1,False,supported_marker_region,map,Microglia,0.3212268352508545
+ATATTGCTGTCAAAGT-1,False,supported_marker_region,map,Microglia,0.3112853765487671
+AATGGTTCTCACAAGC-1,False,supported_marker_region,map,Inhibitory neuron,0.2664433717727661
+AAGTAGAAGACCGGGT-1,False,supported_marker_region,map,Microglia,0.2620730698108673
+GCGGGAACCAGGCCCT-1,False,supported_marker_region,map,Inhibitory neuron,0.2776358127593994
+ATTAGATTGATAGCGG-1,False,supported_marker_region,map,Microglia,0.335370808839798
+CTCGGTCCGTAGCCTG-1,False,supported_marker_region,map,Inhibitory neuron,0.274575799703598
+GGAGTGCCGCCCTGGA-1,False,supported_marker_region,map,Inhibitory neuron,0.2751460373401642
+TGCATGGATCGGATCT-1,False,supported_marker_region,map,Inhibitory neuron,0.308672159910202
+TGGGCCACAAGAGCGC-1,False,supported_marker_region,map,Inhibitory neuron,0.27579665184020996
+CCTCGCCAGCAAATTA-1,False,supported_marker_region,map,Microglia,0.24177014827728271
+TTAATCAGTACGTCAG-1,False,supported_marker_region,map,Inhibitory neuron,0.2792743146419525
+CCTATCTATATCGGAA-1,False,supported_marker_region,map,Microglia,0.3478454351425171
+ATTATACTTTGCTCGT-1,False,supported_marker_region,map,Inhibitory neuron,0.2707686424255371
+ATGCCGGTTGATGGGA-1,False,supported_marker_region,map,Microglia,0.27096325159072876
+GCGTTCGGAGACCGGG-1,False,supported_marker_region,map,Microglia,0.2876613140106201
+AAGTTCAGTCTGCGTA-1,False,supported_marker_region,map,Microglia,0.24595655500888824
+ACGGAGCGCAAATTAC-1,False,supported_marker_region,map,Microglia,0.28049322962760925
+GCCTATGCTGGGCCTT-1,False,supported_marker_region,map,Microglia,0.33813801407814026
+GGGATCCCAATACAAA-1,False,supported_marker_region,map,Microglia,0.25130531191825867
+CTAATTTCAACAACAC-1,True,unsupported_core,blank,Blank,
+TTACATCGTGGCCTGG-1,False,supported_marker_region,map,Inhibitory neuron,0.2707486152648926
+CCATGCTCTGCAGGAA-1,False,supported_marker_region,map,Astrocyte,0.8829953670501709
+GCTAATACCGAATGCC-1,False,supported_marker_region,map,Inhibitory neuron,0.25002291798591614
+CTTGTACTTGTTGACT-1,False,supported_marker_region,map,Inhibitory neuron,0.26059773564338684
+ATTATGCCATAGGGAG-1,False,supported_marker_region,map,Inhibitory neuron,0.35824355483055115
+GACAACGCAGCTTACG-1,False,supported_marker_region,map,Inhibitory neuron,0.2802407741546631
+AGATGACTCGCCCACG-1,False,supported_marker_region,map,Inhibitory neuron,0.2916596531867981
+GTGCGGGTCTCCAAAT-1,False,supported_marker_region,map,Microglia,0.2580960690975189
+CCAAGACTTCTGCGAA-1,False,supported_marker_region,map,Microglia,0.2813687324523926
+TGCCTGATCAAACGAT-1,False,supported_marker_region,map,Inhibitory neuron,0.25165465474128723
+TGTGACTACGCCAGTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2169314622879028
+CGCGCCCGACTTAATA-1,False,supported_marker_region,map,Microglia,0.33182471990585327
+TACTCTCCGAACAAAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0913652181625366
+TACGGGATGCTAGCAG-1,False,supported_marker_region,map,Microglia,0.24825748801231384
+AGATCGTGCATAAGAT-1,False,supported_marker_region,map,Microglia,0.24888813495635986
+CCCAGAGGAGGGCGTA-1,False,supported_marker_region,map,Inhibitory neuron,0.3006215989589691
+GGAAACCTTGTTGAAT-1,False,supported_marker_region,map,Microglia,0.27288883924484253
+ACCCTGGTAACGCCCT-1,False,supported_marker_region,map,Inhibitory neuron,0.2716416120529175
+GATGCCAGCAGAAGGC-1,False,supported_marker_region,map,Astrocyte,0.8689248561859131
+AATACAATGTTTCAGG-1,False,supported_marker_region,map,Microglia,0.2863870859146118
+TTGCTGCACCTATCCA-1,False,supported_marker_region,map,Astrocyte,0.9012435674667358
+CCGAAGTATATTGTTC-1,False,supported_marker_region,map,Microglia,0.3223905563354492
+TCATACTTACAGATCC-1,True,unsupported_core,blank,Blank,
+TAAATGAATCCGTTTC-1,True,unsupported_core,blank,Blank,
+GTCACTCTCCAAATCT-1,False,supported_marker_region,map,Microglia,0.314284086227417
+TTCTTGTAACCTAATG-1,False,supported_marker_region,map,Inhibitory neuron,0.3844231963157654
+TTGGCTCGCATGAGAC-1,False,supported_marker_region,map,Microglia,0.2914930284023285
+GGAGAAGTCATTGGCA-1,False,supported_marker_region,map,Inhibitory neuron,0.37983497977256775
+ATGAAGCCAAGGAGCC-1,False,supported_marker_region,map,Inhibitory neuron,0.2527267038822174
+GACTAAGATCATGCAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.043747901916504
+TTGTCGTTCAGTTACC-1,False,supported_marker_region,map,Microglia,0.3514738380908966
+CGGGATCAATGTAAGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3906519412994385
+ATCGACTCTTTCCGTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4703490734100342
+GTAAGCGGGCAGTCAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.523415207862854
+AACGCGGTCTCCAGCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8204352855682373
+CTTTAACTTTCAAAGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6274089813232422
+CGTACCTGATAGGCCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0596909523010254
+GAATGTTGGGTAATCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5902808904647827
+TGCGGAGTAAAGGTGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2593884468078613
+CCTGAATATTTACATA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6464869976043701
+TTGCTCCCATACCGGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1001982688903809
+CCTCTAATCTGCCAAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7517234086990356
+AGGTTGAGGCACGCTT-1,False,supported_marker_region,map,Microglia,0.2769451439380646
+TCCCGTCAGTCCCGCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.671016812324524
+TCCGATGACTGAGCTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1448755264282227
+CAGCCTCCTGCAGAGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6235198974609375
+ATTAATGAACCAGTCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.9300962686538696
+ACGATACATAGAACTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0539711713790894
+AGCCACTCCCGTGCTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,2.0118167400360107
+ATACGGGTTTCGATTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0520704984664917
+CTGTCAAATGGCTCGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7965245246887207
+GCTCGGAATTTAAAGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1942449808120728
+TAGGCATGTTACGCCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6894490718841553
+TGGCAACTCGCGCGCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2967993021011353
+ATCAGTAGGCAGGGAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7664225101470947
+CGACTCAGGATGTTAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6712530851364136
+AATTCATAAGGGATCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6760077476501465
+AATGATGATACGCTAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5337371826171875
+TTCCAATCAGAGCTAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4403544664382935
+TTAGCTAATACGATCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0365864038467407
+CTCGATATTTGCGAGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2394492626190186
+TACTGCAATCAATTAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0707340240478516
+CAAATTGGATTATGCC-1,False,supported_marker_region,map,Microglia,0.28402480483055115
+CATTGATGAACACGCC-1,False,supported_marker_region,map,Inhibitory neuron,0.27411124110221863
+GTAGAAACGGGTGGAG-1,False,supported_marker_region,map,Astrocyte,0.9948567152023315
+TTGCGTAGTTTGAGGA-1,False,supported_marker_region,map,Microglia,0.25015342235565186
+CCCGGTGGAAGAACCT-1,False,supported_marker_region,map,Microglia,0.2833317220211029
+TTAACACCTCGAACAT-1,False,supported_marker_region,map,Microglia,0.2519313097000122
+GATTCCTATACGGCGC-1,False,supported_marker_region,map,Microglia,0.30645203590393066
+TTACCCTAACAGTCCT-1,False,supported_marker_region,map,Microglia,0.28491535782814026
+ACCCACCTACATGCTC-1,False,supported_marker_region,map,Astrocyte,0.8775936365127563
+CACACAGGGATAGATT-1,False,supported_marker_region,map,Inhibitory neuron,0.414128839969635
+GCCTATTCCGATATAG-1,False,supported_marker_region,map,Microglia,0.3012331426143646
+TTCGACGGGAAGGGCG-1,False,supported_marker_region,map,Microglia,0.24481655657291412
+TTCGCACTCGCGTGCT-1,False,supported_marker_region,map,Inhibitory neuron,0.27561062574386597
+CGCTGTGACGCCGCAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.281875491142273
+GTTTCCTGGAGGGTGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2511413097381592
+TCAACCATGTTCGGGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0485562086105347
+TTACAACTACGCATCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2727489471435547
+GGGCGTACATTTATAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5239320993423462
+ACACAAAGACGGGTGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0376343727111816
+ATCGCACGCCGGGAGA-1,False,supported_marker_region,map,Inhibitory neuron,0.280338317155838
+AAAGGGATGTAGCAAG-1,False,supported_marker_region,map,Microglia,0.4193050265312195
+TTGTTCAGTGTGCTAC-1,False,supported_marker_region,map,Microglia,0.3284093141555786
+ATGCATGATCCAGGAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0572634935379028
+AGTCTTCTCCTCAAAT-1,False,supported_marker_region,map,Inhibitory neuron,0.2648323178291321
+ACTCAATAAAGGCACG-1,False,supported_marker_region,map,Microglia,0.3490550220012665
+AACCGAGCTTGGTCAT-1,False,supported_marker_region,map,Inhibitory neuron,0.2689935564994812
+TAAGGCAACATAAGAT-1,False,supported_marker_region,map,Microglia,0.37429559230804443
+GGTTTACAATCTCAAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1870718002319336
+TGCAGGATCGGCAAAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3671953678131104
+ATAACGGAGTCCAACG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0799167156219482
+AACGATATGTCAACTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7208552360534668
+GACAACGACCATTGAA-1,False,supported_marker_region,map,Microglia,0.2459813356399536
+TTGACCATGTTCTCCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5476555824279785
+CGCCATCCGATTATGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1452102661132812
+CACCTTGCGAAACTCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0656882524490356
+CCAGTCTAGACGGCGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4877431392669678
+TCGCTTTAAACGTTTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3418755531311035
+GTGAAACGGCGCCACC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6111927032470703
+GGGCTCATCGAACCCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7420982122421265
+TTGATGTGTAGTCCCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6676342487335205
+CAGTAGCCCACGCGGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.421319603919983
+AGCGCGGGTGCCAATG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5128291845321655
+AGTGGCGGCAATTTGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5355623960494995
+CTCAGTCACGACAAAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6221339702606201
+ATAGGCTAGCTTCGCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0650160312652588
+CGGTTCAAGTAGGTGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5000824928283691
+CAGTCGAGGATGCAAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4883886575698853
+TATCACCCAACCGACC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.571339726448059
+AATGATGCGACTCCTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2373218536376953
+TGGAACCACTGACACA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2490178346633911
+GCCAATAGGGCATCTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.380937933921814
+ATTAGATTCCTCAGCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3595168590545654
+GGGTCGTGGCAAGTGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3121795654296875
+ACGCAATCACTACAGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5647006034851074
+TCCAGATGTACGCCAA-1,False,supported_marker_region,map,Inhibitory neuron,0.2693399488925934
+TACACCGTCGTTAGTC-1,False,supported_marker_region,map,Inhibitory neuron,0.2567022144794464
+CAACCTGAACCTGCCA-1,True,unsupported_core,blank,Blank,
+AGTTACCGCACATGGT-1,False,supported_marker_region,map,Microglia,0.3175853490829468
+GGTGCTGATCACAAAG-1,False,supported_marker_region,map,Microglia,0.2419201135635376
+CATAGCCGCCCGGGAT-1,False,supported_marker_region,map,Inhibitory neuron,0.254300057888031
+GGTTAGTTACGGCGCC-1,False,supported_marker_region,map,Microglia,0.26500481367111206
+CGCAATTCTACAATAA-1,False,supported_marker_region,map,Astrocyte,0.9249423146247864
+TAACGCTTTGAGAGCG-1,False,supported_marker_region,map,Microglia,0.2528362572193146
+ACTGTAGCACTTTGGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2252262830734253
+ATCTTGACCTGCAACG-1,False,supported_marker_region,map,Inhibitory neuron,0.31111660599708557
+ATGCACTACCGCATTG-1,False,supported_marker_region,map,Inhibitory neuron,0.33301860094070435
+CATTATGCTTGTTGTG-1,False,supported_marker_region,map,Inhibitory neuron,0.34238797426223755
+TATGGATGTGCTACGC-1,False,supported_marker_region,map,Inhibitory neuron,0.32009127736091614
+CGCATTAGCTAATAGG-1,False,supported_marker_region,map,Microglia,0.2740294635295868
+GCTCTCGGGTACCGAA-1,False,supported_marker_region,map,Microglia,0.2685440182685852
+CACCGCCAGAAGGTTT-1,False,supported_marker_region,map,Inhibitory neuron,0.2884795069694519
+GTCATGGACATGACTA-1,False,supported_marker_region,map,Inhibitory neuron,0.28545382618904114
+CTACTGCCACCTGACC-1,False,supported_marker_region,map,Microglia,0.255450963973999
+TTATATTTGGCAATCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1121047735214233
+AGCACCAGTACTCACG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2084453105926514
+CATGGTCTAGATACCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.201120376586914
+TCTACCGTCCACAAGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2706382274627686
+CTAGTTGGGCCCGGTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.374638557434082
+TCCCGCGTACTCCTGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1222120523452759
+CAGAGCATGAGCTTGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1412001848220825
+ACACGGGAACTTAGGG-1,False,supported_marker_region,map,Inhibitory neuron,0.2532022297382355
+GGCTCTGCTCCAACGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3211621046066284
+CAATAAACCTTGGCCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0701254606246948
+TCGTAAGACGACATTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1658662557601929
+GCCCGTAATACCTTCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0581787824630737
+TTGTAAGGCCAGTTGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3510226011276245
+TAATAGTGACGACCAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6371737718582153
+CTAAATCCTATTCCGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.475045919418335
+CGAGTTCTGTCCCACC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.709329605102539
+AGGCAGATGCGTAAAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.85015869140625
+AAGGATGAGGGACCTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0568708181381226
+AGAGAACCGTCTAGGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1347593069076538
+AAGATTGGCGGAACGT-1,False,supported_marker_region,map,Astrocyte,0.9300142526626587
+AGGTCGCGGAGTTACT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2047476768493652
+CTAATTCTCAGATATT-1,True,unsupported_core,blank,Blank,
+GCCAACCATTTCCGGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.099960446357727
+TGATCCCAGCATTAGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0518453121185303
+GAAACCATGGTGCGCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2926360368728638
+AATCTATGCCGGAGCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5316230058670044
+GACTCCCAGAATAAGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5787158012390137
+TATGATCCGGCACGCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1157463788986206
+TTGATAGTCAATACAT-1,False,supported_marker_region,map,Inhibitory neuron,0.2854558825492859
+GGCCCGTATACCATGC-1,True,unsupported_core,blank,Blank,
+ATCTTTCGTATAACCA-1,False,supported_marker_region,map,Microglia,0.27676329016685486
+GAACGATAAGTTAAAG-1,False,supported_marker_region,map,Astrocyte,0.9996809363365173
+AGGGTGGATAGTGCAT-1,False,supported_marker_region,map,Astrocyte,0.8880017995834351
+TGATAGCGGGATTCTA-1,False,supported_marker_region,map,Microglia,0.30881476402282715
+AAAGACTGGGCGCTTT-1,False,supported_marker_region,map,Microglia,0.24649225175380707
+TAACAATATTTGTTGC-1,False,supported_marker_region,map,Inhibitory neuron,0.2949834167957306
+GATATGGATTACGCGG-1,False,supported_marker_region,map,Microglia,0.31122860312461853
+TCACATCTTATCTGAT-1,False,supported_marker_region,map,Inhibitory neuron,0.2679915726184845
+TACCTGCTGCACTGTG-1,False,supported_marker_region,map,Microglia,0.25748610496520996
+TAGGTGAGCCCTACTC-1,False,supported_marker_region,map,Microglia,0.24935738742351532
+AGGCCACCCGTTATGA-1,False,supported_marker_region,map,Microglia,0.3075736463069916
+AACAACTGGTAGTTGC-1,False,supported_marker_region,map,Inhibitory neuron,0.3106653690338135
+TTGATCTAACTTTGTC-1,False,supported_marker_region,map,Inhibitory neuron,0.32566648721694946
+AAGGAGCGGTTGGTGC-1,False,supported_marker_region,map,Inhibitory neuron,0.27933382987976074
+ACTTGGGACCCGGTGG-1,False,supported_marker_region,map,Microglia,0.2984887361526489
+CAGTTCAAATTGACAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1395037174224854
+GTCCGGCTGAATTGCG-1,False,supported_marker_region,map,Microglia,0.2613886594772339
+CTGGAAATGGATGCTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.116774320602417
+TGATCGGTTTGACCCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2099699974060059
+TAGCTAAGTCCGGGAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.087773084640503
+GGGCGATATGTGTGAA-1,False,supported_marker_region,map,Inhibitory neuron,0.2826440930366516
+CTCGAGGTCGAACAGT-1,False,supported_marker_region,map,Microglia,0.2690637409687042
+GATCCCTTTATACTGC-1,False,supported_marker_region,map,Inhibitory neuron,0.2518234848976135
+GTCATGCACCTCCGTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6309716701507568
+ACTTTCCTATAGCTTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0312931537628174
+TCGCTCGATATATTCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3030509948730469
+ATAGGTTGGGCAGATG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5922106504440308
+CAATTAAGGGTGATGA-1,False,supported_marker_region,map,Inhibitory neuron,0.3551606833934784
+ACCGACTGAGTCCCAC-1,False,supported_marker_region,map,Inhibitory neuron,0.2624378502368927
+CCTGTCACCCGGGCTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0790773630142212
+CCTATGGGTTACCGTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6536996364593506
+TTGGGACACTGCCCGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1732738018035889
+CGAGGCTAAATATGGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8373920917510986
+TCAGGGTGTAACGTAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6322294473648071
+CGAGAGATGTGAACCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7487785816192627
+TCGCTGGGCGGATTGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.905868411064148
+AGATCTCAGGTGTGAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8778563737869263
+TGGCCAAACTGAAGTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8716518878936768
+GCTTCCGTCCCTAGAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7528934478759766
+CAGCAGCCCGTTCCTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6960278749465942
+TGTATAACAGATCCTG-1,True,unsupported_core,blank,Blank,
+CGCGGGAATTAGGCAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.651654839515686
+TGCATGTGGTAATCTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7088804244995117
+ACAATTTGAGCAGTGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6150377988815308
+GAGCTAAGGGCATATC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8434861898422241
+CCAGATAGTTGAGTGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8362833261489868
+CCACAATGTACGTCTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7140263319015503
+CAATGGATCTCTACCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.9057470560073853
+TGTGGCAAAGCGTATG-1,True,unsupported_core,blank,Blank,
+TAAAGCGTTAGGAGAA-1,False,supported_marker_region,map,Astrocyte,0.8781682252883911
+TCCGTTTAGCCTTGAA-1,True,unsupported_core,blank,Blank,
+GCGCATCCAGTCAGCA-1,False,supported_marker_region,map,Astrocyte,0.8559281229972839
+GACTCGCGGGAATGAC-1,False,supported_marker_region,map,Inhibitory neuron,0.3277514576911926
+CTGGTAACGAGCTCTT-1,True,unsupported_core,blank,Blank,
+TCTAGGTGGCGACGCT-1,False,supported_marker_region,map,Astrocyte,0.9386955499649048
+GGTACCATTAAGACGG-1,False,supported_marker_region,map,Inhibitory neuron,0.30282536149024963
+GCATTCAAGGCAACGC-1,False,supported_marker_region,map,Inhibitory neuron,0.25574827194213867
+AGTACATCATTTATCA-1,True,unsupported_core,blank,Blank,
+GTCGTGTCTGGTCATC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1024789810180664
+AGTCTAAAGTATACTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.426998257637024
+CGGCCCAACCTGTAGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.534996747970581
+AGGGAGACATACTTCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.535364031791687
+TCCCGTCGCGTCATAG-1,False,supported_marker_region,map,Inhibitory neuron,0.2711782455444336
+CTCATCACTTAGTGAT-1,False,supported_marker_region,map,Astrocyte,0.8577126860618591
+GTTAATGTCTATCTTA-1,False,supported_marker_region,map,Astrocyte,1.02034592628479
+GCGTTATATTTGGAAC-1,False,supported_marker_region,map,Inhibitory neuron,0.40511295199394226
+TGTGTTCGTATCCAAG-1,False,supported_marker_region,map,Inhibitory neuron,0.24942547082901
+CCGCGTAGGTAAGGGC-1,False,supported_marker_region,map,Microglia,0.2618986964225769
+TCGGAATGCGCTCTGA-1,False,supported_marker_region,map,Microglia,0.3205277621746063
+GGCGTCCTATCCGCTG-1,False,supported_marker_region,map,Inhibitory neuron,0.26969096064567566
+AGCACTTAAGGACGCC-1,False,supported_marker_region,map,Inhibitory neuron,0.2733241319656372
+CCCTGAAATGAGTTGA-1,False,supported_marker_region,map,Microglia,0.24751581251621246
+TGATTCGTCTATCACT-1,False,supported_marker_region,map,Inhibitory neuron,0.2767082154750824
+GGGCTGGTTAGTCGCG-1,False,supported_marker_region,map,Inhibitory neuron,0.2499314695596695
+GAAATGGCGGTGTTAG-1,False,supported_marker_region,map,Inhibitory neuron,0.287744402885437
+TACGAACACGACTTCA-1,False,supported_marker_region,map,Inhibitory neuron,0.25963178277015686
+ACCACAAGTTTCTATC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2270594835281372
+GATCATTCCAAACATT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.137009620666504
+TCCAGGCGAGTACGGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4364402294158936
+CACAGCACCCACGGCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7515259981155396
+TGCAAGAATGACGTAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.449270248413086
+GCGAAGCCATACCCGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.912304162979126
+TCCTTTCTTACGCTTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7052210569381714
+GCTGCTCTCCGGACAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8876752853393555
+ACTGTCTTCTTTAGAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8432592153549194
+TCAAACTTAGATTGTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5223689079284668
+CTATGTCACTAGCCCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6422218084335327
+TGCGCAAAGCATTTGG-1,True,unsupported_core,blank,Blank,
+TTAATGTAGACCAGGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.55340576171875
+GGCGGTAGGATCATTG-1,True,unsupported_core,blank,Blank,
+GGCAATAGTCAATGAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3782349824905396
+ACACGAGACTCCTTCT-1,True,unsupported_core,blank,Blank,
+GACACAAGGGAAGAAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8987435102462769
+TCAGCAAATGCATCTC-1,True,unsupported_core,blank,Blank,
+GAGATCTGTCACTCCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.777369499206543
+ATGCCGGTCTTGCATA-1,True,unsupported_core,blank,Blank,
+TTGGGCGGCGGTTGCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6587938070297241
+TTGTTGTGTGTCAAGA-1,True,unsupported_core,blank,Blank,
+ACTGTACGATACACAT-1,True,unsupported_core,blank,Blank,
+TCCACTTTATCTAGGT-1,True,unsupported_core,blank,Blank,
+GGTCTGAGAATCTGGA-1,True,unsupported_core,blank,Blank,
+TAGAAAGGTGGCGCTA-1,True,unsupported_core,blank,Blank,
+TATGTCTCATTGTGCC-1,True,unsupported_core,blank,Blank,
+GGATTTCACTTCTATA-1,True,unsupported_core,blank,Blank,
+TGAGTGGTCCGTGACG-1,True,unsupported_core,blank,Blank,
+CGCTTTCTTGCATTCG-1,True,unsupported_core,blank,Blank,
+ACCCAACGCCCGTGGC-1,True,unsupported_core,blank,Blank,
+GAACGTCTCATGGTCG-1,True,unsupported_core,blank,Blank,
+AGGGTTCCCTTTGGTT-1,True,unsupported_core,blank,Blank,
+GTAGCTTCCTCTTGTT-1,True,unsupported_core,blank,Blank,
+GCATGAGGGACGCGGC-1,True,unsupported_core,blank,Blank,
+CTACCCTAAGGTCATA-1,True,unsupported_core,blank,Blank,
+GGCTCGCGTTGAGGTA-1,True,unsupported_core,blank,Blank,
+TACTTTACTGAGCCGG-1,True,unsupported_core,blank,Blank,
+CGGTTATCCAACAGTG-1,False,supported_marker_region,map,Astrocyte,0.8543838262557983
+CAGACCTGTAAGTGTT-1,True,unsupported_core,blank,Blank,
+GACGGTCAATAGAAGC-1,True,unsupported_core,blank,Blank,
+CCATACCTTTACTTGT-1,True,unsupported_core,blank,Blank,
+GTGAACTCCCATTCGA-1,False,supported_marker_region,map,Microglia,0.2913893163204193
+GTGGTTACTTCTTTCG-1,False,supported_marker_region,map,Astrocyte,0.9501186013221741
+TCAGAACCTCCACAGG-1,True,unsupported_core,blank,Blank,
+GGGTGCATATGAAAGC-1,False,supported_marker_region,map,Inhibitory neuron,0.2967884838581085
+TGATGGCTGTTTCTGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4345602989196777
+AAATAAGGTAGTGCCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2762644290924072
+CCACTATCCGGGTCAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5883958339691162
+ACACCACATAATTAGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5214207172393799
+CGCGGTAAGTCTAGCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.068179965019226
+GCGGGCATTACGATGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4643032550811768
+GTCGTCTGGTTGGCTA-1,False,supported_marker_region,map,Astrocyte,0.8467074632644653
+CCTGCGTTCTACGCTT-1,False,supported_marker_region,map,Microglia,0.28320738673210144
+TCCGAACTTGGCTTAC-1,False,supported_marker_region,map,Microglia,0.2563975751399994
+CACGAAAGTTAGTCCC-1,False,supported_marker_region,map,Inhibitory neuron,0.28242796659469604
+TCCGATTACATTGCCG-1,False,supported_marker_region,map,Microglia,0.3175416588783264
+CGAAGTTGCTCTGTGT-1,False,supported_marker_region,map,Inhibitory neuron,0.31009745597839355
+CCATTCCCTGCCCACA-1,False,supported_marker_region,map,Inhibitory neuron,0.2944454550743103
+CTTTGGCTTTAGTAAA-1,False,supported_marker_region,map,Microglia,0.2871704697608948
+GGCTATTAAGTTGTAT-1,False,supported_marker_region,map,Inhibitory neuron,0.25629058480262756
+CCATTAGCGATAATCC-1,False,supported_marker_region,map,Inhibitory neuron,0.27520686388015747
+TGTTCTTCCATTGACT-1,False,supported_marker_region,map,Inhibitory neuron,0.2950150966644287
+AGATAACTTCAGGGCC-1,False,supported_marker_region,map,Microglia,0.2834702134132385
+ATAGACGAAGAGAAAG-1,False,supported_marker_region,map,Inhibitory neuron,0.2887585759162903
+GGCGGAGTAATATTAG-1,False,supported_marker_region,map,Inhibitory neuron,0.3070495128631592
+TCACGCATTGTAGATC-1,False,supported_marker_region,map,Inhibitory neuron,0.2922935485839844
+TTGAAGAATTCCCAGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2156952619552612
+AAATGGTCAATGTGCC-1,False,supported_marker_region,map,Inhibitory neuron,0.29804348945617676
+TAGTGCCCTCCAGAGT-1,False,supported_marker_region,map,Inhibitory neuron,0.3137122392654419
+GGTATTGCCGAGTTTA-1,False,supported_marker_region,map,Inhibitory neuron,0.3087237477302551
+CGTATTAAGAGATCTA-1,False,supported_marker_region,map,Inhibitory neuron,0.30161672830581665
+ACTGTCCAGGATTATA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.563974380493164
+CGGGCAGCTAAACCGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.451991319656372
+TTGCTGATCATGTTCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7033668756484985
+TATGGGTACGTATCGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7396149635314941
+CAGCTCACTGAGACAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3824751377105713
+GGGACTGCATAGATAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6622314453125
+ACGCATTCGTGAGTAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4402836561203003
+CTCTGGACGCCTGGTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6633732318878174
+AGGGTTTAGTTCGGGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0451655387878418
+GGGAGAACTCACAGTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5522446632385254
+ATCAATCTGGGCTGCA-1,True,unsupported_core,blank,Blank,
+TCTTCGATACCAATAA-1,True,unsupported_core,blank,Blank,
+ACGTAGATTGCTGATG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.159879207611084
+TCTTGATGCGTAGCGA-1,True,unsupported_core,blank,Blank,
+GGGCTGCCTAGGGCGA-1,True,unsupported_core,blank,Blank,
+CTCTCACAATCGATGA-1,True,unsupported_core,blank,Blank,
+CCAAGCGTAACTCGTA-1,True,unsupported_core,blank,Blank,
+ACAACAGCATGAGCTA-1,True,unsupported_core,blank,Blank,
+GTCCCAACGTAAAGTA-1,True,unsupported_core,blank,Blank,
+TCGGAGTACATGAGTA-1,True,unsupported_core,blank,Blank,
+GGGAGTTAATGAGGCG-1,True,unsupported_core,blank,Blank,
+CCGGGCGGTCTCGTCA-1,True,unsupported_core,blank,Blank,
+CCGTAAGTTGGTCCCA-1,True,unsupported_core,blank,Blank,
+GGAGGGCTTGGTTGGC-1,True,unsupported_core,blank,Blank,
+TCGGACGCCCAGCCCA-1,True,unsupported_core,blank,Blank,
+TCTGTGCCATCATAGT-1,True,unsupported_core,blank,Blank,
+GTACTGGAGTTAGACC-1,True,unsupported_core,blank,Blank,
+GGAATGCGCTAGCGTG-1,True,unsupported_core,blank,Blank,
+GTGTGAATAACTTAGG-1,True,unsupported_core,blank,Blank,
+GGTCGGCCAGGAGCTT-1,True,unsupported_core,blank,Blank,
+TAGCCGGCGGTCAGCG-1,True,unsupported_core,blank,Blank,
+CGGGTGTACCCATTTA-1,True,unsupported_core,blank,Blank,
+AGTGATTCAAGCAGGA-1,True,unsupported_core,blank,Blank,
+GTTGGATTGAGAACAC-1,True,unsupported_core,blank,Blank,
+CACACGCGCTGTCTTA-1,True,unsupported_core,blank,Blank,
+TAGACGCCCGTACCGG-1,True,unsupported_core,blank,Blank,
+GGTTTCAATCGGTCAG-1,True,unsupported_core,blank,Blank,
+AATCTGCGTTGGGACG-1,True,unsupported_core,blank,Blank,
+TTACGGATGGTTCGAG-1,True,unsupported_core,blank,Blank,
+CGGCAGGGTCGGGTTG-1,True,unsupported_core,blank,Blank,
+GCTTTCAGAGGAGGTG-1,True,unsupported_core,blank,Blank,
+TCTTCCCATGGGCACA-1,True,unsupported_core,blank,Blank,
+TACCGCGGACTTGCAG-1,True,unsupported_core,blank,Blank,
+AGAATTATGGATTCGA-1,True,unsupported_core,blank,Blank,
+CTTAGTAGGCCTACAG-1,False,supported_marker_region,map,Inhibitory neuron,0.2994917035102844
+CTAGATGTGAGTGTAA-1,True,unsupported_core,blank,Blank,
+ACTTTACCCTCATGAA-1,False,supported_marker_region,map,Microglia,0.30743005871772766
+GTTCGGGCGTACCATT-1,True,unsupported_core,blank,Blank,
+GCATTTCCAAGGCTCC-1,False,supported_marker_region,map,Astrocyte,0.9180986881256104
+ATGTAAGGCTGCTCTT-1,False,supported_marker_region,map,Astrocyte,0.8910486102104187
+ACGTTCGCAATCAATT-1,False,supported_marker_region,map,Astrocyte,1.06197988986969
+CATTCCCATTCCGTCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4575368165969849
+TAAGCAGGCGACACGC-1,False,supported_marker_region,map,Microglia,0.32429152727127075
+AGGTAGGTACAAAGCT-1,False,supported_marker_region,map,Inhibitory neuron,0.3443619906902313
+GCAGGACTATAGAATA-1,False,supported_marker_region,map,Inhibitory neuron,0.28092676401138306
+CGTTGTTTCAATTCCC-1,False,supported_marker_region,map,Inhibitory neuron,0.2667750418186188
+CCAATAGTGCCGTCGA-1,False,supported_marker_region,map,Inhibitory neuron,0.33512231707572937
+ATTGCTGCTCCTCCAT-1,False,supported_marker_region,map,Microglia,0.3364839553833008
+GAGATCTGCTTGGCAT-1,False,supported_marker_region,map,Inhibitory neuron,0.29370519518852234
+GCCGAAATTCCTACGT-1,False,supported_marker_region,map,Inhibitory neuron,0.36735519766807556
+GGGTCACCGTGACGGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2545115947723389
+CGTTTCGCTCATTACA-1,False,supported_marker_region,map,Microglia,0.3192182779312134
+ATAAAGGCTCGGTCGT-1,False,supported_marker_region,map,Inhibitory neuron,0.2680080533027649
+CACTAAAGTTGCCTAT-1,False,supported_marker_region,map,Astrocyte,0.9844313263893127
+GTGCTCAAGTACTGTC-1,False,supported_marker_region,map,Inhibitory neuron,0.2491888850927353
+CCATGCCTGTTTAGTA-1,False,supported_marker_region,map,Inhibitory neuron,0.3762465715408325
+TCTAGTTATCAGAAGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3631623983383179
+TTGTAATCCGTACTCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7066099643707275
+TCCCAGCTTTAGTCTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7848124504089355
+CTACGCACGGAGTACC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.574652075767517
+AAATTAACGGGTAGCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6549718379974365
+CGGCCACGCACAAAGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.059343695640564
+GAAGCGTGAGGAATTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.350497841835022
+ATATCTTAGGGCCTTC-1,False,supported_marker_region,map,Inhibitory neuron,0.5146927833557129
+ACGCGGGCCAAGGACA-1,False,supported_marker_region,map,Astrocyte,0.9342831969261169
+GCGAGTTCTGCAAAGA-1,True,unsupported_core,blank,Blank,
+TATTCGTGCCAGAATA-1,False,supported_marker_region,map,Astrocyte,0.8504334092140198
+AGGGCTGCAGTTACAG-1,True,unsupported_core,blank,Blank,
+CTAGCATAGTATAATG-1,True,unsupported_core,blank,Blank,
+TAGGTTCGAGTTCGTC-1,True,unsupported_core,blank,Blank,
+GAATTATAGTGAAAGG-1,True,unsupported_core,blank,Blank,
+CTATCGGGTCTCAACA-1,True,unsupported_core,blank,Blank,
+GCGCTAATTGAATAGA-1,True,unsupported_core,blank,Blank,
+ATGCGACAGTCCCATT-1,True,unsupported_core,blank,Blank,
+GGTAGTGCTCGCACCA-1,True,unsupported_core,blank,Blank,
+AAGCTCGTGCCAAGTC-1,True,unsupported_core,blank,Blank,
+TATTCAATTCTAATCC-1,True,unsupported_core,blank,Blank,
+TTCAAAGTCTCTAGCC-1,True,unsupported_core,blank,Blank,
+TTGAATATGGACTTTC-1,True,unsupported_core,blank,Blank,
+AAGAGCTCTTTATCGG-1,True,unsupported_core,blank,Blank,
+TTACTCCGGCCGGGAA-1,True,unsupported_core,blank,Blank,
+AAACGAGACGGTTGAT-1,True,unsupported_core,blank,Blank,
+GCTAAGTAGTTTCTCT-1,True,unsupported_core,blank,Blank,
+ATAACGCCGGAGGGTC-1,True,unsupported_core,blank,Blank,
+GGATCCGGAATATACT-1,True,unsupported_core,blank,Blank,
+TGAAAGGACCTGACTC-1,True,unsupported_core,blank,Blank,
+TCCGCGGCAGCATCTG-1,True,unsupported_core,blank,Blank,
+TGCATATGTCTGTCAC-1,True,unsupported_core,blank,Blank,
+TGTAGGAGAAATTTCC-1,True,unsupported_core,blank,Blank,
+AGTGAGACTTCCAGTA-1,True,unsupported_core,blank,Blank,
+CCCAAACATGCTGCTC-1,True,unsupported_core,blank,Blank,
+GCTTATGAAGCAGGAA-1,True,unsupported_core,blank,Blank,
+TTCTAACCGAAGCTTA-1,True,unsupported_core,blank,Blank,
+GGATGTCCTTACCGCA-1,True,unsupported_core,blank,Blank,
+AGGGTGCTCTCGAGGG-1,True,unsupported_core,blank,Blank,
+AACTCTCAATAGAGCG-1,True,unsupported_core,blank,Blank,
+TCTGAATTCCGTACAA-1,True,unsupported_core,blank,Blank,
+GCGTGGTACTGGGTTA-1,True,unsupported_core,blank,Blank,
+CGTCGGATAGTGTTGA-1,True,unsupported_core,blank,Blank,
+ATATGTCTCCCTAGCC-1,True,unsupported_core,blank,Blank,
+TCTTTAAGACTATGAA-1,False,supported_marker_region,map,Astrocyte,0.9064633250236511
+TCATTTAAGTCTCCGA-1,True,unsupported_core,blank,Blank,
+GATATTGAGATTGGCG-1,True,unsupported_core,blank,Blank,
+TGACATCGAGCGGACC-1,True,unsupported_core,blank,Blank,
+AGGTATAATTGATAGT-1,False,supported_marker_region,map,Astrocyte,0.9055571556091309
+CCGGCACGACCGTTTC-1,False,supported_marker_region,map,Astrocyte,1.0762202739715576
+AAATTCCAGGTCCAAA-1,False,supported_marker_region,map,Inhibitory neuron,0.27613523602485657
+TCTGATCGGGTGCTAG-1,False,supported_marker_region,map,Microglia,0.2437848448753357
+TGTAATGACCACAATA-1,False,supported_marker_region,map,Microglia,0.35292333364486694
+AGGTGTATCGCCATGA-1,False,supported_marker_region,map,Inhibitory neuron,0.31437498331069946
+GTACTCCCTTATCGCT-1,False,supported_marker_region,map,Microglia,0.2664664089679718
+TGGTCTGTTGGGCGTA-1,False,supported_marker_region,map,Microglia,0.27170661091804504
+CATACCCGTACCCAGT-1,False,supported_marker_region,map,Microglia,0.2854398488998413
+ACAATCCATTTAAACC-1,False,supported_marker_region,map,Microglia,0.2690701484680176
+TTGCCCTGATCACGGG-1,False,supported_marker_region,map,Inhibitory neuron,0.29360419511795044
+CTAACCGCGCGCCCGT-1,False,supported_marker_region,map,Microglia,0.3511599898338318
+CTAAAGAATGCCTACT-1,False,supported_marker_region,map,Inhibitory neuron,0.31876036524772644
+GGGTACTTCATGAACT-1,False,supported_marker_region,map,Inhibitory neuron,0.28629302978515625
+GCCGCTTGTGAGAAAC-1,False,supported_marker_region,map,Astrocyte,0.9425544738769531
+GGATGACGCGAGTTTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1424145698547363
+GAAGTTTCCACTCAAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0902634859085083
+GCGAGGCCCGAGCAGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1610811948776245
+CATACTATGTAATTGT-1,False,supported_marker_region,map,Astrocyte,0.8784651160240173
+CCAATGTCACAGCAAG-1,True,unsupported_core,blank,Blank,
+GTTGGATTTGCGTTGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1311700344085693
+GGGAGGATGCCCGAAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1091523170471191
+GATCGCGGGCTCTCCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4386075735092163
+GTTCGCCATAAGTGCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3036489486694336
+AGATTATAGGACGTTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2849706411361694
+TCGAGACCAACACCGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6025476455688477
+TATGGGACCGAGCAGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.609073281288147
+GATGCGTCCTGCATTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,2.1390841007232666
+TATGGTCTGAGTAACA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.632375955581665
+GCATAGAGCACTCAGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1702277660369873
+CTTCATTGTCAGTGGA-1,True,unsupported_core,blank,Blank,
+GCAGATTAGGGATATC-1,False,supported_marker_region,map,Inhibitory neuron,0.5352655053138733
+CCTGTCGCCCGTAAAT-1,True,unsupported_core,blank,Blank,
+CAATTTCGTATAAGGG-1,True,unsupported_core,blank,Blank,
+GTACACTTACCTGAAG-1,True,unsupported_core,blank,Blank,
+CCAGCCTGGACCAATA-1,True,unsupported_core,blank,Blank,
+ATGGAGCAGGCCGTGA-1,True,unsupported_core,blank,Blank,
+GTCATTAGAGCGAACG-1,True,unsupported_core,blank,Blank,
+AAGACTGCAAGCTACT-1,True,unsupported_core,blank,Blank,
+CTAGTCACGTCTTAAG-1,True,unsupported_core,blank,Blank,
+ACTCTTGTATAGTAAC-1,True,unsupported_core,blank,Blank,
+ATTAGGCGATGCTTTC-1,True,unsupported_core,blank,Blank,
+TTCGGGACTAATCGCG-1,True,unsupported_core,blank,Blank,
+TGGACTGTTCGCTCAA-1,True,unsupported_core,blank,Blank,
+AACGTGCGAAAGTCTC-1,True,unsupported_core,blank,Blank,
+CCACCCAAGGAAAGTG-1,True,unsupported_core,blank,Blank,
+CCGCACAAAGACCAAC-1,True,unsupported_core,blank,Blank,
+GCGATTGTTAACGTTA-1,True,unsupported_core,blank,Blank,
+ACTCGTCAGTAATCCC-1,True,unsupported_core,blank,Blank,
+GGTGATAAGGAGCAGT-1,True,unsupported_core,blank,Blank,
+AAGAGGCATGGATCGC-1,True,unsupported_core,blank,Blank,
+CACGTTCGTGCTCTAG-1,True,unsupported_core,blank,Blank,
+CTATTTGGTTACGGAT-1,True,unsupported_core,blank,Blank,
+GTACAGAGGCAAGGGT-1,True,unsupported_core,blank,Blank,
+GGGCCGGCCGAAGTAC-1,True,unsupported_core,blank,Blank,
+CCTGAACGATATATTC-1,True,unsupported_core,blank,Blank,
+CCGGGCTGCTCCATAC-1,True,unsupported_core,blank,Blank,
+TACTTGTTAGTAGTCC-1,True,unsupported_core,blank,Blank,
+CCTAGGCGTAGCGATC-1,True,unsupported_core,blank,Blank,
+CTGGCGCACAGGTCTG-1,True,unsupported_core,blank,Blank,
+ACTTATACTTACCCGG-1,True,unsupported_core,blank,Blank,
+GAAGTCTCCCTAGCGA-1,True,unsupported_core,blank,Blank,
+ACCGATGGTAGCATCG-1,True,unsupported_core,blank,Blank,
+CGAGTTTATCGGACTG-1,True,unsupported_core,blank,Blank,
+CATAACGGACAGTCGT-1,True,unsupported_core,blank,Blank,
+TGACGATGCACTAGAA-1,True,unsupported_core,blank,Blank,
+TAGGGAGCTTGGGATG-1,True,unsupported_core,blank,Blank,
+AGGGTCGATGCGAACT-1,True,unsupported_core,blank,Blank,
+TATATCCCTGGGAGGA-1,True,unsupported_core,blank,Blank,
+CATCTTACACCACCTC-1,True,unsupported_core,blank,Blank,
+GTGCGACAGGGAGTGT-1,True,unsupported_core,blank,Blank,
+CCGATCTCAACCTTAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1326173543930054
+ACGATCATCTTGTAAA-1,True,unsupported_core,blank,Blank,
+GAAAGAACAGCGTTAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2062537670135498
+CTAGGTCTGAAGGAAT-1,False,supported_marker_region,map,Astrocyte,0.868772029876709
+AAATAGCTTAGACTTT-1,False,supported_marker_region,map,Inhibitory neuron,0.36173397302627563
+GCGACATGTAAACATC-1,False,supported_marker_region,map,Astrocyte,0.9774168133735657
+ATAAGTAGGGCGACTC-1,False,supported_marker_region,map,Inhibitory neuron,0.2776065170764923
+GCGAGCGCATGCTCCC-1,False,supported_marker_region,map,Inhibitory neuron,0.33861982822418213
+AGGGACCGGCTGCGTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1070187091827393
+CCTATGAAGTGGTGCC-1,True,unsupported_core,blank,Blank,
+GCTTACGTAGTTAGTA-1,False,supported_marker_region,map,Inhibitory neuron,0.275465190410614
+GTTAAGTTAGAGTGGG-1,False,supported_marker_region,map,Microglia,0.25532692670822144
+GGATGCTGGCGTTCCT-1,False,supported_marker_region,map,Inhibitory neuron,0.25644129514694214
+CTACGACTAGCTATAA-1,False,supported_marker_region,map,Inhibitory neuron,0.26073047518730164
+ATAAATATTAGCAGCT-1,False,supported_marker_region,map,Microglia,0.2772248685359955
+AAGAGGATGTACGCGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1526039838790894
+CCGGGTTCGAGGTTAC-1,False,supported_marker_region,map,Microglia,0.25891557335853577
+TGATTTATTAGCTGTG-1,False,supported_marker_region,map,Microglia,0.28108981251716614
+GACGCTTGCTTCTAAA-1,False,supported_marker_region,map,Inhibitory neuron,0.28471535444259644
+GGGAACGGGAGGTTAG-1,False,supported_marker_region,map,Astrocyte,0.8778549432754517
+GCGGCTCTGACGTACC-1,False,supported_marker_region,map,Inhibitory neuron,0.2730885446071625
+ACGTTAGATTTGCCCG-1,False,supported_marker_region,map,Inhibitory neuron,0.3159928619861603
+GAGAGGGCGCGAGGTT-1,False,supported_marker_region,map,Inhibitory neuron,0.317985475063324
+GCGTCTCTGCATTGGG-1,False,supported_marker_region,map,Inhibitory neuron,0.26407837867736816
+GCAGCACACAGCCCAG-1,False,supported_marker_region,map,Microglia,0.29204949736595154
+AACTCAAGTTAATTGC-1,False,supported_marker_region,map,Astrocyte,1.2197158336639404
+CTTCGTAGATAGGTGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2486367225646973
+TGCAGAGTACCGAGCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0578804016113281
+GAAGTGATTTATCGTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2023937702178955
+CGCTACGGGACATTTA-1,False,supported_marker_region,map,Astrocyte,0.8659606575965881
+CCACACTGAGATATTA-1,False,supported_marker_region,map,Astrocyte,0.9034643769264221
+CGATCCGACCCAGTGC-1,False,supported_marker_region,map,Astrocyte,0.9014574289321899
+CTGTACTTCTTAGCAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3208544254302979
+ACTTATTAGGATCGGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3312053680419922
+TAGTCCGCAGAGAATG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.333905816078186
+TTCACGAAAGGATCAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5147333145141602
+TACATTTCTAACGTGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8516950607299805
+ACCATATCCGCAATAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.9118504524230957
+CACTCAAGAGCTATGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.46097993850708
+TGTACGAACAAATCCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5975570678710938
+ATCATCCAATATTTGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.731601357460022
+CGCTATTCTTAGGCTC-1,True,unsupported_core,blank,Blank,
+TGGCAGCAGTAATAGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0549215078353882
+TCACGTGCCCGATTCA-1,True,unsupported_core,blank,Blank,
+CATACGGCGTCTGGGC-1,True,unsupported_core,blank,Blank,
+CACATGATTCAGCAAC-1,True,unsupported_core,blank,Blank,
+GCTAGTAGAGCTTGTA-1,True,unsupported_core,blank,Blank,
+TGCTGTTGAAGAACTC-1,True,unsupported_core,blank,Blank,
+CGGAGCATGGCGATCC-1,True,unsupported_core,blank,Blank,
+TAGCGTTGGGTCTTAC-1,True,unsupported_core,blank,Blank,
+GTAGCGGCTATACACT-1,True,unsupported_core,blank,Blank,
+TAACATACAATGTGGG-1,True,unsupported_core,blank,Blank,
+TCTTCGAATAGACGTT-1,True,unsupported_core,blank,Blank,
+GATCGTGACTGATATC-1,True,unsupported_core,blank,Blank,
+GATCCGGGAATTAACA-1,True,unsupported_core,blank,Blank,
+TTATATACGCTGTCAC-1,True,unsupported_core,blank,Blank,
+GTCGCGTAACCCGTTG-1,True,unsupported_core,blank,Blank,
+AGCTCTAGACGTTCCA-1,True,unsupported_core,blank,Blank,
+GTCAAGCGGACTCGGG-1,True,unsupported_core,blank,Blank,
+CGAGGGACTGCGGTCG-1,True,unsupported_core,blank,Blank,
+AATCGCCTCAGCGCCA-1,True,unsupported_core,blank,Blank,
+CTTGTTGCTGAGTCAA-1,True,unsupported_core,blank,Blank,
+GATATGAGACACTAAC-1,True,unsupported_core,blank,Blank,
+TTATGATCTTAACGAA-1,True,unsupported_core,blank,Blank,
+CGCCGCCCATGCCTGT-1,True,unsupported_core,blank,Blank,
+CTGGGATAAATAATGG-1,True,unsupported_core,blank,Blank,
+GTGCCCGTTCGGATTC-1,True,unsupported_core,blank,Blank,
+TTCAATACTCTGAATC-1,True,unsupported_core,blank,Blank,
+CGCACATGTCCACTAC-1,True,unsupported_core,blank,Blank,
+GATAACTCGCACTGTG-1,True,unsupported_core,blank,Blank,
+AGTCGACGGTCTCAAG-1,True,unsupported_core,blank,Blank,
+GTGACCGCACACTACG-1,True,unsupported_core,blank,Blank,
+GTATGTGGGTCTAGTT-1,True,unsupported_core,blank,Blank,
+CTTGAGTTAGGGTAAT-1,True,unsupported_core,blank,Blank,
+TTAGCTGATTTGCCGT-1,True,unsupported_core,blank,Blank,
+GCTGTTGCTACCGAAC-1,True,unsupported_core,blank,Blank,
+TATTACCATCCTGCTT-1,True,unsupported_core,blank,Blank,
+TTGAATTCACGTGAGG-1,True,unsupported_core,blank,Blank,
+CCATCTCACCAGTGAA-1,True,unsupported_core,blank,Blank,
+CGCACGTGCGCTATCA-1,True,unsupported_core,blank,Blank,
+ACCCGGATGACGCATC-1,True,unsupported_core,blank,Blank,
+CGCTAGAGACCGCTGC-1,True,unsupported_core,blank,Blank,
+ATAGTTCCACCCACTC-1,True,unsupported_core,blank,Blank,
+GCAGACCCAGCACGTA-1,True,unsupported_core,blank,Blank,
+TAGACTACCTAGCGTT-1,True,unsupported_core,blank,Blank,
+GGTTCTACTCGTCTGA-1,True,unsupported_core,blank,Blank,
+GACTCACCCACGTGAG-1,False,supported_marker_region,map,Astrocyte,0.9294748306274414
+AGCTCTTCGTAACCTT-1,True,unsupported_core,blank,Blank,
+ACTATCCAGGGCATGG-1,True,unsupported_core,blank,Blank,
+AAGGATCGATCGCTTG-1,True,unsupported_core,blank,Blank,
+ATATCGGTAGGGAGAT-1,False,supported_marker_region,map,Inhibitory neuron,0.32203447818756104
+TTCCAGACGAGATTTA-1,True,unsupported_core,blank,Blank,
+GACCGACGTGAAAGCA-1,True,unsupported_core,blank,Blank,
+AGTGGCTCCGTCGGCC-1,False,supported_marker_region,map,Astrocyte,0.9311226010322571
+GATCGGATAGAACCAT-1,False,supported_marker_region,map,Astrocyte,1.0911768674850464
+TCTATTACTAGAGGAT-1,False,supported_marker_region,map,Astrocyte,0.9010648727416992
+CCGTTCCGAATCTCGG-1,False,supported_marker_region,map,Microglia,0.4239547550678253
+CCTGTACTCACGCCCA-1,False,supported_marker_region,map,Inhibitory neuron,0.31849366426467896
+TAGTCTAACAACGAGA-1,False,supported_marker_region,map,Microglia,0.25856655836105347
+TCTGGGTAGCGCTCAT-1,False,supported_marker_region,map,Astrocyte,0.879101574420929
+GATTACTGAATTTGGG-1,False,supported_marker_region,map,Inhibitory neuron,0.2978256344795227
+TCCAACTTTAAATTCT-1,False,supported_marker_region,map,Microglia,0.3105626702308655
+TCCTAGCAAAGAAGCT-1,False,supported_marker_region,map,Microglia,0.4238611161708832
+GATGTTCAATCCACGA-1,False,supported_marker_region,map,Microglia,0.43290579319000244
+AGTTAAACACTTGCGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2690761089324951
+ATCCAGGATTCGTGAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.251323938369751
+AGTCAACACCACCATC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2608952522277832
+CGATACCTCGCGGACA-1,True,unsupported_core,blank,Blank,
+TACAACGCACAACTCA-1,False,supported_marker_region,map,Microglia,0.3310657739639282
+AATTAAAGGTCGGCGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1307255029678345
+TACGCAGTTCTTTCCT-1,False,supported_marker_region,map,Inhibitory neuron,0.351998507976532
+GACCGTGCTGACGGTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6184260845184326
+GGCAAATTACTTTACT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3866676092147827
+GGTACAAACATGCTAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3243309259414673
+CGGGCCTTCTTTGTAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3484022617340088
+CGTGAAGTTAATTCAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3790401220321655
+ATAGTGAAGCGTTCTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.957399606704712
+TACGCCATATTCTAAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,2.014167547225952
+GCCGGGTTAGGGTCGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8286925554275513
+TACATAGGCATACACC-1,False,supported_marker_region,map,Astrocyte,0.856997013092041
+GCCGATTGGCCAAGCT-1,False,supported_marker_region,map,Inhibitory neuron,0.44887304306030273
+CTGCCATGCATCACAT-1,True,unsupported_core,blank,Blank,
+TTATGAATGAAAGGGA-1,True,unsupported_core,blank,Blank,
+GCTGAGGCGTGAGTAT-1,True,unsupported_core,blank,Blank,
+GCGCCGTTCCACGATA-1,True,unsupported_core,blank,Blank,
+CGCATGGTGCGATGCT-1,True,unsupported_core,blank,Blank,
+AGGTTTCACACACCTT-1,True,unsupported_core,blank,Blank,
+CAAGGATCGCATGTTC-1,True,unsupported_core,blank,Blank,
+ACGTTAATGTCGAAGA-1,True,unsupported_core,blank,Blank,
+TCCAGAGCACCGGTTC-1,True,unsupported_core,blank,Blank,
+GATTCGACGGTTCACG-1,True,unsupported_core,blank,Blank,
+GTTTCTGCAGTCTCCC-1,True,unsupported_core,blank,Blank,
+GCTGCACGGTTTCTTA-1,True,unsupported_core,blank,Blank,
+CGTGCAGACTGGGACA-1,True,unsupported_core,blank,Blank,
+GTGTTACTATGCGTCC-1,True,unsupported_core,blank,Blank,
+TCCTCGGGCTGGGCTT-1,True,unsupported_core,blank,Blank,
+GTGAGGACACTTAAGG-1,True,unsupported_core,blank,Blank,
+ATACGCCGGCGAAACC-1,True,unsupported_core,blank,Blank,
+TCTGCCAGAAACTGCA-1,True,unsupported_core,blank,Blank,
+TTCTGCGGGTTAGCGG-1,True,unsupported_core,blank,Blank,
+CTCGGTACCACTGCTC-1,True,unsupported_core,blank,Blank,
+GTAAGTAACAGTCTGG-1,True,unsupported_core,blank,Blank,
+GTGCGTGTATATGAGC-1,True,unsupported_core,blank,Blank,
+ATTTGTCTTGGGAGCT-1,True,unsupported_core,blank,Blank,
+CCTCGGACCGGGATAG-1,True,unsupported_core,blank,Blank,
+TAGGTGCTCGCCTAGC-1,True,unsupported_core,blank,Blank,
+CTTTAGGAACACTGTT-1,True,unsupported_core,blank,Blank,
+TCGGGCCGTCGTGGTA-1,True,unsupported_core,blank,Blank,
+AGTGCTTGCACGAATA-1,True,unsupported_core,blank,Blank,
+TGCAGTTTCCTCCCAT-1,True,unsupported_core,blank,Blank,
+TGAGAGATTTACCACG-1,True,unsupported_core,blank,Blank,
+GAAACAGATGACCACC-1,True,unsupported_core,blank,Blank,
+AGCAACATATCTTATT-1,True,unsupported_core,blank,Blank,
+CAAGTGTGGTTGCAAA-1,True,unsupported_core,blank,Blank,
+GCCTCATCTGGAAATA-1,True,unsupported_core,blank,Blank,
+AACCCTACTGTCAATA-1,True,unsupported_core,blank,Blank,
+ACGTATTACTCCGATC-1,True,unsupported_core,blank,Blank,
+TCTGGGAACCTTTGAA-1,True,unsupported_core,blank,Blank,
+GCTCGCTCATGTCCAA-1,True,unsupported_core,blank,Blank,
+GCGCAAGAGCGCGCTG-1,True,unsupported_core,blank,Blank,
+TTGACGCTCCATGAGC-1,True,unsupported_core,blank,Blank,
+TATAGATGGTCGCAGT-1,True,unsupported_core,blank,Blank,
+TTACATGCCACAACTA-1,True,unsupported_core,blank,Blank,
+ACATGGCGCCAAAGTA-1,True,unsupported_core,blank,Blank,
+TATGGTTAGTGGGAGA-1,True,unsupported_core,blank,Blank,
+CATGACTTCGCTGAAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1307010650634766
+ACCACCAATGTAACAA-1,True,unsupported_core,blank,Blank,
+CCACGAATTTAACCTC-1,True,unsupported_core,blank,Blank,
+ACACCTTACTACTTGC-1,True,unsupported_core,blank,Blank,
+AGTCGGTTGCGTGAGA-1,True,unsupported_core,blank,Blank,
+ACCTACAGTATGTGGT-1,True,unsupported_core,blank,Blank,
+GAGGATAAACAGTGCT-1,True,unsupported_core,blank,Blank,
+TTCCGGTATCTGTGTC-1,False,supported_marker_region,map,Astrocyte,1.1735395193099976
+CATAAGCTCTCCGTCT-1,False,supported_marker_region,map,Astrocyte,0.9790439605712891
+CCTTCTCAGCGTTCCT-1,False,supported_marker_region,map,Astrocyte,0.8563507199287415
+CTTGCAACCGCCTCCT-1,False,supported_marker_region,map,Microglia,0.286417692899704
+AAACCGGGTAGGTACC-1,False,supported_marker_region,map,Astrocyte,0.9939444661140442
+GTGGTTTCCGCCTTTC-1,False,supported_marker_region,map,Inhibitory neuron,0.29260900616645813
+ATAGGCGGCTATAGAA-1,False,supported_marker_region,map,Inhibitory neuron,0.28508299589157104
+GGGCGGGTTCCCTACG-1,False,supported_marker_region,map,Microglia,0.2836328446865082
+CTCCGCCCACATGAGG-1,False,supported_marker_region,map,Microglia,0.26515114307403564
+TTGACTACCATATGGT-1,False,supported_marker_region,map,Inhibitory neuron,0.31019505858421326
+TGCGTAAGAACCTGAT-1,False,supported_marker_region,map,Inhibitory neuron,0.3277743458747864
+AGAAGGTTGCCGAATT-1,False,supported_marker_region,map,Inhibitory neuron,0.35889965295791626
+GGTGCTGGTACACATT-1,False,supported_marker_region,map,Astrocyte,0.9050009846687317
+GCGCTATGCCGAGGCA-1,False,supported_marker_region,map,Inhibitory neuron,0.3236430883407593
+ACCCGGTTACACTTCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1761959791183472
+TAACTCATCCGCGCGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2452720403671265
+CACAATGAGCTGCTAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3498938083648682
+GTTACTTTGGGCCTAG-1,True,unsupported_core,blank,Blank,
+GGGCCCGTCTTAAACA-1,False,supported_marker_region,map,Astrocyte,0.8502379655838013
+GAAATTGTCTCTATAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3413039445877075
+GGCGCATGAATTGATG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6512664556503296
+CATATAGGTACAGTCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8389747142791748
+TCAACGAGGAGACAAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7957402467727661
+TTGCACAATTCAGAAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7720149755477905
+CATCGGACGGGTTAAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8220731019973755
+ATTAAACATGCGGACC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.9099938869476318
+TATCTACCACAGCGGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5810757875442505
+CGAGACCCTAGAGTGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.761683464050293
+ACATCGATCGTTTACC-1,True,unsupported_core,blank,Blank,
+ATCGACCCAATACAGA-1,True,unsupported_core,blank,Blank,
+GAATCTGAACATTCTC-1,True,unsupported_core,blank,Blank,
+AGTTCCTATTTATGTT-1,True,unsupported_core,blank,Blank,
+CAGTCTGTATACTGGG-1,True,unsupported_core,blank,Blank,
+GGAGACGACACCTTTG-1,True,unsupported_core,blank,Blank,
+CCTAAATTAACGGTTC-1,True,unsupported_core,blank,Blank,
+GCTACGACTTATTGGG-1,True,unsupported_core,blank,Blank,
+CTGTGCAGGGTAGGTC-1,True,unsupported_core,blank,Blank,
+ACGCCGCTAGACGACC-1,True,unsupported_core,blank,Blank,
+ACTTGACTCCCTCTTT-1,True,unsupported_core,blank,Blank,
+CGCCTCCCTCCTCTAT-1,True,unsupported_core,blank,Blank,
+CTAGATTTACGACGGC-1,True,unsupported_core,blank,Blank,
+GATGCTGTATTTCATC-1,True,unsupported_core,blank,Blank,
+TGCGTTTGTTGACACT-1,True,unsupported_core,blank,Blank,
+CGTGCCCTCCCGAAGA-1,True,unsupported_core,blank,Blank,
+ACTCTCTGACTTAGGT-1,True,unsupported_core,blank,Blank,
+CTGGGTAGGCAGTTAA-1,True,unsupported_core,blank,Blank,
+GTTTGGCCCAAGTTAT-1,True,unsupported_core,blank,Blank,
+GAATGTGGTCCGGATT-1,True,unsupported_core,blank,Blank,
+CCCAGTTAAGGCGCCG-1,True,unsupported_core,blank,Blank,
+CGGTACTAGAATCAAA-1,True,unsupported_core,blank,Blank,
+GCTTAATGTAACTAAC-1,True,unsupported_core,blank,Blank,
+AGGACAGTCGAATCCC-1,True,unsupported_core,blank,Blank,
+GACAGCCAGACCTGAC-1,True,unsupported_core,blank,Blank,
+GGCGAAATCTAACTTG-1,True,unsupported_core,blank,Blank,
+CTGGTAACACATAGAA-1,True,unsupported_core,blank,Blank,
+TAGCCATTTCAAAGTC-1,True,unsupported_core,blank,Blank,
+GGGATTTACCGCACCT-1,True,unsupported_core,blank,Blank,
+ATGCCATTTGCGACCA-1,True,unsupported_core,blank,Blank,
+GAATAGACGCGACCCA-1,True,unsupported_core,blank,Blank,
+TGTATGGCGCAGACAG-1,True,unsupported_core,blank,Blank,
+GGATGAAGATCGCTGA-1,True,unsupported_core,blank,Blank,
+CGACAATTTGATCTAA-1,True,unsupported_core,blank,Blank,
+AAAGTTGACTCCCGTA-1,True,unsupported_core,blank,Blank,
+CGCGGCTCAACTTGAA-1,True,unsupported_core,blank,Blank,
+CACGCGGAACTGTTGC-1,True,unsupported_core,blank,Blank,
+TCTTAGAGTGAACTCT-1,True,unsupported_core,blank,Blank,
+AGTCCATTGGCTGATG-1,True,unsupported_core,blank,Blank,
+TTAAGATAGGATTGAC-1,True,unsupported_core,blank,Blank,
+ACATCCTGGTAACTGT-1,True,unsupported_core,blank,Blank,
+CACCTTGGCGCCTTTG-1,True,unsupported_core,blank,Blank,
+GCTAGACCGTCTACTG-1,True,unsupported_core,blank,Blank,
+CGGCCCAGGTATATCC-1,True,unsupported_core,blank,Blank,
+GTCCATTACTGCTACG-1,True,unsupported_core,blank,Blank,
+GGGTTTAGGATAGGAT-1,True,unsupported_core,blank,Blank,
+TAATTAGGACATCCGT-1,True,unsupported_core,blank,Blank,
+GCTCCCAGTCGGTCCA-1,True,unsupported_core,blank,Blank,
+ATTCGTGCTATCTCTT-1,True,unsupported_core,blank,Blank,
+GTTAACTATGTTGTCA-1,True,unsupported_core,blank,Blank,
+GCTCCGCTCGCTTCAG-1,True,unsupported_core,blank,Blank,
+GCAACGGCTAGTTATG-1,True,unsupported_core,blank,Blank,
+AATCGCGCAGAGGACT-1,True,unsupported_core,blank,Blank,
+GTGGGAAGACTGAATC-1,False,supported_marker_region,map,Astrocyte,1.06683349609375
+TCAACATCGACCGAGA-1,False,supported_marker_region,map,Astrocyte,0.8528748750686646
+AACACGAGACGCGGCC-1,False,supported_marker_region,map,Microglia,0.2529743015766144
+AGGCCCTAGAACGCCA-1,False,supported_marker_region,map,Inhibitory neuron,0.2499111294746399
+TTGTTTCCATACAACT-1,False,supported_marker_region,map,Inhibitory neuron,0.2595807611942291
+GAGAGGTGCATTCTGG-1,False,supported_marker_region,map,Microglia,0.26212218403816223
+CTGGGCCTGCTATATC-1,False,supported_marker_region,map,Inhibitory neuron,0.29302865266799927
+CGAGTACTAAAGAGGA-1,False,supported_marker_region,map,Microglia,0.26347437500953674
+GCCACAATTTAAGGAC-1,False,supported_marker_region,map,Microglia,0.2679787576198578
+GTGCGAAATCGAACAC-1,False,supported_marker_region,map,Microglia,0.2820052206516266
+GTGCCGCTTCAAAGGT-1,False,supported_marker_region,map,Inhibitory neuron,0.296563982963562
+ATCCTGCGTGGAATGG-1,False,supported_marker_region,map,Inhibitory neuron,0.3694034218788147
+AGTGATATGAGTAGTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0721824169158936
+ATGATGCAATGGTACA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4479461908340454
+GAAACCGAATTACCTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.750601053237915
+AGTGACCTACTTTACG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5795567035675049
+CAAATGTCCTTCCGTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6434637308120728
+TTACTGGGATATTTCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6181464195251465
+CTTGCCCAGGCTCTAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4798917770385742
+AAATCGTGTACCACAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.9013891220092773
+GTGATCATAGATCTGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.809512972831726
+TGGCAGATTACGATCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,2.230126142501831
+TCACCCTCTTAAGATT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1701546907424927
+CAGGATATATCGTTGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7702537775039673
+CCTGACCACCGATGGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8274415731430054
+CTAAAGGGAAATAGGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.532285451889038
+CCGCTATCAGCACCAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2245538234710693
+CTTTAGTGCTATTATT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1917556524276733
+CGGGAATTTATGTAAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1364744901657104
+TACGACTGCCTCTTAG-1,True,unsupported_core,blank,Blank,
+AAACTGCTGGCTCCAA-1,True,unsupported_core,blank,Blank,
+GTACGTTTGCCCGTCA-1,True,unsupported_core,blank,Blank,
+GGCAAGGCGAAATAGC-1,True,unsupported_core,blank,Blank,
+GATCTTGGAGGGCATA-1,True,unsupported_core,blank,Blank,
+AGCGTGGTATTCTACT-1,True,unsupported_core,blank,Blank,
+CTAAGGGAATGATTGG-1,True,unsupported_core,blank,Blank,
+CATGGTAAGTAGCGTT-1,True,unsupported_core,blank,Blank,
+CGTTGAGCGACCGTCG-1,True,unsupported_core,blank,Blank,
+TGCCCGTACCGTTAAA-1,True,unsupported_core,blank,Blank,
+ACAAGGGCAGGCTCTG-1,True,unsupported_core,blank,Blank,
+GAGATCTTCCATGACA-1,True,unsupported_core,blank,Blank,
+AATGACGTAGGATGTC-1,True,unsupported_core,blank,Blank,
+GTGGTGGCCAAGTGAA-1,True,unsupported_core,blank,Blank,
+TCCCGTGTGCAATTTG-1,True,unsupported_core,blank,Blank,
+ACATCGTATGCAATGG-1,True,unsupported_core,blank,Blank,
+GCGAAACTTAACTGGA-1,True,unsupported_core,blank,Blank,
+AATTGAACGCTCTGGT-1,True,unsupported_core,blank,Blank,
+ACAAATGGTAGTGTTT-1,True,unsupported_core,blank,Blank,
+ATGGTCGCGTGGTTTC-1,True,unsupported_core,blank,Blank,
+TGTTATTGTATGTGGC-1,True,unsupported_core,blank,Blank,
+TTCCGGTTACCCACTT-1,True,unsupported_core,blank,Blank,
+GAGTGTGCGGTACCCA-1,True,unsupported_core,blank,Blank,
+CAAGATATTATAACGT-1,True,unsupported_core,blank,Blank,
+ACACACCAGGACCAGT-1,True,unsupported_core,blank,Blank,
+ATGGGCCTCGGCCTCT-1,True,unsupported_core,blank,Blank,
+AAGGTGATAAACCAGC-1,True,unsupported_core,blank,Blank,
+TCTTACTTATGCCTCT-1,True,unsupported_core,blank,Blank,
+AAAGTGTGATTTATCT-1,True,unsupported_core,blank,Blank,
+TGCTCCACAGTTCTTA-1,True,unsupported_core,blank,Blank,
+CTGGCTGATTCATCCT-1,True,unsupported_core,blank,Blank,
+TAAGGCTGAATCCCTC-1,True,unsupported_core,blank,Blank,
+TCTAGTGATATCGTGG-1,True,unsupported_core,blank,Blank,
+TCGAAGAACCGAGCAC-1,True,unsupported_core,blank,Blank,
+GACAAACATATGCAGG-1,True,unsupported_core,blank,Blank,
+AAGTCAATTGTCGTCA-1,True,unsupported_core,blank,Blank,
+AGTGAACAAACTTCTC-1,True,unsupported_core,blank,Blank,
+CATGATGGAAGTTAGC-1,True,unsupported_core,blank,Blank,
+AAGTGCCTTGACTGTA-1,True,unsupported_core,blank,Blank,
+ATCGCCAGTCAACATT-1,True,unsupported_core,blank,Blank,
+ACCGCGGTGGAAGTCG-1,True,unsupported_core,blank,Blank,
+TCTTCTATAACCCGCC-1,True,unsupported_core,blank,Blank,
+CACATTTCTTGTCAGA-1,True,unsupported_core,blank,Blank,
+TAGCGTCCCTCGATTG-1,True,unsupported_core,blank,Blank,
+GTTCGGATCGGGAACA-1,True,unsupported_core,blank,Blank,
+CAAACTCGCGACGCCG-1,True,unsupported_core,blank,Blank,
+GTCTTGTAGCTATTCA-1,True,unsupported_core,blank,Blank,
+CGATCTGTTGGAGGAC-1,False,supported_marker_region,map,Microglia,0.2632403075695038
+TTAACTTCAGGTAGGA-1,False,supported_marker_region,map,Inhibitory neuron,0.2526247501373291
+CCACGGAGCCATAAGA-1,False,supported_marker_region,map,Microglia,0.3834229111671448
+CTTCTATGTTGAAGTA-1,False,supported_marker_region,map,Microglia,0.29327213764190674
+AGTTTGGCCAGACCTA-1,False,supported_marker_region,map,Inhibitory neuron,0.2665919065475464
+TTGTAAGGACCTAAGT-1,False,supported_marker_region,map,Inhibitory neuron,0.2716687023639679
+GCTGTATTACTGGCCC-1,False,supported_marker_region,map,Inhibitory neuron,0.2548317015171051
+TTCTTGAGCCGCGCTA-1,False,supported_marker_region,map,Inhibitory neuron,0.29372289776802063
+AGTGCGTAGCTCGTAA-1,False,supported_marker_region,map,Inhibitory neuron,0.2671740651130676
+GTCTGGGCGGTCGAGA-1,False,supported_marker_region,map,Inhibitory neuron,0.24919722974300385
+CGGAACGTAAACATAG-1,False,supported_marker_region,map,Inhibitory neuron,0.32358258962631226
+TGCGACACCCTAGTGC-1,False,supported_marker_region,map,Inhibitory neuron,0.3073822259902954
+CAAACGAGTATCGCAG-1,False,supported_marker_region,map,Inhibitory neuron,0.3441639840602875
+GTGACTTCAGTAGTGC-1,False,supported_marker_region,map,Inhibitory neuron,0.25673168897628784
+CGTCACGTCCATTGGT-1,False,supported_marker_region,map,Astrocyte,0.9447492361068726
+ATAAGTTACCGCGACG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5485047101974487
+CTGAATCCGAGACCTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7717945575714111
+TACGACGCTTGCTGCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.687981367111206
+GAATTCACCCGGGTGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7916513681411743
+GGGTGACACCTTAACT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5318210124969482
+TGAGTAAATTAGCGTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6105924844741821
+GAGTCCGCTTACCGGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.68302583694458
+GGCGCGTTCGAGTTTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.9068195819854736
+ATTCATATACTGTCCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7511963844299316
+ATAAACGGACCCGTAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6039037704467773
+TTCCGCGTGAGGCGAT-1,False,supported_marker_region,map,Astrocyte,0.9388431310653687
+TACCGGCTCACTGCCC-1,False,supported_marker_region,map,Astrocyte,0.8845071196556091
+GTATCTTTCATAACCA-1,False,supported_marker_region,map,Inhibitory neuron,0.30205005407333374
+GTTACCTACAACTTGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2635157108306885
+TGACTATAATCCTTTC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2384655475616455
+AAATACCTATAAGCAT-1,False,supported_marker_region,map,Astrocyte,0.8952921628952026
+TTATTAGAGCGTGTTC-1,True,unsupported_core,blank,Blank,
+ATGTGGACATCTTGAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0452243089675903
+GTACGCTTCATTGCAC-1,True,unsupported_core,blank,Blank,
+CACATATTAGCAGGAT-1,True,unsupported_core,blank,Blank,
+CAAGAGGGCGGAGTAC-1,True,unsupported_core,blank,Blank,
+TCGCAAAGATGCATTT-1,True,unsupported_core,blank,Blank,
+GTCGTTATTCGCTTAT-1,True,unsupported_core,blank,Blank,
+TCGTGTACTATGGATG-1,True,unsupported_core,blank,Blank,
+GCGGAGAGGGAGAACG-1,True,unsupported_core,blank,Blank,
+TCACAGGGAATCGCAA-1,True,unsupported_core,blank,Blank,
+GACTGCACCAGCCCAG-1,True,unsupported_core,blank,Blank,
+TCCGCTGTCATCCCGG-1,True,unsupported_core,blank,Blank,
+AGATACTCAAGATCGA-1,True,unsupported_core,blank,Blank,
+ACTGAATGGCGAAAGT-1,True,unsupported_core,blank,Blank,
+TCCTACATCCACGGCC-1,True,unsupported_core,blank,Blank,
+TTCAGCCCTGGTCCAC-1,True,unsupported_core,blank,Blank,
+TTAGAGTTTAGAAGGA-1,True,unsupported_core,blank,Blank,
+GGTTAGCTATATGTCT-1,True,unsupported_core,blank,Blank,
+CTGGTTTCGAGCAAGA-1,True,unsupported_core,blank,Blank,
+TGGGCCCATACTAATT-1,True,unsupported_core,blank,Blank,
+ACTTATTTATGTGCCA-1,True,unsupported_core,blank,Blank,
+TTAGTTATTCGTGGCA-1,True,unsupported_core,blank,Blank,
+AACCGCTAAGGGATGC-1,True,unsupported_core,blank,Blank,
+ATACGTCCACTCCTGT-1,True,unsupported_core,blank,Blank,
+CGACACGCTCCGACAG-1,True,unsupported_core,blank,Blank,
+TCTGAACTCGTACCCG-1,True,unsupported_core,blank,Blank,
+AGGATATAGGGATTTA-1,True,unsupported_core,blank,Blank,
+GTGATCACTAACGCCT-1,True,unsupported_core,blank,Blank,
+ACCGGGCCTTTGTTGA-1,True,unsupported_core,blank,Blank,
+TTGACAGGAGCTCCCG-1,True,unsupported_core,blank,Blank,
+CTCTTCTATTGACTGG-1,True,unsupported_core,blank,Blank,
+CGTGGCCGAATATCTA-1,True,unsupported_core,blank,Blank,
+GGTTTAGCCTTTCTTG-1,True,unsupported_core,blank,Blank,
+TCAAGGTTACTACACC-1,True,unsupported_core,blank,Blank,
+TTGACTATTGTCCGGC-1,True,unsupported_core,blank,Blank,
+CGGGAATATAGTATAC-1,True,unsupported_core,blank,Blank,
+GCAACAGCAGTATGCG-1,True,unsupported_core,blank,Blank,
+ATCAAACACTGTTCCA-1,True,unsupported_core,blank,Blank,
+TGGGCAATAGTTGGGT-1,True,unsupported_core,blank,Blank,
+TGAATGTCAGCCGGCC-1,True,unsupported_core,blank,Blank,
+CGGCTCTAAAGCTGCA-1,True,unsupported_core,blank,Blank,
+ATCAGCTCGTCCACTA-1,False,supported_marker_region,map,Microglia,0.2850337624549866
+AAATGGCCCGTGCCCT-1,False,supported_marker_region,map,Astrocyte,0.8507276177406311
+AGAAGTGATTCGTGAT-1,False,supported_marker_region,map,Inhibitory neuron,0.25009578466415405
+TCAACGCAGGAAATAA-1,False,supported_marker_region,map,Microglia,0.24367813766002655
+ATCAAACGAAGGTTTG-1,False,supported_marker_region,map,Inhibitory neuron,0.24967347085475922
+TGATTCTGTCGCCGGT-1,False,supported_marker_region,map,Inhibitory neuron,0.4077647924423218
+GGGCGGCAAATGAATT-1,False,supported_marker_region,map,Inhibitory neuron,0.33689653873443604
+TTCCAATCTGGCTATC-1,False,supported_marker_region,map,Inhibitory neuron,0.3815297484397888
+GGAACCGTGTAAATTG-1,False,supported_marker_region,map,Inhibitory neuron,0.28302037715911865
+TTGGTCACACTCGTAA-1,False,supported_marker_region,map,Inhibitory neuron,0.2646142244338989
+CGAACCCGCATGCGTC-1,False,supported_marker_region,map,Inhibitory neuron,0.31367066502571106
+GGGCGTCACCACGTAA-1,False,supported_marker_region,map,Microglia,0.253459632396698
+TACCAGAAGTAGGTTC-1,False,supported_marker_region,map,Inhibitory neuron,0.2942059636116028
+TTGGATATCGTCTACG-1,False,supported_marker_region,map,Inhibitory neuron,0.3893894553184509
+TAGATATGGACTGGAA-1,False,supported_marker_region,map,Inhibitory neuron,0.31572023034095764
+GCGACGATAGTTGTAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8981397151947021
+CTGGATTTACACTTGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5306681394577026
+GTTATATTATCTCCCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6303133964538574
+TATTCCACTCAGCTCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.432889461517334
+CTGTTACCCAATCTAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7467490434646606
+ACGCGAAGTCAGACGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5911332368850708
+GATAGGTAACGTTGAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6287219524383545
+TGTTCGTATTGCGGTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.551928997039795
+GGTCAGTGGGTCCCAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8196845054626465
+AATTCTAGAGTTAGGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2951396703720093
+GTTTACGTTCCATCTG-1,False,supported_marker_region,map,Inhibitory neuron,0.26461195945739746
+AGACCCACCGCTGATC-1,False,supported_marker_region,map,Inhibitory neuron,0.32469213008880615
+TCTAGCATGCCCAGAA-1,False,supported_marker_region,map,Astrocyte,0.9523332118988037
+CCCGCAGCGCGAACTA-1,False,supported_marker_region,map,Astrocyte,0.9054967164993286
+TTCTGCCGCGCCTAGA-1,False,supported_marker_region,map,Astrocyte,0.894061267375946
+ACTCCCTAGAATAGTA-1,True,unsupported_core,blank,Blank,
+TCAGACGCTATAGAAG-1,False,supported_marker_region,map,Inhibitory neuron,0.4031185507774353
+CACTCGAGCTGAACAA-1,True,unsupported_core,blank,Blank,
+ACAAGGAAATCCGCCC-1,True,unsupported_core,blank,Blank,
+ACCACGTGCAGCTATA-1,True,unsupported_core,blank,Blank,
+ACGGCGACGATGGGAA-1,False,supported_marker_region,map,Astrocyte,1.0743595361709595
+TTACTAAAGGACTTTA-1,True,unsupported_core,blank,Blank,
+GGCTGAAATAGCAAAG-1,False,supported_marker_region,map,Inhibitory neuron,0.34854838252067566
+TTAGACGAGTCACCTC-1,True,unsupported_core,blank,Blank,
+GTAGTCGCGGGAATCA-1,True,unsupported_core,blank,Blank,
+GCAAACCCTACATTAT-1,True,unsupported_core,blank,Blank,
+GTTAAAGTAGGACTGG-1,True,unsupported_core,blank,Blank,
+ACCCTCCCTTGCTATT-1,True,unsupported_core,blank,Blank,
+CATGTCTCATTTATGG-1,True,unsupported_core,blank,Blank,
+AATAGAATCTGTTTCA-1,True,unsupported_core,blank,Blank,
+TCTCATGAGATAGGGT-1,True,unsupported_core,blank,Blank,
+ATGACTATGCGACATT-1,True,unsupported_core,blank,Blank,
+CCTAACCCAAACAAGT-1,True,unsupported_core,blank,Blank,
+AGTCAAGATGACACTT-1,True,unsupported_core,blank,Blank,
+CGGGAGCTTCAGTGTA-1,True,unsupported_core,blank,Blank,
+CCACAGTACCCATCCT-1,True,unsupported_core,blank,Blank,
+GAGCGCGCACGAGTAG-1,True,unsupported_core,blank,Blank,
+ACCAGTGCGGGAGACG-1,True,unsupported_core,blank,Blank,
+TCCTTACGACGGTCCG-1,True,unsupported_core,blank,Blank,
+TAGTCGATCACGGGTT-1,True,unsupported_core,blank,Blank,
+AGACGAAGTGCCGGTC-1,True,unsupported_core,blank,Blank,
+CGCTGGTGACTACCCT-1,True,unsupported_core,blank,Blank,
+AGGCATTGTCGTAGGG-1,True,unsupported_core,blank,Blank,
+TGGTAGAATATATGGG-1,True,unsupported_core,blank,Blank,
+TTCTTATCCGCTGGGT-1,True,unsupported_core,blank,Blank,
+AGTTTGGCACGGGTTG-1,True,unsupported_core,blank,Blank,
+GCATCGGCCGTGTAGG-1,True,unsupported_core,blank,Blank,
+ATGCGAGTCCCACCAC-1,True,unsupported_core,blank,Blank,
+TCGGCGAACCCAAACC-1,True,unsupported_core,blank,Blank,
+AGAGTAAACTTCACTA-1,True,unsupported_core,blank,Blank,
+AAGCCGAAGCGGTTTA-1,True,unsupported_core,blank,Blank,
+CCCGAGTTTCTCCGTA-1,True,unsupported_core,blank,Blank,
+CACCCTTGGTGAGACC-1,False,supported_marker_region,map,Astrocyte,0.8564574122428894
+GTGGCAAACAGCGGCA-1,False,supported_marker_region,map,Microglia,0.3155452609062195
+AGTTAAGTCAACCGCT-1,False,supported_marker_region,map,Microglia,0.25328612327575684
+CTCATGGTAATTTGCG-1,False,supported_marker_region,map,Inhibitory neuron,0.29398179054260254
+TTGACCGTGTTAATGA-1,False,supported_marker_region,map,Inhibitory neuron,0.3332287073135376
+CTAACTGGTCCGGTTC-1,False,supported_marker_region,map,Inhibitory neuron,0.2684648633003235
+ACAGGTGGAGGTGAGG-1,False,supported_marker_region,map,Inhibitory neuron,0.2583216428756714
+TGCGAGAATATTACCC-1,False,supported_marker_region,map,Inhibitory neuron,0.2991321086883545
+AGGCTTCCCGAAGAAG-1,False,supported_marker_region,map,Inhibitory neuron,0.25371024012565613
+GCGGACCGCGTTGTGG-1,False,supported_marker_region,map,Astrocyte,0.8832133412361145
+GTAATCTGATTCTTCG-1,False,supported_marker_region,map,Inhibitory neuron,0.3524726927280426
+CTTCTATTAATGCTAG-1,False,supported_marker_region,map,Astrocyte,0.9949402213096619
+CATTTGAGTGGTACGT-1,False,supported_marker_region,map,Inhibitory neuron,0.3335855007171631
+CAGACGAACCTGATAC-1,False,supported_marker_region,map,Inhibitory neuron,0.3385664224624634
+TAGCTAGAAGGCATGA-1,False,supported_marker_region,map,Inhibitory neuron,0.346260666847229
+ATCCAGAGCAACAACC-1,False,supported_marker_region,map,Inhibitory neuron,0.3630814254283905
+TCCGGTTCGTCCGGTC-1,False,supported_marker_region,map,Inhibitory neuron,0.269946813583374
+CGCGCATGTTTGATTG-1,False,supported_marker_region,map,Inhibitory neuron,0.2680823504924774
+TGGCGATCAAGTTATG-1,False,supported_marker_region,map,Inhibitory neuron,0.34631621837615967
+CCCTTTGACAGGTCTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4314030408859253
+CAGAGACGGTCACCCA-1,False,supported_marker_region,map,Inhibitory neuron,0.26408761739730835
+TAGCTCGCCTGATAAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5135563611984253
+TTGTGTTTCCCGAAAG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5611759424209595
+TATACACAGACGCCTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4795424938201904
+ACATTAGTTTATATCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7925567626953125
+CCATCGCAGTTAAACT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.5130822658538818
+AATTAGCGCTGCAGCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7271404266357422
+TCCGCTTATCCCATTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.289366602897644
+GTTTGGGCTTGTGAGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3640083074569702
+GGACCAACAGGATAAC-1,False,supported_marker_region,map,Inhibitory neuron,0.26988548040390015
+AAGCTAGATCGAGTAA-1,False,supported_marker_region,map,Inhibitory neuron,0.29550087451934814
+GTAGCCAAACATGGGA-1,False,supported_marker_region,map,Inhibitory neuron,0.2609844207763672
+TGCCAGTACGTGGAGA-1,False,supported_marker_region,map,Inhibitory neuron,0.31439271569252014
+ATAAGGTGGAGAACAT-1,False,supported_marker_region,map,Astrocyte,0.9147799015045166
+CTTTAATATTGGTCGA-1,False,supported_marker_region,map,Inhibitory neuron,0.2883290648460388
+TGGTTCAACGGGTAAT-1,False,supported_marker_region,map,Astrocyte,0.9721691012382507
+GCTGCTACTGCGTAGC-1,False,supported_marker_region,map,Inhibitory neuron,0.30073192715644836
+CTGCACAACTACATAT-1,False,supported_marker_region,map,Astrocyte,0.8855375647544861
+ATATTCCACATAGTGA-1,False,supported_marker_region,map,Inhibitory neuron,0.3260416090488434
+TGGCAAACTAAATTAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1081230640411377
+ACCGCAATAACTGCCT-1,True,unsupported_core,blank,Blank,
+TCGCACCAGGAGGCAG-1,False,supported_marker_region,map,Inhibitory neuron,0.3029719591140747
+ACTTCAGGCTGATCCC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.149440050125122
+ACAAATCGCACCGAAT-1,False,supported_marker_region,map,Inhibitory neuron,0.3320372402667999
+CTTTACCGAATAGTAG-1,True,unsupported_core,blank,Blank,
+GCAGATCCATAAGACT-1,False,supported_marker_region,map,Astrocyte,1.0044575929641724
+TTCCTCGGACTAACCA-1,True,unsupported_core,blank,Blank,
+TTATCCGGGATCTATA-1,True,unsupported_core,blank,Blank,
+CTGGAAGACACGGTGG-1,True,unsupported_core,blank,Blank,
+GTTCGTCTAAAGAACT-1,False,supported_marker_region,map,Astrocyte,0.8628779649734497
+GTCTATTGGTTCCGGT-1,True,unsupported_core,blank,Blank,
+CTAGGCGCCCTATCAG-1,True,unsupported_core,blank,Blank,
+AACGGACGTACGTATA-1,True,unsupported_core,blank,Blank,
+AACACACGCTCGCCGC-1,True,unsupported_core,blank,Blank,
+GCTACTATAGTAGAGT-1,True,unsupported_core,blank,Blank,
+AGCATATCAATATGCT-1,True,unsupported_core,blank,Blank,
+CGAACAGTATGGGCGT-1,True,unsupported_core,blank,Blank,
+ACAATTGTGTCTCTTT-1,True,unsupported_core,blank,Blank,
+GATCGCTACCCGATTT-1,True,unsupported_core,blank,Blank,
+ATTGCGATCAGTAACT-1,True,unsupported_core,blank,Blank,
+CAGCAGTCCAGACTAT-1,True,unsupported_core,blank,Blank,
+AGAGGCTTCGGAAACC-1,True,unsupported_core,blank,Blank,
+AAACAAGTATCTCCCA-1,True,unsupported_core,blank,Blank,
+GGCAGCAAACCTATGC-1,True,unsupported_core,blank,Blank,
+ACTAGTTGCGATCGTC-1,True,unsupported_core,blank,Blank,
+TTGGACCATCTGGCAA-1,True,unsupported_core,blank,Blank,
+CCCTCCTCGCTCGTAT-1,True,unsupported_core,blank,Blank,
+ATGACGCGTTCTATCC-1,False,supported_marker_region,map,Inhibitory neuron,0.28942400217056274
+ATTTGCGCGAGTAGCT-1,False,supported_marker_region,map,Microglia,0.3415546417236328
+TTCTTGGACGATCTGC-1,False,supported_marker_region,map,Microglia,0.2890380918979645
+AGACGACGATGCCGCT-1,False,supported_marker_region,map,Inhibitory neuron,0.35918551683425903
+CACCGTTAGGGATCAC-1,False,supported_marker_region,map,Microglia,0.26322877407073975
+GCTAGCTTGAATAGCT-1,False,supported_marker_region,map,Microglia,0.26162588596343994
+TTGCGGCATCAGAAAG-1,False,supported_marker_region,map,Inhibitory neuron,0.26820293068885803
+GACATCGATTTATAAC-1,False,supported_marker_region,map,Inhibitory neuron,0.26381632685661316
+CCAAGAAAGTGGGCGA-1,False,supported_marker_region,map,Inhibitory neuron,0.2699611485004425
+TCGTTAGGAGTCCCTA-1,False,supported_marker_region,map,Inhibitory neuron,0.2740585505962372
+GTGAGTGGTACAACGC-1,False,supported_marker_region,map,Inhibitory neuron,0.36326900124549866
+GAGACTTCGCGACCGA-1,False,supported_marker_region,map,Inhibitory neuron,0.2721135914325714
+GAAGTCAGTTGCACTA-1,False,supported_marker_region,map,Inhibitory neuron,0.3362358510494232
+GTTTGGTAGGGTCAAC-1,False,supported_marker_region,map,Inhibitory neuron,0.2573626935482025
+ACGGCACTTGCTTGGG-1,False,supported_marker_region,map,Microglia,0.3049844801425934
+CCTCTGTACTATTCTA-1,True,unsupported_core,blank,Blank,
+CTATTCATGTGTCCCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6581846475601196
+GCCCGATCTGTGGTCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.8203800916671753
+TTAGAAGAACATGACT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7099226713180542
+AGGATAAAGTCGGGAT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.883916974067688
+CGGCAAACATCGTGCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.7316126823425293
+CTAGTTACAACCCGGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.598400354385376
+TTCGACAGAGCCCGTG-1,False,supported_marker_region,map,Inhibitory neuron,0.3327407240867615
+AAGCATACTCTCCTGA-1,False,supported_marker_region,map,Inhibitory neuron,0.28201964497566223
+GACGACGATCCGCGTT-1,False,supported_marker_region,map,Inhibitory neuron,0.2596765160560608
+GGTAGAAGACCGCCTG-1,False,supported_marker_region,map,Inhibitory neuron,0.3334759473800659
+GAGATGGGAGTCGACA-1,False,supported_marker_region,map,Inhibitory neuron,0.32806098461151123
+AACGATAATGCCGTAG-1,False,supported_marker_region,map,Inhibitory neuron,0.3154018521308899
+TGGTCCCACGCTACGG-1,False,supported_marker_region,map,Astrocyte,0.9411358833312988
+GTTGAGTCCCGCCGGT-1,False,supported_marker_region,map,Microglia,0.24354533851146698
+AAATAGGGTGCTATTG-1,False,supported_marker_region,map,Inhibitory neuron,0.28678393363952637
+AAGTGTTTGGAGACGG-1,False,supported_marker_region,map,Microglia,0.31457510590553284
+AGCACTACCTCACCAG-1,False,supported_marker_region,map,Astrocyte,0.8584450483322144
+TGCCTTGGCCAGGCAA-1,False,supported_marker_region,map,Inhibitory neuron,0.2734498381614685
+TCGTCTTAGGCGTTAA-1,False,supported_marker_region,map,Astrocyte,0.8976731300354004
+TTCTGACCGGGCTCAA-1,False,supported_marker_region,map,Inhibitory neuron,0.29059475660324097
+CAGAACTTAGCCCTCT-1,False,supported_marker_region,map,Microglia,0.29755738377571106
+AGCTCCTTCGCACATC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0353355407714844
+GCTATACGTCTCGGAC-1,True,unsupported_core,blank,Blank,
+TGCTAAGTGTCTATTT-1,True,unsupported_core,blank,Blank,
+GTCCTACGAATAGTCT-1,False,supported_marker_region,map,Astrocyte,0.8564710021018982
+CTATCGACGAAATACA-1,True,unsupported_core,blank,Blank,
+CATCATTACCCTGAGG-1,True,unsupported_core,blank,Blank,
+AGTGCACGCTTAAGAA-1,True,unsupported_core,blank,Blank,
+TGTGCCGGTGCCGGAA-1,True,unsupported_core,blank,Blank,
+AGGAGGCCTTCGCGCG-1,True,unsupported_core,blank,Blank,
+TCCGCGGCCCAATGAA-1,True,unsupported_core,blank,Blank,
+TCCGTTAAGCTAATAT-1,True,unsupported_core,blank,Blank,
+AAATCTAGCCCTGCTA-1,True,unsupported_core,blank,Blank,
+CGCAGGCGATCCAAAC-1,True,unsupported_core,blank,Blank,
+CCATATGGAAACTATA-1,True,unsupported_core,blank,Blank,
+CACCGTATCCCATCCG-1,True,unsupported_core,blank,Blank,
+GACCCAATTATGATAC-1,False,supported_marker_region,map,Astrocyte,0.9450019598007202
+GAGGCCCGACTCCGCA-1,False,supported_marker_region,map,Microglia,0.33661410212516785
+TAAGTCGCCGAGTATC-1,False,supported_marker_region,map,Microglia,0.25720226764678955
+GGCAAAGGCGCCAATA-1,False,supported_marker_region,map,Microglia,0.28664296865463257
+ATTTCCGGGTTCTGCG-1,False,supported_marker_region,map,Astrocyte,0.871968686580658
+CAATATTCTTGACCTA-1,False,supported_marker_region,map,Inhibitory neuron,0.2723497450351715
+CATAGCGTTGCCCACC-1,False,supported_marker_region,map,Astrocyte,1.0554245710372925
+TCACAGGAGAATAAGA-1,False,supported_marker_region,map,Astrocyte,0.8629602193832397
+AACTAGGCTTGGGTGT-1,False,supported_marker_region,map,Inhibitory neuron,0.2618260085582733
+GCGTCGCCAGGGTGAT-1,False,supported_marker_region,map,Astrocyte,0.979429304599762
+GCTGGCGGCGCATGCT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3625408411026
+CTTTCTGTGCGGGCTT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2222744226455688
+ATCTAATATCCTACGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4069077968597412
+AACCTTTAAATACGGT-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1429842710494995
+TTCACTCGAGCACCTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.356737494468689
+CCATTTCTACCTATTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0722312927246094
+CAAGCGGCACATAATT-1,False,supported_marker_region,map,Inhibitory neuron,0.3421541750431061
+GTTAACATCACTTAAA-1,False,supported_marker_region,map,Inhibitory neuron,0.3160878121852875
+ATATAAATGTAGCTGC-1,False,supported_marker_region,map,Inhibitory neuron,0.2886573374271393
+GCTATCATACTCATGG-1,False,supported_marker_region,map,Inhibitory neuron,0.31201937794685364
+TATCCAATTGGTTATC-1,False,supported_marker_region,map,Astrocyte,1.0582716464996338
+CAATGCGAGAAGTATC-1,False,supported_marker_region,map,Inhibitory neuron,0.3476858139038086
+GCTAGGCACCACGGAG-1,False,supported_marker_region,map,Microglia,0.2642647624015808
+GGTGGACTGCTCTGGC-1,False,supported_marker_region,map,Astrocyte,0.8621281385421753
+TTGAGAAGTTTAGCAT-1,False,supported_marker_region,map,Astrocyte,0.9832581877708435
+GTCCGGACCTGAAATT-1,False,supported_marker_region,map,Inhibitory neuron,0.27583059668540955
+CTGTGGTCGGGAGATA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4250882863998413
+CATGTAAGAGACATTT-1,False,supported_marker_region,map,Astrocyte,1.0115844011306763
+CACGTTTCGTACACAC-1,False,supported_marker_region,map,Microglia,0.2960462272167206
+CATCCTCTCAAAGATC-1,False,supported_marker_region,map,Inhibitory neuron,0.28813982009887695
+GATTAACCGAAAGCCC-1,False,supported_marker_region,map,Astrocyte,0.857742428779602
+TTCAGCTGGCGTGCCC-1,True,unsupported_core,blank,Blank,
+TAGAGGTTCTACTTGT-1,True,unsupported_core,blank,Blank,
+GTATCAAACGTTAGCT-1,False,supported_marker_region,map,Astrocyte,0.8589107394218445
+AATCATGTAAAGACTC-1,True,unsupported_core,blank,Blank,
+AGTCACTAGCTCTCGA-1,True,unsupported_core,blank,Blank,
+GCGAAACGATCGGGAG-1,True,unsupported_core,blank,Blank,
+CTCGGTTGTCGGCCCT-1,False,supported_marker_region,map,Microglia,0.32989782094955444
+TCATCGATGGTCCCAA-1,False,supported_marker_region,map,Microglia,0.34733378887176514
+GATGACAAGTAGGGCA-1,False,supported_marker_region,map,Microglia,0.267200767993927
+CCCGTAGCTGGGAAGA-1,False,supported_marker_region,map,Inhibitory neuron,0.30865970253944397
+GTGGTATAGTCTGCCG-1,False,supported_marker_region,map,Inhibitory neuron,0.2714781165122986
+GTCGCCGTTGTGTGTT-1,False,supported_marker_region,map,Inhibitory neuron,0.25023502111434937
+TATTAACCTGACCGCG-1,False,supported_marker_region,map,Inhibitory neuron,0.2933032810688019
+CCTCGCGCTGTGCGAT-1,False,supported_marker_region,map,Microglia,0.24144816398620605
+TGCTCGGCGAAACCCA-1,False,supported_marker_region,map,Astrocyte,0.9844437837600708
+CGATTAAATATCTCCT-1,False,supported_marker_region,map,Inhibitory neuron,0.25667673349380493
+GTGGACGCATTTGTCC-1,False,supported_marker_region,map,Inhibitory neuron,0.266793429851532
+ACCCGGAAACTCCCAG-1,False,supported_marker_region,map,Astrocyte,0.9411152005195618
+GCAAACCTTGGCCATA-1,False,supported_marker_region,map,Astrocyte,0.8672358989715576
+ACTCCCTAATGCTAAA-1,False,supported_marker_region,map,Astrocyte,1.0503772497177124
+TCCTAAATTGGGAAGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0791137218475342
+GAACAGATTACTAAAT-1,False,supported_marker_region,map,Astrocyte,0.9558593034744263
+CGATTCGCCTGGCTGC-1,False,supported_marker_region,map,Inhibitory neuron,0.2515840530395508
+CACATCTCACCGACGA-1,False,supported_marker_region,map,Astrocyte,0.8775619864463806
+CGTTGAATACCGCGCT-1,False,supported_marker_region,map,Astrocyte,0.8667938709259033
+ACCAATATGCAAGTTA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2428374290466309
+ACGGATGGTGCGGATA-1,False,supported_marker_region,map,Astrocyte,0.8845202922821045
+CACCCTAACAAGATCT-1,False,supported_marker_region,map,Astrocyte,0.9441801905632019
+AAGCTCTTTCATGGTG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1108406782150269
+CATGGGTATGCCTTAT-1,True,unsupported_core,blank,Blank,
+GCGCGTCATTGGTACA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0518335103988647
+TCTGAAGCACGTGGTC-1,False,supported_marker_region,map,Astrocyte,0.9987552165985107
+ATCAGCCTCATGCTGC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.058639645576477
+AGTACTCTTATGCCCA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.3739690780639648
+GCGCTTAAATAATTGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.6562384366989136
+TTGTGAACCTAATCCG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2074092626571655
+TCCTTTAAATCCGCTT-1,False,supported_marker_region,map,Inhibitory neuron,0.2834399938583374
+ACTGAAACGCCGTTAG-1,False,supported_marker_region,map,Inhibitory neuron,0.2916709780693054
+GCACACACTGGTAGCC-1,False,supported_marker_region,map,Astrocyte,0.8700165748596191
+TAAGGGCCTGTCCGAT-1,False,supported_marker_region,map,Inhibitory neuron,0.2693815231323242
+CACAGGGCCATATAGT-1,False,supported_marker_region,map,Astrocyte,0.8729554414749146
+CCATGCCCTAGATTTC-1,False,supported_marker_region,map,Astrocyte,0.9093696475028992
+GGACCTCTAGGCCGCC-1,False,supported_marker_region,map,Microglia,0.2825542390346527
+TCGAATATCCCGCAGG-1,False,supported_marker_region,map,Astrocyte,1.1247146129608154
+GCGACCCAACCATCTG-1,False,supported_marker_region,map,Microglia,0.2688499987125397
+AGAGAAGGAGTACAAT-1,False,supported_marker_region,map,Astrocyte,0.9125769734382629
+GGCTCCTCCACCTGTT-1,False,supported_marker_region,map,Astrocyte,0.9011893272399902
+TCAGTGTATACGTCAT-1,False,supported_marker_region,map,Astrocyte,1.1316243410110474
+ATTATTATGTCCGTCA-1,False,supported_marker_region,map,Astrocyte,0.9758045077323914
+AAGATGGCACCGGACC-1,False,supported_marker_region,map,Astrocyte,0.9523403644561768
+ACTATTTCCGGGCCCA-1,False,supported_marker_region,map,Microglia,0.32734644412994385
+CGCTGTGTGGATGTTG-1,False,supported_marker_region,map,Microglia,0.25752371549606323
+AGGCAGGGAGCGTACT-1,False,supported_marker_region,map,Microglia,0.40798836946487427
+CCGGAGCGTACTTTCT-1,False,supported_marker_region,map,Astrocyte,0.8618452548980713
+GGGCAGAGCAATCGTT-1,False,supported_marker_region,map,Microglia,0.24811409413814545
+TACCTACTCCCAGTAT-1,False,supported_marker_region,map,Microglia,0.299968421459198
+ATACCTAACCAAGAAA-1,False,supported_marker_region,map,Microglia,0.2542281448841095
+ATATAAAGCGCTCGTG-1,False,supported_marker_region,map,Microglia,0.40629899501800537
+CCTGGTCGAATGTGGG-1,False,supported_marker_region,map,Astrocyte,0.8687136173248291
+CTAGGTTCGGACGTGA-1,False,supported_marker_region,map,Astrocyte,0.8844711780548096
+TCGGGAGACAGCGTAC-1,False,supported_marker_region,map,Astrocyte,0.9297232627868652
+CATAAGAAGCTTGGCT-1,False,supported_marker_region,map,Astrocyte,0.85483717918396
+CTTCAACTCCACTTGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1497565507888794
+CATGAGATGCACTCTC-1,False,supported_marker_region,map,Astrocyte,1.042368769645691
+GTCCCGCGACGTTATG-1,False,supported_marker_region,map,Astrocyte,0.974217414855957
+ATACTGCCTTACACCG-1,False,supported_marker_region,map,Inhibitory neuron,0.2864784300327301
+CGTTAATGTCCCGACG-1,False,supported_marker_region,map,Astrocyte,0.9897791743278503
+GCTAACTGAAGTCTGA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.4172077178955078
+TATGATCTTCTCTTTA-1,False,supported_marker_region,map,Astrocyte,0.939136266708374
+TGTACCTACACGAGGG-1,False,supported_marker_region,map,Inhibitory neuron,0.27252301573753357
+ATATCGTTCCTCGAAC-1,False,supported_marker_region,map,Inhibitory neuron,0.35626471042633057
+CGGCGCCATCAATCCC-1,False,supported_marker_region,map,Inhibitory neuron,0.2601342499256134
+ATCGTTAGCTAGCGGA-1,True,unsupported_core,blank,Blank,
+TCAAATTTGAGACTCA-1,False,supported_marker_region,map,Microglia,0.2666836977005005
+GTTAAGGGTGCGATGT-1,False,supported_marker_region,map,Microglia,0.3343791663646698
+AGCAAAGGCCGCTAGT-1,False,supported_marker_region,map,Astrocyte,0.981493353843689
+TTATAGGTAATTGTCT-1,False,supported_marker_region,map,Inhibitory neuron,0.3265220820903778
+TTGTGCAGCCACGTCA-1,False,supported_marker_region,map,Astrocyte,1.028164029121399
+ACGGACTCTCAAAGCG-1,False,supported_marker_region,map,Microglia,0.2979212999343872
+ATGCTCTGGCGCGGTA-1,False,supported_marker_region,map,Astrocyte,0.905682384967804
+ATAATCTTGGAGAACC-1,False,supported_marker_region,map,Astrocyte,0.9189277291297913
+CTCATTGCTCTAACAA-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.0668375492095947
+CGGATCCTCAAGGACT-1,False,supported_marker_region,map,Astrocyte,0.928023636341095
+GGGCGTGGTTTCCCAG-1,False,supported_marker_region,map,Astrocyte,1.0564318895339966
+TGGCTATGTGACATAC-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.1155658960342407
+CTTAGTGTAGTAGCAT-1,False,supported_marker_region,map,Astrocyte,1.0086840391159058
+GGATTGCTGTGACTCC-1,False,supported_marker_region,map,Astrocyte,1.0226081609725952
+ACTTCCATGCGGGACA-1,False,supported_marker_region,map,Astrocyte,0.9465656876564026
+ACTCAAGTGCAAGGCT-1,True,unsupported_core,blank,Blank,
+ACAAGGATGCTTTAGG-1,False,supported_marker_region,map,Oligodendrocyte/OPC,1.2708191871643066
+TGCAACCCATCTGCGG-1,True,unsupported_core,blank,Blank,
+AGTGCTAAACACAGCA-1,False,supported_marker_region,map,Astrocyte,0.8952492475509644
+TCTCCACAAGTTGAAT-1,False,supported_marker_region,map,Astrocyte,0.9670047163963318
+CTTTGCATCGCTCTTG-1,False,supported_marker_region,map,Microglia,0.33279305696487427
+ATCCACATCGACAGAA-1,False,supported_marker_region,map,Microglia,0.4038446247577667
+CTCACTGTGATACTTA-1,False,supported_marker_region,map,Astrocyte,1.0240793228149414
+TGGACCAATCTAAGAT-1,False,supported_marker_region,map,Astrocyte,1.0142712593078613
+CTAGTAGAAAGGGATT-1,False,supported_marker_region,map,Astrocyte,0.941339910030365
+AACCTCGCTTTAGCCC-1,False,supported_marker_region,map,Astrocyte,1.0592710971832275
+GAGTGTCAACCAGAAA-1,False,supported_marker_region,map,Astrocyte,0.9990164637565613
+GTGATCCTTGTCATGA-1,False,supported_marker_region,map,Astrocyte,1.1393769979476929
+CTCAACTAACCCGGAT-1,False,supported_marker_region,map,Astrocyte,0.8608201742172241
+AGTGGCGTCTGAAGGT-1,False,supported_marker_region,map,Astrocyte,1.2566696405410767
+GGGAAGGGCTTTCTCA-1,False,supported_marker_region,map,Astrocyte,0.9962437748908997
+AGGCCTGAGAATCTCG-1,False,supported_marker_region,map,Astrocyte,0.846809983253479
+AGCCACAGGTTACCCG-1,False,supported_marker_region,map,Microglia,0.28245967626571655
+CTGCCTTTCTAGTAAA-1,False,supported_marker_region,map,Astrocyte,0.8610873222351074
+AGAAGGTTGTAGGTCG-1,False,supported_marker_region,map,Inhibitory neuron,0.28476482629776
+GGCCGGCGTCTGCTAT-1,False,supported_marker_region,map,Astrocyte,0.9991299510002136
+TTGACCAGGAACAACT-1,False,supported_marker_region,map,Astrocyte,1.1779577732086182
+GGCGTAGGGAAAGCTG-1,False,supported_marker_region,map,Astrocyte,1.07715904712677
+AAACCTAAGCAGCCGG-1,False,supported_marker_region,map,Astrocyte,0.913323700428009
+ATTGCCTTTATGTTTG-1,False,supported_marker_region,map,Astrocyte,0.9570419192314148
+CAGGCAGTCTTACCAG-1,False,supported_marker_region,map,Astrocyte,0.864591121673584
+TGAATACCGACGCGTA-1,False,supported_marker_region,map,Microglia,0.2790411412715912
+GAACAACTGGGATGAA-1,False,supported_marker_region,map,Astrocyte,1.0586823225021362
+TCGCCGACATATTCGC-1,False,supported_marker_region,map,Astrocyte,1.0227077007293701

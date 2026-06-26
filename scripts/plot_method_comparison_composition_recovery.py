@@ -26,6 +26,36 @@ SCENARIOS: list[tuple[str, str]] = [
     ("mouse_brain_refined", "mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_ext_l56"),
 ]
 
+COMPOSITE_SCENARIOS: list[tuple[str, str]] = [
+    ("real_brca", "real_brca7_endothelial_marker_control_sc_missing_endothelial_cells"),
+    (
+        "real_brca",
+        "real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells",
+    ),
+    (
+        "real_brca",
+        "real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells",
+    ),
+    ("human_lung_5loc", "human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell"),
+    (
+        "human_lung_5loc",
+        "human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell",
+    ),
+    (
+        "human_lung_5loc",
+        "human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell",
+    ),
+    ("mouse_brain_refined", "mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56"),
+    (
+        "mouse_brain_refined",
+        "mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56",
+    ),
+    (
+        "mouse_brain_refined",
+        "mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56",
+    ),
+]
+
 
 METHODS = [
     ("CytoSPACE", "cytospace_baseline"),
@@ -56,11 +86,16 @@ def _truth_path(project_root: Path, group: str, sample: str) -> Path:
     return path
 
 
-def _prediction_path(project_root: Path, sample: str, method_dir: str) -> Path:
+def _prediction_path(
+    project_root: Path,
+    sample: str,
+    method_dir: str,
+    route2_stage4_dir: str = "stage4_cytospace_route2",
+) -> Path:
     if method_dir == "cytospace_baseline":
         return project_root / "result" / sample / "stage4_cytospace_baseline" / "cytospace_output" / "fractional_abundances_by_spot.csv"
     if method_dir == "cytospace_route2":
-        return project_root / "result" / sample / "stage4_cytospace_route2" / "cytospace_output" / "fractional_abundances_by_spot.csv"
+        return project_root / "result" / sample / route2_stage4_dir / "cytospace_output" / "fractional_abundances_by_spot.csv"
     return project_root / "result" / sample / "stage4_mapping" / method_dir / "spot_type_fraction.csv"
 
 
@@ -70,6 +105,41 @@ def _load_fraction(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path, index_col=0)
     df.index = df.index.astype(str)
     return df.apply(pd.to_numeric, errors="coerce").fillna(0.0)
+
+
+def _stage3b_supported_spots(
+    project_root: Path,
+    sample: str,
+    route2_stage4_dir: str,
+) -> set[str]:
+    blank_path = (
+        project_root
+        / "result"
+        / sample
+        / route2_stage4_dir
+        / "cytospace_output"
+        / "stage3b_blank_spots.csv"
+    )
+    if not blank_path.exists():
+        raise FileNotFoundError(f"Stage3B blank manifest not found: {blank_path}")
+    blank = pd.read_csv(blank_path, index_col=0)
+    blank_ids = set(blank.index.astype(str))
+    truth = _load_fraction(
+        project_root
+        / "data"
+        / "sim"
+        / _group_for_sample(sample)
+        / sample
+        / "sim_truth_spot_type_fraction.csv"
+    )
+    return set(truth.index.astype(str)).difference(blank_ids)
+
+
+def _group_for_sample(sample: str) -> str:
+    for group, scenario_sample in SCENARIOS + COMPOSITE_SCENARIOS:
+        if sample == scenario_sample or sample.startswith(f"{scenario_sample}_"):
+            return group
+    raise KeyError(f"Could not infer simulation group for sample: {sample}")
 
 
 def _composition_recovery(pred: pd.DataFrame, truth: pd.DataFrame) -> tuple[float, pd.DataFrame]:
@@ -112,17 +182,37 @@ def build_tables(
     sample_suffix: str = "",
     methods: list[tuple[str, str]] | None = None,
     groups: set[str] | None = None,
+    scenarios: list[tuple[str, str]] | None = None,
+    route2_stage4_dir: str = "stage4_cytospace_route2",
+    exclude_stage3b_blank_spots: bool = False,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     selected_methods = methods or METHODS
+    selected_scenarios = scenarios or SCENARIOS
     scenario_rows: list[dict[str, Any]] = []
     cell_type_rows: list[pd.DataFrame] = []
-    for group, sample in SCENARIOS:
+    for group, sample in selected_scenarios:
         if groups is not None and group not in groups:
             continue
         eval_sample = f"{sample}{sample_suffix}"
         truth = _load_fraction(_truth_path(project_root, group, eval_sample))
+        if exclude_stage3b_blank_spots:
+            supported_spots = _stage3b_supported_spots(
+                project_root,
+                eval_sample,
+                route2_stage4_dir,
+            )
+            truth = truth.loc[truth.index.intersection(supported_spots)].copy()
         for method_label, method_dir in selected_methods:
-            pred = _load_fraction(_prediction_path(project_root, eval_sample, method_dir))
+            pred = _load_fraction(
+                _prediction_path(
+                    project_root,
+                    eval_sample,
+                    method_dir,
+                    route2_stage4_dir=route2_stage4_dir,
+                )
+            )
+            if exclude_stage3b_blank_spots:
+                pred = pred.loc[pred.index.intersection(truth.index)].copy()
             score, per_type = _composition_recovery(pred, truth)
             scenario_rows.append(
                 {
@@ -235,6 +325,22 @@ def parse_args() -> argparse.Namespace:
         default="",
         help="Comma-separated simulation groups to include. Empty uses all configured groups.",
     )
+    p.add_argument(
+        "--scenario_preset",
+        choices=["standard", "composite"],
+        default="standard",
+        help="Scenario set to plot.",
+    )
+    p.add_argument(
+        "--route2_stage4_dir",
+        default="stage4_cytospace_route2",
+        help="Stage4 directory used for the SVTuner + CytoSPACE method.",
+    )
+    p.add_argument(
+        "--exclude_stage3b_blank_spots",
+        action="store_true",
+        help="Evaluate composition recovery only on spots not flagged as Stage3B unsupported.",
+    )
     return p.parse_args()
 
 
@@ -244,11 +350,15 @@ def main() -> int:
     out_dir = project_root / args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
     selected_groups = {x.strip() for x in args.groups.split(",") if x.strip()} or None
+    scenarios = COMPOSITE_SCENARIOS if args.scenario_preset == "composite" else SCENARIOS
     scenario_df, per_type_df = build_tables(
         project_root,
         args.sample_suffix,
         methods=METHODS,
         groups=selected_groups,
+        scenarios=scenarios,
+        route2_stage4_dir=args.route2_stage4_dir,
+        exclude_stage3b_blank_spots=args.exclude_stage3b_blank_spots,
     )
     prefix = args.output_prefix
     scenario_df.to_csv(out_dir / f"{prefix}_scenario.csv", index=False, encoding="utf-8")

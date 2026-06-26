@@ -1,0 +1,45 @@
+{
+  "input": "E:\\AAA\u6587\u4ef6\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\ncem_fig2_human_lymph_node\\cell2location_hvg\\cell2location_lymphnode.h5ad",
+  "observations": 64624,
+  "genes": 2000,
+  "cell_types": [
+    "B cells",
+    "CD4 T cells",
+    "CD8 T cells",
+    "DC",
+    "Endo",
+    "FDC",
+    "ILC",
+    "Macrophages",
+    "Mast",
+    "Monocytes",
+    "NK",
+    "NKT",
+    "T TIM",
+    "T TfR",
+    "T Treg",
+    "VSMC"
+  ],
+  "panel_a_receivers": [
+    "B cells",
+    "FDC",
+    "Mast"
+  ],
+  "focal_receiver": "B cells",
+  "focal_sender": "FDC",
+  "focal_genes": [
+    "SELE",
+    "CXCL13",
+    "EXOC3L4",
+    "CXCL14",
+    "ISG15",
+    "IGFBP3",
+    "LTF",
+    "TNFAIP2",
+    "CCL19",
+    "CYR61",
+    "FDCSP"
+  ],
+  "coupling_edges_at_least_200_genes": 23,
+  "significant_bcell_fdc_genes": 79
+}

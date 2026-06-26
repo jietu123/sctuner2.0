@@ -1,0 +1,289 @@
+method,focal_assigned_type,neighboring_assigned_type,coupling_change_vs_ideal_abstention
+CytoSPACE dropout,B cells,B cells,0.028316676464824605
+CytoSPACE dropout,B cells,CD4 T cells,0.02660199882422104
+CytoSPACE dropout,B cells,CD8 T cells,0.02336860670194003
+CytoSPACE dropout,B cells,Endothelial cells,0.017734665882814027
+CytoSPACE dropout,B cells,Epithelial cells,0.0012737605330197924
+CytoSPACE dropout,B cells,Fibroblasts,0.01998824221046443
+CytoSPACE dropout,B cells,Monocytes and Macrophages,0.013521457965902409
+CytoSPACE dropout,B cells,NK cells,0.024201450127376054
+CytoSPACE dropout,B cells,PVL,0.01268861454046639
+CytoSPACE dropout,B cells,Plasma cells,0.0
+CytoSPACE dropout,B cells,T-cells,0.0033803644914756014
+CytoSPACE dropout,B cells,Abstained,0.0
+CytoSPACE dropout,CD4 T cells,B cells,0.028022731726435424
+CytoSPACE dropout,CD4 T cells,CD4 T cells,0.027042915931804818
+CytoSPACE dropout,CD4 T cells,CD8 T cells,0.02547521066039584
+CytoSPACE dropout,CD4 T cells,Endothelial cells,0.01263962375073486
+CytoSPACE dropout,CD4 T cells,Epithelial cells,0.000636880266509896
+CytoSPACE dropout,CD4 T cells,Fibroblasts,0.01587301587301587
+CytoSPACE dropout,CD4 T cells,Monocytes and Macrophages,0.010337056633352928
+CytoSPACE dropout,CD4 T cells,NK cells,0.02429943170683911
+CytoSPACE dropout,CD4 T cells,PVL,0.010288065843621397
+CytoSPACE dropout,CD4 T cells,Plasma cells,0.0
+CytoSPACE dropout,CD4 T cells,T-cells,0.004997060552616106
+CytoSPACE dropout,CD4 T cells,Abstained,0.0
+CytoSPACE dropout,CD8 T cells,B cells,0.0268469527728787
+CytoSPACE dropout,CD8 T cells,CD4 T cells,0.027973740936703895
+CytoSPACE dropout,CD8 T cells,CD8 T cells,0.02714089751126788
+CytoSPACE dropout,CD8 T cells,Endothelial cells,0.014403292181069957
+CytoSPACE dropout,CD8 T cells,Epithelial cells,0.0006858710562414267
+CytoSPACE dropout,CD8 T cells,Fibroblasts,0.017587693513619437
+CytoSPACE dropout,CD8 T cells,Monocytes and Macrophages,0.009602194787379968
+CytoSPACE dropout,CD8 T cells,NK cells,0.025132275132275127
+CytoSPACE dropout,CD8 T cells,PVL,0.010875955320399765
+CytoSPACE dropout,CD8 T cells,Plasma cells,0.0
+CytoSPACE dropout,CD8 T cells,T-cells,0.00641779345483049
+CytoSPACE dropout,CD8 T cells,Abstained,0.0
+CytoSPACE dropout,Endothelial cells,B cells,0.009994121105232215
+CytoSPACE dropout,Endothelial cells,CD4 T cells,0.005144032921810699
+CytoSPACE dropout,Endothelial cells,CD8 T cells,0.0062708210856359
+CytoSPACE dropout,Endothelial cells,Endothelial cells,0.007789535567313344
+CytoSPACE dropout,Endothelial cells,Epithelial cells,0.000636880266509896
+CytoSPACE dropout,Endothelial cells,Fibroblasts,0.009651185577111502
+CytoSPACE dropout,Endothelial cells,Monocytes and Macrophages,0.0054869684499314125
+CytoSPACE dropout,Endothelial cells,NK cells,0.0068097197726827334
+CytoSPACE dropout,Endothelial cells,PVL,0.004948069762884576
+CytoSPACE dropout,Endothelial cells,Plasma cells,0.0
+CytoSPACE dropout,Endothelial cells,T-cells,0.0014697236919459144
+CytoSPACE dropout,Endothelial cells,Abstained,0.0
+CytoSPACE dropout,Epithelial cells,B cells,0.0
+CytoSPACE dropout,Epithelial cells,CD4 T cells,0.0
+CytoSPACE dropout,Epithelial cells,CD8 T cells,4.899078973153047e-05
+CytoSPACE dropout,Epithelial cells,Endothelial cells,0.00014697236919459142
+CytoSPACE dropout,Epithelial cells,Epithelial cells,0.0
+CytoSPACE dropout,Epithelial cells,Fibroblasts,0.0004409171075837742
+CytoSPACE dropout,Epithelial cells,Monocytes and Macrophages,9.798157946306095e-05
+CytoSPACE dropout,Epithelial cells,NK cells,4.899078973153047e-05
+CytoSPACE dropout,Epithelial cells,PVL,9.798157946306095e-05
+CytoSPACE dropout,Epithelial cells,Plasma cells,0.0
+CytoSPACE dropout,Epithelial cells,T-cells,0.0
+CytoSPACE dropout,Epithelial cells,Abstained,0.0
+CytoSPACE dropout,Fibroblasts,B cells,0.012443660591808738
+CytoSPACE dropout,Fibroblasts,CD4 T cells,0.010826964530668231
+CytoSPACE dropout,Fibroblasts,CD8 T cells,0.011218890848520478
+CytoSPACE dropout,Fibroblasts,Endothelial cells,0.015432098765432096
+CytoSPACE dropout,Fibroblasts,Epithelial cells,0.0014697236919459142
+CytoSPACE dropout,Fibroblasts,Fibroblasts,0.02689594356261023
+CytoSPACE dropout,Fibroblasts,Monocytes and Macrophages,0.011757789535567309
+CytoSPACE dropout,Fibroblasts,NK cells,0.012933568489124048
+CytoSPACE dropout,Fibroblasts,PVL,0.016019988242210466
+CytoSPACE dropout,Fibroblasts,Plasma cells,0.0
+CytoSPACE dropout,Fibroblasts,T-cells,0.0026944934352341756
+CytoSPACE dropout,Fibroblasts,Abstained,0.0
+CytoSPACE dropout,Monocytes and Macrophages,B cells,0.009896139525769156
+CytoSPACE dropout,Monocytes and Macrophages,CD4 T cells,0.007397609249461101
+CytoSPACE dropout,Monocytes and Macrophages,CD8 T cells,0.0077405447775818126
+CytoSPACE dropout,Monocytes and Macrophages,Endothelial cells,0.005927885557515187
+CytoSPACE dropout,Monocytes and Macrophages,Epithelial cells,0.0001959631589261219
+CytoSPACE dropout,Monocytes and Macrophages,Fibroblasts,0.011904761904761902
+CytoSPACE dropout,Monocytes and Macrophages,Monocytes and Macrophages,0.035126396237507344
+CytoSPACE dropout,Monocytes and Macrophages,NK cells,0.007691553987850284
+CytoSPACE dropout,Monocytes and Macrophages,PVL,0.005388986870468351
+CytoSPACE dropout,Monocytes and Macrophages,Plasma cells,0.0
+CytoSPACE dropout,Monocytes and Macrophages,T-cells,0.0013227513227513227
+CytoSPACE dropout,Monocytes and Macrophages,Abstained,0.0
+CytoSPACE dropout,NK cells,B cells,0.023956496178718395
+CytoSPACE dropout,NK cells,CD4 T cells,0.021800901430531053
+CytoSPACE dropout,NK cells,CD8 T cells,0.023368606701940034
+CytoSPACE dropout,NK cells,Endothelial cells,0.012051734273956496
+CytoSPACE dropout,NK cells,Epithelial cells,0.0015187144816774447
+CytoSPACE dropout,NK cells,Fibroblasts,0.01582402508328434
+CytoSPACE dropout,NK cells,Monocytes and Macrophages,0.008181461885165588
+CytoSPACE dropout,NK cells,NK cells,0.023172643543013908
+CytoSPACE dropout,NK cells,PVL,0.010288065843621401
+CytoSPACE dropout,NK cells,Plasma cells,0.0
+CytoSPACE dropout,NK cells,T-cells,0.0053399960807368205
+CytoSPACE dropout,NK cells,Abstained,0.0
+CytoSPACE dropout,PVL,B cells,0.007005682931608855
+CytoSPACE dropout,PVL,CD4 T cells,0.006368802665098961
+CytoSPACE dropout,PVL,CD8 T cells,0.005731922398589064
+CytoSPACE dropout,PVL,Endothelial cells,0.007495590828924159
+CytoSPACE dropout,PVL,Epithelial cells,0.0004409171075837742
+CytoSPACE dropout,PVL,Fibroblasts,0.01165980795610425
+CytoSPACE dropout,PVL,Monocytes and Macrophages,0.00416421712718009
+CytoSPACE dropout,PVL,NK cells,0.00734861845972957
+CytoSPACE dropout,PVL,PVL,0.008769351361943954
+CytoSPACE dropout,PVL,Plasma cells,0.0
+CytoSPACE dropout,PVL,T-cells,0.0009798157946306096
+CytoSPACE dropout,PVL,Abstained,0.0
+CytoSPACE dropout,Plasma cells,B cells,0.0
+CytoSPACE dropout,Plasma cells,CD4 T cells,0.0
+CytoSPACE dropout,Plasma cells,CD8 T cells,0.0
+CytoSPACE dropout,Plasma cells,Endothelial cells,0.0
+CytoSPACE dropout,Plasma cells,Epithelial cells,0.0
+CytoSPACE dropout,Plasma cells,Fibroblasts,0.0
+CytoSPACE dropout,Plasma cells,Monocytes and Macrophages,0.0
+CytoSPACE dropout,Plasma cells,NK cells,0.0
+CytoSPACE dropout,Plasma cells,PVL,0.0
+CytoSPACE dropout,Plasma cells,Plasma cells,0.0
+CytoSPACE dropout,Plasma cells,T-cells,0.0
+CytoSPACE dropout,Plasma cells,Abstained,0.0
+CytoSPACE dropout,T-cells,B cells,0.0038702723887909067
+CytoSPACE dropout,T-cells,CD4 T cells,0.004703115814226926
+CytoSPACE dropout,T-cells,CD8 T cells,0.003674309229864785
+CytoSPACE dropout,T-cells,Endothelial cells,0.0019106407995296882
+CytoSPACE dropout,T-cells,Epithelial cells,0.00034293552812071334
+CytoSPACE dropout,T-cells,Fibroblasts,0.0020086223789927493
+CytoSPACE dropout,T-cells,Monocytes and Macrophages,0.0013717421124828533
+CytoSPACE dropout,T-cells,NK cells,0.002988438173623358
+CytoSPACE dropout,T-cells,PVL,0.0019106407995296882
+CytoSPACE dropout,T-cells,Plasma cells,0.0
+CytoSPACE dropout,T-cells,T-cells,0.0010288065843621398
+CytoSPACE dropout,T-cells,Abstained,0.0
+CytoSPACE dropout,Abstained,B cells,-0.06951793062904174
+CytoSPACE dropout,Abstained,CD4 T cells,-0.06995884773662552
+CytoSPACE dropout,Abstained,CD8 T cells,-0.07128159905937682
+CytoSPACE dropout,Abstained,Endothelial cells,-0.062022339800117586
+CytoSPACE dropout,Abstained,Epithelial cells,-0.007054673721340388
+CytoSPACE dropout,Abstained,Fibroblasts,-0.06922398589065255
+CytoSPACE dropout,Abstained,Monocytes and Macrophages,-0.05085243974132864
+CytoSPACE dropout,Abstained,NK cells,-0.0667254556143445
+CytoSPACE dropout,Abstained,PVL,-0.05555555555555555
+CytoSPACE dropout,Abstained,Plasma cells,-0.014403292181069957
+CytoSPACE dropout,Abstained,T-cells,-0.015432098765432096
+CytoSPACE dropout,Abstained,Abstained,-0.4479717813051146
+SVTuner,B cells,B cells,0.018714481677444644
+SVTuner,B cells,CD4 T cells,0.00945522241818538
+SVTuner,B cells,CD8 T cells,0.0114148540074466
+SVTuner,B cells,Endothelial cells,0.004458161865569273
+SVTuner,B cells,Epithelial cells,4.899078973153047e-05
+SVTuner,B cells,Fibroblasts,0.005388986870468351
+SVTuner,B cells,Monocytes and Macrophages,0.005046051342347639
+SVTuner,B cells,NK cells,0.010190084264158336
+SVTuner,B cells,PVL,0.003723300019596316
+SVTuner,B cells,Plasma cells,0.0
+SVTuner,B cells,T-cells,0.0013717421124828533
+SVTuner,B cells,Abstained,0.0069077013521457965
+SVTuner,CD4 T cells,B cells,0.00955320399764844
+SVTuner,CD4 T cells,CD4 T cells,0.009847148736037621
+SVTuner,CD4 T cells,CD8 T cells,0.007348618459729568
+SVTuner,CD4 T cells,Endothelial cells,0.005095042132079168
+SVTuner,CD4 T cells,Epithelial cells,0.0004899078973153048
+SVTuner,CD4 T cells,Fibroblasts,0.006613756613756613
+SVTuner,CD4 T cells,Monocytes and Macrophages,0.0034783460709386627
+SVTuner,CD4 T cells,NK cells,0.007299627669998039
+SVTuner,CD4 T cells,PVL,0.004458161865569273
+SVTuner,CD4 T cells,Plasma cells,0.0
+SVTuner,CD4 T cells,T-cells,0.0015187144816774445
+SVTuner,CD4 T cells,Abstained,0.006025867136978248
+SVTuner,CD8 T cells,B cells,0.007887517146776405
+SVTuner,CD8 T cells,CD4 T cells,0.007691553987850284
+SVTuner,CD8 T cells,CD8 T cells,0.008279443464628649
+SVTuner,CD8 T cells,Endothelial cells,0.0053399960807368205
+SVTuner,CD8 T cells,Epithelial cells,0.0003429355281207133
+SVTuner,CD8 T cells,Fibroblasts,0.005388986870468351
+SVTuner,CD8 T cells,Monocytes and Macrophages,0.002204585537918871
+SVTuner,CD8 T cells,NK cells,0.006172839506172838
+SVTuner,CD8 T cells,PVL,0.003674309229864785
+SVTuner,CD8 T cells,Plasma cells,0.0
+SVTuner,CD8 T cells,T-cells,0.0019596315892612187
+SVTuner,CD8 T cells,Abstained,0.00837742504409171
+SVTuner,Endothelial cells,B cells,0.0021555947481873405
+SVTuner,Endothelial cells,CD4 T cells,0.002155594748187341
+SVTuner,Endothelial cells,CD8 T cells,0.0019596315892612187
+SVTuner,Endothelial cells,Endothelial cells,0.002890456594160298
+SVTuner,Endothelial cells,Epithelial cells,0.0002449539486576524
+SVTuner,Endothelial cells,Fibroblasts,0.003968253968253966
+SVTuner,Endothelial cells,Monocytes and Macrophages,0.0004899078973153048
+SVTuner,Endothelial cells,NK cells,0.002498530276308054
+SVTuner,Endothelial cells,PVL,0.001959631589261219
+SVTuner,Endothelial cells,Plasma cells,0.0
+SVTuner,Endothelial cells,T-cells,0.0001959631589261219
+SVTuner,Endothelial cells,Abstained,0.0008818342151675485
+SVTuner,Epithelial cells,B cells,4.899078973153047e-05
+SVTuner,Epithelial cells,CD4 T cells,9.798157946306095e-05
+SVTuner,Epithelial cells,CD8 T cells,0.00014697236919459142
+SVTuner,Epithelial cells,Endothelial cells,0.0
+SVTuner,Epithelial cells,Epithelial cells,0.0
+SVTuner,Epithelial cells,Fibroblasts,4.899078973153047e-05
+SVTuner,Epithelial cells,Monocytes and Macrophages,4.899078973153047e-05
+SVTuner,Epithelial cells,NK cells,4.899078973153047e-05
+SVTuner,Epithelial cells,PVL,0.0
+SVTuner,Epithelial cells,Plasma cells,0.0
+SVTuner,Epithelial cells,T-cells,0.0
+SVTuner,Epithelial cells,Abstained,0.0004409171075837742
+SVTuner,Fibroblasts,B cells,0.004115226337448559
+SVTuner,Fibroblasts,CD4 T cells,0.004409171075837741
+SVTuner,Fibroblasts,CD8 T cells,0.0038212815990593756
+SVTuner,Fibroblasts,Endothelial cells,0.005633940819126003
+SVTuner,Fibroblasts,Epithelial cells,0.0005878894767783658
+SVTuner,Fibroblasts,Fibroblasts,0.009112286890064668
+SVTuner,Fibroblasts,Monocytes and Macrophages,0.0021066039584558107
+SVTuner,Fibroblasts,NK cells,0.005046051342347639
+SVTuner,Fibroblasts,PVL,0.006564765824025083
+SVTuner,Fibroblasts,Plasma cells,0.0
+SVTuner,Fibroblasts,T-cells,0.0004899078973153048
+SVTuner,Fibroblasts,Abstained,0.003086419753086419
+SVTuner,Monocytes and Macrophages,B cells,0.002155594748187341
+SVTuner,Monocytes and Macrophages,CD4 T cells,0.0019596315892612187
+SVTuner,Monocytes and Macrophages,CD8 T cells,0.0019596315892612187
+SVTuner,Monocytes and Macrophages,Endothelial cells,0.000832843425436018
+SVTuner,Monocytes and Macrophages,Epithelial cells,4.899078973153047e-05
+SVTuner,Monocytes and Macrophages,Fibroblasts,0.0022535763276504014
+SVTuner,Monocytes and Macrophages,Monocytes and Macrophages,0.013619439545365472
+SVTuner,Monocytes and Macrophages,NK cells,0.0022535763276504014
+SVTuner,Monocytes and Macrophages,PVL,0.0004899078973153048
+SVTuner,Monocytes and Macrophages,Plasma cells,0.0
+SVTuner,Monocytes and Macrophages,T-cells,0.0004409171075837742
+SVTuner,Monocytes and Macrophages,Abstained,0.006613756613756613
+SVTuner,NK cells,B cells,0.010092102684695275
+SVTuner,NK cells,CD4 T cells,0.008279443464628649
+SVTuner,NK cells,CD8 T cells,0.00832843425436018
+SVTuner,NK cells,Endothelial cells,0.00622183029590437
+SVTuner,NK cells,Epithelial cells,0.0003919263178522438
+SVTuner,NK cells,Fibroblasts,0.006564765824025083
+SVTuner,NK cells,Monocytes and Macrophages,0.004262198706643151
+SVTuner,NK cells,NK cells,0.007593572408387221
+SVTuner,NK cells,PVL,0.004605134234763864
+SVTuner,NK cells,Plasma cells,0.0
+SVTuner,NK cells,T-cells,0.0017146776406035662
+SVTuner,NK cells,Abstained,0.005437977660199882
+SVTuner,PVL,B cells,0.002547521066039584
+SVTuner,PVL,CD4 T cells,0.0024005486968449925
+SVTuner,PVL,CD8 T cells,0.0018126592200666273
+SVTuner,PVL,Endothelial cells,0.0035763276504017236
+SVTuner,PVL,Epithelial cells,0.0008818342151675485
+SVTuner,PVL,Fibroblasts,0.00524201450127376
+SVTuner,PVL,Monocytes and Macrophages,0.0009798157946306093
+SVTuner,PVL,NK cells,0.0021066039584558107
+SVTuner,PVL,PVL,0.004752106603958455
+SVTuner,PVL,Plasma cells,0.0
+SVTuner,PVL,T-cells,0.0002449539486576524
+SVTuner,PVL,Abstained,0.0010288065843621398
+SVTuner,Plasma cells,B cells,0.0
+SVTuner,Plasma cells,CD4 T cells,0.0
+SVTuner,Plasma cells,CD8 T cells,0.0
+SVTuner,Plasma cells,Endothelial cells,0.0
+SVTuner,Plasma cells,Epithelial cells,0.0
+SVTuner,Plasma cells,Fibroblasts,0.0
+SVTuner,Plasma cells,Monocytes and Macrophages,0.0
+SVTuner,Plasma cells,NK cells,0.0
+SVTuner,Plasma cells,PVL,0.0
+SVTuner,Plasma cells,Plasma cells,0.0
+SVTuner,Plasma cells,T-cells,0.0
+SVTuner,Plasma cells,Abstained,0.0
+SVTuner,T-cells,B cells,0.000930825004899079
+SVTuner,T-cells,CD4 T cells,0.0005878894767783658
+SVTuner,T-cells,CD8 T cells,0.0010777973740936702
+SVTuner,T-cells,Endothelial cells,0.0010777973740936705
+SVTuner,T-cells,Epithelial cells,4.899078973153047e-05
+SVTuner,T-cells,Fibroblasts,0.0009798157946306096
+SVTuner,T-cells,Monocytes and Macrophages,0.0002449539486576524
+SVTuner,T-cells,NK cells,0.0005878894767783658
+SVTuner,T-cells,PVL,0.0006368802665098961
+SVTuner,T-cells,Plasma cells,0.0
+SVTuner,T-cells,T-cells,0.0
+SVTuner,T-cells,Abstained,0.0
+SVTuner,Abstained,B cells,-0.03483245149911817
+SVTuner,Abstained,CD4 T cells,-0.03850676072898295
+SVTuner,Abstained,CD8 T cells,-0.039388594944150486
+SVTuner,Abstained,Endothelial cells,-0.04012345679012347
+SVTuner,Abstained,Epithelial cells,-0.0036743092298647854
+SVTuner,Abstained,Fibroblasts,-0.041593180482069364
+SVTuner,Abstained,Monocytes and Macrophages,-0.026161081716637277
+SVTuner,Abstained,NK cells,-0.03542034097589653
+SVTuner,Abstained,PVL,-0.03365667254556143
+SVTuner,Abstained,Plasma cells,-0.014403292181069957
+SVTuner,Abstained,T-cells,-0.008818342151675483
+SVTuner,Abstained,Abstained,-0.07231040564373897

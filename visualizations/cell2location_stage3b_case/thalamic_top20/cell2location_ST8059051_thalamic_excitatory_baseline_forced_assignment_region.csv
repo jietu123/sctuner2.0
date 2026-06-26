@@ -1,0 +1,2410 @@
+spot_id,pxl_row,pxl_col,target_region,dominant_type,dominant_fraction,plot_type
+GTCACAAAGTTTCCAA-1,2943,8262,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTGGATCGACTTCTGG-1,3132,8153,False,Excitatory neuron,0.6000000000000001,Outside target region
+CACCATCGGAGGAGAC-1,3322,8262,False,Excitatory neuron,0.8,Outside target region
+CTTAACTTCGAAGTAC-1,3323,8480,False,Excitatory neuron,0.8,Outside target region
+TACCAGCTAGGTTTAA-1,3323,8698,False,Excitatory neuron,1.0,Outside target region
+AATTTGGTTCCAAAGA-1,3324,8916,False,Astrocyte,0.8,Outside target region
+CATCATCTACCCGGAC-1,3324,9134,False,Astrocyte,0.4,Outside target region
+CACTCAGCTCTTGAGG-1,3325,9352,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGAAACTTATGCAAGC-1,3325,9570,False,Excitatory neuron,0.6000000000000001,Outside target region
+CAAACTATTGAGCTTC-1,3326,9788,False,Microglia,0.6,Outside target region
+CGAAACATAGATGGCA-1,3326,10007,False,Astrocyte,0.6000000000000001,Outside target region
+CCCGCAGGGCCCAAAG-1,3327,10225,False,Neuroblast,0.4,Outside target region
+GGTAAATGTGCGTTAC-1,3327,10443,False,Excitatory neuron,0.4,Outside target region
+GGAAGCTCGCTTACAG-1,3327,10661,False,Microglia,0.4,Outside target region
+CACCGATACACCGAGC-1,3138,10770,False,Excitatory neuron,0.6000000000000001,Outside target region
+CAGCCGGGCCCTCTAT-1,3328,10879,False,Astrocyte,0.8,Outside target region
+TCCTCTGGCCCATTAG-1,3139,11207,False,Excitatory neuron,0.8,Outside target region
+TCGGTCCCTGACTCCA-1,3139,11425,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CCAACGCTTGCCAGGG-1,3141,12515,False,Inhibitory neuron,0.8,Outside target region
+GCAAGATGTGTTCGCG-1,3332,13060,False,Inhibitory neuron,0.6,Outside target region
+GCGGTCCCTAGACGCA-1,3698,6516,False,Excitatory neuron,0.4,Outside target region
+AATCCAAGGGCCTGAG-1,3699,6734,False,Astrocyte,0.4,Outside target region
+GAAATTCACATCGCTG-1,3699,6952,False,Excitatory neuron,0.8,Outside target region
+AGTAGGTAACATACAT-1,3700,7170,False,Excitatory neuron,1.0,Outside target region
+ATTGGGAATATCTTGG-1,3510,7280,False,Excitatory neuron,0.4,Outside target region
+TAGAGCTACGAAGAAC-1,3700,7388,False,Excitatory neuron,1.0,Outside target region
+TGCGGCATAGTTCAAC-1,3511,7498,False,Astrocyte,1.0,Outside target region
+CCGCCGGTCAACACAC-1,3701,7606,False,Excitatory neuron,1.0,Outside target region
+TCGTATAGTGCAATTA-1,3511,7716,False,Excitatory neuron,0.8,Outside target region
+TAGTTTATTCTTGCTT-1,3701,7825,False,Excitatory neuron,0.6000000000000001,Outside target region
+GATATCTCATGCAATA-1,3512,7934,False,Excitatory neuron,1.0,Outside target region
+CGTTTAAGCGGAGCAC-1,3702,8043,False,Excitatory neuron,1.0,Outside target region
+CATGCTGGCTCCAATT-1,3512,8152,False,Excitatory neuron,1.0,Outside target region
+GAAACAGCCATGCAGT-1,3702,8261,False,Inhibitory neuron,0.6,Outside target region
+AGTTTCGCAGGTCGGA-1,3512,8370,False,Excitatory neuron,0.8,Outside target region
+CTCATGGCTCACAATC-1,3702,8479,False,Excitatory neuron,0.8,Outside target region
+AACCGTTGTGTTTGCT-1,3513,8588,False,Excitatory neuron,1.0,Outside target region
+ACCCTTCATCTGCGAA-1,3703,8697,False,Excitatory neuron,1.0,Outside target region
+TGCGGTGAAATTTCAT-1,3513,8806,False,Excitatory neuron,0.8,Outside target region
+CAAATTGTCAGCAAGC-1,3703,8915,False,Excitatory neuron,1.0,Outside target region
+GAGGTACATCCATCTT-1,3514,9025,False,Excitatory neuron,1.0,Outside target region
+AAATGGCATGTCTTGT-1,3704,9133,False,Excitatory neuron,0.8,Outside target region
+TCATCCCAGAGGGTGG-1,3514,9243,False,Excitatory neuron,1.0,Outside target region
+CGTAGCGAATTGTCAG-1,3704,9351,False,Excitatory neuron,1.0,Outside target region
+CCTAGTTAGTCGCATG-1,3515,9461,False,Excitatory neuron,1.0,Outside target region
+GAAACTCTAATGAAGG-1,3705,9570,False,Excitatory neuron,1.0,Outside target region
+TTGTATCACACAGAAT-1,3515,9679,False,Excitatory neuron,1.0,Outside target region
+TTCAAGCCGAGCTGAG-1,3705,9788,False,Excitatory neuron,0.8,Outside target region
+AGGTACGATATTGCCA-1,3516,9897,False,Excitatory neuron,0.8,Outside target region
+TTAAGCCGACAACTTC-1,3706,10006,False,Excitatory neuron,0.8,Outside target region
+GTCTTAGTACAGCCGG-1,3516,10115,False,Excitatory neuron,1.0,Outside target region
+TGGGTAAGGTTCCCGC-1,3706,10224,False,Excitatory neuron,1.0,Outside target region
+CTACGCCATTTCCGAT-1,3516,10333,False,Excitatory neuron,1.0,Outside target region
+GACCGTCAGGTCGTGA-1,3706,10442,False,Excitatory neuron,1.0,Outside target region
+TAGTTAAGATAGGATA-1,3517,10551,False,Excitatory neuron,1.0,Outside target region
+GAATATTCGGAGTCCC-1,3707,10660,False,Excitatory neuron,1.0,Outside target region
+CAAACTACGATAGAGA-1,3517,10770,False,Excitatory neuron,1.0,Outside target region
+CAGGAAGACTTTATAT-1,3707,10878,False,Excitatory neuron,1.0,Outside target region
+TTCGTAATCCCAGCGG-1,3518,10988,False,Excitatory neuron,0.6000000000000001,Outside target region
+GTGAGGAGCGGTTGAG-1,3708,11096,False,Excitatory neuron,0.8,Outside target region
+CAATCCCTATACCAGC-1,3518,11206,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AGGGAAACGAGGTACT-1,3708,11314,False,Excitatory neuron,1.0,Outside target region
+TCCTGCCAACTGGAGA-1,3519,11424,False,Excitatory neuron,0.8,Outside target region
+AATTTGGGACATAGTA-1,3709,11533,False,Excitatory neuron,1.0,Outside target region
+AACTCCTAATCCCATG-1,3519,11642,False,Excitatory neuron,0.4,Outside target region
+GCTCATTACTGCATGT-1,3709,11751,False,Excitatory neuron,1.0,Outside target region
+TCTCGAACGAGGTCAC-1,3520,11860,False,Excitatory neuron,0.8,Outside target region
+TCACTACGACCAATGC-1,3710,11969,False,Excitatory neuron,1.0,Outside target region
+GTGATGCACAACATCT-1,3520,12078,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CCGACGTAAACACAAC-1,3710,12187,False,Excitatory neuron,1.0,Outside target region
+TGGGATGCACTCATTC-1,3521,12296,False,Astrocyte,0.4,Outside target region
+TTCCATCATGCGGTGA-1,3711,12405,False,Excitatory neuron,1.0,Outside target region
+TGCACAGTGAAGTTAT-1,3521,12515,False,Excitatory neuron,0.8,Outside target region
+CTATTGTGTTTGGTCA-1,3711,12623,False,Excitatory neuron,1.0,Outside target region
+TTGAAAGGTGTAAAGG-1,3711,12841,False,Astrocyte,0.8,Outside target region
+ACTATATGCTGTGTTC-1,3712,13059,False,Astrocyte,1.0,Outside target region
+GAGCCGAGCGTTTATT-1,3712,13278,False,Excitatory neuron,0.8,Outside target region
+GTCGGAAGGATACCAG-1,3714,14150,False,Excitatory neuron,0.6000000000000001,Outside target region
+GAGCTCTCGGACCTAA-1,4075,5206,False,Astrocyte,0.8,Outside target region
+AGATACGACTTCATAT-1,4076,5424,False,Astrocyte,0.8,Outside target region
+CGCTATACCGCCCACT-1,3886,5534,False,Microglia,0.8,Outside target region
+CAGTGTCCGCAGAATG-1,4076,5643,False,Astrocyte,1.0,Outside target region
+AACCCAGAGACGGAGA-1,4077,5861,False,Excitatory neuron,1.0,Outside target region
+GAAGAACGGTGCAGGT-1,3887,5970,False,Astrocyte,0.8,Outside target region
+GATAAATCGGTGGATG-1,4077,6079,False,Excitatory neuron,1.0,Outside target region
+CAGCTCGTGCTTGTGT-1,3887,6188,False,Excitatory neuron,0.8,Outside target region
+GAGTACGGGTATACAA-1,4077,6297,False,Excitatory neuron,0.8,Outside target region
+CATCGCCCGCGGCCAA-1,3888,6406,False,Excitatory neuron,1.0,Outside target region
+TCTTACAGAGGTACCG-1,4078,6515,False,Excitatory neuron,1.0,Outside target region
+TGGAAGACGAACACCA-1,3888,6624,False,Excitatory neuron,1.0,Outside target region
+GTTGTCGTGTTAGTTG-1,4078,6733,False,Excitatory neuron,0.8,Outside target region
+CCAAGGAACAGAGAGG-1,3889,6843,False,Excitatory neuron,1.0,Outside target region
+CTGCACCTGGAACCGC-1,4079,6951,False,Excitatory neuron,0.6000000000000001,Outside target region
+CGCTTTCATACCGGTG-1,3889,7061,True,Excitatory neuron,0.8,Excitatory neuron
+GTTCTTCCCTCGATGT-1,4079,7169,True,Excitatory neuron,1.0,Excitatory neuron
+ATTTAACTCGTATTAC-1,3890,7279,False,Excitatory neuron,1.0,Outside target region
+AACGATAGAAGGGCCG-1,4080,7388,False,Excitatory neuron,1.0,Outside target region
+TATCCTGCATGGGAAT-1,3890,7497,True,Excitatory neuron,1.0,Excitatory neuron
+AGGCCCATTGTACAGG-1,4080,7606,False,Excitatory neuron,0.8,Outside target region
+CCGGCGCATATTGGAT-1,3891,7715,False,Excitatory neuron,0.8,Outside target region
+ATCTGTAATTGTACCC-1,4081,7824,False,Excitatory neuron,1.0,Outside target region
+GAGCGAGGGAGTACCG-1,3891,7933,False,Excitatory neuron,1.0,Outside target region
+TTATTAGGGAAGCATC-1,4081,8042,False,Excitatory neuron,0.8,Outside target region
+CTTCTTACGTCGTATA-1,3892,8151,False,Excitatory neuron,0.8,Outside target region
+GAAGTGCTGGATAGCT-1,4081,8260,True,Excitatory neuron,1.0,Excitatory neuron
+GTGCAACAAATGTGGC-1,3892,8369,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CATGCGTTAGACAGAA-1,4082,8478,True,Excitatory neuron,1.0,Excitatory neuron
+ACACACTTTCTACACG-1,3892,8588,False,Excitatory neuron,0.8,Outside target region
+AGCCCTAAGCGAAGTT-1,4082,8696,False,Excitatory neuron,1.0,Outside target region
+ATTAATTCGGTCACTC-1,3893,8806,False,Excitatory neuron,1.0,Outside target region
+AACAGGAAATCGAATA-1,4083,8914,False,Excitatory neuron,0.8,Outside target region
+ACGTTTAGTTGTGATC-1,3893,9024,False,Excitatory neuron,0.8,Outside target region
+TCCTTCAGTGGTCGAA-1,4083,9132,False,Excitatory neuron,0.8,Outside target region
+CGAACGCCCAGTGCCG-1,3894,9242,False,Excitatory neuron,0.6000000000000001,Outside target region
+CCTCGAAGTGGACGGG-1,4084,9351,False,Excitatory neuron,1.0,Outside target region
+CTCTGTTTGAGGATTC-1,3894,9460,False,Excitatory neuron,1.0,Outside target region
+TGGGCACGTTCTATGG-1,4084,9569,False,Excitatory neuron,0.4,Outside target region
+ACTATTCGTCCGTGGT-1,3895,9678,False,Excitatory neuron,1.0,Outside target region
+CCTCTGGCCTAGACGG-1,4085,9787,False,Excitatory neuron,1.0,Outside target region
+CCATAAACAACCCGAC-1,3895,9896,False,Excitatory neuron,1.0,Outside target region
+CATAGTACATTGAGAG-1,4085,10005,False,Excitatory neuron,1.0,Outside target region
+ATTTCATTATTTCGCG-1,3896,10114,False,Inhibitory neuron,0.6,Outside target region
+CAACTATATCGAATGC-1,4086,10223,False,Excitatory neuron,1.0,Outside target region
+CTAGTATTCGGAATTA-1,3896,10333,False,Excitatory neuron,0.8,Outside target region
+GTGGAACCTACATGCG-1,4086,10441,False,Excitatory neuron,1.0,Outside target region
+CCTAAAGGCTGACGCT-1,3896,10551,False,Excitatory neuron,0.6000000000000001,Outside target region
+CGTGACATTGGGTCGT-1,4086,10659,False,Excitatory neuron,1.0,Outside target region
+CCAATCGGTAGATCGA-1,3897,10769,False,Excitatory neuron,1.0,Outside target region
+ATTGTCGCAATACCTT-1,4087,10877,False,Excitatory neuron,0.8,Outside target region
+AAATTACACGACTCTG-1,3897,10987,False,Excitatory neuron,1.0,Outside target region
+CACTCCTCTCGGTCGG-1,4087,11096,False,Excitatory neuron,0.6000000000000001,Outside target region
+AAATAACCATACGGGA-1,3898,11205,False,Excitatory neuron,1.0,Outside target region
+AGTTACTCTATCGTGG-1,4088,11314,False,Excitatory neuron,1.0,Outside target region
+CGTTAGCTCACAACTG-1,3898,11423,False,Excitatory neuron,0.6000000000000001,Outside target region
+GAATGTATGGCAGGTC-1,4088,11532,False,Excitatory neuron,1.0,Outside target region
+GCAACCACCAGACCGG-1,3899,11641,False,Excitatory neuron,1.0,Outside target region
+TCACTCGTGCAACGGC-1,4089,11750,False,Excitatory neuron,0.8,Outside target region
+AAACAGAGCGACTCCT-1,3899,11859,False,Excitatory neuron,1.0,Outside target region
+CAGCCTCTCCTCAAGA-1,4089,11968,False,Excitatory neuron,1.0,Outside target region
+TTGCGTGAACGCTTAG-1,3900,12078,False,Excitatory neuron,0.8,Outside target region
+CCGCCTGCGAATTGGT-1,4090,12186,False,Excitatory neuron,1.0,Outside target region
+AGATGAGGGTTGCGAT-1,3900,12296,False,Excitatory neuron,0.8,Outside target region
+CGGTGGGCTCCAGCCT-1,4090,12404,False,Excitatory neuron,0.8,Outside target region
+GGCAGCGGTAATCCTA-1,3901,12514,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GCTAGCAGGGAGTGGG-1,4091,12622,False,Excitatory neuron,1.0,Outside target region
+CTCAAGACATTAGCGC-1,3901,12732,False,Excitatory neuron,0.8,Outside target region
+CACGGCGCGCCAAAGG-1,4091,12841,False,Excitatory neuron,1.0,Outside target region
+TGCAATTTGGGCACGG-1,3901,12950,False,Excitatory neuron,1.0,Outside target region
+ATGCCAATCGCTCTGC-1,4091,13059,False,Excitatory neuron,1.0,Outside target region
+GCTGGACCCAAAGTGG-1,3902,13168,False,Excitatory neuron,1.0,Outside target region
+ATTCCTAAGACGTGGA-1,4092,13277,False,Excitatory neuron,1.0,Outside target region
+TCCGGAGGAAGGGCTG-1,3902,13386,False,Astrocyte,1.0,Outside target region
+TCGGTGACCGCTCCGG-1,4092,13495,False,Inhibitory neuron,0.6,Outside target region
+TCCGAAGTAGTCACCA-1,3903,13604,False,Excitatory neuron,0.4,Outside target region
+CATGTAGGAGCGCCAA-1,4093,13713,False,Excitatory neuron,0.8,Outside target region
+CACAAGAAAGATATTA-1,3903,13822,False,Astrocyte,0.4,Outside target region
+AGGGTCAGTAACCCTA-1,4093,13931,False,Excitatory neuron,0.8,Outside target region
+ATACCGTCATCCATAA-1,4094,14149,False,Inhibitory neuron,1.0,Outside target region
+CATCAAACTGGCGCCC-1,4094,14367,False,Excitatory neuron,0.4,Outside target region
+CACCTAATAGAGTCGT-1,4453,4333,False,Inhibitory neuron,0.4,Outside target region
+CCGAAAGTGGTGAGCA-1,4453,4551,False,Astrocyte,0.4,Outside target region
+TCATCACTCGAGCTCG-1,4454,4769,False,Excitatory neuron,1.0,Outside target region
+CTCAGGACTCACCTGT-1,4264,4879,False,Astrocyte,0.8,Outside target region
+CGGTGTACTTGATCCC-1,4454,4987,False,Excitatory neuron,0.8,Outside target region
+CCTACGGCTCAGTCGA-1,4265,5097,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GTACTTGGGCACTTCT-1,4455,5206,False,Excitatory neuron,1.0,Outside target region
+TGATTTCCTCCTGACG-1,4265,5315,False,Excitatory neuron,0.8,Outside target region
+CCTCACCAATCTTGAC-1,4455,5424,False,Excitatory neuron,1.0,Outside target region
+GGTGAGATGCAGATAA-1,4266,5533,False,Excitatory neuron,1.0,Outside target region
+GCTAGTTTCATTGAGG-1,4456,5642,False,Excitatory neuron,1.0,Outside target region
+AGGACATCGCACGTCG-1,4266,5751,False,Excitatory neuron,0.6000000000000001,Outside target region
+GTGGACGTGCTGAGAC-1,4456,5860,False,Excitatory neuron,0.8,Outside target region
+TAAGGAACTTGTGGGA-1,4267,5969,False,Excitatory neuron,1.0,Outside target region
+TCGCTGTGCGTAAATC-1,4457,6078,False,Excitatory neuron,1.0,Outside target region
+GCATCCCTAACTTTGA-1,4267,6187,False,Excitatory neuron,1.0,Outside target region
+CACCCACACGTCACCC-1,4457,6296,False,Excitatory neuron,1.0,Outside target region
+CCCTCATTCTGGAATT-1,4267,6406,False,Excitatory neuron,1.0,Outside target region
+AGGGCGTGATCGGCTA-1,4457,6514,False,Excitatory neuron,1.0,Outside target region
+GGTGCGGATAAGTGGC-1,4268,6624,False,Excitatory neuron,1.0,Outside target region
+TAATATTGAAATTCGC-1,4458,6732,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CTTACACTGGGAAATA-1,4268,6842,False,Excitatory neuron,0.8,Outside target region
+ACCAAGAACGCGTGTC-1,4458,6951,True,Inhibitory neuron,0.6,Inhibitory neuron
+GCCTTCAGCCCTACCG-1,4269,7060,True,Excitatory neuron,0.8,Excitatory neuron
+GATGCTACAAGCGCCT-1,4459,7169,True,Excitatory neuron,1.0,Excitatory neuron
+CCGGGACCCGCAGAGA-1,4269,7278,False,Excitatory neuron,1.0,Outside target region
+GTTCCAGTCTGACCAT-1,4459,7387,False,Excitatory neuron,0.8,Outside target region
+ATGATCGGGAATAGAC-1,4270,7496,False,Excitatory neuron,0.8,Outside target region
+TTGGATTGGGTACCAC-1,4460,7605,False,Inhibitory neuron,0.8,Outside target region
+TACCTCACGCTTGTAC-1,4270,7714,False,Excitatory neuron,0.6000000000000001,Outside target region
+CATGGCAGGAAGATCG-1,4460,7823,False,Inhibitory neuron,1.0,Outside target region
+ATGACGCCGGCTCTAA-1,4271,7932,False,Excitatory neuron,1.0,Outside target region
+AGCGACATCCCATTCA-1,4461,8041,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AGTAATGTCTTGCCGC-1,4271,8151,False,Excitatory neuron,1.0,Outside target region
+TTCTTAGTGGCTCAGA-1,4461,8259,False,Excitatory neuron,1.0,Outside target region
+CGTCTGGAAGGGCCCG-1,4271,8369,True,Excitatory neuron,1.0,Excitatory neuron
+ACGTGCGCCTCGTGCA-1,4461,8477,False,Excitatory neuron,1.0,Outside target region
+AGAGCGGGCTAATCAT-1,4272,8587,False,Excitatory neuron,0.4,Outside target region
+GCGTCGAAATGTCGGT-1,4462,8695,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AACTGATATTAGGCCT-1,4272,8805,False,Excitatory neuron,1.0,Outside target region
+CGAGCTGGGCTTTAGG-1,4462,8914,False,Excitatory neuron,0.8,Outside target region
+GGGTGTTTCAGCTATG-1,4273,9023,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TTAATTTCAGACGCGG-1,4463,9132,False,Excitatory neuron,0.6000000000000001,Outside target region
+ACTGCCGTCGTAACTC-1,4273,9241,False,Excitatory neuron,1.0,Outside target region
+GTGCACGAAAGTGACT-1,4463,9350,False,Excitatory neuron,0.8,Outside target region
+ATCTCCCTGCAATCTA-1,4274,9459,False,Excitatory neuron,0.8,Outside target region
+ACGCCAGATGATTTCT-1,4464,9568,False,Excitatory neuron,0.4,Outside target region
+AGCTATTTAATCCAAC-1,4274,9677,False,Excitatory neuron,0.4,Outside target region
+CCACGAGAAGAGAATC-1,4464,9786,False,Excitatory neuron,1.0,Outside target region
+GATTCCGCGTTTCCGT-1,4275,9896,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GTCGGATGTAGCGCGC-1,4465,10004,False,Excitatory neuron,0.8,Outside target region
+TATTTATACCGAGTAG-1,4275,10114,False,Excitatory neuron,0.6000000000000001,Outside target region
+GTAGGTGATCCGTGTA-1,4465,10222,False,Astrocyte,0.4,Outside target region
+AGTTAAGCGGTCCCGG-1,4276,10332,False,Excitatory neuron,1.0,Outside target region
+CTGGCGACATAAGTCC-1,4466,10440,False,Excitatory neuron,0.8,Outside target region
+TTGGCCTAGAATTTCG-1,4276,10550,False,Excitatory neuron,0.8,Outside target region
+GGCATATCGGTTCTGC-1,4466,10659,False,Excitatory neuron,1.0,Outside target region
+GGGCGTCCACTGGCTC-1,4276,10768,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTACCCATTGCCGGGT-1,4466,10877,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TTAGACACGATCGTTG-1,4277,10986,False,Excitatory neuron,0.6000000000000001,Outside target region
+GCGCTGATCCAGACTC-1,4467,11095,False,Excitatory neuron,1.0,Outside target region
+TTCGGCAACCCGCTGA-1,4277,11204,False,Excitatory neuron,0.6000000000000001,Outside target region
+GATATTTCCTACATGG-1,4467,11313,False,Excitatory neuron,1.0,Outside target region
+CTGCGTTACGATATAA-1,4278,11422,False,Excitatory neuron,0.6000000000000001,Outside target region
+TAATAAACAAGGAGAT-1,4468,11531,False,Excitatory neuron,1.0,Outside target region
+AACCTTTACGACGTCT-1,4278,11640,False,Excitatory neuron,0.8,Outside target region
+AGTCCCGCCTTTAATT-1,4468,11749,False,Excitatory neuron,0.8,Outside target region
+TGAGATTAGGCCCTAA-1,4279,11859,False,Excitatory neuron,0.6,Outside target region
+AGTGTATTGCGCATTG-1,4469,11967,False,Excitatory neuron,0.8,Outside target region
+GTTGGATTCAGTGGCT-1,4279,12077,False,Excitatory neuron,1.0,Outside target region
+TAAAGCTGCAATAGGG-1,4469,12185,False,Excitatory neuron,1.0,Outside target region
+AGTAGGAAGGAAGTTG-1,4280,12295,False,Excitatory neuron,0.8,Outside target region
+TATCACTTCGAGTAAC-1,4470,12404,False,Excitatory neuron,1.0,Outside target region
+TGATCTACGCTGATCT-1,4280,12513,False,Excitatory neuron,1.0,Outside target region
+GGATCATCCCGTACGC-1,4470,12622,False,Excitatory neuron,0.8,Outside target region
+TGACACTTCTCTTTGC-1,4281,12731,True,Excitatory neuron,0.8,Excitatory neuron
+AGCCCTTCTAATCCGA-1,4471,12840,False,Excitatory neuron,1.0,Outside target region
+CACCGCGTCCACTCTA-1,4281,12949,False,Excitatory neuron,1.0,Outside target region
+TAATTGGAATCGGGAA-1,4471,13058,False,Excitatory neuron,1.0,Outside target region
+TCGTAAGCTCCGAGGA-1,4281,13167,False,Excitatory neuron,1.0,Outside target region
+TATATTACAAATGTCG-1,4471,13276,False,Excitatory neuron,1.0,Outside target region
+CGCGAGAGGGACTTGT-1,4282,13385,False,Excitatory neuron,1.0,Outside target region
+GGACCTACGGTAACGT-1,4472,13494,False,Excitatory neuron,1.0,Outside target region
+GAAATATGCTTGAATG-1,4282,13604,False,Excitatory neuron,0.6000000000000001,Outside target region
+CCGTATTAGCGCAGTT-1,4472,13712,False,Excitatory neuron,1.0,Outside target region
+AGGCGTCTATGGACGG-1,4283,13822,False,Excitatory neuron,1.0,Outside target region
+AACATCGATACGTCTA-1,4473,13930,False,Excitatory neuron,0.8,Outside target region
+TGAATATGCTATAAAC-1,4283,14040,False,Excitatory neuron,1.0,Outside target region
+ACCAAACACCCAGCGA-1,4473,14148,False,Excitatory neuron,0.8,Outside target region
+TGGCTTGTACAAGCTT-1,4284,14258,False,Excitatory neuron,1.0,Outside target region
+GAATGAAGGTCTTCAG-1,4474,14367,False,Excitatory neuron,1.0,Outside target region
+AGATACCAGCACTTCA-1,4284,14476,False,Excitatory neuron,1.0,Outside target region
+GCGGTCCCGGTGAAGG-1,4474,14585,False,Excitatory neuron,1.0,Outside target region
+GAGGCATTTGCAGCAG-1,4285,14694,False,Astrocyte,1.0,Outside target region
+GGCAAGCCAGGGATAG-1,4475,14803,False,Excitatory neuron,0.6000000000000001,Outside target region
+TCTGCGAATCGTTCGC-1,4475,15021,False,Astrocyte,0.8,Outside target region
+AGCTCGTTGATGGAAA-1,4286,15130,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGAATGAGATACAGCA-1,4475,15239,False,Astrocyte,0.8,Outside target region
+CCCGCGCAATGCACCC-1,4832,4114,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTCGGCTAGAGATGGT-1,4642,4224,False,Excitatory neuron,0.4,Outside target region
+GACACGAGTTAGAGGA-1,4832,4332,False,Excitatory neuron,1.0,Outside target region
+GAGGTCCCAAAGATCT-1,4643,4442,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TAACTCCATGGAGGCT-1,4833,4550,False,Excitatory neuron,0.8,Outside target region
+CTTGTTTATGTAGCCA-1,4643,4660,False,Excitatory neuron,1.0,Outside target region
+GATGGCGCACACATTA-1,4833,4769,False,Excitatory neuron,0.8,Outside target region
+ATAATAGTGTAGGGAC-1,4644,4878,False,Excitatory neuron,1.0,Outside target region
+CGCTATTCAATGTATG-1,4834,4987,False,Excitatory neuron,1.0,Outside target region
+ATATTGCTGTCAAAGT-1,4644,5096,False,Excitatory neuron,0.6000000000000001,Outside target region
+GGATTCAGTACGGTGG-1,4834,5205,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTCTTAGTGAACGGTG-1,4645,5314,False,Excitatory neuron,1.0,Outside target region
+AATGGTTCTCACAAGC-1,4835,5423,False,Inhibitory neuron,1.0,Outside target region
+TATACACGCAAAGTAT-1,4645,5532,False,Excitatory neuron,1.0,Outside target region
+CTTCATAGCTCAAGAA-1,4835,5641,False,Excitatory neuron,1.0,Outside target region
+CAACGGTTCTTGATAC-1,4646,5750,False,Excitatory neuron,0.8,Outside target region
+ACACCCGAGAAATCCG-1,4836,5859,False,Excitatory neuron,1.0,Outside target region
+TCTATCATGCAGTTAC-1,4646,5969,False,Excitatory neuron,1.0,Outside target region
+CCCGCCATGCTCCCGT-1,4836,6077,False,Excitatory neuron,0.6000000000000001,Outside target region
+CGCTTCCACTGAAATC-1,4646,6187,False,Excitatory neuron,0.8,Outside target region
+CACTGTCCAAGTGAGA-1,4836,6295,False,Excitatory neuron,1.0,Outside target region
+ATTACTAGCCTCTTGC-1,4647,6405,False,Excitatory neuron,1.0,Outside target region
+CATAGTAGCATAGTAG-1,4837,6513,False,Excitatory neuron,1.0,Outside target region
+CAACTCCTTGATCCCG-1,4647,6623,False,Excitatory neuron,0.8,Outside target region
+AAGTAGAAGACCGGGT-1,4837,6732,False,Astrocyte,0.6000000000000001,Outside target region
+GCGGGAACCAGGCCCT-1,4648,6841,False,Inhibitory neuron,0.6,Outside target region
+ATTAGATTGATAGCGG-1,4838,6950,False,Inhibitory neuron,0.8,Outside target region
+CTCGGTCCGTAGCCTG-1,4648,7059,False,Excitatory neuron,0.8,Outside target region
+TGGCTTTGGGTAGACA-1,4838,7168,False,Excitatory neuron,0.8,Outside target region
+TATCCATATCATGCGA-1,4649,7277,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GGAGTGCCGCCCTGGA-1,4839,7386,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TGAGAATGCTTTACCG-1,4649,7495,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TTAACCAACCCTCCCT-1,4839,7604,False,Excitatory neuron,0.8,Outside target region
+TGTTTCGGTACTTCTC-1,4650,7714,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTGCTGAAGGAACCAC-1,4840,7822,False,Excitatory neuron,0.6000000000000001,Outside target region
+TATTTAGTCTAGATCG-1,4650,7932,False,Excitatory neuron,0.6,Outside target region
+CTCCGGCCTAATATGC-1,4840,8040,False,Excitatory neuron,1.0,Outside target region
+TTGTGGCCCTGACAGT-1,4651,8150,False,Astrocyte,0.8,Outside target region
+TCGCCGGTCGATCCGT-1,4841,8258,False,Excitatory neuron,1.0,Outside target region
+CCATAGGTTGGCGTGG-1,4651,8368,False,Excitatory neuron,1.0,Outside target region
+GAACGACCGAATGATA-1,4841,8477,False,Excitatory neuron,1.0,Outside target region
+TCCGATAATTGCCATA-1,4651,8586,False,Excitatory neuron,1.0,Outside target region
+CATTACGTCGGCCCGT-1,4841,8695,False,Excitatory neuron,0.6000000000000001,Outside target region
+CAAGCACCAAATGCCT-1,4652,8804,False,Excitatory neuron,0.8,Outside target region
+TGCATGGATCGGATCT-1,4842,8913,False,Excitatory neuron,1.0,Outside target region
+GAAATCGCGCGCAACT-1,4652,9022,False,Excitatory neuron,1.0,Outside target region
+CTGAAAGAGATCCGAC-1,4842,9131,False,Excitatory neuron,1.0,Outside target region
+CACCTCGATGGTGGAC-1,4653,9240,False,Excitatory neuron,1.0,Outside target region
+ATTTGTTCCAGGGCTC-1,4843,9349,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGGGCCACAAGAGCGC-1,4653,9458,False,Excitatory neuron,0.6000000000000001,Outside target region
+CCTTCTTGATCCAGTG-1,4843,9567,False,Excitatory neuron,1.0,Outside target region
+CCTCGCCAGCAAATTA-1,4654,9677,False,Excitatory neuron,1.0,Outside target region
+TTCATGGCGCAACAGG-1,4844,9785,False,Excitatory neuron,0.8,Outside target region
+TTAATCAGTACGTCAG-1,4654,9895,False,Excitatory neuron,0.8,Outside target region
+CCTATCTATATCGGAA-1,4844,10003,False,Excitatory neuron,0.6000000000000001,Outside target region
+ATTATACTTTGCTCGT-1,4655,10113,False,Inhibitory neuron,0.6000000000000001,Outside target region
+ATGGATCCGGCGTCCG-1,4845,10222,False,Excitatory neuron,1.0,Outside target region
+CGCCCGCTTCCGTACA-1,4655,10331,False,Excitatory neuron,1.0,Outside target region
+GGATTCCGCTATACCC-1,4845,10440,False,Excitatory neuron,1.0,Outside target region
+CGGTCTATCAACCCGT-1,4656,10549,False,Excitatory neuron,0.4,Outside target region
+ATGCCGGTTGATGGGA-1,4846,10658,False,Neuroblast,0.6,Outside target region
+TCATGCAGGTTCTCAT-1,4656,10767,False,Inhibitory neuron,0.4,Outside target region
+TGAGCTTTAATGACGC-1,4846,10876,False,Excitatory neuron,1.0,Outside target region
+TCCCTTAGATTACTCG-1,4656,10985,False,Excitatory neuron,0.4,Outside target region
+ATATCTCCCTCGTTAA-1,4846,11094,False,Excitatory neuron,1.0,Outside target region
+AGCTCTTCCCAGTGCA-1,4657,11203,False,Excitatory neuron,1.0,Outside target region
+TCGCTAAACCGCTATC-1,4847,11312,False,Excitatory neuron,1.0,Outside target region
+CACATTCTTTCGATGG-1,4657,11422,False,Excitatory neuron,0.8,Outside target region
+GATATGCGGTAGCCAA-1,4847,11530,False,Inhibitory neuron,0.8,Outside target region
+CGTTTCACTTCGGGCG-1,4658,11640,False,Excitatory neuron,0.6000000000000001,Outside target region
+CCAATTACGGGTCGAG-1,4848,11748,False,Excitatory neuron,1.0,Outside target region
+GCAGGTAGAGTATGGT-1,4658,11858,False,Excitatory neuron,1.0,Outside target region
+GTCGTATTGGCGTACA-1,4848,11966,False,Excitatory neuron,1.0,Outside target region
+GAAATTAGCACGGATA-1,4659,12076,False,Excitatory neuron,1.0,Outside target region
+AATGCACCAAGCAATG-1,4849,12185,False,Excitatory neuron,1.0,Outside target region
+AGGACGCTCGATGTTG-1,4659,12294,False,Excitatory neuron,1.0,Outside target region
+GGCTAAAGGGCGGGTC-1,4849,12403,False,Excitatory neuron,0.6000000000000001,Outside target region
+CATCTATCCCGTGTCT-1,4660,12512,False,Excitatory neuron,1.0,Outside target region
+CAGTAACTATTTATTG-1,4850,12621,False,Excitatory neuron,1.0,Outside target region
+CATATACTACTGATAA-1,4660,12730,False,Excitatory neuron,0.6000000000000001,Outside target region
+GCGTTCGGAGACCGGG-1,4850,12839,False,Excitatory neuron,0.8,Outside target region
+AAGTTCAGTCTGCGTA-1,4661,12948,False,Excitatory neuron,0.8,Outside target region
+CGAAGCTATAAATTCA-1,4851,13057,False,Excitatory neuron,0.8,Outside target region
+CGCGGTCACAAACCAA-1,4661,13167,False,Excitatory neuron,1.0,Outside target region
+GGGAATGAGCCCTCAC-1,4851,13275,False,Excitatory neuron,1.0,Outside target region
+ACGGAGCGCAAATTAC-1,4661,13385,False,Excitatory neuron,0.8,Outside target region
+CGTTCTTCGCACACCT-1,4851,13493,False,Excitatory neuron,1.0,Outside target region
+GAATAGCCCTGCGGTC-1,4662,13603,False,Excitatory neuron,1.0,Outside target region
+AATAGCTACCGCGTGC-1,4852,13711,False,Excitatory neuron,1.0,Outside target region
+CCGAGCTGTGCTTGTC-1,4662,13821,False,Excitatory neuron,0.6000000000000001,Outside target region
+GATGACGATGATCGCG-1,4852,13930,False,Excitatory neuron,0.6000000000000001,Outside target region
+GCCTATGCTGGGCCTT-1,4663,14039,False,Inhibitory neuron,0.4,Outside target region
+TTACTGTCTAGAGCTC-1,4853,14148,False,Excitatory neuron,1.0,Outside target region
+AGCGGTTGCCGCTCTG-1,4663,14257,False,Excitatory neuron,1.0,Outside target region
+GCTTGCAGCACAATTG-1,4853,14366,False,Excitatory neuron,0.8,Outside target region
+CCGGAGGTCTTATGGT-1,4664,14475,False,Excitatory neuron,0.8,Outside target region
+ACAGTATACCGTGGGA-1,4854,14584,False,Excitatory neuron,1.0,Outside target region
+GGGATCCCAATACAAA-1,4664,14693,False,Excitatory neuron,1.0,Outside target region
+ATTACGACTCCACAGT-1,4854,14802,False,Excitatory neuron,0.8,Outside target region
+CTCACACGCAAGCCTA-1,4665,14912,False,Excitatory neuron,1.0,Outside target region
+CCAGATGTAAATGGGT-1,4855,15020,False,Excitatory neuron,0.8,Outside target region
+GAACTTGTGCACGGGA-1,4665,15130,False,Excitatory neuron,1.0,Outside target region
+AAGCCGCTTTACCTTG-1,4855,15238,False,Excitatory neuron,1.0,Outside target region
+TCCATTCCCACTAGAG-1,4665,15348,False,Astrocyte,0.6000000000000001,Outside target region
+AGAGCGCTTGTAACGG-1,4855,15456,False,Astrocyte,0.8,Outside target region
+TAGTACCTTAGTGGTC-1,5211,3895,False,Neuroblast,0.6,Outside target region
+CTGGCGGGAATAAGTA-1,5022,4005,False,Excitatory neuron,0.8,Outside target region
+AGTGTGGTCTATTGTG-1,5211,4113,False,Excitatory neuron,1.0,Outside target region
+GCTATCGCGGCGCAAC-1,5022,4223,False,Excitatory neuron,1.0,Outside target region
+CAGTAATCCCTCCCAG-1,5212,4331,False,Excitatory neuron,0.8,Outside target region
+GTATTAAGGCGTCTAA-1,5022,4441,False,Excitatory neuron,0.8,Outside target region
+CTAATTTCAACAACAC-1,5212,4550,True,Excitatory neuron,1.0,Excitatory neuron
+TTAGCAACATGGATGT-1,5023,4659,False,Excitatory neuron,1.0,Outside target region
+ATGCTCAGTGTTGCAT-1,5213,4768,False,Excitatory neuron,1.0,Outside target region
+GATGTTTGTGCGAGAT-1,5023,4877,False,Excitatory neuron,1.0,Outside target region
+CACTTCGCCACAGGCT-1,5213,4986,False,Excitatory neuron,1.0,Outside target region
+CTGTATGGTGTAGAAA-1,5024,5095,False,Excitatory neuron,0.8,Outside target region
+TACGTGCACTATGCTG-1,5214,5204,False,Excitatory neuron,1.0,Outside target region
+GTATCAGCTTGGGTTC-1,5024,5313,False,Excitatory neuron,1.0,Outside target region
+TAACAAAGGGAGAAGC-1,5214,5422,False,Excitatory neuron,0.8,Outside target region
+TTACATCGTGGCCTGG-1,5025,5532,False,Excitatory neuron,0.8,Outside target region
+TCTGAACCGGTCGGCT-1,5215,5640,False,Excitatory neuron,1.0,Outside target region
+GGCTCGTGCCACCAGC-1,5025,5750,False,Excitatory neuron,0.6000000000000001,Outside target region
+TATAAGTGAGGATAGC-1,5215,5858,False,Excitatory neuron,1.0,Outside target region
+GCCCGCGCGTTTGACA-1,5026,5968,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGCTGGTTGGACAATT-1,5216,6076,False,Excitatory neuron,0.8,Outside target region
+GCCTAGCGATCTGACC-1,5026,6186,False,Excitatory neuron,0.8,Outside target region
+CCATGCTCTGCAGGAA-1,5216,6295,False,Excitatory neuron,0.6000000000000001,Outside target region
+TATAAATCCACAAGCT-1,5026,6404,False,Excitatory neuron,1.0,Outside target region
+CGCTCGACATAATGAT-1,5216,6513,False,Excitatory neuron,1.0,Outside target region
+CCAATTGAATGTTAAT-1,5027,6622,False,Excitatory neuron,0.8,Outside target region
+GCTAATACCGAATGCC-1,5217,6731,False,Excitatory neuron,0.8,Outside target region
+TTCAACGACCCGACCG-1,5027,6840,False,Excitatory neuron,1.0,Outside target region
+TTCCTCGAGGGTGTCT-1,5217,6949,False,Excitatory neuron,0.8,Outside target region
+CAACGACCCGTTTACA-1,5028,7058,False,Excitatory neuron,0.8,Outside target region
+CTTGTACTTGTTGACT-1,5218,7167,False,Excitatory neuron,0.8,Outside target region
+TCTCTAATAGCTGGTA-1,5028,7277,False,Excitatory neuron,0.6000000000000001,Outside target region
+ATTATGCCATAGGGAG-1,5218,7385,False,Inhibitory neuron,0.8,Outside target region
+GACAACGCAGCTTACG-1,5029,7495,False,Excitatory neuron,0.8,Outside target region
+AGATGACTCGCCCACG-1,5219,7603,False,Excitatory neuron,0.6000000000000001,Outside target region
+GTGCGGGTCTCCAAAT-1,5029,7713,False,Excitatory neuron,1.0,Outside target region
+GTACGAGATTGCGACA-1,5219,7821,False,Excitatory neuron,1.0,Outside target region
+GTATAGGACTCAGTAG-1,5030,7931,False,Excitatory neuron,1.0,Outside target region
+TTGCACGGAGCAGCAC-1,5220,8040,False,Excitatory neuron,1.0,Outside target region
+CACAGCTAGGGAGTGA-1,5030,8149,False,Excitatory neuron,1.0,Outside target region
+ATACTAGCATGACCCT-1,5220,8258,False,Excitatory neuron,1.0,Outside target region
+CCAAGACTTCTGCGAA-1,5031,8367,False,Excitatory neuron,0.8,Outside target region
+ACATAATAAGGCGGTG-1,5221,8476,False,Excitatory neuron,1.0,Outside target region
+TAATACACAGTAGTAT-1,5031,8585,False,Excitatory neuron,0.8,Outside target region
+TCTTGGTAACACCAAA-1,5221,8694,False,Excitatory neuron,1.0,Outside target region
+AACTGGGTCCCGACGT-1,5031,8803,False,Excitatory neuron,0.8,Outside target region
+ATCACTTCATCCTCGC-1,5221,8912,False,Excitatory neuron,1.0,Outside target region
+TGGAAGGATAAAGATG-1,5032,9021,False,Excitatory neuron,1.0,Outside target region
+CATGATGCACAATTCT-1,5222,9130,False,Excitatory neuron,1.0,Outside target region
+TGCCTGATCAAACGAT-1,5032,9240,False,Excitatory neuron,0.8,Outside target region
+ATAGGGATATCCTTGA-1,5222,9348,False,Excitatory neuron,0.8,Outside target region
+CACCTAATCAGTTTAC-1,5033,9458,False,Excitatory neuron,0.8,Outside target region
+TGTGACTACGCCAGTC-1,5223,9566,False,Excitatory neuron,0.4,Outside target region
+CCCGACCATAGTCCGC-1,5033,9676,False,Inhibitory neuron,0.8,Outside target region
+CGCGCCCGACTTAATA-1,5223,9785,False,Excitatory neuron,1.0,Outside target region
+TGCCACCTGGCGAAAC-1,5034,9894,False,Excitatory neuron,0.8,Outside target region
+CTGCCAAGGTTGGAAG-1,5224,10003,False,Microglia,0.6,Outside target region
+TCTCCAACGTAGGTTA-1,5034,10112,False,Excitatory neuron,0.8,Outside target region
+TTCTTGGAGTAATGAG-1,5224,10221,False,Inhibitory neuron,1.0,Outside target region
+GTCTCGATCTGCTTTC-1,5035,10330,False,Excitatory neuron,1.0,Outside target region
+TACTCTCCGAACAAAT-1,5225,10439,False,Excitatory neuron,1.0,Outside target region
+ATCACATTAGAATATC-1,5035,10548,False,Excitatory neuron,0.6,Outside target region
+TACGGGATGCTAGCAG-1,5225,10657,False,Astrocyte,0.6000000000000001,Outside target region
+AGCTGAAGTAAACCAA-1,5036,10766,False,Excitatory neuron,1.0,Outside target region
+CATGGGTCGGGTGTGG-1,5226,10875,False,Excitatory neuron,1.0,Outside target region
+CACCCACGAGGCAATT-1,5036,10985,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGCCATTACTAAAGAA-1,5226,11093,False,Excitatory neuron,1.0,Outside target region
+CCGTTACGTTAGAACA-1,5036,11203,False,Excitatory neuron,1.0,Outside target region
+GCCAGGAGTAACCGAT-1,5226,11311,False,Excitatory neuron,1.0,Outside target region
+GGAAAGTGCCCATGCC-1,5037,11421,False,Excitatory neuron,0.6000000000000001,Outside target region
+TCTTACCGGAACTCGT-1,5227,11529,False,Excitatory neuron,1.0,Outside target region
+TATGTCAAGACCGACT-1,5037,11639,False,Excitatory neuron,0.8,Outside target region
+CCTAACTAAGGCTCTA-1,5227,11748,False,Excitatory neuron,1.0,Outside target region
+GCGGTGAACTGCGCTC-1,5038,11857,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CCTCGCGCGATATAGG-1,5228,11966,False,Excitatory neuron,1.0,Outside target region
+ATCGGCAAGCAGTCCA-1,5038,12075,False,Excitatory neuron,1.0,Outside target region
+AGATCGTGCATAAGAT-1,5228,12184,False,Excitatory neuron,0.8,Outside target region
+ATTCAGGACCTATTTC-1,5039,12293,False,Excitatory neuron,0.6000000000000001,Outside target region
+AGCTAGAAGCAGAAGT-1,5229,12402,False,Excitatory neuron,1.0,Outside target region
+TTCGCTATCTGACGTG-1,5039,12511,False,Astrocyte,0.4,Outside target region
+TTCCGCAGAGAAATAT-1,5229,12620,False,Excitatory neuron,1.0,Outside target region
+CAGTACATTCTCTAAA-1,5040,12730,False,Astrocyte,0.4,Outside target region
+GTGAAGATTTCAAGTG-1,5230,12838,False,Excitatory neuron,0.6000000000000001,Outside target region
+AACGCATGATCTGGGT-1,5040,12948,False,Excitatory neuron,1.0,Outside target region
+CCCAGAGGAGGGCGTA-1,5230,13056,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GGAAACCTTGTTGAAT-1,5040,13166,False,Excitatory neuron,1.0,Outside target region
+GTGAAGCCGTATAGTC-1,5230,13274,False,Inhibitory neuron,0.4,Outside target region
+GAGCTGTCGTCTCGGA-1,5041,13384,False,Excitatory neuron,0.8,Outside target region
+TGTCATTTGTTGGGAA-1,5231,13493,False,Excitatory neuron,1.0,Outside target region
+ACCAACACCACACACT-1,5041,13602,False,Excitatory neuron,0.8,Outside target region
+AAATGATTCGATCAGC-1,5231,13711,False,Excitatory neuron,0.6000000000000001,Outside target region
+CTGCTTTATGTCCGCG-1,5042,13820,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GCGAGAGGCCATGTAA-1,5232,13929,False,Excitatory neuron,1.0,Outside target region
+ATTGACCGGCGATGAC-1,5042,14038,False,Neuroblast,0.6,Outside target region
+ACCCTGGTAACGCCCT-1,5232,14147,False,Excitatory neuron,0.6000000000000001,Outside target region
+GTTGGACCGCATCAGG-1,5043,14256,False,Excitatory neuron,1.0,Outside target region
+CGTTTACAAGGCAGCT-1,5233,14365,False,Excitatory neuron,1.0,Outside target region
+CGGTCCATGAGACTCC-1,5043,14474,False,Excitatory neuron,1.0,Outside target region
+GTTCGTCTGGGTCCCT-1,5233,14583,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGTACTACTCTCACGG-1,5044,14693,False,Excitatory neuron,0.6000000000000001,Outside target region
+AGTGAAGATGGTGTCC-1,5234,14801,False,Excitatory neuron,0.8,Outside target region
+GAGGGCCATAATATTA-1,5044,14911,False,Excitatory neuron,0.8,Outside target region
+ACTCCCGTAGACTAGG-1,5234,15019,False,Excitatory neuron,0.8,Outside target region
+CGTCAAATGGTCGCAG-1,5045,15129,False,Excitatory neuron,1.0,Outside target region
+AAGAAATCACCAGATT-1,5045,15347,False,Excitatory neuron,1.0,Outside target region
+CATCGTCCGGTTACTA-1,5588,2804,False,Excitatory neuron,0.4,Outside target region
+CTGGTCATTCCAATCC-1,5589,3240,False,Astrocyte,0.8,Outside target region
+GATGCCAGCAGAAGGC-1,5590,3458,False,Astrocyte,1.0,Outside target region
+AATACAATGTTTCAGG-1,5590,3676,False,Excitatory neuron,0.8,Outside target region
+TTGCTGCACCTATCCA-1,5401,3786,False,Excitatory neuron,0.8,Outside target region
+CCAGAGACAAAGCCGG-1,5591,3894,False,Excitatory neuron,1.0,Outside target region
+CCGAAGTATATTGTTC-1,5401,4004,False,Excitatory neuron,1.0,Outside target region
+GCTAAACCTGAGGTGA-1,5591,4113,False,Excitatory neuron,1.0,Outside target region
+TCATACTTACAGATCC-1,5401,4222,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CGAGCACTTCAAGTTT-1,5591,4331,False,Excitatory neuron,1.0,Outside target region
+TAGCAACCTGTCACAA-1,5402,4440,False,Excitatory neuron,1.0,Outside target region
+TGGGAAATGCCTTTCC-1,5592,4549,False,Inhibitory neuron,1.0,Outside target region
+AGACCATGGGATACAA-1,5402,4658,False,Excitatory neuron,0.8,Outside target region
+TAAATGAATCCGTTTC-1,5592,4767,True,Excitatory neuron,1.0,Excitatory neuron
+ACAACGGTCCCTGCGA-1,5403,4876,False,Excitatory neuron,1.0,Outside target region
+GTCACTCTCCAAATCT-1,5593,4985,False,Excitatory neuron,0.4,Outside target region
+TTCTACTTGCGAGGGC-1,5403,5095,False,Excitatory neuron,0.8,Outside target region
+CGCAATTACTTTCGGT-1,5593,5203,False,Excitatory neuron,0.8,Outside target region
+CTGTTCATCTCACGGG-1,5404,5313,False,Excitatory neuron,1.0,Outside target region
+TTCTTGTAACCTAATG-1,5594,5421,False,Excitatory neuron,1.0,Outside target region
+GCTTGATGATAATCAG-1,5404,5531,False,Excitatory neuron,1.0,Outside target region
+TTGGCTCGCATGAGAC-1,5594,5639,False,Excitatory neuron,0.8,Outside target region
+GCCCAGTTGGTATGCC-1,5405,5749,False,Excitatory neuron,1.0,Outside target region
+ATTCCTCCGCCAGTGC-1,5595,5858,False,Excitatory neuron,0.4,Outside target region
+TCGTCCGCTGGCGTCT-1,5405,5967,False,Excitatory neuron,1.0,Outside target region
+GGAGAAGTCATTGGCA-1,5595,6076,False,Excitatory neuron,0.4,Outside target region
+TTGTTAGCAAATTCGA-1,5406,6185,False,Excitatory neuron,0.6000000000000001,Outside target region
+TCTAGCATCTTCGATG-1,5596,6294,False,Excitatory neuron,0.8,Outside target region
+TTCTAGGCCAATTGTG-1,5406,6403,False,Excitatory neuron,1.0,Outside target region
+TCACGGTCATCGCACA-1,5596,6512,False,Excitatory neuron,1.0,Outside target region
+ATGAAGCCAAGGAGCC-1,5406,6621,False,Excitatory neuron,1.0,Outside target region
+AATGACTGTCAGCCGG-1,5596,6730,False,Excitatory neuron,1.0,Outside target region
+CCAAACAGAACCCTCG-1,5407,6839,False,Excitatory neuron,0.8,Outside target region
+TATCGATGATTAAACG-1,5597,6948,False,Excitatory neuron,1.0,Outside target region
+GAACACACATCAACCA-1,5407,7058,False,Excitatory neuron,1.0,Outside target region
+CCCGTCAGCGTCTGAC-1,5597,7166,False,Excitatory neuron,0.8,Outside target region
+AGCATCGTCGATAATT-1,5408,7276,False,Excitatory neuron,1.0,Outside target region
+GACTAAGATCATGCAC-1,5598,7384,False,Excitatory neuron,0.8,Outside target region
+TAGGGTGTTTCAAGAG-1,5408,7494,False,Excitatory neuron,1.0,Outside target region
+TGGTTCGTAGCAAAGG-1,5598,7603,False,Excitatory neuron,1.0,Outside target region
+CTGTTCACTGCCTGTG-1,5409,7712,False,Excitatory neuron,0.6000000000000001,Outside target region
+ATGTGCATCCGACGCA-1,5599,7821,False,Excitatory neuron,0.4,Outside target region
+TTGTCGTTCAGTTACC-1,5409,7930,False,Excitatory neuron,0.6000000000000001,Outside target region
+CGGGATCAATGTAAGA-1,5599,8039,False,Excitatory neuron,0.6,Outside target region
+TTATCTGTATCATAAC-1,5410,8148,False,Excitatory neuron,1.0,Outside target region
+ATCGACTCTTTCCGTT-1,5600,8257,False,Oligodendrocyte/OPC,1.0,Outside target region
+CTCATTTGATGGGCGG-1,5410,8366,False,Excitatory neuron,0.8,Outside target region
+GTAAGCGGGCAGTCAG-1,5600,8475,False,Oligodendrocyte/OPC,0.6,Outside target region
+TCTATCGGTCGCAACA-1,5411,8584,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AACGCGGTCTCCAGCC-1,5601,8693,False,Oligodendrocyte/OPC,1.0,Outside target region
+ATTAATACTACGCGGG-1,5411,8803,False,Excitatory neuron,1.0,Outside target region
+CTTTAACTTTCAAAGG-1,5601,8911,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+CGTACCTGATAGGCCT-1,5411,9021,False,Excitatory neuron,1.0,Outside target region
+GAATGTTGGGTAATCT-1,5601,9129,False,Oligodendrocyte/OPC,1.0,Outside target region
+TGCGGAGTAAAGGTGC-1,5412,9239,False,Astrocyte,0.8,Outside target region
+CCTGAATATTTACATA-1,5602,9347,False,Astrocyte,0.8,Outside target region
+TTGCTCCCATACCGGA-1,5412,9457,False,Microglia,0.8,Outside target region
+CCTCTAATCTGCCAAG-1,5602,9566,False,Oligodendrocyte/OPC,0.8,Outside target region
+AGGTTGAGGCACGCTT-1,5413,9675,False,Microglia,0.6,Outside target region
+TCCCGTCAGTCCCGCA-1,5603,9784,False,Oligodendrocyte/OPC,0.8,Outside target region
+TCCGATGACTGAGCTC-1,5413,9893,False,Excitatory neuron,0.6000000000000001,Outside target region
+CAGCCTCCTGCAGAGG-1,5603,10002,False,Oligodendrocyte/OPC,0.8,Outside target region
+CTTAGCCTTCCACATG-1,5414,10111,False,Microglia,0.4,Outside target region
+ATTAATGAACCAGTCG-1,5604,10220,False,Astrocyte,0.6000000000000001,Outside target region
+ACGATACATAGAACTA-1,5414,10329,False,Excitatory neuron,0.8,Outside target region
+AGCCACTCCCGTGCTT-1,5604,10438,False,Oligodendrocyte/OPC,1.0,Outside target region
+ATACGGGTTTCGATTG-1,5415,10548,False,Excitatory neuron,0.8,Outside target region
+CTGTCAAATGGCTCGG-1,5605,10656,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+GCTCGGAATTTAAAGC-1,5415,10766,False,Astrocyte,0.4,Outside target region
+TAGGCATGTTACGCCA-1,5605,10874,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+TGGCAACTCGCGCGCC-1,5416,10984,False,Astrocyte,0.6000000000000001,Outside target region
+ATCAGTAGGCAGGGAT-1,5605,11092,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+TATCGATCTATGCATA-1,5416,11202,False,Excitatory neuron,0.8,Outside target region
+CGACTCAGGATGTTAT-1,5606,11311,False,Oligodendrocyte/OPC,1.0,Outside target region
+GCCATATTGCACACAG-1,5416,11420,False,Excitatory neuron,1.0,Outside target region
+AATTCATAAGGGATCT-1,5606,11529,False,Astrocyte,0.4,Outside target region
+CGGTAGAGGTGCAGGT-1,5417,11638,False,Excitatory neuron,1.0,Outside target region
+AATGATGATACGCTAT-1,5607,11747,False,Oligodendrocyte/OPC,0.4,Outside target region
+CTTGTGCTCACCGATT-1,5417,11856,False,Excitatory neuron,1.0,Outside target region
+TTCCAATCAGAGCTAG-1,5607,11965,False,Excitatory neuron,0.4,Outside target region
+CGATGGACCCTACGCC-1,5418,12074,False,Excitatory neuron,1.0,Outside target region
+GGTCGGATAAACGGCG-1,5608,12183,False,Excitatory neuron,1.0,Outside target region
+TTAGCTAATACGATCT-1,5418,12293,False,Excitatory neuron,0.8,Outside target region
+CTCGATATTTGCGAGC-1,5608,12401,False,Neuroblast,0.4,Outside target region
+ATTACTTACTGGGCAT-1,5419,12511,False,Excitatory neuron,1.0,Outside target region
+CTAGCCGATGTTATGA-1,5609,12619,False,Excitatory neuron,1.0,Outside target region
+TACTGCAATCAATTAC-1,5419,12729,False,Astrocyte,0.2,Outside target region
+TAGTCTGTGACGTTGC-1,5609,12837,False,Excitatory neuron,0.8,Outside target region
+CTCGTTTCTAATGTTT-1,5420,12947,False,Excitatory neuron,1.0,Outside target region
+TTCGTTCAACGAAGTT-1,5610,13056,False,Excitatory neuron,1.0,Outside target region
+CTGAATTTATTGCCAG-1,5420,13165,False,Excitatory neuron,0.8,Outside target region
+TGGAATATCCTTGACC-1,5610,13274,False,Excitatory neuron,1.0,Outside target region
+CAGATCATTTAAAGTC-1,5420,13383,False,Excitatory neuron,1.0,Outside target region
+CTCCTTTACGCAAGTC-1,5610,13492,False,Excitatory neuron,0.6000000000000001,Outside target region
+TCCCAAACAGACAACG-1,5421,13601,False,Excitatory neuron,0.8,Outside target region
+ATCGCTGCGTGCAGCA-1,5611,13710,False,Inhibitory neuron,0.4,Outside target region
+TTAGTTCAAGTGTTCG-1,5421,13819,False,Excitatory neuron,1.0,Outside target region
+AAACTCGTGATATAAG-1,5611,13928,False,Excitatory neuron,0.8,Outside target region
+TTAACGAACAAGCAGT-1,5422,14037,False,Neuroblast,0.6000000000000001,Outside target region
+GTTATATCAGGAGCCA-1,5612,14146,False,Astrocyte,0.8,Outside target region
+CAAATTGGATTATGCC-1,5422,14256,False,Excitatory neuron,0.4,Outside target region
+CGAGGAGCTTCCATAT-1,5612,14364,False,Excitatory neuron,0.6000000000000001,Outside target region
+GGAGACCAATGTGCTT-1,5423,14474,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CATTGATGAACACGCC-1,5613,14582,False,Excitatory neuron,0.6000000000000001,Outside target region
+GTCAATGCTATAATTT-1,5423,14692,False,Excitatory neuron,1.0,Outside target region
+ACCACCCTCTCTTCTA-1,5613,14801,False,Excitatory neuron,0.8,Outside target region
+TGGAGGGAAACACCTC-1,5424,14910,False,Excitatory neuron,0.8,Outside target region
+CACGGACGTGGATGGC-1,5614,15019,False,Excitatory neuron,0.6000000000000001,Outside target region
+GCTCGCGGTTCCGCTC-1,5968,3021,False,Microglia,0.6,Outside target region
+TTAACTCACGCGTGGA-1,5779,3131,False,Excitatory neuron,0.6000000000000001,Outside target region
+GGAACGGCCTGCAGCC-1,5969,3239,False,Astrocyte,1.0,Outside target region
+GTAGAAACGGGTGGAG-1,5779,3349,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TAATGAAAGACCCTTG-1,5969,3457,False,Excitatory neuron,1.0,Outside target region
+AGGCTTGCTAGACACC-1,5780,3567,False,Excitatory neuron,1.0,Outside target region
+TTGCGTAGTTTGAGGA-1,5970,3676,False,Excitatory neuron,1.0,Outside target region
+CGCCCTTGAAGGCTGA-1,5780,3785,False,Excitatory neuron,1.0,Outside target region
+CCCGGTGGAAGAACCT-1,5970,3894,False,Excitatory neuron,0.8,Outside target region
+TTAACACCTCGAACAT-1,5781,4003,False,Excitatory neuron,1.0,Outside target region
+GATTCCTATACGGCGC-1,5971,4112,False,Excitatory neuron,0.8,Outside target region
+TTACCCTAACAGTCCT-1,5781,4221,False,Excitatory neuron,1.0,Outside target region
+ACCCACCTACATGCTC-1,5971,4330,False,Excitatory neuron,1.0,Outside target region
+AAAGGGCAGCTTGAAT-1,5781,4439,False,Excitatory neuron,1.0,Outside target region
+CACACAGGGATAGATT-1,5971,4548,False,Inhibitory neuron,0.8,Outside target region
+AGAGCGTACAAGCTCG-1,5782,4657,False,Excitatory neuron,1.0,Outside target region
+TCTTACGGCATCCGAC-1,5972,4766,False,Excitatory neuron,0.4,Outside target region
+GCCTATTCCGATATAG-1,5782,4876,False,Inhibitory neuron,1.0,Outside target region
+GAAAGTGACTAACTGC-1,5972,4984,False,Excitatory neuron,0.8,Outside target region
+CCGGAATGGTTTCAGT-1,5783,5094,False,Excitatory neuron,1.0,Outside target region
+AGTATAATACTAGGCA-1,5973,5202,False,Excitatory neuron,0.6000000000000001,Outside target region
+TAACTATCGAAGGTCC-1,5783,5312,False,Excitatory neuron,1.0,Outside target region
+ATGAGGAGTGTTAATC-1,5973,5421,False,Excitatory neuron,0.8,Outside target region
+TGTGTCGCGAGTTGCA-1,5784,5530,False,Excitatory neuron,1.0,Outside target region
+ATCCAACGCAGTCATA-1,5974,5639,False,Excitatory neuron,0.8,Outside target region
+AAGGCGCGTAAAGCTT-1,5784,5748,False,Excitatory neuron,1.0,Outside target region
+AGTCGGCCCAAACGAC-1,5974,5857,False,Excitatory neuron,1.0,Outside target region
+AACGTCAGACTAGTGG-1,5785,5966,False,Excitatory neuron,1.0,Outside target region
+ACTACCAGCTCTCTGG-1,5975,6075,False,Excitatory neuron,1.0,Outside target region
+GCAAGTGCACAGAGAA-1,5785,6184,False,Excitatory neuron,0.8,Outside target region
+ACACCTTAAGTAGGGC-1,5975,6293,False,Excitatory neuron,1.0,Outside target region
+TTCGACGGGAAGGGCG-1,5786,6402,False,Astrocyte,0.8,Outside target region
+TTCGCACTCGCGTGCT-1,5976,6511,False,Excitatory neuron,1.0,Outside target region
+TATTTGTTACCCTTTA-1,5786,6621,False,Excitatory neuron,0.6000000000000001,Outside target region
+CGCTGTGACGCCGCAC-1,5976,6729,False,Astrocyte,0.2,Outside target region
+GTTGCACGGAGTTTCG-1,5786,6839,False,Excitatory neuron,0.8,Outside target region
+GTTTCCTGGAGGGTGA-1,5976,6947,False,Astrocyte,0.6000000000000001,Outside target region
+ACACCCAGCATGCAGC-1,5787,7057,False,Excitatory neuron,1.0,Outside target region
+TCAACCATGTTCGGGC-1,5977,7165,False,Inhibitory neuron,0.4,Outside target region
+TTACAACTACGCATCC-1,5787,7275,False,Oligodendrocyte/OPC,0.8,Outside target region
+TCCGATGGTGCGACAT-1,5977,7384,False,Inhibitory neuron,1.0,Outside target region
+GGGCGTACATTTATAT-1,5788,7493,False,Astrocyte,1.0,Outside target region
+AGCGACCAACGATATT-1,5978,7602,False,Inhibitory neuron,0.8,Outside target region
+ACACAAAGACGGGTGG-1,5788,7711,False,Astrocyte,0.4,Outside target region
+ATCGCACGCCGGGAGA-1,5978,7820,False,Inhibitory neuron,1.0,Outside target region
+GCTCTAAACCCTGACG-1,5789,7929,False,Astrocyte,0.6000000000000001,Outside target region
+AATGCAACCGGGTACC-1,5979,8038,False,Inhibitory neuron,0.8,Outside target region
+TCAAACAACCGCGTCG-1,5789,8147,False,Inhibitory neuron,1.0,Outside target region
+TATGCTCCCTACTTAC-1,5979,8256,False,Neuroblast,0.6000000000000001,Outside target region
+AAAGGGATGTAGCAAG-1,5790,8366,False,Inhibitory neuron,1.0,Outside target region
+ACGATCATACATAGAG-1,5980,8474,False,Inhibitory neuron,0.8,Outside target region
+TTGTTCAGTGTGCTAC-1,5790,8584,False,Astrocyte,0.8,Outside target region
+ATGCATGATCCAGGAT-1,5980,8692,False,Astrocyte,0.8,Outside target region
+AGTCTTCTCCTCAAAT-1,5791,8802,False,Inhibitory neuron,0.8,Outside target region
+GATTCCCTTGTCGCAG-1,5981,8910,False,Inhibitory neuron,1.0,Outside target region
+CTCGCACCTATATAGT-1,5791,9020,False,Inhibitory neuron,0.8,Outside target region
+ACTCAATAAAGGCACG-1,5981,9129,False,Astrocyte,1.0,Outside target region
+AACCGAGCTTGGTCAT-1,5791,9238,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TAAGGCAACATAAGAT-1,5981,9347,False,Inhibitory neuron,0.4,Outside target region
+CACGCACAGCGCAGCT-1,5792,9456,False,Inhibitory neuron,1.0,Outside target region
+GGTTTACAATCTCAAT-1,5982,9565,False,Astrocyte,0.8,Outside target region
+TGCAGGATCGGCAAAG-1,5792,9674,False,Astrocyte,1.0,Outside target region
+ATAACGGAGTCCAACG-1,5982,9783,False,Inhibitory neuron,0.4,Outside target region
+AACGATATGTCAACTG-1,5793,9892,False,Oligodendrocyte/OPC,0.6,Outside target region
+GACAACGACCATTGAA-1,5983,10001,False,Neuroblast,1.0,Outside target region
+TTGACCATGTTCTCCG-1,5793,10111,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+CGCCATCCGATTATGA-1,5794,10329,False,Neuroblast,0.4,Outside target region
+TGTTGTCAAGAAGTCT-1,5794,10547,False,Astrocyte,0.6000000000000001,Outside target region
+CAGTGAATAAATGACT-1,5984,10655,False,Microglia,0.4,Outside target region
+CACCTTGCGAAACTCG-1,5795,10765,False,Endothelial,0.6,Outside target region
+CATTTAGCGGACCATG-1,5985,10874,False,Endothelial,0.8,Outside target region
+CCAGTCTAGACGGCGC-1,5795,10983,False,Astrocyte,1.0,Outside target region
+TCGCTTTAAACGTTTG-1,5985,11092,False,Microglia,0.6,Outside target region
+GTGAAACGGCGCCACC-1,5795,11201,False,Astrocyte,0.6000000000000001,Outside target region
+GGGCTCATCGAACCCA-1,5985,11310,False,Oligodendrocyte/OPC,1.0,Outside target region
+TTGATGTGTAGTCCCG-1,5796,11419,False,Astrocyte,0.6,Outside target region
+CAGTAGCCCACGCGGT-1,5986,11528,False,Microglia,0.8,Outside target region
+AGCGCGGGTGCCAATG-1,5796,11637,False,Microglia,0.4,Outside target region
+TAATCGATCCGTACGT-1,5986,11746,False,Excitatory neuron,0.4,Outside target region
+AGTGGCGGCAATTTGA-1,5797,11855,False,Neuroblast,0.6,Outside target region
+CCTTTCAATGAAGAAA-1,5987,11964,False,Excitatory neuron,0.8,Outside target region
+CTCAGTCACGACAAAT-1,5797,12074,False,Oligodendrocyte/OPC,1.0,Outside target region
+ATAGGCTAGCTTCGCA-1,5987,12182,False,Astrocyte,0.6000000000000001,Outside target region
+CGGTTCAAGTAGGTGT-1,5798,12292,False,Oligodendrocyte/OPC,0.8,Outside target region
+CAGTCGAGGATGCAAT-1,5988,12400,False,Neuroblast,0.4,Outside target region
+TATCACCCAACCGACC-1,5798,12510,False,Oligodendrocyte/OPC,1.0,Outside target region
+AATGATGCGACTCCTG-1,5988,12619,False,Oligodendrocyte/OPC,0.8,Outside target region
+TGGAACCACTGACACA-1,5799,12728,False,Excitatory neuron,0.8,Outside target region
+GCCAATAGGGCATCTC-1,5989,12837,False,Astrocyte,0.4,Outside target region
+TTCTTTGGTCGCGACG-1,5799,12946,False,Inhibitory neuron,0.8,Outside target region
+ATTAGATTCCTCAGCA-1,5989,13055,False,Microglia,0.4,Outside target region
+CCGTGGAACGATCCAA-1,5800,13164,False,Excitatory neuron,0.6000000000000001,Outside target region
+GGGTCGTGGCAAGTGT-1,5990,13273,False,Neuroblast,0.4,Outside target region
+TCGCTCGGCACCAGCG-1,5800,13382,False,Excitatory neuron,0.6000000000000001,Outside target region
+ACGCAATCACTACAGC-1,5990,13491,False,Astrocyte,0.8,Outside target region
+CTCTAATGCATTGATC-1,5800,13600,False,Neuroblast,0.6,Outside target region
+GTCTCGACTAAGTTTG-1,5990,13709,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGGTTTAAACGTGGGT-1,5801,13819,False,Excitatory neuron,0.8,Outside target region
+CGCAGATCTTCACCCG-1,5991,13927,False,Astrocyte,0.4,Outside target region
+TCCAGATGTACGCCAA-1,5801,14037,False,Excitatory neuron,0.6000000000000001,Outside target region
+CATTGCGGGTCAATTC-1,5991,14145,False,Astrocyte,0.4,Outside target region
+GACGTTCGTAAATACA-1,5802,14255,False,Excitatory neuron,0.6000000000000001,Outside target region
+TACACCGTCGTTAGTC-1,5992,14363,False,Excitatory neuron,0.4,Outside target region
+ACGGGCGTATGCGACA-1,5802,14473,False,Astrocyte,0.6000000000000001,Outside target region
+GAAGGCTACCATTGTT-1,5992,14582,False,Excitatory neuron,1.0,Outside target region
+TAAATCTTTACACCTC-1,5803,14691,False,Excitatory neuron,0.4,Outside target region
+AGTTTATGTAAAGACA-1,5993,14800,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AGGAGACATCCACAGT-1,5803,14909,False,Excitatory neuron,0.6000000000000001,Outside target region
+CAACCTGAACCTGCCA-1,5993,15018,True,Inhibitory neuron,1.0,Inhibitory neuron
+GCTAAGTAAAGGCGAT-1,6348,3020,False,Inhibitory neuron,0.8,Outside target region
+AGTTACCGCACATGGT-1,6158,3130,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GACTGCGGCACGTGTA-1,6348,3239,False,Excitatory neuron,0.8,Outside target region
+TGGTGATCGTATTTGT-1,6159,3348,False,Excitatory neuron,1.0,Outside target region
+TTATCGCCTGCGAAGC-1,6349,3457,False,Excitatory neuron,1.0,Outside target region
+TGGAATTAGACGCTTT-1,6159,3566,False,Excitatory neuron,1.0,Outside target region
+TCGTCACACTGTTAGC-1,6349,3675,False,Excitatory neuron,1.0,Outside target region
+TTATGTTTGCGATAGA-1,6160,3784,False,Excitatory neuron,1.0,Outside target region
+GGTGCTGATCACAAAG-1,6350,3893,False,Excitatory neuron,1.0,Outside target region
+CATAGCCGCCCGGGAT-1,6160,4002,False,Excitatory neuron,1.0,Outside target region
+GGTTAGTTACGGCGCC-1,6350,4111,False,Excitatory neuron,0.6000000000000001,Outside target region
+ATTCCCACATAAACAA-1,6161,4220,False,Excitatory neuron,0.6000000000000001,Outside target region
+ATTCAGTAGCAGGGTC-1,6351,4329,False,Excitatory neuron,1.0,Outside target region
+CAGTTCCGCGGGTCGA-1,6161,4439,False,Excitatory neuron,1.0,Outside target region
+AAGAGATGAATCGGTA-1,6351,4547,False,Excitatory neuron,0.8,Outside target region
+CGCAATTCTACAATAA-1,6161,4657,False,Astrocyte,0.6000000000000001,Outside target region
+TAACGCTTTGAGAGCG-1,6351,4765,False,Excitatory neuron,0.8,Outside target region
+AGGCTATGGTTAGCTT-1,6162,4875,False,Excitatory neuron,0.8,Outside target region
+GAGGAATGGAGAGGTT-1,6352,4983,False,Excitatory neuron,1.0,Outside target region
+TCCTCTACGAGATGGC-1,6162,5093,False,Excitatory neuron,0.8,Outside target region
+TTGATTATGCAGATGA-1,6352,5202,False,Excitatory neuron,1.0,Outside target region
+TCAGTACTGACCCGCG-1,6163,5311,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTATGACAAACTGGAT-1,6353,5420,False,Excitatory neuron,1.0,Outside target region
+GTAAGTAGGGTATACC-1,6163,5529,False,Excitatory neuron,1.0,Outside target region
+CGCAAACACGAGTTAC-1,6353,5638,False,Excitatory neuron,1.0,Outside target region
+TGGCCGTATATTGACC-1,6164,5747,False,Excitatory neuron,1.0,Outside target region
+ACTGTAGCACTTTGGA-1,6354,5856,False,Neuroblast,0.6000000000000001,Outside target region
+GCTCTATGTTACGTGC-1,6164,5965,False,Excitatory neuron,0.8,Outside target region
+TGCGCGATTAACGGAG-1,6354,6074,False,Inhibitory neuron,0.8,Outside target region
+GAATCGACATGGTCAC-1,6165,6184,False,Excitatory neuron,1.0,Outside target region
+GACTAAGTAGGCTCAC-1,6355,6292,False,Inhibitory neuron,1.0,Outside target region
+ATCTTGACCTGCAACG-1,6165,6402,False,Excitatory neuron,0.4,Outside target region
+ATGCACTACCGCATTG-1,6355,6510,False,Inhibitory neuron,1.0,Outside target region
+CAGATACTAACATAGT-1,6166,6620,False,Inhibitory neuron,0.8,Outside target region
+GATCGACACTATCTGA-1,6356,6728,False,Inhibitory neuron,0.8,Outside target region
+ATAGAGTACTGGGACA-1,6166,6838,False,Inhibitory neuron,1.0,Outside target region
+CCTACTGCTTACACTT-1,6356,6947,False,Astrocyte,0.6,Outside target region
+CCTGCTATTTGAGAAG-1,6166,7056,False,Inhibitory neuron,0.6,Outside target region
+CGCGTTCATGAAATAC-1,6356,7165,False,Excitatory neuron,0.6,Outside target region
+CATTATGCTTGTTGTG-1,6167,7274,False,Inhibitory neuron,0.4,Outside target region
+CCAGGGACGTGGCCTC-1,6357,7383,False,Excitatory neuron,0.6000000000000001,Outside target region
+TATGGATGTGCTACGC-1,6167,7492,False,Inhibitory neuron,1.0,Outside target region
+GTACTAAGATTTGGAG-1,6357,7601,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AGACCCGCCCTCCTCG-1,6168,7710,False,Inhibitory neuron,0.8,Outside target region
+CGCATTAGCTAATAGG-1,6358,7819,False,Astrocyte,0.4,Outside target region
+GCTCTCGGGTACCGAA-1,6168,7929,False,Inhibitory neuron,0.8,Outside target region
+CACCGCCAGAAGGTTT-1,6358,8037,False,Inhibitory neuron,0.4,Outside target region
+TCCCAAAGACGAAGGA-1,6169,8147,False,Inhibitory neuron,1.0,Outside target region
+ATGGATTGACCAAACG-1,6359,8255,False,Inhibitory neuron,1.0,Outside target region
+GTCATGGACATGACTA-1,6169,8365,False,Inhibitory neuron,1.0,Outside target region
+CTACTGCCACCTGACC-1,6359,8473,False,Neuroblast,0.6000000000000001,Outside target region
+TTATATTTGGCAATCC-1,6170,8583,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AGCACCAGTACTCACG-1,6360,8692,False,Astrocyte,0.8,Outside target region
+CATGGTCTAGATACCG-1,6170,8801,False,Astrocyte,0.4,Outside target region
+TCTACCGTCCACAAGC-1,6360,8910,False,Astrocyte,0.4,Outside target region
+CTAGTTGGGCCCGGTA-1,6170,9019,False,Endothelial,0.4,Outside target region
+TCCCGCGTACTCCTGG-1,6360,9128,False,Astrocyte,0.8,Outside target region
+CAGAGCATGAGCTTGC-1,6171,9237,False,Astrocyte,1.0,Outside target region
+ACACGGGAACTTAGGG-1,6361,9346,False,Astrocyte,0.4,Outside target region
+GGCTCTGCTCCAACGC-1,6171,9455,False,Astrocyte,0.6000000000000001,Outside target region
+AGAACGTGGTACATTC-1,6361,9564,False,Astrocyte,0.6,Outside target region
+CAATAAACCTTGGCCC-1,6172,9673,False,Neuroblast,1.0,Outside target region
+ACTTCGCCATACGCAC-1,6362,9782,False,Microglia,0.4,Outside target region
+ATCTGGTTAAGACTGT-1,6172,9892,False,Astrocyte,0.6000000000000001,Outside target region
+TCGTAAGACGACATTG-1,6362,10000,False,Microglia,0.8,Outside target region
+GCCCGTAATACCTTCT-1,6363,10218,False,Astrocyte,0.6000000000000001,Outside target region
+CGGTCAAGTGGGAACC-1,6173,10328,False,Endothelial,0.8,Outside target region
+TTGTAAGGCCAGTTGG-1,6363,10437,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+GGAGCACCAAGAACTA-1,6174,10546,False,Microglia,0.8,Outside target region
+TAATAGTGACGACCAG-1,6364,10655,False,Microglia,0.6,Outside target region
+CTAAATCCTATTCCGG-1,6174,10764,False,Microglia,0.6,Outside target region
+CGAGTTCTGTCCCACC-1,6364,10873,False,Oligodendrocyte/OPC,1.0,Outside target region
+AGGCAGATGCGTAAAC-1,6175,10982,False,Oligodendrocyte/OPC,1.0,Outside target region
+AAGGATGAGGGACCTC-1,6365,11091,False,Astrocyte,1.0,Outside target region
+AGAGAACCGTCTAGGA-1,6175,11200,False,Astrocyte,0.4,Outside target region
+GAGGGCGCAGCTCTGC-1,6365,11309,False,Excitatory neuron,1.0,Outside target region
+AAGATTGGCGGAACGT-1,6175,11418,False,Astrocyte,1.0,Outside target region
+CCAGTAGTCTGATCCA-1,6365,11527,False,Excitatory neuron,1.0,Outside target region
+AAGGGACAGATTCTGT-1,6176,11637,False,Excitatory neuron,1.0,Outside target region
+ATAGAGTTATCAACTT-1,6366,11745,False,Excitatory neuron,1.0,Outside target region
+AAATTACCTATCGATG-1,6176,11855,False,Excitatory neuron,1.0,Outside target region
+GATCCTAAATCGGGAC-1,6366,11963,False,Excitatory neuron,1.0,Outside target region
+TTACAGACCTAAATGA-1,6177,12073,False,Excitatory neuron,1.0,Outside target region
+CCTCACCTTAGCATCG-1,6367,12181,False,Excitatory neuron,1.0,Outside target region
+CATGCGACCAGTTTAA-1,6177,12291,False,Excitatory neuron,1.0,Outside target region
+AACATATCAACTGGTG-1,6367,12400,False,Excitatory neuron,1.0,Outside target region
+CTATAAGAGCCAATCG-1,6178,12509,False,Excitatory neuron,1.0,Outside target region
+AATATCGAGGGTTCTC-1,6368,12618,False,Excitatory neuron,1.0,Outside target region
+GTACTCCTGGGTATGC-1,6178,12727,False,Excitatory neuron,0.8,Outside target region
+ATAAGTAGGATTCAGA-1,6368,12836,False,Excitatory neuron,1.0,Outside target region
+AGGTCGCGGAGTTACT-1,6179,12945,False,Astrocyte,0.8,Outside target region
+CTAATTCTCAGATATT-1,6369,13054,True,Excitatory neuron,1.0,Excitatory neuron
+GCCAACCATTTCCGGA-1,6179,13163,False,Neuroblast,0.8,Outside target region
+TGATCCCAGCATTAGT-1,6369,13272,False,Astrocyte,0.6000000000000001,Outside target region
+CGTTGTAAGATTGATT-1,6180,13382,False,Astrocyte,0.4,Outside target region
+GAAACCATGGTGCGCT-1,6370,13490,False,Astrocyte,0.8,Outside target region
+AATCTATGCCGGAGCC-1,6180,13600,False,Astrocyte,0.6000000000000001,Outside target region
+GACTCCCAGAATAAGG-1,6370,13708,False,Oligodendrocyte/OPC,0.8,Outside target region
+TATGATCCGGCACGCC-1,6180,13818,False,Excitatory neuron,0.4,Outside target region
+CCGCTTGCTGACATGG-1,6370,13926,False,Neuroblast,0.4,Outside target region
+TGGTTAAGGGCGCTGG-1,6181,14036,False,Astrocyte,0.6,Outside target region
+TTGATAGTCAATACAT-1,6371,14145,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GGTTTAATTGAGCAGG-1,6181,14254,False,Inhibitory neuron,0.8,Outside target region
+CATTACATAGATTGTG-1,6371,14363,False,Excitatory neuron,0.8,Outside target region
+GGTACACCAGATTTAT-1,6182,14472,False,Excitatory neuron,0.8,Outside target region
+GGCCCGTATACCATGC-1,6372,14581,True,Excitatory neuron,1.0,Excitatory neuron
+ATCTTTCGTATAACCA-1,6182,14690,False,Excitatory neuron,0.6000000000000001,Outside target region
+GAGATGACAATCCTTA-1,6372,14799,False,Astrocyte,0.6000000000000001,Outside target region
+AAAGCTTGCCTACATA-1,6183,14908,False,Excitatory neuron,0.8,Outside target region
+GAACGATAAGTTAAAG-1,6373,15017,False,Astrocyte,1.0,Outside target region
+TAATAGCTAAATGATG-1,6183,15127,False,Excitatory neuron,1.0,Outside target region
+TATGGCTAGGCTAATT-1,6373,15235,False,Astrocyte,1.0,Outside target region
+AGGGTGGATAGTGCAT-1,6727,2801,False,Astrocyte,0.8,Outside target region
+TGATAGCGGGATTCTA-1,6537,2911,False,Astrocyte,0.4,Outside target region
+GTCAGTTTGGTAGTCG-1,6727,3020,False,Excitatory neuron,0.4,Outside target region
+GCATTCGAAATGAACA-1,6538,3129,False,Excitatory neuron,0.8,Outside target region
+AAAGACTGGGCGCTTT-1,6728,3238,False,Excitatory neuron,1.0,Outside target region
+TAACAATATTTGTTGC-1,6538,3347,False,Excitatory neuron,1.0,Outside target region
+CCAGCTTCCGCCCGCA-1,6728,3456,False,Excitatory neuron,0.8,Outside target region
+GATATGGATTACGCGG-1,6539,3565,False,Excitatory neuron,1.0,Outside target region
+AGAGCAGTTATGAGAC-1,6729,3674,False,Excitatory neuron,0.8,Outside target region
+TCACATCTTATCTGAT-1,6539,3783,False,Excitatory neuron,1.0,Outside target region
+TATGAAGACAGGTGCG-1,6729,3892,False,Excitatory neuron,1.0,Outside target region
+TACCTGCTGCACTGTG-1,6540,4002,False,Excitatory neuron,0.8,Outside target region
+TAGGTCCAAGTAAGGA-1,6730,4110,False,Excitatory neuron,1.0,Outside target region
+GAAACTCGTGCGATGC-1,6540,4220,False,Excitatory neuron,1.0,Outside target region
+AACAATTACTCTACGC-1,6730,4328,False,Excitatory neuron,1.0,Outside target region
+CCGCACGTGACCTCGG-1,6541,4438,False,Excitatory neuron,1.0,Outside target region
+AACTTGCCCGTATGCA-1,6731,4546,False,Excitatory neuron,1.0,Outside target region
+GGGTATGTATGCACTT-1,6541,4656,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTCGTACTCCAGAACG-1,6731,4765,False,Excitatory neuron,1.0,Outside target region
+GAATTTCTCGCTGCAG-1,6541,4874,False,Excitatory neuron,1.0,Outside target region
+AACAGGATGGGCCGCG-1,6731,4983,False,Excitatory neuron,0.8,Outside target region
+GACGTGTAGGGATTAT-1,6542,5092,False,Excitatory neuron,0.8,Outside target region
+TAGGTGAGCCCTACTC-1,6732,5201,False,Excitatory neuron,0.4,Outside target region
+CTAATTCGCACGCGCT-1,6542,5310,False,Excitatory neuron,0.8,Outside target region
+GAAGCTTGCTGACCGC-1,6732,5419,False,Neuroblast,0.6000000000000001,Outside target region
+GGTTAGGCTTGGAGAA-1,6543,5528,False,Excitatory neuron,0.6000000000000001,Outside target region
+ACAAGGACAAGAGGTT-1,6733,5637,False,Inhibitory neuron,1.0,Outside target region
+AGGCCACCCGTTATGA-1,6543,5747,False,Astrocyte,0.4,Outside target region
+GTGGGCTTAGACACAC-1,6733,5855,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CGTGTCCCATTCGCGA-1,6544,5965,False,Inhibitory neuron,1.0,Outside target region
+TGGAGTGATGCGATGA-1,6734,6073,False,Excitatory neuron,0.6,Outside target region
+AACAACTGGTAGTTGC-1,6544,6183,False,Excitatory neuron,0.6,Outside target region
+CCTGGCTAGACCCGCC-1,6734,6291,False,Inhibitory neuron,1.0,Outside target region
+CGCAATTAGGGTAATA-1,6545,6401,False,Inhibitory neuron,1.0,Outside target region
+TCGAAATTTAGGACCA-1,6735,6510,False,Inhibitory neuron,0.8,Outside target region
+AGACTAGCCTTCCAGA-1,6545,6619,False,Inhibitory neuron,0.8,Outside target region
+TTGATCTAACTTTGTC-1,6735,6728,False,Inhibitory neuron,0.8,Outside target region
+AAGGAGCGGTTGGTGC-1,6546,6837,False,Inhibitory neuron,1.0,Outside target region
+ACTTGGGACCCGGTGG-1,6735,6946,False,Inhibitory neuron,0.8,Outside target region
+TGATCTCCGGCGCCAG-1,6546,7055,False,Inhibitory neuron,1.0,Outside target region
+CAGTTCAAATTGACAC-1,6736,7164,False,Astrocyte,0.4,Outside target region
+GTCCGGCTGAATTGCG-1,6546,7273,False,Astrocyte,0.6000000000000001,Outside target region
+CTGGAAATGGATGCTT-1,6736,7382,False,Excitatory neuron,0.4,Outside target region
+TGATCGGTTTGACCCT-1,6547,7491,False,Astrocyte,0.4,Outside target region
+TAGAGTCTAAGCGAAC-1,6737,7600,False,Inhibitory neuron,1.0,Outside target region
+GAGACTGATGGGTAGA-1,6547,7710,False,Inhibitory neuron,1.0,Outside target region
+TAGCTAAGTCCGGGAG-1,6737,7818,False,Inhibitory neuron,0.4,Outside target region
+GGGCGATATGTGTGAA-1,6548,7928,False,Inhibitory neuron,1.0,Outside target region
+CTCGAGGTCGAACAGT-1,6738,8036,False,Neuroblast,0.6,Outside target region
+GATCCCTTTATACTGC-1,6548,8146,False,Inhibitory neuron,0.6,Outside target region
+GTCATGCACCTCCGTT-1,6738,8255,False,Oligodendrocyte/OPC,0.8,Outside target region
+ACTTTCCTATAGCTTC-1,6549,8364,False,Astrocyte,0.8,Outside target region
+TCGCTCGATATATTCC-1,6739,8473,False,Astrocyte,0.8,Outside target region
+ATAGGTTGGGCAGATG-1,6549,8582,False,Oligodendrocyte/OPC,0.8,Outside target region
+CAATTAAGGGTGATGA-1,6739,8691,False,Astrocyte,0.4,Outside target region
+ACCGACTGAGTCCCAC-1,6550,8800,False,Inhibitory neuron,1.0,Outside target region
+CCTGTCACCCGGGCTC-1,6740,8909,False,Astrocyte,0.4,Outside target region
+GATCGGTGGCCATAAC-1,6550,9018,False,Microglia,0.4,Outside target region
+CCTATGGGTTACCGTC-1,6740,9127,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+TTGGGACACTGCCCGC-1,6550,9236,False,Oligodendrocyte/OPC,0.4,Outside target region
+CGAGGCTAAATATGGC-1,6740,9345,False,Oligodendrocyte/OPC,1.0,Outside target region
+TCAGGGTGTAACGTAA-1,6551,9455,False,Oligodendrocyte/OPC,0.8,Outside target region
+CGAGAGATGTGAACCT-1,6741,9563,False,Oligodendrocyte/OPC,1.0,Outside target region
+TCGCTGGGCGGATTGT-1,6551,9673,False,Oligodendrocyte/OPC,1.0,Outside target region
+AGATCTCAGGTGTGAT-1,6741,9781,False,Oligodendrocyte/OPC,1.0,Outside target region
+TGGCCAAACTGAAGTA-1,6552,9891,False,Oligodendrocyte/OPC,1.0,Outside target region
+GCTTCCGTCCCTAGAC-1,6742,9999,False,Oligodendrocyte/OPC,1.0,Outside target region
+CAGCAGCCCGTTCCTT-1,6552,10109,False,Oligodendrocyte/OPC,0.8,Outside target region
+TGTATAACAGATCCTG-1,6742,10218,True,Oligodendrocyte/OPC,0.8,Oligodendrocyte/OPC
+CGCGGGAATTAGGCAG-1,6553,10327,False,Oligodendrocyte/OPC,0.8,Outside target region
+TGCATGTGGTAATCTA-1,6743,10436,False,Oligodendrocyte/OPC,1.0,Outside target region
+ACAATTTGAGCAGTGG-1,6553,10545,False,Oligodendrocyte/OPC,1.0,Outside target region
+GAGCTAAGGGCATATC-1,6743,10654,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+CCAGATAGTTGAGTGA-1,6554,10763,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+CCACAATGTACGTCTT-1,6744,10872,False,Oligodendrocyte/OPC,1.0,Outside target region
+CAATGGATCTCTACCA-1,6554,10981,False,Oligodendrocyte/OPC,1.0,Outside target region
+TGTGGCAAAGCGTATG-1,6744,11090,True,Oligodendrocyte/OPC,1.0,Oligodendrocyte/OPC
+TAAAGCGTTAGGAGAA-1,6555,11200,False,Astrocyte,0.6000000000000001,Outside target region
+TCCGTTTAGCCTTGAA-1,6745,11308,True,Excitatory neuron,0.8,Excitatory neuron
+CAGCTCGACAAGTTAA-1,6555,11418,False,Excitatory neuron,1.0,Outside target region
+GCCTATAGTGTCAGGG-1,6745,11526,False,Excitatory neuron,1.0,Outside target region
+ATAGACAACGGGACCT-1,6555,11636,False,Excitatory neuron,1.0,Outside target region
+CTACTATCTTTCAGAG-1,6745,11744,False,Excitatory neuron,1.0,Outside target region
+GCGCTGCTTTGCATTT-1,6556,11854,False,Inhibitory neuron,1.0,Outside target region
+GCGCATCCAGTCAGCA-1,6746,11963,False,Excitatory neuron,0.8,Outside target region
+GACTCGCGGGAATGAC-1,6556,12072,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CTGGTAACGAGCTCTT-1,6746,12181,True,Astrocyte,0.6000000000000001,Astrocyte
+TCCGGCCTAGCGTACA-1,6557,12290,False,Neuroblast,0.4,Outside target region
+TCTAGGTGGCGACGCT-1,6747,12399,False,Astrocyte,1.0,Outside target region
+ACGCTAGTGATACACT-1,6557,12508,False,Excitatory neuron,0.6000000000000001,Outside target region
+ATCTGCACCTCTGCGA-1,6747,12617,False,Astrocyte,1.0,Outside target region
+CCTCACCTGAGGGAGC-1,6558,12726,False,Inhibitory neuron,1.0,Outside target region
+AGTGAGCCTCGCCGCC-1,6748,12835,False,Excitatory neuron,1.0,Outside target region
+ACGAGTACGGATGCCC-1,6558,12945,False,Excitatory neuron,1.0,Outside target region
+GGTACCATTAAGACGG-1,6748,13053,False,Excitatory neuron,0.4,Outside target region
+TTCTGCTAGACTCCAA-1,6559,13163,False,Excitatory neuron,1.0,Outside target region
+TAACTATTACGCCAAA-1,6749,13271,False,Excitatory neuron,1.0,Outside target region
+GCATTCAAGGCAACGC-1,6559,13381,False,Astrocyte,0.4,Outside target region
+AGTACATCATTTATCA-1,6749,13489,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+GTCGTGTCTGGTCATC-1,6560,13599,False,Astrocyte,0.6000000000000001,Outside target region
+AGTCTAAAGTATACTC-1,6750,13708,False,Astrocyte,0.4,Outside target region
+CGGCCCAACCTGTAGT-1,6560,13817,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+AGGGAGACATACTTCG-1,6750,13926,False,Oligodendrocyte/OPC,0.6,Outside target region
+TCCCTAGATCAATAGG-1,6560,14035,False,Excitatory neuron,1.0,Outside target region
+TCCCGTCGCGTCATAG-1,6750,14144,False,Astrocyte,0.4,Outside target region
+CGCATCCATCAGCCAG-1,6561,14253,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CTGCACCTAGTCCACA-1,6751,14362,False,Astrocyte,0.2,Outside target region
+CGAGGATCGGGAACGA-1,6561,14471,False,Inhibitory neuron,0.8,Outside target region
+CAATGAGGTTCGACTA-1,6751,14580,False,Excitatory neuron,0.8,Outside target region
+TCTGACGGGCTAACCC-1,6562,14689,False,Excitatory neuron,1.0,Outside target region
+TTCTATGCCTTTCGCA-1,6752,14798,False,Astrocyte,0.8,Outside target region
+AGAGTATAGTGTTACG-1,6562,14908,False,Astrocyte,1.0,Outside target region
+CCATTGTTTCCTCCAT-1,6752,15016,False,Astrocyte,1.0,Outside target region
+CTCATCACTTAGTGAT-1,6563,15126,False,Astrocyte,0.6000000000000001,Outside target region
+CACGGGATTGAGGGTT-1,7106,2801,False,Astrocyte,0.4,Outside target region
+GTTAATGTCTATCTTA-1,6917,2910,False,Excitatory neuron,0.4,Outside target region
+GCGTTATATTTGGAAC-1,7107,3019,False,Inhibitory neuron,0.8,Outside target region
+CGTCAAGGCTATAAAT-1,6917,3128,False,Excitatory neuron,1.0,Outside target region
+TTAGCTCTGTAATCCG-1,7107,3237,False,Excitatory neuron,1.0,Outside target region
+AATGGTCCACCGTTCA-1,6918,3346,False,Excitatory neuron,1.0,Outside target region
+GTCATTGCATTGACCC-1,7108,3455,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGTCCGTGGCGCCTTT-1,6918,3565,False,Excitatory neuron,0.8,Outside target region
+TCAACTAACGTATAAC-1,7108,3673,False,Excitatory neuron,1.0,Outside target region
+TCCTCTCCAGTTGTCC-1,6919,3783,False,Excitatory neuron,0.8,Outside target region
+TGTGTTCGTATCCAAG-1,7109,3891,False,Excitatory neuron,0.6,Outside target region
+CCGCGTAGGTAAGGGC-1,6919,4001,False,Excitatory neuron,1.0,Outside target region
+CTGCGGGTGAAATGTT-1,7109,4109,False,Excitatory neuron,1.0,Outside target region
+TATCTACAGAGGTAAT-1,6920,4219,False,Excitatory neuron,0.8,Outside target region
+CTACTCTAGGCCCGGC-1,7110,4328,False,Excitatory neuron,1.0,Outside target region
+ACAAGCAGTGCCTAGC-1,6920,4437,False,Excitatory neuron,0.8,Outside target region
+TACAAGTCTCGTGCAT-1,7110,4546,False,Excitatory neuron,1.0,Outside target region
+TCGGAATGCGCTCTGA-1,6921,4655,False,Excitatory neuron,0.6000000000000001,Outside target region
+TCGCGTCCAGAAGGTC-1,7111,4764,False,Excitatory neuron,1.0,Outside target region
+TATGGCCCGGCCTCGC-1,6921,4873,False,Excitatory neuron,1.0,Outside target region
+GCTGGCATATTCACCT-1,7111,4982,False,Excitatory neuron,0.6000000000000001,Outside target region
+GTCAGAATAGTCTATG-1,6921,5091,False,Excitatory neuron,1.0,Outside target region
+GGCGTCCTATCCGCTG-1,7111,5200,False,Inhibitory neuron,0.8,Outside target region
+CGGAGTTTGAGAGACA-1,6922,5309,False,Inhibitory neuron,0.8,Outside target region
+AGCACTTAAGGACGCC-1,7112,5418,False,Inhibitory neuron,1.0,Outside target region
+TCCACAATGGTTTACG-1,6922,5528,False,Inhibitory neuron,0.4,Outside target region
+CCAACGATGCACTGAT-1,7112,5636,False,Inhibitory neuron,1.0,Outside target region
+ATTTACAGTTTACTGG-1,6923,5746,False,Astrocyte,0.8,Outside target region
+CCCTGAAATGAGTTGA-1,7113,5854,False,Inhibitory neuron,0.8,Outside target region
+CAAACGGTCGCACTTT-1,6923,5964,False,Inhibitory neuron,1.0,Outside target region
+TGATTCGTCTATCACT-1,7113,6073,False,Inhibitory neuron,1.0,Outside target region
+TCAGGTTCTTTGAGAA-1,6924,6182,False,Inhibitory neuron,1.0,Outside target region
+CACGCAGCGAGGCTTT-1,7114,6291,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTAAGCGCCTGACCCA-1,6924,6400,False,Inhibitory neuron,0.8,Outside target region
+CTTACACGGTATTCCA-1,7114,6509,False,Inhibitory neuron,1.0,Outside target region
+AAGGCTGTGCTCATCG-1,6925,6618,False,Inhibitory neuron,1.0,Outside target region
+GACCAGAGCCCTGTAG-1,7115,6727,False,Inhibitory neuron,1.0,Outside target region
+TCCCAGGCTTAGCTAA-1,6925,6836,False,Inhibitory neuron,0.8,Outside target region
+ATTGAAGATCTTAGTG-1,7115,6945,False,Excitatory neuron,0.6000000000000001,Outside target region
+AGTTCCTACAGAATTA-1,6925,7054,False,Inhibitory neuron,1.0,Outside target region
+GGGCTGGTTAGTCGCG-1,7115,7163,False,Inhibitory neuron,1.0,Outside target region
+GAAATGGCGGTGTTAG-1,6926,7273,False,Inhibitory neuron,1.0,Outside target region
+TACGAACACGACTTCA-1,7116,7381,False,Inhibitory neuron,1.0,Outside target region
+ACCACAAGTTTCTATC-1,6926,7491,False,Neuroblast,0.4,Outside target region
+ATATTTAACCCTCAAG-1,7116,7599,False,Astrocyte,0.4,Outside target region
+GATCATTCCAAACATT-1,6927,7709,False,Neuroblast,0.6,Outside target region
+TCCAGGCGAGTACGGT-1,7117,7817,False,Astrocyte,1.0,Outside target region
+GTTTGACCAAATCCTA-1,6927,7927,False,Inhibitory neuron,0.8,Outside target region
+CACAGCACCCACGGCA-1,7117,8036,False,Oligodendrocyte/OPC,0.8,Outside target region
+TGCAAGAATGACGTAA-1,6928,8145,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+GCGAAGCCATACCCGT-1,7118,8254,False,Oligodendrocyte/OPC,1.0,Outside target region
+TCCTTTCTTACGCTTA-1,6928,8363,False,Oligodendrocyte/OPC,1.0,Outside target region
+GCTGCTCTCCGGACAC-1,7118,8472,False,Oligodendrocyte/OPC,0.8,Outside target region
+ACTGTCTTCTTTAGAA-1,6929,8581,False,Oligodendrocyte/OPC,1.0,Outside target region
+TCAAACTTAGATTGTT-1,7119,8690,False,Oligodendrocyte/OPC,1.0,Outside target region
+CTATGTCACTAGCCCA-1,6929,8799,False,Astrocyte,1.0,Outside target region
+TGCGCAAAGCATTTGG-1,7119,8908,True,Astrocyte,0.8,Astrocyte
+TTAATGTAGACCAGGT-1,6930,9018,False,Astrocyte,1.0,Outside target region
+GGCGGTAGGATCATTG-1,7120,9126,True,Astrocyte,0.6000000000000001,Astrocyte
+GGCAATAGTCAATGAG-1,6930,9236,False,Astrocyte,0.8,Outside target region
+ACACGAGACTCCTTCT-1,7120,9344,True,Astrocyte,0.6000000000000001,Astrocyte
+GACACAAGGGAAGAAA-1,6930,9454,False,Oligodendrocyte/OPC,1.0,Outside target region
+TCAGCAAATGCATCTC-1,7120,9562,True,Inhibitory neuron,0.8,Inhibitory neuron
+GAGATCTGTCACTCCG-1,6931,9672,False,Oligodendrocyte/OPC,1.0,Outside target region
+ATGCCGGTCTTGCATA-1,7121,9781,True,Astrocyte,1.0,Astrocyte
+TTGGGCGGCGGTTGCC-1,6931,9890,False,Astrocyte,0.6000000000000001,Outside target region
+TTGTTGTGTGTCAAGA-1,7121,9999,True,Astrocyte,1.0,Astrocyte
+ACTGTACGATACACAT-1,6932,10108,True,Astrocyte,0.8,Astrocyte
+TCCACTTTATCTAGGT-1,7122,10217,True,Astrocyte,0.4,Astrocyte
+GGTCTGAGAATCTGGA-1,6932,10326,True,Neuroblast,1.0,Neuroblast
+TAGAAAGGTGGCGCTA-1,7122,10435,True,Astrocyte,0.6000000000000001,Astrocyte
+TATGTCTCATTGTGCC-1,6933,10544,True,Astrocyte,0.8,Astrocyte
+GGATTTCACTTCTATA-1,7123,10653,True,Inhibitory neuron,0.8,Inhibitory neuron
+TGAGTGGTCCGTGACG-1,6933,10763,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CGCTTTCTTGCATTCG-1,7123,10871,True,Inhibitory neuron,1.0,Inhibitory neuron
+ACCCAACGCCCGTGGC-1,6934,10981,True,Astrocyte,0.6000000000000001,Astrocyte
+GAACGTCTCATGGTCG-1,7124,11089,True,Inhibitory neuron,1.0,Inhibitory neuron
+AGGGTTCCCTTTGGTT-1,6934,11199,True,Astrocyte,0.6000000000000001,Astrocyte
+GTAGCTTCCTCTTGTT-1,7124,11307,True,Microglia,0.4,Microglia
+GCATGAGGGACGCGGC-1,6935,11417,True,Microglia,0.4,Microglia
+CTACCCTAAGGTCATA-1,7125,11526,True,Astrocyte,1.0,Astrocyte
+TCACCGCTCGGCACTC-1,6935,11635,False,Excitatory neuron,1.0,Outside target region
+GGCTCGCGTTGAGGTA-1,7125,11744,True,Astrocyte,0.4,Astrocyte
+CTAACGAAACTTGCTG-1,6935,11853,False,Excitatory neuron,1.0,Outside target region
+TTAAACTCGAATTCAT-1,7125,11962,False,Excitatory neuron,1.0,Outside target region
+TACTTTACTGAGCCGG-1,6936,12071,True,Excitatory neuron,1.0,Excitatory neuron
+GCTTGGATCGATTAGG-1,7126,12180,False,Excitatory neuron,1.0,Outside target region
+CGGTTATCCAACAGTG-1,6936,12289,False,Excitatory neuron,0.6000000000000001,Outside target region
+CAGACCTGTAAGTGTT-1,7126,12398,True,Excitatory neuron,1.0,Excitatory neuron
+GACGGTCAATAGAAGC-1,6937,12507,True,Astrocyte,0.8,Astrocyte
+CTGACTGCGCAGCTCG-1,7127,12616,False,Excitatory neuron,1.0,Outside target region
+CCATACCTTTACTTGT-1,6937,12726,True,Astrocyte,0.6,Astrocyte
+GTAATAAAGGGCTCCC-1,7127,12834,False,Excitatory neuron,0.8,Outside target region
+GTGAACTCCCATTCGA-1,6938,12944,False,Astrocyte,1.0,Outside target region
+GTGGTTACTTCTTTCG-1,7128,13052,False,Astrocyte,1.0,Outside target region
+TCAGAACCTCCACAGG-1,6938,13162,True,Astrocyte,0.8,Astrocyte
+TCCCACTCTCTTCCGG-1,7128,13271,False,Neuroblast,0.4,Outside target region
+ATCTTGACTTGTCCAA-1,6939,13380,False,Excitatory neuron,1.0,Outside target region
+TCGGGAACGTGCCTAG-1,7129,13489,False,Excitatory neuron,1.0,Outside target region
+GTTAGCCGTAAATCAA-1,6939,13598,False,Excitatory neuron,1.0,Outside target region
+ATTTACTAAGTCCATT-1,7129,13707,False,Excitatory neuron,1.0,Outside target region
+GGGTGCATATGAAAGC-1,6940,13816,False,Neuroblast,0.6,Outside target region
+TCCGAATGGTCCTGAG-1,7129,13925,False,Excitatory neuron,1.0,Outside target region
+TGATGGCTGTTTCTGA-1,6940,14034,False,Astrocyte,0.6000000000000001,Outside target region
+AAATAAGGTAGTGCCC-1,7130,14143,False,Astrocyte,0.4,Outside target region
+CCACTATCCGGGTCAC-1,6940,14252,False,Astrocyte,0.4,Outside target region
+ACACCACATAATTAGC-1,7130,14361,False,Astrocyte,0.6000000000000001,Outside target region
+CGCGGTAAGTCTAGCT-1,6941,14471,False,Excitatory neuron,0.8,Outside target region
+GCGGGCATTACGATGC-1,7131,14579,False,Astrocyte,0.6000000000000001,Outside target region
+AGGATTGCTTACGACA-1,6941,14689,False,Astrocyte,1.0,Outside target region
+GTCGTCTGGTTGGCTA-1,6942,14907,False,Astrocyte,1.0,Outside target region
+CCTCGGATGCTACCTG-1,7296,2691,False,Astrocyte,0.6000000000000001,Outside target region
+ATACGGTGAAGATGCA-1,7486,2800,False,Astrocyte,0.4,Outside target region
+ACATCAGCTGGGACGC-1,7296,2909,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GGTTGTGTAGCCTGGC-1,7486,3018,False,Inhibitory neuron,0.4,Outside target region
+CCTGCGTTCTACGCTT-1,7297,3127,False,Excitatory neuron,1.0,Outside target region
+GAACGTTAGGAAGACG-1,7487,3236,False,Excitatory neuron,1.0,Outside target region
+CTGATAGTGTATCTCA-1,7297,3346,False,Excitatory neuron,1.0,Outside target region
+TTCTGCGAGCGCCCTT-1,7487,3454,False,Excitatory neuron,1.0,Outside target region
+CTTTGGCGCTTTATAC-1,7298,3564,False,Neuroblast,0.6000000000000001,Outside target region
+TCCGAACTTGGCTTAC-1,7488,3672,False,Excitatory neuron,0.6000000000000001,Outside target region
+TAGATTCCTGGTTATT-1,7298,3782,False,Excitatory neuron,0.6000000000000001,Outside target region
+CCGACAAAGGGAGTGC-1,7488,3891,False,Excitatory neuron,0.8,Outside target region
+CCATGGCCCTTGTACC-1,7299,4000,False,Excitatory neuron,1.0,Outside target region
+GAAATATCACCATCAG-1,7489,4109,False,Excitatory neuron,0.8,Outside target region
+ACGAAATGGGCGGCAC-1,7299,4218,False,Excitatory neuron,0.8,Outside target region
+GTGAGCGTGCTGCACT-1,7489,4327,False,Excitatory neuron,1.0,Outside target region
+CCGCGGGTACGAAGAA-1,7300,4436,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TCCCTGGCTCGCTGGA-1,7490,4545,False,Excitatory neuron,1.0,Outside target region
+CAGCTTAGTAGGTAGC-1,7300,4654,False,Excitatory neuron,1.0,Outside target region
+CACGAAAGTTAGTCCC-1,7490,4763,False,Excitatory neuron,1.0,Outside target region
+ACCTAATCGACTTCCT-1,7300,4872,False,Excitatory neuron,0.8,Outside target region
+AAGTAGTGACGCGAGG-1,7490,4981,False,Astrocyte,0.6000000000000001,Outside target region
+TCCGATTACATTGCCG-1,7301,5091,False,Excitatory neuron,0.6000000000000001,Outside target region
+CCTCCGACAATTCAAG-1,7491,5199,False,Astrocyte,0.6000000000000001,Outside target region
+GTTCACAGGAGTCTAG-1,7301,5309,False,Inhibitory neuron,1.0,Outside target region
+CGAAGTTGCTCTGTGT-1,7491,5417,False,Inhibitory neuron,1.0,Outside target region
+GTCGGATATCTCAGAC-1,7302,5527,False,Inhibitory neuron,1.0,Outside target region
+CGCTCTCCGTAGATTA-1,7492,5635,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CAAGCAACGTCGGAGT-1,7302,5745,False,Inhibitory neuron,0.8,Outside target region
+CCATTCCCTGCCCACA-1,7492,5854,False,Inhibitory neuron,1.0,Outside target region
+CTTTGGCTTTAGTAAA-1,7303,5963,False,Inhibitory neuron,0.8,Outside target region
+GGCTATTAAGTTGTAT-1,7493,6072,False,Inhibitory neuron,1.0,Outside target region
+CCATTAGCGATAATCC-1,7303,6181,False,Inhibitory neuron,0.8,Outside target region
+TGTTCTTCCATTGACT-1,7493,6290,False,Inhibitory neuron,1.0,Outside target region
+AGATAACTTCAGGGCC-1,7304,6399,False,Excitatory neuron,0.4,Outside target region
+ATAGACGAAGAGAAAG-1,7494,6508,False,Inhibitory neuron,0.6,Outside target region
+GGCGGAGTAATATTAG-1,7304,6617,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TGACCCACGTTAGACA-1,7494,6726,False,Inhibitory neuron,1.0,Outside target region
+TCACAGGTTATTGGGC-1,7305,6836,False,Inhibitory neuron,0.6,Outside target region
+TCACGCATTGTAGATC-1,7495,6944,False,Inhibitory neuron,1.0,Outside target region
+TTGAAGAATTCCCAGG-1,7305,7054,False,Neuroblast,0.6,Outside target region
+AAATGGTCAATGTGCC-1,7495,7162,False,Inhibitory neuron,1.0,Outside target region
+TAGTGCCCTCCAGAGT-1,7305,7272,False,Inhibitory neuron,1.0,Outside target region
+GGTATTGCCGAGTTTA-1,7495,7380,False,Inhibitory neuron,0.8,Outside target region
+CGTATTAAGAGATCTA-1,7306,7490,False,Inhibitory neuron,1.0,Outside target region
+ACTGTCCAGGATTATA-1,7496,7599,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+CGGGCAGCTAAACCGC-1,7306,7708,False,Oligodendrocyte/OPC,1.0,Outside target region
+TTGCTGATCATGTTCG-1,7496,7817,False,Astrocyte,0.6000000000000001,Outside target region
+TATGGGTACGTATCGT-1,7307,7926,False,Oligodendrocyte/OPC,1.0,Outside target region
+CAGCTCACTGAGACAT-1,7497,8035,False,Endothelial,0.4,Outside target region
+GGGACTGCATAGATAG-1,7307,8144,False,Oligodendrocyte/OPC,1.0,Outside target region
+ACGCATTCGTGAGTAC-1,7497,8253,False,Astrocyte,0.8,Outside target region
+CTCTGGACGCCTGGTG-1,7308,8362,False,Oligodendrocyte/OPC,1.0,Outside target region
+AGGGTTTAGTTCGGGA-1,7498,8471,False,Inhibitory neuron,1.0,Outside target region
+GGGAGAACTCACAGTA-1,7308,8581,False,Astrocyte,0.6000000000000001,Outside target region
+ATCAATCTGGGCTGCA-1,7498,8689,True,Inhibitory neuron,1.0,Inhibitory neuron
+TCTTCGATACCAATAA-1,7309,8799,True,Astrocyte,0.6000000000000001,Astrocyte
+ACGTAGATTGCTGATG-1,7499,8907,False,Inhibitory neuron,1.0,Outside target region
+TCTTGATGCGTAGCGA-1,7309,9017,True,Astrocyte,0.8,Astrocyte
+GGGCTGCCTAGGGCGA-1,7499,9125,True,Inhibitory neuron,1.0,Inhibitory neuron
+CTCTCACAATCGATGA-1,7310,9235,True,Inhibitory neuron,1.0,Inhibitory neuron
+CCAAGCGTAACTCGTA-1,7500,9344,True,Inhibitory neuron,0.6,Inhibitory neuron
+ACAACAGCATGAGCTA-1,7310,9453,True,Inhibitory neuron,1.0,Inhibitory neuron
+GTCCCAACGTAAAGTA-1,7500,9562,True,Astrocyte,0.8,Astrocyte
+TCGGAGTACATGAGTA-1,7310,9671,True,Inhibitory neuron,1.0,Inhibitory neuron
+GGGAGTTAATGAGGCG-1,7500,9780,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CCGGGCGGTCTCGTCA-1,7311,9889,True,Astrocyte,1.0,Astrocyte
+CCGTAAGTTGGTCCCA-1,7501,9998,True,Inhibitory neuron,1.0,Inhibitory neuron
+GGAGGGCTTGGTTGGC-1,7311,10107,True,Astrocyte,0.6000000000000001,Astrocyte
+TCGGACGCCCAGCCCA-1,7501,10216,True,Astrocyte,0.8,Astrocyte
+TCTGTGCCATCATAGT-1,7312,10325,True,Astrocyte,1.0,Astrocyte
+GTACTGGAGTTAGACC-1,7502,10434,True,Inhibitory neuron,1.0,Inhibitory neuron
+GGAATGCGCTAGCGTG-1,7312,10544,True,Inhibitory neuron,0.8,Inhibitory neuron
+GTGTGAATAACTTAGG-1,7502,10652,True,Inhibitory neuron,0.8,Inhibitory neuron
+GGTCGGCCAGGAGCTT-1,7313,10762,True,Astrocyte,0.8,Astrocyte
+TAGCCGGCGGTCAGCG-1,7503,10870,True,Oligodendrocyte/OPC,0.4,Oligodendrocyte/OPC
+CGGGTGTACCCATTTA-1,7313,10980,True,Excitatory neuron,0.4,Excitatory neuron
+AGTGATTCAAGCAGGA-1,7503,11089,True,Oligodendrocyte/OPC,0.6,Oligodendrocyte/OPC
+GTTGGATTGAGAACAC-1,7314,11198,True,Astrocyte,0.8,Astrocyte
+CACACGCGCTGTCTTA-1,7504,11307,True,Astrocyte,1.0,Astrocyte
+TAGACGCCCGTACCGG-1,7314,11416,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GGTTTCAATCGGTCAG-1,7504,11525,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AATCTGCGTTGGGACG-1,7315,11634,True,Inhibitory neuron,0.4,Inhibitory neuron
+TTACGGATGGTTCGAG-1,7505,11743,True,Inhibitory neuron,0.8,Inhibitory neuron
+CGGCAGGGTCGGGTTG-1,7315,11852,True,Excitatory neuron,1.0,Excitatory neuron
+GCTTTCAGAGGAGGTG-1,7505,11961,True,Astrocyte,1.0,Astrocyte
+TCTTCCCATGGGCACA-1,7315,12070,True,Excitatory neuron,1.0,Excitatory neuron
+TACCGCGGACTTGCAG-1,7505,12179,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+AGAATTATGGATTCGA-1,7316,12289,True,Excitatory neuron,1.0,Excitatory neuron
+ATTGATGAGTCCTAAC-1,7506,12397,False,Excitatory neuron,1.0,Outside target region
+TAGGTCGCCGGAACTG-1,7316,12507,False,Excitatory neuron,1.0,Outside target region
+TAACCTACCGTCCGAG-1,7506,12615,False,Excitatory neuron,1.0,Outside target region
+CTTAGTAGGCCTACAG-1,7317,12725,False,Excitatory neuron,1.0,Outside target region
+CTAGATGTGAGTGTAA-1,7507,12833,True,Excitatory neuron,0.8,Excitatory neuron
+ACTCCCGAATTCGTTT-1,7317,12943,False,Excitatory neuron,1.0,Outside target region
+GTTCATCGTTTGGCTG-1,7507,13052,False,Excitatory neuron,1.0,Outside target region
+ACTTTACCCTCATGAA-1,7318,13161,False,Astrocyte,0.8,Outside target region
+GCGAGAGTTGCGTCCA-1,7508,13270,False,Excitatory neuron,1.0,Outside target region
+GTTCGGGCGTACCATT-1,7318,13379,True,Astrocyte,1.0,Astrocyte
+CGACTTTGTATAGCCT-1,7508,13488,False,Excitatory neuron,1.0,Outside target region
+GCCATCGATGCTGCAT-1,7319,13597,False,Astrocyte,1.0,Outside target region
+GCATTTCCAAGGCTCC-1,7509,13706,False,Excitatory neuron,1.0,Outside target region
+ATGTAAGGCTGCTCTT-1,7319,13815,False,Astrocyte,0.8,Outside target region
+ACGTTCGCAATCAATT-1,7509,13924,False,Astrocyte,1.0,Outside target region
+GTGACGAGGGTGACCC-1,7319,14034,False,Excitatory neuron,1.0,Outside target region
+ATTATAGCTACTTTAC-1,7509,14142,False,Astrocyte,1.0,Outside target region
+CGTGTGTTAAACCCTG-1,7320,14252,False,Astrocyte,1.0,Outside target region
+TTGGTATGGCTTGTGT-1,7510,14360,False,Excitatory neuron,1.0,Outside target region
+CATTCCCATTCCGTCG-1,7320,14470,False,Astrocyte,1.0,Outside target region
+TGCCGAAAGCGTATTC-1,7510,14578,False,Astrocyte,0.4,Outside target region
+AGTACGGCCCGTATCG-1,7865,2799,False,Oligodendrocyte/OPC,0.4,Outside target region
+TATCTAGCCTAAAGGA-1,7676,2909,False,Inhibitory neuron,0.4,Outside target region
+CACTCGGTTAGGAGGA-1,7866,3017,False,Astrocyte,1.0,Outside target region
+ATGTTCGTCGACCCAC-1,7676,3127,False,Excitatory neuron,0.4,Outside target region
+TTCCTCTGCCCGAATA-1,7866,3235,False,Excitatory neuron,1.0,Outside target region
+TTACTATCGGCTTCTC-1,7677,3345,False,Excitatory neuron,0.6000000000000001,Outside target region
+GCCGCATTAGTCCGGC-1,7867,3453,False,Excitatory neuron,1.0,Outside target region
+TAAGGGCTGGGAGAGG-1,7677,3563,False,Excitatory neuron,1.0,Outside target region
+TAAGCAGGCGACACGC-1,7867,3672,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AGCACTACCGGCCTGT-1,7678,3781,False,Excitatory neuron,1.0,Outside target region
+GAAAGCCCTTTGGACC-1,7868,3890,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GACCGACTGAAGCGTC-1,7678,3999,False,Excitatory neuron,1.0,Outside target region
+CGGTGAAGACTAAAGT-1,7868,4108,False,Excitatory neuron,1.0,Outside target region
+CCCTGCGCTACGCATA-1,7679,4217,False,Excitatory neuron,1.0,Outside target region
+TACTGGACAGCTCGGC-1,7869,4326,False,Excitatory neuron,0.8,Outside target region
+TTAGTAGGGCGGCGGG-1,7679,4435,False,Excitatory neuron,0.8,Outside target region
+GAGGCTATCAAAGTCG-1,7869,4544,False,Excitatory neuron,1.0,Outside target region
+TTACCATTGATTACCC-1,7680,4654,False,Excitatory neuron,0.6000000000000001,Outside target region
+ATACCACGGGCAACTT-1,7870,4762,False,Excitatory neuron,0.8,Outside target region
+TGTCCTAAGTCACCGC-1,7680,4872,False,Excitatory neuron,1.0,Outside target region
+AGGTAGGTACAAAGCT-1,7870,4980,False,Inhibitory neuron,0.8,Outside target region
+GGCATACAGGTAGCGG-1,7680,5090,False,Excitatory neuron,0.4,Outside target region
+TGTAGTGATCTATAAT-1,7870,5198,False,Inhibitory neuron,1.0,Outside target region
+TCCCGGGTGTGCTGCT-1,7681,5308,False,Inhibitory neuron,0.6,Outside target region
+TACGATGTTGATCATC-1,7871,5417,False,Excitatory neuron,0.6000000000000001,Outside target region
+CCTCTCTCCCATCTAG-1,7681,5526,False,Inhibitory neuron,1.0,Outside target region
+GCAGGACTATAGAATA-1,7871,5635,False,Excitatory neuron,1.0,Outside target region
+CTAGTGAAGGACAGGA-1,7682,5744,False,Excitatory neuron,0.8,Outside target region
+TACGAGAACTTCACGT-1,7872,5853,False,Inhibitory neuron,0.4,Outside target region
+CGTTGTTTCAATTCCC-1,7682,5962,False,Excitatory neuron,0.6,Outside target region
+GCAAATATTACGCTTT-1,7872,6071,False,Inhibitory neuron,0.6,Outside target region
+CCAATAGTGCCGTCGA-1,7683,6180,False,Inhibitory neuron,1.0,Outside target region
+ATTGCTGCTCCTCCAT-1,7873,6289,False,Inhibitory neuron,0.4,Outside target region
+GAGATCTGCTTGGCAT-1,7683,6399,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GCCGAAATTCCTACGT-1,7873,6507,False,Inhibitory neuron,1.0,Outside target region
+GGCACTCCACTGGGCA-1,7684,6617,False,Inhibitory neuron,0.6,Outside target region
+GGGTCACCGTGACGGT-1,7874,6725,False,Astrocyte,0.8,Outside target region
+CACTTAATCAGACGGA-1,7684,6835,False,Inhibitory neuron,0.8,Outside target region
+CGTTTCGCTCATTACA-1,7874,6943,False,Astrocyte,0.6000000000000001,Outside target region
+ATAAAGGCTCGGTCGT-1,7685,7053,False,Inhibitory neuron,1.0,Outside target region
+CACTAAAGTTGCCTAT-1,7875,7162,False,Microglia,0.6,Outside target region
+GTGCTCAAGTACTGTC-1,7685,7271,False,Inhibitory neuron,0.8,Outside target region
+CCATGCCTGTTTAGTA-1,7875,7380,False,Inhibitory neuron,1.0,Outside target region
+TCTAGTTATCAGAAGA-1,7685,7489,False,Oligodendrocyte/OPC,0.6,Outside target region
+TTGTAATCCGTACTCG-1,7875,7598,False,Oligodendrocyte/OPC,0.8,Outside target region
+TCCCAGCTTTAGTCTG-1,7686,7707,False,Oligodendrocyte/OPC,0.8,Outside target region
+CTACGCACGGAGTACC-1,7876,7816,False,Oligodendrocyte/OPC,0.8,Outside target region
+AAATTAACGGGTAGCT-1,7686,7925,False,Astrocyte,0.8,Outside target region
+CGGCCACGCACAAAGT-1,7876,8034,False,Astrocyte,0.8,Outside target region
+GAAGCGTGAGGAATTT-1,7687,8143,False,Astrocyte,1.0,Outside target region
+ATATCTTAGGGCCTTC-1,7877,8252,False,Inhibitory neuron,1.0,Outside target region
+ACGCGGGCCAAGGACA-1,7687,8362,False,Inhibitory neuron,1.0,Outside target region
+GCGAGTTCTGCAAAGA-1,7877,8470,True,Inhibitory neuron,1.0,Inhibitory neuron
+TATTCGTGCCAGAATA-1,7688,8580,False,Inhibitory neuron,1.0,Outside target region
+AGGGCTGCAGTTACAG-1,7878,8688,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CTAGCATAGTATAATG-1,7688,8798,True,Inhibitory neuron,0.6,Inhibitory neuron
+TAGGTTCGAGTTCGTC-1,7878,8907,True,Inhibitory neuron,0.8,Inhibitory neuron
+GAATTATAGTGAAAGG-1,7689,9016,True,Astrocyte,1.0,Astrocyte
+CTATCGGGTCTCAACA-1,7879,9125,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GCGCTAATTGAATAGA-1,7689,9234,True,Astrocyte,0.8,Astrocyte
+ATGCGACAGTCCCATT-1,7879,9343,True,Astrocyte,0.6000000000000001,Astrocyte
+GGTAGTGCTCGCACCA-1,7690,9452,True,Inhibitory neuron,0.8,Inhibitory neuron
+AAGCTCGTGCCAAGTC-1,7880,9561,True,Inhibitory neuron,1.0,Inhibitory neuron
+TATTCAATTCTAATCC-1,7690,9670,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TTCAAAGTCTCTAGCC-1,7880,9779,True,Excitatory neuron,0.4,Excitatory neuron
+TTGAATATGGACTTTC-1,7690,9888,True,Excitatory neuron,0.6,Excitatory neuron
+AAGAGCTCTTTATCGG-1,7880,9997,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TTACTCCGGCCGGGAA-1,7691,10107,True,Excitatory neuron,0.8,Excitatory neuron
+AAACGAGACGGTTGAT-1,7881,10215,True,Inhibitory neuron,0.8,Inhibitory neuron
+GCTAAGTAGTTTCTCT-1,7691,10325,True,Astrocyte,0.6000000000000001,Astrocyte
+ATAACGCCGGAGGGTC-1,7881,10433,True,Astrocyte,0.4,Astrocyte
+GGATCCGGAATATACT-1,7692,10543,True,Astrocyte,0.8,Astrocyte
+TGAAAGGACCTGACTC-1,7882,10651,True,Astrocyte,0.6000000000000001,Astrocyte
+TCCGCGGCAGCATCTG-1,7692,10761,True,Inhibitory neuron,0.4,Inhibitory neuron
+TGCATATGTCTGTCAC-1,7882,10870,True,Excitatory neuron,0.4,Excitatory neuron
+TGTAGGAGAAATTTCC-1,7693,10979,True,Astrocyte,0.8,Astrocyte
+AGTGAGACTTCCAGTA-1,7883,11088,True,Excitatory neuron,0.6,Excitatory neuron
+CCCAAACATGCTGCTC-1,7693,11197,True,Astrocyte,0.4,Astrocyte
+GCTTATGAAGCAGGAA-1,7883,11306,True,Inhibitory neuron,1.0,Inhibitory neuron
+TTCTAACCGAAGCTTA-1,7694,11415,True,Astrocyte,1.0,Astrocyte
+GGATGTCCTTACCGCA-1,7884,11524,True,Oligodendrocyte/OPC,0.8,Oligodendrocyte/OPC
+AGGGTGCTCTCGAGGG-1,7694,11633,True,Astrocyte,0.4,Astrocyte
+AACTCTCAATAGAGCG-1,7884,11742,True,Astrocyte,1.0,Astrocyte
+TCTGAATTCCGTACAA-1,7694,11852,True,Excitatory neuron,0.4,Excitatory neuron
+GCGTGGTACTGGGTTA-1,7884,11960,True,Oligodendrocyte/OPC,0.6000000000000001,Oligodendrocyte/OPC
+CGTCGGATAGTGTTGA-1,7695,12070,True,Astrocyte,0.6000000000000001,Astrocyte
+ATATGTCTCCCTAGCC-1,7885,12178,True,Inhibitory neuron,0.6,Inhibitory neuron
+TCTTTAAGACTATGAA-1,7695,12288,False,Astrocyte,0.8,Outside target region
+TCATTTAAGTCTCCGA-1,7885,12396,True,Astrocyte,1.0,Astrocyte
+GATATTGAGATTGGCG-1,7696,12506,True,Excitatory neuron,1.0,Excitatory neuron
+TGACATCGAGCGGACC-1,7886,12615,True,Astrocyte,0.6000000000000001,Astrocyte
+GCGTAAATGGCCATAA-1,7696,12724,False,Excitatory neuron,1.0,Outside target region
+ATTGTACAACTCGGCT-1,7886,12833,False,Excitatory neuron,1.0,Outside target region
+TACGCTATAGAAACCT-1,7697,12942,False,Excitatory neuron,1.0,Outside target region
+CACCCAAATCTTATGT-1,7887,13051,False,Excitatory neuron,1.0,Outside target region
+AGATGATGGAGTCTGG-1,7697,13160,False,Excitatory neuron,1.0,Outside target region
+CCACGGTGCCCGGTAG-1,7887,13269,False,Excitatory neuron,0.6000000000000001,Outside target region
+TCAAGAAATACTAGCT-1,7698,13378,False,Excitatory neuron,1.0,Outside target region
+AGGTATAATTGATAGT-1,7888,13487,False,Astrocyte,1.0,Outside target region
+CAAGGTCCTATAGGCT-1,7698,13597,False,Excitatory neuron,1.0,Outside target region
+CCGGCACGACCGTTTC-1,7888,13705,False,Astrocyte,1.0,Outside target region
+ACCTCCGTTATTCACC-1,7699,13815,False,Excitatory neuron,1.0,Outside target region
+GCAGCCTATATCACAT-1,7889,13923,False,Astrocyte,0.8,Outside target region
+GGTATAGTGACACATA-1,7699,14033,False,Astrocyte,1.0,Outside target region
+AAATTCCAGGTCCAAA-1,7889,14141,False,Astrocyte,1.0,Outside target region
+TCTTTAGCAGGCGAAC-1,7699,14251,False,Astrocyte,1.0,Outside target region
+TATTGACATTTCTGCC-1,7889,14360,False,Astrocyte,0.6000000000000001,Outside target region
+TCTGATCGGGTGCTAG-1,7700,14469,False,Microglia,0.6,Outside target region
+CATTGCGAAATGGGCG-1,8055,2908,False,Astrocyte,0.6000000000000001,Outside target region
+GTCTACTCAATTACAA-1,8245,3016,False,Inhibitory neuron,0.8,Outside target region
+TGTAATGACCACAATA-1,8056,3126,False,Excitatory neuron,0.4,Outside target region
+AAAGTCGACCCTCAGT-1,8246,3235,False,Excitatory neuron,1.0,Outside target region
+TACTCGGCACGCCGGG-1,8056,3344,False,Excitatory neuron,1.0,Outside target region
+AGGTGTATCGCCATGA-1,8246,3453,False,Excitatory neuron,1.0,Outside target region
+TGTGCTTTACGTAAGA-1,8057,3562,False,Excitatory neuron,0.6000000000000001,Outside target region
+AAACCTCATGAAGTTG-1,8247,3671,False,Excitatory neuron,0.6000000000000001,Outside target region
+TATAGGGTACTCATGA-1,8057,3780,False,Inhibitory neuron,0.8,Outside target region
+CCAGCTGATGGTACTT-1,8247,3889,False,Excitatory neuron,1.0,Outside target region
+AATATTGGAGTATTGA-1,8058,3998,False,Excitatory neuron,0.4,Outside target region
+GGCCCTCACCCACTTA-1,8248,4107,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AACCAAGACTTCTCTG-1,8058,4217,False,Excitatory neuron,0.6000000000000001,Outside target region
+TCGTATTACCCATTGC-1,8248,4325,False,Excitatory neuron,0.6000000000000001,Outside target region
+ATTCGACGCCGGGCCT-1,8059,4435,False,Excitatory neuron,1.0,Outside target region
+GGCGCAGGACATCTTC-1,8249,4543,False,Excitatory neuron,0.8,Outside target region
+GTACTCCCTTATCGCT-1,8059,4653,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGGTCTGTTGGGCGTA-1,8249,4761,False,Inhibitory neuron,1.0,Outside target region
+AATAACAACGCTCGGC-1,8060,4871,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CATACCCGTACCCAGT-1,8250,4980,False,Neuroblast,0.6,Outside target region
+ACAATCCATTTAAACC-1,8060,5089,False,Inhibitory neuron,0.8,Outside target region
+GTTACAATTGGTGACG-1,8250,5198,False,Inhibitory neuron,1.0,Outside target region
+TTGCCCTGATCACGGG-1,8060,5307,False,Inhibitory neuron,1.0,Outside target region
+CTAACCGCGCGCCCGT-1,8250,5416,False,Astrocyte,0.6000000000000001,Outside target region
+CTAAAGAATGCCTACT-1,8061,5525,False,Inhibitory neuron,1.0,Outside target region
+ACCCATCTTGAGGGTA-1,8251,5634,False,Inhibitory neuron,0.8,Outside target region
+GATCTTTGCAGGGTAT-1,8061,5743,False,Astrocyte,0.8,Outside target region
+GGGTACTTCATGAACT-1,8251,5852,False,Excitatory neuron,0.4,Outside target region
+GCCGCTTGTGAGAAAC-1,8062,5961,False,Inhibitory neuron,0.8,Outside target region
+CCTGTAAGACATGATA-1,8252,6070,False,Astrocyte,0.8,Outside target region
+CGACAGTTCGCGTTAT-1,8062,6180,False,Inhibitory neuron,0.8,Outside target region
+ACGATGCATATGTTAT-1,8252,6288,False,Inhibitory neuron,0.8,Outside target region
+TGTTCCGCTTCCATGA-1,8063,6398,False,Inhibitory neuron,0.8,Outside target region
+GGATGACGCGAGTTTA-1,8253,6506,False,Astrocyte,1.0,Outside target region
+GAAGTTTCCACTCAAT-1,8063,6616,False,Neuroblast,0.8,Outside target region
+GCGAGGCCCGAGCAGA-1,8253,6725,False,Astrocyte,0.8,Outside target region
+CATACTATGTAATTGT-1,8064,6834,False,Astrocyte,1.0,Outside target region
+CCAATGTCACAGCAAG-1,8254,6943,True,Astrocyte,1.0,Astrocyte
+GTTGGATTTGCGTTGG-1,8064,7052,False,Oligodendrocyte/OPC,1.0,Outside target region
+GGGAGGATGCCCGAAA-1,8254,7161,False,Astrocyte,1.0,Outside target region
+GATCGCGGGCTCTCCA-1,8065,7270,False,Astrocyte,0.8,Outside target region
+GTTCGCCATAAGTGCC-1,8255,7379,False,Astrocyte,0.4,Outside target region
+AGATTATAGGACGTTT-1,8065,7488,False,Neuroblast,0.4,Outside target region
+TCGAGACCAACACCGT-1,8255,7597,False,Oligodendrocyte/OPC,1.0,Outside target region
+TATGGGACCGAGCAGG-1,8065,7706,False,Microglia,0.4,Outside target region
+GATGCGTCCTGCATTC-1,8255,7815,False,Oligodendrocyte/OPC,1.0,Outside target region
+TATGGTCTGAGTAACA-1,8066,7925,False,Oligodendrocyte/OPC,1.0,Outside target region
+GCATAGAGCACTCAGG-1,8256,8033,False,Inhibitory neuron,0.6,Outside target region
+CTTCATTGTCAGTGGA-1,8066,8143,True,Inhibitory neuron,1.0,Inhibitory neuron
+GCAGATTAGGGATATC-1,8256,8251,False,Inhibitory neuron,1.0,Outside target region
+CCTGTCGCCCGTAAAT-1,8067,8361,True,Inhibitory neuron,1.0,Inhibitory neuron
+CAATTTCGTATAAGGG-1,8257,8469,True,Inhibitory neuron,0.6,Inhibitory neuron
+GTACACTTACCTGAAG-1,8067,8579,True,Inhibitory neuron,0.8,Inhibitory neuron
+CCAGCCTGGACCAATA-1,8257,8688,True,Inhibitory neuron,0.8,Inhibitory neuron
+ATGGAGCAGGCCGTGA-1,8068,8797,True,Inhibitory neuron,0.6,Inhibitory neuron
+GTCATTAGAGCGAACG-1,8258,8906,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AAGACTGCAAGCTACT-1,8068,9015,True,Inhibitory neuron,0.8,Inhibitory neuron
+CTAGTCACGTCTTAAG-1,8258,9124,True,Astrocyte,1.0,Astrocyte
+ACTCTTGTATAGTAAC-1,8069,9233,True,Inhibitory neuron,0.6,Inhibitory neuron
+ATTAGGCGATGCTTTC-1,8259,9342,True,Inhibitory neuron,1.0,Inhibitory neuron
+TTCGGGACTAATCGCG-1,8069,9451,True,Inhibitory neuron,0.8,Inhibitory neuron
+TGGACTGTTCGCTCAA-1,8259,9560,True,Astrocyte,0.8,Astrocyte
+AACGTGCGAAAGTCTC-1,8070,9670,True,Inhibitory neuron,0.4,Inhibitory neuron
+CCACCCAAGGAAAGTG-1,8259,9778,True,Astrocyte,0.8,Astrocyte
+CCGCACAAAGACCAAC-1,8070,9888,True,Inhibitory neuron,1.0,Inhibitory neuron
+GCGATTGTTAACGTTA-1,8260,9996,True,Excitatory neuron,0.6,Excitatory neuron
+ACTCGTCAGTAATCCC-1,8070,10106,True,Astrocyte,0.8,Astrocyte
+GGTGATAAGGAGCAGT-1,8260,10214,True,Inhibitory neuron,1.0,Inhibitory neuron
+AAGAGGCATGGATCGC-1,8071,10324,True,Inhibitory neuron,0.8,Inhibitory neuron
+CACGTTCGTGCTCTAG-1,8261,10433,True,Excitatory neuron,1.0,Excitatory neuron
+CTATTTGGTTACGGAT-1,8071,10542,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GTACAGAGGCAAGGGT-1,8261,10651,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GGGCCGGCCGAAGTAC-1,8072,10760,True,Inhibitory neuron,0.8,Inhibitory neuron
+CCTGAACGATATATTC-1,8262,10869,True,Excitatory neuron,0.4,Excitatory neuron
+CCGGGCTGCTCCATAC-1,8072,10978,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TACTTGTTAGTAGTCC-1,8262,11087,True,Excitatory neuron,0.4,Excitatory neuron
+CCTAGGCGTAGCGATC-1,8073,11196,True,Astrocyte,1.0,Astrocyte
+CTGGCGCACAGGTCTG-1,8263,11305,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+ACTTATACTTACCCGG-1,8073,11415,True,Excitatory neuron,0.4,Excitatory neuron
+GAAGTCTCCCTAGCGA-1,8263,11523,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+ACCGATGGTAGCATCG-1,8074,11633,True,Inhibitory neuron,1.0,Inhibitory neuron
+CGAGTTTATCGGACTG-1,8264,11741,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CATAACGGACAGTCGT-1,8074,11851,True,Inhibitory neuron,0.8,Inhibitory neuron
+TGACGATGCACTAGAA-1,8264,11959,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TAGGGAGCTTGGGATG-1,8074,12069,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AGGGTCGATGCGAACT-1,8264,12178,True,Oligodendrocyte/OPC,0.6,Oligodendrocyte/OPC
+TATATCCCTGGGAGGA-1,8075,12287,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+CATCTTACACCACCTC-1,8265,12396,True,Oligodendrocyte/OPC,0.6000000000000001,Oligodendrocyte/OPC
+GTGCGACAGGGAGTGT-1,8075,12505,True,Astrocyte,1.0,Astrocyte
+CCGATCTCAACCTTAT-1,8265,12614,False,Astrocyte,1.0,Outside target region
+ACGATCATCTTGTAAA-1,8076,12723,True,Astrocyte,1.0,Astrocyte
+GAAAGAACAGCGTTAT-1,8266,12832,False,Astrocyte,0.8,Outside target region
+CTAGGTCTGAAGGAAT-1,8076,12941,False,Astrocyte,0.8,Outside target region
+ATATCAACCTACAGAG-1,8266,13050,False,Astrocyte,1.0,Outside target region
+AAATAGCTTAGACTTT-1,8077,13159,False,Astrocyte,0.8,Outside target region
+GCGACATGTAAACATC-1,8267,13268,False,Astrocyte,0.8,Outside target region
+ATAAGTAGGGCGACTC-1,8077,13378,False,Inhibitory neuron,0.8,Outside target region
+GCGAGCGCATGCTCCC-1,8267,13486,False,Inhibitory neuron,1.0,Outside target region
+AGGGACCGGCTGCGTT-1,8078,13596,False,Inhibitory neuron,0.6,Outside target region
+CCTATGAAGTGGTGCC-1,8268,13704,True,Inhibitory neuron,1.0,Inhibitory neuron
+GCTTACGTAGTTAGTA-1,8078,13814,False,Inhibitory neuron,1.0,Outside target region
+CCTGTCCCTCACGTTA-1,8079,14032,False,Astrocyte,0.8,Outside target region
+GTTAAGTTAGAGTGGG-1,8079,14250,False,Excitatory neuron,0.4,Outside target region
+CCCTGACTAACAAATT-1,8435,2907,False,Astrocyte,1.0,Outside target region
+ACGCTGTGAGGCGTAG-1,8625,3016,False,Oligodendrocyte/OPC,0.6,Outside target region
+GCATACGAGGTCTTTA-1,8435,3125,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TCGGGATTCAAACATA-1,8625,3234,False,Excitatory neuron,1.0,Outside target region
+GGGCCCTACGAAAGGG-1,8436,3343,False,Excitatory neuron,1.0,Outside target region
+CGCCAAGAAGCCGAGT-1,8626,3452,False,Excitatory neuron,1.0,Outside target region
+GGTACATCTGGGACGA-1,8436,3561,False,Excitatory neuron,0.6000000000000001,Outside target region
+GGATGCTGGCGTTCCT-1,8626,3670,False,Excitatory neuron,1.0,Outside target region
+CCGATTCGAGGGACCC-1,8437,3779,False,Excitatory neuron,0.6000000000000001,Outside target region
+CCACTGGTGGCTGGTT-1,8627,3888,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GACAGGCACACACTAT-1,8437,3998,False,Excitatory neuron,0.8,Outside target region
+TCAACGCGACCGGCAG-1,8627,4106,False,Excitatory neuron,0.6000000000000001,Outside target region
+CTACGACTAGCTATAA-1,8438,4216,False,Inhibitory neuron,0.8,Outside target region
+CGGTTGACCTGGCATA-1,8628,4324,False,Excitatory neuron,1.0,Outside target region
+ATCCTGAATCGCTGCG-1,8438,4434,False,Excitatory neuron,1.0,Outside target region
+GTTTCATATCGTCGCT-1,8628,4543,False,Excitatory neuron,1.0,Outside target region
+ATAAATATTAGCAGCT-1,8439,4652,False,Excitatory neuron,1.0,Outside target region
+AAGAGGATGTACGCGA-1,8629,4761,False,Astrocyte,0.4,Outside target region
+TCCTGCGTTGATACTC-1,8439,4870,False,Excitatory neuron,0.8,Outside target region
+CGTGCATTGTCGACGC-1,8629,4979,False,Excitatory neuron,1.0,Outside target region
+CCGGGTTCGAGGTTAC-1,8440,5088,False,Excitatory neuron,1.0,Outside target region
+CCCAATTTCACAACTT-1,8630,5197,False,Excitatory neuron,1.0,Outside target region
+TGATTTATTAGCTGTG-1,8440,5306,False,Excitatory neuron,0.8,Outside target region
+TGGAAGAAGGGAACGT-1,8630,5415,False,Astrocyte,0.4,Outside target region
+GACGCTTGCTTCTAAA-1,8440,5524,False,Inhibitory neuron,1.0,Outside target region
+GGGAACGGGAGGTTAG-1,8630,5633,False,Inhibitory neuron,0.4,Outside target region
+GCGGCTCTGACGTACC-1,8441,5743,False,Inhibitory neuron,1.0,Outside target region
+ACGTTAGATTTGCCCG-1,8631,5851,False,Inhibitory neuron,1.0,Outside target region
+GAGAGGGCGCGAGGTT-1,8441,5961,False,Inhibitory neuron,0.8,Outside target region
+GCGTCTCTGCATTGGG-1,8631,6069,False,Inhibitory neuron,0.8,Outside target region
+GCAGCACACAGCCCAG-1,8442,6179,False,Excitatory neuron,0.6000000000000001,Outside target region
+CAGGCCGTTTGGGTGT-1,8632,6287,False,Neuroblast,0.8,Outside target region
+AACTCAAGTTAATTGC-1,8442,6397,False,Astrocyte,1.0,Outside target region
+CTTCGTAGATAGGTGA-1,8632,6506,False,Astrocyte,0.6000000000000001,Outside target region
+TGCAGAGTACCGAGCA-1,8443,6615,False,Astrocyte,0.8,Outside target region
+GAAGTGATTTATCGTG-1,8633,6724,False,Astrocyte,0.8,Outside target region
+CGCTACGGGACATTTA-1,8443,6833,False,Inhibitory neuron,0.8,Outside target region
+CCACACTGAGATATTA-1,8633,6942,False,Astrocyte,0.8,Outside target region
+CGATCCGACCCAGTGC-1,8444,7051,False,Astrocyte,1.0,Outside target region
+CTGTACTTCTTAGCAT-1,8634,7160,False,Astrocyte,1.0,Outside target region
+ACTTATTAGGATCGGT-1,8444,7269,False,Oligodendrocyte/OPC,1.0,Outside target region
+TAGTCCGCAGAGAATG-1,8634,7378,False,Astrocyte,0.8,Outside target region
+TTCACGAAAGGATCAC-1,8445,7488,False,Oligodendrocyte/OPC,0.6,Outside target region
+TACATTTCTAACGTGC-1,8635,7596,False,Oligodendrocyte/OPC,0.8,Outside target region
+ACCATATCCGCAATAA-1,8445,7706,False,Oligodendrocyte/OPC,1.0,Outside target region
+CACTCAAGAGCTATGG-1,8635,7814,False,Oligodendrocyte/OPC,1.0,Outside target region
+TGTACGAACAAATCCG-1,8445,7924,False,Oligodendrocyte/OPC,1.0,Outside target region
+ATCATCCAATATTTGT-1,8635,8032,False,Oligodendrocyte/OPC,1.0,Outside target region
+CGCTATTCTTAGGCTC-1,8446,8142,True,Inhibitory neuron,1.0,Inhibitory neuron
+TGGCAGCAGTAATAGT-1,8636,8251,False,Inhibitory neuron,0.8,Outside target region
+TCACGTGCCCGATTCA-1,8446,8360,True,Inhibitory neuron,1.0,Inhibitory neuron
+CATACGGCGTCTGGGC-1,8636,8469,True,Inhibitory neuron,0.8,Inhibitory neuron
+CACATGATTCAGCAAC-1,8447,8578,True,Inhibitory neuron,1.0,Inhibitory neuron
+GCTAGTAGAGCTTGTA-1,8637,8687,True,Astrocyte,0.4,Astrocyte
+TGCTGTTGAAGAACTC-1,8447,8796,True,Inhibitory neuron,0.8,Inhibitory neuron
+CGGAGCATGGCGATCC-1,8637,8905,True,Inhibitory neuron,0.6,Inhibitory neuron
+TAGCGTTGGGTCTTAC-1,8448,9014,True,Astrocyte,0.6000000000000001,Astrocyte
+GTAGCGGCTATACACT-1,8638,9123,True,Astrocyte,1.0,Astrocyte
+TAACATACAATGTGGG-1,8448,9233,True,Inhibitory neuron,1.0,Inhibitory neuron
+TCTTCGAATAGACGTT-1,8638,9341,True,Inhibitory neuron,0.4,Inhibitory neuron
+GATCGTGACTGATATC-1,8449,9451,True,Inhibitory neuron,1.0,Inhibitory neuron
+GATCCGGGAATTAACA-1,8639,9559,True,Inhibitory neuron,1.0,Inhibitory neuron
+TTATATACGCTGTCAC-1,8449,9669,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GTCGCGTAACCCGTTG-1,8639,9777,True,Inhibitory neuron,0.8,Inhibitory neuron
+AGCTCTAGACGTTCCA-1,8449,9887,True,Inhibitory neuron,1.0,Inhibitory neuron
+GTCAAGCGGACTCGGG-1,8639,9996,True,Inhibitory neuron,0.8,Inhibitory neuron
+CGAGGGACTGCGGTCG-1,8450,10105,True,Inhibitory neuron,1.0,Inhibitory neuron
+AATCGCCTCAGCGCCA-1,8640,10214,True,Excitatory neuron,0.4,Excitatory neuron
+CTTGTTGCTGAGTCAA-1,8450,10323,True,Astrocyte,1.0,Astrocyte
+GATATGAGACACTAAC-1,8640,10432,True,Inhibitory neuron,0.8,Inhibitory neuron
+TTATGATCTTAACGAA-1,8451,10541,True,Astrocyte,0.4,Astrocyte
+CGCCGCCCATGCCTGT-1,8641,10650,True,Inhibitory neuron,1.0,Inhibitory neuron
+CTGGGATAAATAATGG-1,8451,10759,True,Excitatory neuron,0.6,Excitatory neuron
+GTGCCCGTTCGGATTC-1,8641,10868,True,Excitatory neuron,0.8,Excitatory neuron
+TTCAATACTCTGAATC-1,8452,10977,True,Inhibitory neuron,1.0,Inhibitory neuron
+CGCACATGTCCACTAC-1,8642,11086,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AGAAGAGCGCCGTTCC-1,8452,11196,False,Inhibitory neuron,0.4,Outside target region
+GATAACTCGCACTGTG-1,8642,11304,True,Inhibitory neuron,0.8,Inhibitory neuron
+AGTCGACGGTCTCAAG-1,8453,11414,True,Excitatory neuron,0.8,Excitatory neuron
+GTGACCGCACACTACG-1,8643,11522,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GTATGTGGGTCTAGTT-1,8453,11632,True,Excitatory neuron,1.0,Excitatory neuron
+CTTGAGTTAGGGTAAT-1,8643,11741,True,Inhibitory neuron,1.0,Inhibitory neuron
+TTAGCTGATTTGCCGT-1,8454,11850,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GCTGTTGCTACCGAAC-1,8644,11959,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TATTACCATCCTGCTT-1,8454,12068,True,Astrocyte,0.4,Astrocyte
+TTGAATTCACGTGAGG-1,8644,12177,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CCATCTCACCAGTGAA-1,8454,12286,True,Inhibitory neuron,0.8,Inhibitory neuron
+CGCACGTGCGCTATCA-1,8644,12395,True,Astrocyte,0.6000000000000001,Astrocyte
+ACCCGGATGACGCATC-1,8455,12504,True,Astrocyte,0.2,Astrocyte
+CGCTAGAGACCGCTGC-1,8645,12613,True,Astrocyte,0.4,Astrocyte
+ATAGTTCCACCCACTC-1,8455,12722,True,Astrocyte,1.0,Astrocyte
+GCAGACCCAGCACGTA-1,8645,12831,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TAGACTACCTAGCGTT-1,8456,12941,True,Astrocyte,0.6000000000000001,Astrocyte
+GGTTCTACTCGTCTGA-1,8646,13049,True,Inhibitory neuron,1.0,Inhibitory neuron
+GACTCACCCACGTGAG-1,8456,13159,False,Astrocyte,0.8,Outside target region
+AGCTCTTCGTAACCTT-1,8646,13267,True,Inhibitory neuron,0.8,Inhibitory neuron
+ACTATCCAGGGCATGG-1,8457,13377,True,Inhibitory neuron,0.8,Inhibitory neuron
+AAGGATCGATCGCTTG-1,8647,13485,True,Inhibitory neuron,1.0,Inhibitory neuron
+ATATCGGTAGGGAGAT-1,8457,13595,False,Inhibitory neuron,1.0,Outside target region
+TTCCAGACGAGATTTA-1,8647,13704,True,Inhibitory neuron,1.0,Inhibitory neuron
+GACCGACGTGAAAGCA-1,8458,13813,True,Inhibitory neuron,1.0,Inhibitory neuron
+AGTGGCTCCGTCGGCC-1,8815,2906,False,Astrocyte,0.8,Outside target region
+GATCGGATAGAACCAT-1,9005,3015,False,Astrocyte,1.0,Outside target region
+GCTACAGTACGGACCG-1,8815,3124,False,Inhibitory neuron,0.8,Outside target region
+TCTATTACTAGAGGAT-1,9005,3233,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTCAGGCGTCAAAGCC-1,8815,3342,False,Excitatory neuron,1.0,Outside target region
+AGACCGGGAAACCCTG-1,9005,3451,False,Excitatory neuron,0.8,Outside target region
+AGAGATCTCTAAAGCG-1,8816,3561,False,Excitatory neuron,1.0,Outside target region
+CCCTGCCCAATCCGCT-1,9006,3669,False,Excitatory neuron,1.0,Outside target region
+GTGGCGGTCCCAGCGT-1,8816,3779,False,Excitatory neuron,0.8,Outside target region
+GCATTGTAATTCATAT-1,9006,3887,False,Excitatory neuron,0.6000000000000001,Outside target region
+CCGTTCCGAATCTCGG-1,8817,3997,False,Excitatory neuron,0.6000000000000001,Outside target region
+AGCTTGATCTTAACTT-1,9007,4105,False,Inhibitory neuron,1.0,Outside target region
+CCTGTACTCACGCCCA-1,8817,4215,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AAGTGACGACCGAATT-1,9007,4324,False,Excitatory neuron,0.8,Outside target region
+CTCACTTGGCTGGTAA-1,8818,4433,False,Excitatory neuron,0.8,Outside target region
+CGCCTGGCCTACGTAA-1,9008,4542,False,Excitatory neuron,1.0,Outside target region
+CCCGTAAGTCTAGGCC-1,8818,4651,False,Inhibitory neuron,0.8,Outside target region
+TTGGACATGTGGCTTA-1,9008,4760,False,Excitatory neuron,1.0,Outside target region
+ATTACGCGCTGGCAGG-1,8819,4869,False,Excitatory neuron,0.8,Outside target region
+ACGCGCTACACAGGGT-1,9009,4978,False,Excitatory neuron,0.6,Outside target region
+TACGTTTACCGGCAAT-1,8819,5087,False,Excitatory neuron,0.4,Outside target region
+CGAAACGCAATTCATG-1,9009,5196,False,Excitatory neuron,0.8,Outside target region
+TAGTCTAACAACGAGA-1,8820,5306,False,Excitatory neuron,0.8,Outside target region
+TTGCATGCTGATCACG-1,9010,5414,False,Excitatory neuron,1.0,Outside target region
+TCTGGGTAGCGCTCAT-1,8820,5524,False,Astrocyte,0.8,Outside target region
+ACATCGGTCAGCCGCG-1,9010,5632,False,Excitatory neuron,0.4,Outside target region
+AGATACCGGTGTTCAC-1,8820,5742,False,Excitatory neuron,0.4,Outside target region
+GATTACTGAATTTGGG-1,9010,5850,False,Inhibitory neuron,0.8,Outside target region
+TCCAACTTTAAATTCT-1,8821,5960,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TCCTAGCAAAGAAGCT-1,9011,6069,False,Inhibitory neuron,1.0,Outside target region
+GTCTATCTGAGTTTCT-1,8821,6178,False,Inhibitory neuron,1.0,Outside target region
+GATGTTCAATCCACGA-1,9011,6287,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AGTTAAACACTTGCGA-1,8822,6396,False,Oligodendrocyte/OPC,0.4,Outside target region
+AGCTCTTTACTCAGTT-1,9012,6505,False,Neuroblast,0.4,Outside target region
+ATCCAGGATTCGTGAA-1,8822,6614,False,Astrocyte,0.8,Outside target region
+AGTCAACACCACCATC-1,9012,6723,False,Astrocyte,0.6000000000000001,Outside target region
+CGATACCTCGCGGACA-1,8823,6832,True,Astrocyte,0.6000000000000001,Astrocyte
+TACAACGCACAACTCA-1,9013,6941,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AATTAAAGGTCGGCGT-1,8823,7051,False,Astrocyte,0.4,Outside target region
+TACGCAGTTCTTTCCT-1,9013,7159,False,Neuroblast,0.6,Outside target region
+GACCGTGCTGACGGTG-1,8824,7269,False,Oligodendrocyte/OPC,0.8,Outside target region
+GGCAAATTACTTTACT-1,9014,7377,False,Astrocyte,0.8,Outside target region
+GGTACAAACATGCTAT-1,8824,7487,False,Astrocyte,0.4,Outside target region
+CGGGCCTTCTTTGTAA-1,9014,7595,False,Astrocyte,0.4,Outside target region
+CGTGAAGTTAATTCAC-1,8825,7705,False,Oligodendrocyte/OPC,1.0,Outside target region
+ATAGTGAAGCGTTCTC-1,9014,7814,False,Oligodendrocyte/OPC,1.0,Outside target region
+TACGCCATATTCTAAT-1,8825,7923,False,Oligodendrocyte/OPC,1.0,Outside target region
+GCCGGGTTAGGGTCGC-1,9015,8032,False,Oligodendrocyte/OPC,0.8,Outside target region
+TACATAGGCATACACC-1,8825,8141,False,Astrocyte,0.6000000000000001,Outside target region
+GCCGATTGGCCAAGCT-1,9015,8250,False,Inhibitory neuron,1.0,Outside target region
+CTGCCATGCATCACAT-1,8826,8359,True,Inhibitory neuron,0.6,Inhibitory neuron
+TTATGAATGAAAGGGA-1,9016,8468,True,Inhibitory neuron,0.8,Inhibitory neuron
+GCTGAGGCGTGAGTAT-1,8826,8577,True,Inhibitory neuron,1.0,Inhibitory neuron
+GCGCCGTTCCACGATA-1,9016,8686,True,Astrocyte,0.6000000000000001,Astrocyte
+CGCATGGTGCGATGCT-1,8827,8795,True,Inhibitory neuron,0.8,Inhibitory neuron
+AGGTTTCACACACCTT-1,9017,8904,True,Inhibitory neuron,1.0,Inhibitory neuron
+CAAGGATCGCATGTTC-1,8827,9014,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+ACGTTAATGTCGAAGA-1,9017,9122,True,Oligodendrocyte/OPC,0.4,Oligodendrocyte/OPC
+TCCAGAGCACCGGTTC-1,8828,9232,True,Astrocyte,1.0,Astrocyte
+GATTCGACGGTTCACG-1,9018,9340,True,Astrocyte,0.8,Astrocyte
+GTTTCTGCAGTCTCCC-1,8828,9450,True,Astrocyte,0.6000000000000001,Astrocyte
+GCTGCACGGTTTCTTA-1,9018,9559,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CGTGCAGACTGGGACA-1,8829,9668,True,Inhibitory neuron,1.0,Inhibitory neuron
+GTGTTACTATGCGTCC-1,9019,9777,True,Inhibitory neuron,0.8,Inhibitory neuron
+TCCTCGGGCTGGGCTT-1,8829,9886,True,Inhibitory neuron,0.8,Inhibitory neuron
+GTGAGGACACTTAAGG-1,9019,9995,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+ATACGCCGGCGAAACC-1,8829,10104,True,Astrocyte,1.0,Astrocyte
+TCTGCCAGAAACTGCA-1,9019,10213,True,Inhibitory neuron,0.8,Inhibitory neuron
+TTCTGCGGGTTAGCGG-1,8830,10322,True,Inhibitory neuron,0.8,Inhibitory neuron
+CTCGGTACCACTGCTC-1,9020,10431,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GTAAGTAACAGTCTGG-1,8830,10540,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+GTGCGTGTATATGAGC-1,9020,10649,True,Excitatory neuron,0.4,Excitatory neuron
+ATTTGTCTTGGGAGCT-1,8831,10759,True,Inhibitory neuron,1.0,Inhibitory neuron
+CCTCGGACCGGGATAG-1,9021,10867,True,Excitatory neuron,0.6,Excitatory neuron
+TAGGTGCTCGCCTAGC-1,8831,10977,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CTTTAGGAACACTGTT-1,9021,11085,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+TCGGGCCGTCGTGGTA-1,8832,11195,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AGTGCTTGCACGAATA-1,9022,11303,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TGCAGTTTCCTCCCAT-1,8832,11413,True,Excitatory neuron,0.6,Excitatory neuron
+TGAGAGATTTACCACG-1,9022,11522,True,Inhibitory neuron,1.0,Inhibitory neuron
+GAAACAGATGACCACC-1,8833,11631,True,Excitatory neuron,0.4,Excitatory neuron
+AGCAACATATCTTATT-1,9023,11740,True,Inhibitory neuron,0.8,Inhibitory neuron
+CAAGTGTGGTTGCAAA-1,8833,11849,True,Inhibitory neuron,0.8,Inhibitory neuron
+GCCTCATCTGGAAATA-1,9023,11958,True,Excitatory neuron,0.4,Excitatory neuron
+AACCCTACTGTCAATA-1,8834,12067,True,Inhibitory neuron,0.8,Inhibitory neuron
+ACGTATTACTCCGATC-1,9024,12176,True,Inhibitory neuron,0.8,Inhibitory neuron
+TCTGGGAACCTTTGAA-1,8834,12285,True,Inhibitory neuron,0.8,Inhibitory neuron
+GCTCGCTCATGTCCAA-1,9024,12394,True,Inhibitory neuron,0.8,Inhibitory neuron
+GCGCAAGAGCGCGCTG-1,8834,12504,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TTGACGCTCCATGAGC-1,9024,12612,True,Inhibitory neuron,0.8,Inhibitory neuron
+TATAGATGGTCGCAGT-1,8835,12722,True,Inhibitory neuron,0.8,Inhibitory neuron
+TTACATGCCACAACTA-1,9025,12830,True,Inhibitory neuron,0.8,Inhibitory neuron
+ACATGGCGCCAAAGTA-1,8835,12940,True,Astrocyte,1.0,Astrocyte
+TATGGTTAGTGGGAGA-1,9025,13048,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CATGACTTCGCTGAAT-1,8836,13158,False,Astrocyte,1.0,Outside target region
+ACCACCAATGTAACAA-1,9026,13267,True,Inhibitory neuron,0.8,Inhibitory neuron
+TCTTAGAGCTCCAATT-1,8836,13376,False,Astrocyte,0.8,Outside target region
+CCACGAATTTAACCTC-1,9026,13485,True,Inhibitory neuron,0.8,Inhibitory neuron
+TTCTTGCTAGCATCTC-1,8837,13594,False,Inhibitory neuron,1.0,Outside target region
+ACACCTTACTACTTGC-1,9027,13703,True,Inhibitory neuron,0.8,Inhibitory neuron
+AGTCGGTTGCGTGAGA-1,8837,13812,True,Inhibitory neuron,1.0,Inhibitory neuron
+ACCTACAGTATGTGGT-1,9027,13921,True,Inhibitory neuron,1.0,Inhibitory neuron
+GAGGATAAACAGTGCT-1,8838,14030,True,Inhibitory neuron,0.8,Inhibitory neuron
+TTCCGGTATCTGTGTC-1,9028,14139,False,Astrocyte,1.0,Outside target region
+CATAAGCTCTCCGTCT-1,9195,3124,False,Astrocyte,0.8,Outside target region
+CCTTCTCAGCGTTCCT-1,9385,3232,False,Astrocyte,0.4,Outside target region
+TGCAGCTACGTACTTC-1,9195,3342,False,Excitatory neuron,1.0,Outside target region
+CTCTACACTGGCGATT-1,9385,3450,False,Excitatory neuron,0.8,Outside target region
+TGCAGATCGTCCTAGG-1,9195,3560,False,Excitatory neuron,1.0,Outside target region
+TGCCAAAGTCAGACTT-1,9385,3668,False,Excitatory neuron,0.8,Outside target region
+ACAATAGTCGTACGTT-1,9196,3778,False,Excitatory neuron,0.8,Outside target region
+CATGCCAACTCGCAAA-1,9386,3887,False,Excitatory neuron,0.8,Outside target region
+TGCAGAACTATATCGT-1,9196,3996,False,Excitatory neuron,1.0,Outside target region
+TCGTGTCACGCTGACA-1,9386,4105,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGATCAGGGAACTGCT-1,9197,4214,False,Inhibitory neuron,0.8,Outside target region
+CTTGCAACCGCCTCCT-1,9387,4323,False,Excitatory neuron,0.4,Outside target region
+AGCCCATACATGTAAG-1,9197,4432,False,Excitatory neuron,0.8,Outside target region
+ATCCAATGGAGGGTCC-1,9387,4541,False,Astrocyte,0.4,Outside target region
+AAACCGGGTAGGTACC-1,9198,4650,False,Astrocyte,0.8,Outside target region
+GCAACCACGGCCGCGT-1,9388,4759,False,Excitatory neuron,1.0,Outside target region
+CGCTTATTCCCGGTCG-1,9198,4869,False,Excitatory neuron,1.0,Outside target region
+TTACTCTGGTACGTAC-1,9388,4977,False,Excitatory neuron,0.4,Outside target region
+GTGGTTTCCGCCTTTC-1,9199,5087,False,Inhibitory neuron,0.6000000000000001,Outside target region
+ATAGGCGGCTATAGAA-1,9389,5195,False,Excitatory neuron,0.8,Outside target region
+GTGCCATCACACGGTG-1,9199,5305,False,Excitatory neuron,0.8,Outside target region
+CCCAACATACGTCGCG-1,9389,5413,False,Excitatory neuron,0.4,Outside target region
+CGGTGCAGATAGAACG-1,9200,5523,False,Excitatory neuron,1.0,Outside target region
+GGGCGGGTTCCCTACG-1,9390,5632,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGAGCCATACAGTCTC-1,9200,5741,False,Inhibitory neuron,0.8,Outside target region
+CTCCGCCCACATGAGG-1,9390,5850,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GTTGAACCGGTTCCAT-1,9200,5959,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TTGACTACCATATGGT-1,9390,6068,False,Inhibitory neuron,0.8,Outside target region
+ACCATCGTATATGGTA-1,9201,6177,False,Inhibitory neuron,0.4,Outside target region
+TGCGTAAGAACCTGAT-1,9391,6286,False,Inhibitory neuron,0.8,Outside target region
+AGAAGGTTGCCGAATT-1,9201,6395,False,Inhibitory neuron,1.0,Outside target region
+AGGACGACCCATTAGA-1,9391,6504,False,Inhibitory neuron,0.8,Outside target region
+GGTGCTGGTACACATT-1,9202,6613,False,Astrocyte,0.8,Outside target region
+GCGCTATGCCGAGGCA-1,9392,6722,False,Inhibitory neuron,0.6000000000000001,Outside target region
+ACCCGGTTACACTTCC-1,9202,6832,False,Astrocyte,1.0,Outside target region
+TAACTCATCCGCGCGG-1,9392,6940,False,Astrocyte,0.8,Outside target region
+CACAATGAGCTGCTAT-1,9203,7050,False,Astrocyte,0.8,Outside target region
+GTTACTTTGGGCCTAG-1,9393,7158,True,Oligodendrocyte/OPC,0.6000000000000001,Oligodendrocyte/OPC
+GGGCCCGTCTTAAACA-1,9203,7268,False,Inhibitory neuron,0.8,Outside target region
+GAAATTGTCTCTATAA-1,9393,7377,False,Astrocyte,1.0,Outside target region
+GGCGCATGAATTGATG-1,9204,7486,False,Oligodendrocyte/OPC,1.0,Outside target region
+CATATAGGTACAGTCA-1,9394,7595,False,Oligodendrocyte/OPC,1.0,Outside target region
+TCAACGAGGAGACAAA-1,9204,7704,False,Oligodendrocyte/OPC,1.0,Outside target region
+TTGCACAATTCAGAAA-1,9394,7813,False,Oligodendrocyte/OPC,1.0,Outside target region
+CATCGGACGGGTTAAT-1,9204,7922,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+ATTAAACATGCGGACC-1,9394,8031,False,Oligodendrocyte/OPC,1.0,Outside target region
+TATCTACCACAGCGGG-1,9205,8140,False,Astrocyte,1.0,Outside target region
+CGAGACCCTAGAGTGT-1,9395,8249,False,Oligodendrocyte/OPC,1.0,Outside target region
+ACATCGATCGTTTACC-1,9205,8358,True,Inhibitory neuron,1.0,Inhibitory neuron
+ATCGACCCAATACAGA-1,9395,8467,True,Inhibitory neuron,0.4,Inhibitory neuron
+GAATCTGAACATTCTC-1,9206,8577,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AGTTCCTATTTATGTT-1,9396,8685,True,Oligodendrocyte/OPC,0.8,Oligodendrocyte/OPC
+CAGTCTGTATACTGGG-1,9206,8795,True,Inhibitory neuron,0.8,Inhibitory neuron
+GGAGACGACACCTTTG-1,9396,8903,True,Astrocyte,0.6000000000000001,Astrocyte
+CCTAAATTAACGGTTC-1,9207,9013,True,Astrocyte,0.8,Astrocyte
+GCTACGACTTATTGGG-1,9397,9121,True,Inhibitory neuron,0.4,Inhibitory neuron
+CTGTGCAGGGTAGGTC-1,9207,9231,True,Inhibitory neuron,0.8,Inhibitory neuron
+ACGCCGCTAGACGACC-1,9397,9340,True,Oligodendrocyte/OPC,0.4,Oligodendrocyte/OPC
+ACTTGACTCCCTCTTT-1,9208,9449,True,Excitatory neuron,0.4,Excitatory neuron
+CGCCTCCCTCCTCTAT-1,9398,9558,True,Inhibitory neuron,1.0,Inhibitory neuron
+CTAGATTTACGACGGC-1,9208,9667,True,Inhibitory neuron,0.8,Inhibitory neuron
+GATGCTGTATTTCATC-1,9398,9776,True,Inhibitory neuron,0.4,Inhibitory neuron
+TGCGTTTGTTGACACT-1,9209,9885,True,Oligodendrocyte/OPC,0.6000000000000001,Oligodendrocyte/OPC
+CGTGCCCTCCCGAAGA-1,9399,9994,True,Astrocyte,0.8,Astrocyte
+ACTCTCTGACTTAGGT-1,9209,10103,True,Astrocyte,0.4,Astrocyte
+CTGGGTAGGCAGTTAA-1,9399,10212,True,Excitatory neuron,0.4,Excitatory neuron
+GTTTGGCCCAAGTTAT-1,9209,10322,True,Astrocyte,0.4,Astrocyte
+GAATGTGGTCCGGATT-1,9399,10430,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CCCAGTTAAGGCGCCG-1,9210,10540,True,Astrocyte,0.8,Astrocyte
+CGGTACTAGAATCAAA-1,9400,10648,True,Excitatory neuron,0.4,Excitatory neuron
+GCTTAATGTAACTAAC-1,9210,10758,True,Inhibitory neuron,0.8,Inhibitory neuron
+AGGACAGTCGAATCCC-1,9400,10866,True,Astrocyte,1.0,Astrocyte
+GACAGCCAGACCTGAC-1,9211,10976,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GGCGAAATCTAACTTG-1,9401,11085,True,Excitatory neuron,1.0,Excitatory neuron
+CTGGTAACACATAGAA-1,9211,11194,True,Excitatory neuron,1.0,Excitatory neuron
+TAGCCATTTCAAAGTC-1,9401,11303,True,Excitatory neuron,0.6,Excitatory neuron
+GGGATTTACCGCACCT-1,9212,11412,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+ATGCCATTTGCGACCA-1,9402,11521,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GAATAGACGCGACCCA-1,9212,11630,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+TGTATGGCGCAGACAG-1,9402,11739,True,Inhibitory neuron,0.8,Inhibitory neuron
+GGATGAAGATCGCTGA-1,9213,11848,True,Inhibitory neuron,0.8,Inhibitory neuron
+CGACAATTTGATCTAA-1,9403,11957,True,Inhibitory neuron,0.8,Inhibitory neuron
+AAAGTTGACTCCCGTA-1,9213,12067,True,Inhibitory neuron,0.8,Inhibitory neuron
+CGCGGCTCAACTTGAA-1,9403,12175,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CACGCGGAACTGTTGC-1,9214,12285,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+TCTTAGAGTGAACTCT-1,9404,12393,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AGTCCATTGGCTGATG-1,9214,12503,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TTAAGATAGGATTGAC-1,9404,12611,True,Inhibitory neuron,0.8,Inhibitory neuron
+ACATCCTGGTAACTGT-1,9214,12721,True,Excitatory neuron,0.6,Excitatory neuron
+CACCTTGGCGCCTTTG-1,9404,12830,True,Inhibitory neuron,1.0,Inhibitory neuron
+GCTAGACCGTCTACTG-1,9215,12939,True,Inhibitory neuron,0.8,Inhibitory neuron
+CGGCCCAGGTATATCC-1,9405,13048,True,Inhibitory neuron,0.8,Inhibitory neuron
+GTCCATTACTGCTACG-1,9215,13157,True,Inhibitory neuron,1.0,Inhibitory neuron
+GGGTTTAGGATAGGAT-1,9405,13266,True,Inhibitory neuron,0.8,Inhibitory neuron
+TAATTAGGACATCCGT-1,9216,13375,True,Inhibitory neuron,0.8,Inhibitory neuron
+GCTCCCAGTCGGTCCA-1,9406,13484,True,Inhibitory neuron,0.8,Inhibitory neuron
+ATTCGTGCTATCTCTT-1,9216,13593,True,Inhibitory neuron,1.0,Inhibitory neuron
+GTTAACTATGTTGTCA-1,9406,13702,True,Inhibitory neuron,1.0,Inhibitory neuron
+GCTCCGCTCGCTTCAG-1,9217,13811,True,Excitatory neuron,0.6,Excitatory neuron
+GCAACGGCTAGTTATG-1,9407,13920,True,Astrocyte,0.4,Astrocyte
+AATCGCGCAGAGGACT-1,9217,14030,True,Excitatory neuron,0.4,Excitatory neuron
+TACATCCCTATCCCTG-1,9574,3123,False,Inhibitory neuron,0.4,Outside target region
+GTGGGAAGACTGAATC-1,9764,3231,False,Astrocyte,0.8,Outside target region
+TCAACATCGACCGAGA-1,9575,3341,False,Astrocyte,0.6000000000000001,Outside target region
+CTATGTGAGTCACGGC-1,9765,3450,False,Excitatory neuron,0.4,Outside target region
+CCGAACACTGGGCCTC-1,9575,3559,False,Excitatory neuron,1.0,Outside target region
+AAACTTGCAAACGTAT-1,9765,3668,False,Excitatory neuron,0.8,Outside target region
+AGGGCGAGCAGCTGAT-1,9575,3777,False,Excitatory neuron,1.0,Outside target region
+AACACGAGACGCGGCC-1,9765,3886,False,Excitatory neuron,1.0,Outside target region
+TGACGAATATTTCCCT-1,9576,3995,False,Excitatory neuron,0.8,Outside target region
+TCGGAGAGTATCGGGA-1,9766,4104,False,Excitatory neuron,0.8,Outside target region
+CAAATCTCTCACAAGG-1,9576,4213,False,Excitatory neuron,0.4,Outside target region
+AGGCCCTAGAACGCCA-1,9766,4322,False,Inhibitory neuron,0.8,Outside target region
+TAGAGATCATGCAACT-1,9577,4431,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TTGTTTCCATACAACT-1,9767,4540,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GAGAGGTGCATTCTGG-1,9577,4650,False,Excitatory neuron,0.4,Outside target region
+GTGGACCAACCCGATT-1,9767,4758,False,Excitatory neuron,0.8,Outside target region
+CTGGGCCTGCTATATC-1,9578,4868,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CATAGTCCACAAGAAC-1,9768,4976,False,Excitatory neuron,1.0,Outside target region
+TTGACATGAACGTGGA-1,9578,5086,False,Excitatory neuron,1.0,Outside target region
+GGTTACCACCCTCGGG-1,9768,5195,False,Excitatory neuron,1.0,Outside target region
+TACCGGTCGTTTCCAT-1,9579,5304,False,Excitatory neuron,1.0,Outside target region
+CGAGTACTAAAGAGGA-1,9769,5413,False,Excitatory neuron,0.8,Outside target region
+GCAAGAATTCCTTGGC-1,9579,5522,False,Excitatory neuron,1.0,Outside target region
+TCGCCGAAGTTGCGTC-1,9769,5631,False,Excitatory neuron,1.0,Outside target region
+TTGAGAGTACTGCTAA-1,9579,5740,False,Excitatory neuron,0.8,Outside target region
+GCCACAATTTAAGGAC-1,9769,5849,False,Excitatory neuron,1.0,Outside target region
+ATATTCAGTTAAACCT-1,9580,5958,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGAGTGCCTCTTAAAT-1,9770,6067,False,Excitatory neuron,0.6000000000000001,Outside target region
+ATCAGACGGCACGCCG-1,9580,6176,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GTGCGAAATCGAACAC-1,9770,6285,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GTGCCGCTTCAAAGGT-1,9581,6395,False,Inhibitory neuron,1.0,Outside target region
+GATACGATGGGAGTCA-1,9771,6503,False,Inhibitory neuron,0.4,Outside target region
+GACACTGAGTTCAGTG-1,9581,6613,False,Inhibitory neuron,1.0,Outside target region
+ATCCTGCGTGGAATGG-1,9771,6721,False,Inhibitory neuron,0.6000000000000001,Outside target region
+ATCCTACCTAAGCTCT-1,9582,6831,False,Neuroblast,0.6000000000000001,Outside target region
+AGTGATATGAGTAGTT-1,9772,6939,False,Oligodendrocyte/OPC,0.4,Outside target region
+ATGATGCAATGGTACA-1,9582,7049,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+GAAACCGAATTACCTT-1,9772,7158,False,Oligodendrocyte/OPC,0.8,Outside target region
+AGTGACCTACTTTACG-1,9583,7267,False,Oligodendrocyte/OPC,1.0,Outside target region
+CAAATGTCCTTCCGTG-1,9773,7376,False,Oligodendrocyte/OPC,1.0,Outside target region
+TTACTGGGATATTTCA-1,9583,7485,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+CTTGCCCAGGCTCTAC-1,9773,7594,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+AAATCGTGTACCACAA-1,9584,7703,False,Oligodendrocyte/OPC,0.8,Outside target region
+GTGATCATAGATCTGC-1,9774,7812,False,Oligodendrocyte/OPC,1.0,Outside target region
+TGGCAGATTACGATCA-1,9584,7921,False,Oligodendrocyte/OPC,1.0,Outside target region
+TCACCCTCTTAAGATT-1,9774,8030,False,Oligodendrocyte/OPC,0.8,Outside target region
+CAGGATATATCGTTGT-1,9584,8140,False,Oligodendrocyte/OPC,1.0,Outside target region
+CCTGACCACCGATGGT-1,9774,8248,False,Oligodendrocyte/OPC,1.0,Outside target region
+CTAAAGGGAAATAGGA-1,9585,8358,False,Oligodendrocyte/OPC,1.0,Outside target region
+CCGCTATCAGCACCAG-1,9775,8466,False,Astrocyte,1.0,Outside target region
+CTTTAGTGCTATTATT-1,9585,8576,False,Astrocyte,1.0,Outside target region
+CGGGAATTTATGTAAA-1,9775,8684,False,Astrocyte,0.6000000000000001,Outside target region
+TACGACTGCCTCTTAG-1,9586,8794,True,Astrocyte,0.8,Astrocyte
+AAACTGCTGGCTCCAA-1,9776,8903,True,Astrocyte,1.0,Astrocyte
+GTACGTTTGCCCGTCA-1,9586,9012,True,Astrocyte,0.8,Astrocyte
+GGCAAGGCGAAATAGC-1,9776,9121,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GATCTTGGAGGGCATA-1,9587,9230,True,Astrocyte,0.6000000000000001,Astrocyte
+AGCGTGGTATTCTACT-1,9777,9339,True,Inhibitory neuron,0.8,Inhibitory neuron
+CTAAGGGAATGATTGG-1,9587,9448,True,Inhibitory neuron,0.8,Inhibitory neuron
+CATGGTAAGTAGCGTT-1,9777,9557,True,Oligodendrocyte/OPC,0.4,Oligodendrocyte/OPC
+CGTTGAGCGACCGTCG-1,9588,9666,True,Inhibitory neuron,0.6,Inhibitory neuron
+TGCCCGTACCGTTAAA-1,9778,9775,True,Inhibitory neuron,0.4,Inhibitory neuron
+ACAAGGGCAGGCTCTG-1,9588,9885,True,Astrocyte,0.4,Astrocyte
+GAGATCTTCCATGACA-1,9778,9993,True,Inhibitory neuron,1.0,Inhibitory neuron
+AATGACGTAGGATGTC-1,9589,10103,True,Inhibitory neuron,0.8,Inhibitory neuron
+GTGGTGGCCAAGTGAA-1,9779,10211,True,Astrocyte,0.6000000000000001,Astrocyte
+TCCCGTGTGCAATTTG-1,9589,10321,True,Astrocyte,0.4,Astrocyte
+ACATCGTATGCAATGG-1,9779,10429,True,Inhibitory neuron,1.0,Inhibitory neuron
+GCGAAACTTAACTGGA-1,9589,10539,True,Inhibitory neuron,0.8,Inhibitory neuron
+AATTGAACGCTCTGGT-1,9779,10648,True,Inhibitory neuron,1.0,Inhibitory neuron
+ACAAATGGTAGTGTTT-1,9590,10757,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+ATGGTCGCGTGGTTTC-1,9780,10866,True,Inhibitory neuron,0.8,Inhibitory neuron
+TGTTATTGTATGTGGC-1,9590,10975,True,Inhibitory neuron,0.8,Inhibitory neuron
+TTCCGGTTACCCACTT-1,9780,11084,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GAGTGTGCGGTACCCA-1,9591,11193,True,Excitatory neuron,1.0,Excitatory neuron
+CAAGATATTATAACGT-1,9781,11302,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+ACACACCAGGACCAGT-1,9591,11411,True,Inhibitory neuron,0.8,Inhibitory neuron
+ATGGGCCTCGGCCTCT-1,9781,11520,True,Astrocyte,0.4,Astrocyte
+AAGGTGATAAACCAGC-1,9592,11629,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+TCTTACTTATGCCTCT-1,9782,11738,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AAAGTGTGATTTATCT-1,9592,11848,True,Excitatory neuron,0.8,Excitatory neuron
+TGCTCCACAGTTCTTA-1,9782,11956,True,Inhibitory neuron,1.0,Inhibitory neuron
+CTGGCTGATTCATCCT-1,9593,12066,True,Excitatory neuron,0.4,Excitatory neuron
+TAAGGCTGAATCCCTC-1,9783,12174,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TCTAGTGATATCGTGG-1,9593,12284,True,Inhibitory neuron,1.0,Inhibitory neuron
+TCGAAGAACCGAGCAC-1,9783,12393,True,Excitatory neuron,0.6,Excitatory neuron
+GACAAACATATGCAGG-1,9594,12502,True,Excitatory neuron,0.8,Excitatory neuron
+AAGTCAATTGTCGTCA-1,9784,12611,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AGTGAACAAACTTCTC-1,9594,12720,True,Astrocyte,0.8,Astrocyte
+CATGATGGAAGTTAGC-1,9784,12829,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AAGTGCCTTGACTGTA-1,9594,12938,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+ATCGCCAGTCAACATT-1,9784,13047,True,Inhibitory neuron,1.0,Inhibitory neuron
+ACCGCGGTGGAAGTCG-1,9595,13156,True,Inhibitory neuron,0.6,Inhibitory neuron
+TCTTCTATAACCCGCC-1,9785,13265,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CACATTTCTTGTCAGA-1,9595,13374,True,Inhibitory neuron,0.8,Inhibitory neuron
+TAGCGTCCCTCGATTG-1,9785,13483,True,Astrocyte,0.4,Astrocyte
+GTTCGGATCGGGAACA-1,9596,13593,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+CAAACTCGCGACGCCG-1,9786,13701,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GTCTTGTAGCTATTCA-1,9596,13811,True,Inhibitory neuron,0.8,Inhibitory neuron
+CGAACGGCCGGACAAC-1,10144,3231,False,Astrocyte,1.0,Outside target region
+GCAACACACTAGAACT-1,9954,3340,False,Inhibitory neuron,0.4,Outside target region
+ACTCCCATTCCTAAAG-1,10144,3449,False,Inhibitory neuron,0.4,Outside target region
+ACCTGCGTGTCATGTT-1,9955,3558,False,Excitatory neuron,0.8,Outside target region
+TACTTTCCGCACGCCA-1,10144,3667,False,Excitatory neuron,1.0,Outside target region
+AGGTCAGGTGAGAGTG-1,9955,3776,False,Excitatory neuron,0.6000000000000001,Outside target region
+TCCTCCTAAGACATTC-1,10145,3885,False,Excitatory neuron,1.0,Outside target region
+ATGTGAAAGCCTAATG-1,9955,3994,False,Excitatory neuron,1.0,Outside target region
+AGTCGGCTCAACTTTA-1,10145,4103,False,Excitatory neuron,1.0,Outside target region
+CGATCTGTTGGAGGAC-1,9956,4213,False,Inhibitory neuron,1.0,Outside target region
+ACGGGAGTGTCGGCCC-1,10146,4321,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTAACTTCAGGTAGGA-1,9956,4431,False,Neuroblast,0.6000000000000001,Outside target region
+CCACGGAGCCATAAGA-1,10146,4539,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CTTCTATGTTGAAGTA-1,9957,4649,False,Astrocyte,0.6000000000000001,Outside target region
+CACCGTTGCGCGATAT-1,10147,4757,False,Excitatory neuron,0.8,Outside target region
+TCTAGCAATCTCCGCC-1,9957,4867,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AGTTTGGCCAGACCTA-1,10147,4976,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTGTAAGGACCTAAGT-1,9958,5085,False,Excitatory neuron,0.8,Outside target region
+AAATTTGCGGGTGTGG-1,10148,5194,False,Inhibitory neuron,1.0,Outside target region
+AAGTTCGGCCAACAGG-1,9958,5303,False,Excitatory neuron,0.8,Outside target region
+CCGCTTACCTCACTCT-1,10148,5412,False,Inhibitory neuron,0.6000000000000001,Outside target region
+ATCACGTGCTAATTAA-1,9959,5521,False,Excitatory neuron,0.8,Outside target region
+GGTGAAGTACAGGGAT-1,10149,5630,False,Excitatory neuron,0.8,Outside target region
+GCTGTATTACTGGCCC-1,9959,5739,False,Excitatory neuron,0.6,Outside target region
+AACGGCCATCTCCGGT-1,10149,5848,False,Excitatory neuron,0.6000000000000001,Outside target region
+TAAGTAACATCTTGAC-1,9959,5958,False,Excitatory neuron,1.0,Outside target region
+TTCTTGAGCCGCGCTA-1,10149,6066,False,Excitatory neuron,0.6000000000000001,Outside target region
+AGTGCGTAGCTCGTAA-1,9960,6176,False,Excitatory neuron,0.8,Outside target region
+GGGATGGTCGTAACCG-1,10150,6284,False,Excitatory neuron,0.4,Outside target region
+GTCTGGGCGGTCGAGA-1,9960,6394,False,Inhibitory neuron,0.8,Outside target region
+CGGAACGTAAACATAG-1,10150,6502,False,Inhibitory neuron,0.4,Outside target region
+TGCGACACCCTAGTGC-1,9961,6612,False,Inhibitory neuron,1.0,Outside target region
+CAAACGAGTATCGCAG-1,10151,6721,False,Astrocyte,0.4,Outside target region
+TCAGTAGGGACTATAA-1,9961,6830,False,Astrocyte,0.6000000000000001,Outside target region
+GCGGTTCCCTATCATG-1,10151,6939,False,Inhibitory neuron,1.0,Outside target region
+GTGACTTCAGTAGTGC-1,9962,7048,False,Astrocyte,0.6000000000000001,Outside target region
+CGTCACGTCCATTGGT-1,10152,7157,False,Inhibitory neuron,0.8,Outside target region
+ATAAGTTACCGCGACG-1,9962,7266,False,Astrocyte,0.8,Outside target region
+CTGAATCCGAGACCTC-1,10152,7375,False,Oligodendrocyte/OPC,1.0,Outside target region
+TACGACGCTTGCTGCG-1,9963,7484,False,Oligodendrocyte/OPC,0.8,Outside target region
+GAATTCACCCGGGTGT-1,10153,7593,False,Oligodendrocyte/OPC,1.0,Outside target region
+GGGTGACACCTTAACT-1,9963,7703,False,Astrocyte,1.0,Outside target region
+TGAGTAAATTAGCGTA-1,10153,7811,False,Oligodendrocyte/OPC,1.0,Outside target region
+GAGTCCGCTTACCGGA-1,9964,7921,False,Oligodendrocyte/OPC,1.0,Outside target region
+GGCGCGTTCGAGTTTA-1,10154,8029,False,Oligodendrocyte/OPC,1.0,Outside target region
+ATTCATATACTGTCCA-1,9964,8139,False,Oligodendrocyte/OPC,0.8,Outside target region
+ATAAACGGACCCGTAA-1,10154,8247,False,Oligodendrocyte/OPC,1.0,Outside target region
+GTCGTACCATCTCGGG-1,9964,8357,False,Inhibitory neuron,1.0,Outside target region
+ATAATAGCTGTTGAAT-1,10154,8466,False,Inhibitory neuron,0.8,Outside target region
+TTCCGCGTGAGGCGAT-1,9965,8575,False,Inhibitory neuron,0.8,Outside target region
+TACCGGCTCACTGCCC-1,10155,8684,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GTATCTTTCATAACCA-1,9965,8793,False,Inhibitory neuron,0.4,Outside target region
+GTTACCTACAACTTGC-1,10155,8902,False,Astrocyte,0.8,Outside target region
+TGACTATAATCCTTTC-1,9966,9011,False,Inhibitory neuron,0.4,Outside target region
+AAATACCTATAAGCAT-1,10156,9120,False,Astrocyte,0.6000000000000001,Outside target region
+TTATTAGAGCGTGTTC-1,9966,9229,True,Inhibitory neuron,0.8,Inhibitory neuron
+ATGTGGACATCTTGAT-1,10156,9338,False,Inhibitory neuron,0.8,Outside target region
+GTACGCTTCATTGCAC-1,9967,9447,True,Inhibitory neuron,0.8,Inhibitory neuron
+CACATATTAGCAGGAT-1,10157,9556,True,Inhibitory neuron,0.8,Inhibitory neuron
+CAAGAGGGCGGAGTAC-1,9967,9666,True,Inhibitory neuron,0.8,Inhibitory neuron
+TCGCAAAGATGCATTT-1,10157,9774,True,Astrocyte,0.6000000000000001,Astrocyte
+GTCGTTATTCGCTTAT-1,9968,9884,True,Astrocyte,0.4,Astrocyte
+TCGTGTACTATGGATG-1,10158,9992,True,Inhibitory neuron,0.8,Inhibitory neuron
+GCGGAGAGGGAGAACG-1,9968,10102,True,Astrocyte,0.4,Astrocyte
+TCACAGGGAATCGCAA-1,10158,10211,True,Inhibitory neuron,1.0,Inhibitory neuron
+GACTGCACCAGCCCAG-1,9969,10320,True,Astrocyte,0.8,Astrocyte
+TCCGCTGTCATCCCGG-1,10159,10429,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AGATACTCAAGATCGA-1,9969,10538,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+ACTGAATGGCGAAAGT-1,10159,10647,True,Excitatory neuron,0.4,Excitatory neuron
+TCCTACATCCACGGCC-1,9969,10756,True,Astrocyte,0.4,Astrocyte
+TTCAGCCCTGGTCCAC-1,10159,10865,True,Astrocyte,0.6000000000000001,Astrocyte
+TTAGAGTTTAGAAGGA-1,9970,10974,True,Inhibitory neuron,1.0,Inhibitory neuron
+GGTTAGCTATATGTCT-1,10160,11083,True,Excitatory neuron,0.6,Excitatory neuron
+CTGGTTTCGAGCAAGA-1,9970,11192,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+TGGGCCCATACTAATT-1,10160,11301,True,Inhibitory neuron,0.8,Inhibitory neuron
+ACTTATTTATGTGCCA-1,9971,11411,True,Excitatory neuron,0.6,Excitatory neuron
+TTAGTTATTCGTGGCA-1,10161,11519,True,Excitatory neuron,0.6,Excitatory neuron
+AACCGCTAAGGGATGC-1,9971,11629,True,Excitatory neuron,0.8,Excitatory neuron
+ATACGTCCACTCCTGT-1,10161,11737,True,Inhibitory neuron,1.0,Inhibitory neuron
+CGACACGCTCCGACAG-1,9972,11847,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TCTGAACTCGTACCCG-1,10162,11955,True,Inhibitory neuron,1.0,Inhibitory neuron
+AGGATATAGGGATTTA-1,9972,12065,True,Inhibitory neuron,0.8,Inhibitory neuron
+GTGATCACTAACGCCT-1,10162,12174,True,Oligodendrocyte/OPC,1.0,Oligodendrocyte/OPC
+ACCGGGCCTTTGTTGA-1,9973,12283,True,Astrocyte,1.0,Astrocyte
+TTGACAGGAGCTCCCG-1,10163,12392,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CTCTTCTATTGACTGG-1,9973,12501,True,Excitatory neuron,0.6,Excitatory neuron
+CGTGGCCGAATATCTA-1,10163,12610,True,Astrocyte,0.6000000000000001,Astrocyte
+GGTTTAGCCTTTCTTG-1,9973,12719,True,Excitatory neuron,0.6,Excitatory neuron
+TCAAGGTTACTACACC-1,10163,12828,True,Excitatory neuron,0.8,Excitatory neuron
+TTGACTATTGTCCGGC-1,9974,12937,True,Astrocyte,0.4,Astrocyte
+CGGGAATATAGTATAC-1,10164,13046,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+GCAACAGCAGTATGCG-1,9974,13156,True,Excitatory neuron,0.6,Excitatory neuron
+ATCAAACACTGTTCCA-1,10164,13264,True,Excitatory neuron,0.8,Excitatory neuron
+TGGGCAATAGTTGGGT-1,9975,13374,True,Excitatory neuron,0.8,Excitatory neuron
+TGAATGTCAGCCGGCC-1,10165,13482,True,Excitatory neuron,0.8,Excitatory neuron
+CGGCTCTAAAGCTGCA-1,9975,13592,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+ATCAGCTCGTCCACTA-1,10523,3230,False,Astrocyte,0.4,Outside target region
+AGGATCACGCGATCTG-1,10334,3339,False,Excitatory neuron,0.8,Outside target region
+AAATGGCCCGTGCCCT-1,10524,3448,False,Astrocyte,0.4,Outside target region
+CAGTACCAGTTTACGT-1,10334,3557,False,Excitatory neuron,0.4,Outside target region
+GGTCGTAAGCTCGCAC-1,10524,3666,False,Excitatory neuron,1.0,Outside target region
+CGTTCATGGTGCGCGT-1,10334,3776,False,Excitatory neuron,1.0,Outside target region
+GACTACAAAGCGGTGG-1,10524,3884,False,Excitatory neuron,1.0,Outside target region
+CAGCTGGCGTAACCGT-1,10335,3994,False,Excitatory neuron,1.0,Outside target region
+ACTCGTAACCCGTCCT-1,10525,4102,False,Excitatory neuron,0.6000000000000001,Outside target region
+CATATGTCAGGCTACG-1,10335,4212,False,Excitatory neuron,0.6000000000000001,Outside target region
+GCCCGACTTCTTCCCG-1,10525,4320,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CTGGCATCCGAATGAG-1,10336,4430,False,Inhibitory neuron,0.8,Outside target region
+AAGTGCGTTAGAATCT-1,10526,4539,False,Excitatory neuron,0.8,Outside target region
+AGAAGTGATTCGTGAT-1,10336,4648,False,Excitatory neuron,0.6000000000000001,Outside target region
+TACCTTAAGATTTCCC-1,10526,4757,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AATGACAGCAATGTCT-1,10337,4866,False,Excitatory neuron,0.6,Outside target region
+TCAACGCAGGAAATAA-1,10527,4975,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TATTCCTCCGCCCACT-1,10337,5084,False,Excitatory neuron,0.6000000000000001,Outside target region
+ATCAAACGAAGGTTTG-1,10527,5193,False,Excitatory neuron,0.4,Outside target region
+TTGATTAGCTGTTTCT-1,10338,5302,False,Excitatory neuron,0.6000000000000001,Outside target region
+CTGCTGAGGCCACGAA-1,10528,5411,False,Excitatory neuron,1.0,Outside target region
+CCGTGTTAAATTCCAT-1,10338,5521,False,Excitatory neuron,0.6000000000000001,Outside target region
+CACGTCGGCAACCTCT-1,10528,5629,False,Excitatory neuron,0.8,Outside target region
+GTATTCTGAGAAACGA-1,10339,5739,False,Excitatory neuron,1.0,Outside target region
+CGGTGCGCGTTGGTCC-1,10529,5847,False,Excitatory neuron,0.6000000000000001,Outside target region
+GTGATTCGCCGCTCAA-1,10339,5957,False,Excitatory neuron,1.0,Outside target region
+GCCCGCGCGTAAACGG-1,10529,6065,False,Excitatory neuron,1.0,Outside target region
+AACGTACTGTGGGTAC-1,10339,6175,False,Excitatory neuron,1.0,Outside target region
+GAGTATGCCCGCCTTG-1,10529,6284,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGATTCTGTCGCCGGT-1,10340,6393,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GGGCGGCAAATGAATT-1,10530,6502,False,Inhibitory neuron,1.0,Outside target region
+TTCCAATCTGGCTATC-1,10340,6611,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GGAACCGTGTAAATTG-1,10530,6720,False,Inhibitory neuron,0.8,Outside target region
+TTGGTCACACTCGTAA-1,10341,6829,False,Inhibitory neuron,1.0,Outside target region
+CGAACCCGCATGCGTC-1,10531,6938,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GGGCGTCACCACGTAA-1,10341,7047,False,Inhibitory neuron,1.0,Outside target region
+TACCAGAAGTAGGTTC-1,10531,7156,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TTGGATATCGTCTACG-1,10342,7265,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TAGATATGGACTGGAA-1,10532,7374,False,Inhibitory neuron,1.0,Outside target region
+GCGACGATAGTTGTAC-1,10342,7484,False,Oligodendrocyte/OPC,1.0,Outside target region
+CTGGATTTACACTTGA-1,10532,7592,False,Astrocyte,1.0,Outside target region
+GTTATATTATCTCCCT-1,10343,7702,False,Astrocyte,0.6000000000000001,Outside target region
+TATTCCACTCAGCTCG-1,10533,7810,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+CTGTTACCCAATCTAG-1,10343,7920,False,Oligodendrocyte/OPC,1.0,Outside target region
+ACGCGAAGTCAGACGA-1,10533,8029,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+GATAGGTAACGTTGAC-1,10344,8138,False,Oligodendrocyte/OPC,0.8,Outside target region
+TGTTCGTATTGCGGTG-1,10534,8247,False,Astrocyte,0.8,Outside target region
+GGTCAGTGGGTCCCAC-1,10344,8356,False,Oligodendrocyte/OPC,0.8,Outside target region
+AATTCTAGAGTTAGGC-1,10534,8465,False,Astrocyte,1.0,Outside target region
+GTTTACGTTCCATCTG-1,10344,8574,False,Inhibitory neuron,1.0,Outside target region
+AGACCCACCGCTGATC-1,10534,8683,False,Inhibitory neuron,1.0,Outside target region
+TCTAGCATGCCCAGAA-1,10345,8792,False,Inhibitory neuron,0.6,Outside target region
+CCCGCAGCGCGAACTA-1,10535,8901,False,Inhibitory neuron,0.6,Outside target region
+CTCTATTTGGCTGCAG-1,10345,9010,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TTCTGCCGCGCCTAGA-1,10535,9119,False,Astrocyte,0.6000000000000001,Outside target region
+ACTCCCTAGAATAGTA-1,10346,9229,True,Astrocyte,0.4,Astrocyte
+CCGAACCTTCCCGGCC-1,10536,9337,False,Inhibitory neuron,1.0,Outside target region
+TCAGACGCTATAGAAG-1,10346,9447,False,Inhibitory neuron,1.0,Outside target region
+CAGGCGCCATGCTAGG-1,10536,9555,False,Inhibitory neuron,1.0,Outside target region
+CACTCGAGCTGAACAA-1,10347,9665,True,Inhibitory neuron,1.0,Inhibitory neuron
+ACAAGGAAATCCGCCC-1,10537,9773,True,Inhibitory neuron,0.8,Inhibitory neuron
+ACCACGTGCAGCTATA-1,10347,9883,True,Astrocyte,0.4,Astrocyte
+ACGGCGACGATGGGAA-1,10537,9992,False,Astrocyte,1.0,Outside target region
+TTACTAAAGGACTTTA-1,10348,10101,True,Astrocyte,1.0,Astrocyte
+GGCTGAAATAGCAAAG-1,10538,10210,False,Inhibitory neuron,1.0,Outside target region
+TTAGACGAGTCACCTC-1,10348,10319,True,Astrocyte,0.6000000000000001,Astrocyte
+GTAGTCGCGGGAATCA-1,10538,10428,True,Neuroblast,0.6,Neuroblast
+GCAAACCCTACATTAT-1,10349,10537,True,Astrocyte,0.6000000000000001,Astrocyte
+GTTAAAGTAGGACTGG-1,10538,10646,True,Astrocyte,1.0,Astrocyte
+ACCCTCCCTTGCTATT-1,10349,10755,True,Inhibitory neuron,0.4,Inhibitory neuron
+CATGTCTCATTTATGG-1,10539,10864,True,Astrocyte,1.0,Astrocyte
+AATAGAATCTGTTTCA-1,10349,10974,True,Inhibitory neuron,0.8,Inhibitory neuron
+TCTCATGAGATAGGGT-1,10539,11082,True,Astrocyte,0.4,Astrocyte
+ATGACTATGCGACATT-1,10350,11192,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+CCTAACCCAAACAAGT-1,10540,11300,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AGTCAAGATGACACTT-1,10350,11410,True,Oligodendrocyte/OPC,0.6000000000000001,Oligodendrocyte/OPC
+CGGGAGCTTCAGTGTA-1,10540,11518,True,Astrocyte,0.8,Astrocyte
+CCACAGTACCCATCCT-1,10351,11628,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+GAGCGCGCACGAGTAG-1,10541,11737,True,Astrocyte,0.8,Astrocyte
+ACCAGTGCGGGAGACG-1,10351,11846,True,Excitatory neuron,0.6,Excitatory neuron
+TCCTTACGACGGTCCG-1,10541,11955,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+TAGTCGATCACGGGTT-1,10352,12064,True,Inhibitory neuron,0.8,Inhibitory neuron
+AGACGAAGTGCCGGTC-1,10542,12173,True,Inhibitory neuron,0.8,Inhibitory neuron
+CGCTGGTGACTACCCT-1,10352,12282,True,Astrocyte,0.8,Astrocyte
+AGGCATTGTCGTAGGG-1,10542,12391,True,Excitatory neuron,0.8,Excitatory neuron
+TGGTAGAATATATGGG-1,10353,12500,True,Excitatory neuron,1.0,Excitatory neuron
+TTCTTATCCGCTGGGT-1,10543,12609,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AGTTTGGCACGGGTTG-1,10353,12719,True,Inhibitory neuron,0.8,Inhibitory neuron
+GCATCGGCCGTGTAGG-1,10543,12827,True,Inhibitory neuron,0.8,Inhibitory neuron
+ATGCGAGTCCCACCAC-1,10353,12937,True,Inhibitory neuron,1.0,Inhibitory neuron
+TCGGCGAACCCAAACC-1,10543,13045,True,Astrocyte,0.6000000000000001,Astrocyte
+AGAGTAAACTTCACTA-1,10354,13155,True,Astrocyte,0.4,Astrocyte
+AAGCCGAAGCGGTTTA-1,10544,13263,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+CCCGAGTTTCTCCGTA-1,10354,13373,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CACCCTTGGTGAGACC-1,10713,3339,False,Astrocyte,1.0,Outside target region
+GGATCTTGACTCAACC-1,10903,3447,False,Astrocyte,0.6000000000000001,Outside target region
+ACGAGGATACCACTCT-1,10714,3557,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GAGTTGATGGCAATTT-1,10904,3665,False,Excitatory neuron,0.6000000000000001,Outside target region
+GTGGCAAACAGCGGCA-1,10714,3775,False,Excitatory neuron,0.6000000000000001,Outside target region
+GATGTAACGAACCACC-1,10904,3883,False,Excitatory neuron,1.0,Outside target region
+AGCCGTGGCTAAATGT-1,10714,3993,False,Inhibitory neuron,0.6,Outside target region
+CTCCCTCCTTTCGATC-1,10904,4102,False,Excitatory neuron,0.8,Outside target region
+TTGGAAGAATACAGTC-1,10715,4211,False,Excitatory neuron,0.6000000000000001,Outside target region
+AGTTAAGTCAACCGCT-1,10905,4320,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CTCATGGTAATTTGCG-1,10715,4429,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AAAGTAGCATTGCTCA-1,10905,4538,False,Excitatory neuron,0.8,Outside target region
+TTGTGGTAGGAGGGAT-1,10716,4647,False,Excitatory neuron,1.0,Outside target region
+AGTCGTGGGCATTACG-1,10906,4756,False,Excitatory neuron,0.8,Outside target region
+ACCTAAGTACCTTTCA-1,10716,4865,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GTAGAGGGAGACAAGT-1,10906,4974,False,Excitatory neuron,0.6000000000000001,Outside target region
+GATCCTCGACACTGGC-1,10717,5083,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CCTACATTCACAGACG-1,10907,5192,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTGACCGTGTTAATGA-1,10717,5302,False,Inhibitory neuron,0.8,Outside target region
+TCTGTTACCCAGCATA-1,10907,5410,False,Inhibitory neuron,0.8,Outside target region
+CTAACTGGTCCGGTTC-1,10718,5520,False,Excitatory neuron,0.8,Outside target region
+AGCGACAGGAACGGTC-1,10908,5628,False,Inhibitory neuron,1.0,Outside target region
+TAATAGAACAGAGTTA-1,10718,5738,False,Excitatory neuron,0.8,Outside target region
+ACAGGTGGAGGTGAGG-1,10908,5847,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGCGAGAATATTACCC-1,10719,5956,False,Excitatory neuron,0.6000000000000001,Outside target region
+TTGCGTCGGCCAACCG-1,10909,6065,False,Excitatory neuron,0.8,Outside target region
+AGGCTTCCCGAAGAAG-1,10719,6174,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GCGGACCGCGTTGTGG-1,10909,6283,False,Excitatory neuron,0.8,Outside target region
+GTAATCTGATTCTTCG-1,10719,6392,False,Inhibitory neuron,0.8,Outside target region
+CCGCGGAATGCGTCAC-1,10909,6501,False,Astrocyte,0.4,Outside target region
+TTCCACACAGATTTGA-1,10720,6610,False,Inhibitory neuron,0.8,Outside target region
+CTTCTATTAATGCTAG-1,10910,6719,False,Inhibitory neuron,1.0,Outside target region
+CATTTGAGTGGTACGT-1,10720,6828,False,Inhibitory neuron,1.0,Outside target region
+TCACAGCAAACTCGAA-1,10910,6937,False,Inhibitory neuron,0.8,Outside target region
+CAGACGAACCTGATAC-1,10721,7047,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TAGCTAGAAGGCATGA-1,10911,7155,False,Inhibitory neuron,1.0,Outside target region
+ATCCAGAGCAACAACC-1,10721,7265,False,Inhibitory neuron,1.0,Outside target region
+TCCGGTTCGTCCGGTC-1,10911,7373,False,Inhibitory neuron,1.0,Outside target region
+CGCGCATGTTTGATTG-1,10722,7483,False,Inhibitory neuron,1.0,Outside target region
+TGGCGATCAAGTTATG-1,10912,7591,False,Inhibitory neuron,0.8,Outside target region
+CCCTTTGACAGGTCTT-1,10722,7701,False,Astrocyte,0.6,Outside target region
+CAGAGACGGTCACCCA-1,10912,7810,False,Astrocyte,0.6000000000000001,Outside target region
+TAGCTCGCCTGATAAC-1,10723,7919,False,Astrocyte,0.6000000000000001,Outside target region
+TTGTGTTTCCCGAAAG-1,10913,8028,False,Astrocyte,1.0,Outside target region
+TATACACAGACGCCTT-1,10723,8137,False,Oligodendrocyte/OPC,0.8,Outside target region
+ACATTAGTTTATATCC-1,10913,8246,False,Oligodendrocyte/OPC,0.8,Outside target region
+CCATCGCAGTTAAACT-1,10724,8355,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+AATTAGCGCTGCAGCG-1,10914,8464,False,Astrocyte,0.6000000000000001,Outside target region
+TCCGCTTATCCCATTA-1,10724,8573,False,Astrocyte,0.6000000000000001,Outside target region
+GTTTGGGCTTGTGAGC-1,10914,8682,False,Astrocyte,0.6000000000000001,Outside target region
+CTTGTCAACATTCGAG-1,10724,8792,False,Astrocyte,0.8,Outside target region
+GGACCAACAGGATAAC-1,10914,8900,False,Inhibitory neuron,1.0,Outside target region
+AAGCTAGATCGAGTAA-1,10725,9010,False,Inhibitory neuron,1.0,Outside target region
+TACCGTGCCTCGGACC-1,10915,9118,False,Inhibitory neuron,1.0,Outside target region
+GTAGCCAAACATGGGA-1,10725,9228,False,Inhibitory neuron,1.0,Outside target region
+TGCCAGTACGTGGAGA-1,10915,9336,False,Inhibitory neuron,1.0,Outside target region
+ATAAGGTGGAGAACAT-1,10726,9446,False,Astrocyte,0.4,Outside target region
+CTTTAATATTGGTCGA-1,10916,9555,False,Inhibitory neuron,1.0,Outside target region
+TGGTTCAACGGGTAAT-1,10726,9664,False,Astrocyte,0.8,Outside target region
+GCTGCTACTGCGTAGC-1,10916,9773,False,Inhibitory neuron,0.4,Outside target region
+CTGCACAACTACATAT-1,10727,9882,False,Inhibitory neuron,0.8,Outside target region
+ATATTCCACATAGTGA-1,10917,9991,False,Inhibitory neuron,0.8,Outside target region
+TGGCAAACTAAATTAC-1,10727,10100,False,Astrocyte,1.0,Outside target region
+ACCGCAATAACTGCCT-1,10917,10209,True,Astrocyte,0.8,Astrocyte
+TCGCACCAGGAGGCAG-1,10728,10318,False,Inhibitory neuron,1.0,Outside target region
+ACTTCAGGCTGATCCC-1,10918,10427,False,Astrocyte,0.8,Outside target region
+ACAAATCGCACCGAAT-1,10728,10537,False,Inhibitory neuron,1.0,Outside target region
+TCTGATGTATTCTGTC-1,10918,10645,False,Inhibitory neuron,1.0,Outside target region
+CTTTACCGAATAGTAG-1,10728,10755,True,Oligodendrocyte/OPC,0.6,Oligodendrocyte/OPC
+GCAGATCCATAAGACT-1,10918,10863,False,Astrocyte,0.8,Outside target region
+TTCCTCGGACTAACCA-1,10729,10973,True,Astrocyte,1.0,Astrocyte
+TTATCCGGGATCTATA-1,10919,11081,True,Astrocyte,1.0,Astrocyte
+CTGGAAGACACGGTGG-1,10729,11191,True,Astrocyte,1.0,Astrocyte
+GTTCGTCTAAAGAACT-1,10919,11300,False,Astrocyte,1.0,Outside target region
+GTCTATTGGTTCCGGT-1,10730,11409,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CTAGGCGCCCTATCAG-1,10920,11518,True,Astrocyte,0.6000000000000001,Astrocyte
+AACGGACGTACGTATA-1,10730,11627,True,Excitatory neuron,0.8,Excitatory neuron
+AACACACGCTCGCCGC-1,10920,11736,True,Inhibitory neuron,0.8,Inhibitory neuron
+GCTACTATAGTAGAGT-1,10731,11845,True,Inhibitory neuron,1.0,Inhibitory neuron
+AGCATATCAATATGCT-1,10921,11954,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CGAACAGTATGGGCGT-1,10731,12063,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+ACAATTGTGTCTCTTT-1,10921,12172,True,Microglia,0.6,Microglia
+GATCGCTACCCGATTT-1,10732,12281,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+ATTGCGATCAGTAACT-1,10922,12390,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CAGCAGTCCAGACTAT-1,10732,12500,True,Inhibitory neuron,0.8,Inhibitory neuron
+AGAGGCTTCGGAAACC-1,10922,12608,True,Excitatory neuron,0.4,Excitatory neuron
+AAACAAGTATCTCCCA-1,10733,12718,True,Astrocyte,0.6000000000000001,Astrocyte
+GGCAGCAAACCTATGC-1,10923,12826,True,Astrocyte,1.0,Astrocyte
+ACTAGTTGCGATCGTC-1,10733,12936,True,Astrocyte,0.4,Astrocyte
+TTGGACCATCTGGCAA-1,10923,13045,True,Astrocyte,0.8,Astrocyte
+CCCTCCTCGCTCGTAT-1,10733,13154,True,Excitatory neuron,0.4,Excitatory neuron
+TTATCCTCAAGGAATA-1,11093,3556,False,Astrocyte,0.8,Outside target region
+AGCATCATTTCGAAAG-1,11283,3665,False,Astrocyte,0.8,Outside target region
+CGCGAGTCTGCCGGGT-1,11094,3774,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGCGTCATGACTGAGC-1,11284,3883,False,Excitatory neuron,1.0,Outside target region
+GTATGAAATTTCACTC-1,11094,3992,False,Excitatory neuron,1.0,Outside target region
+TTGGTTGCGGTGCGCG-1,11284,4101,False,Excitatory neuron,1.0,Outside target region
+ACAGAACTGAGAACAA-1,11094,4210,False,Inhibitory neuron,0.8,Outside target region
+CTACTATCATAGGTTT-1,11284,4319,False,Excitatory neuron,1.0,Outside target region
+CCTCTATCGATTAGCA-1,11095,4428,False,Excitatory neuron,1.0,Outside target region
+CCGTATCTCGTCGTAG-1,11285,4537,False,Inhibitory neuron,0.8,Outside target region
+TCACGATGTCCGTGGA-1,11095,4646,False,Excitatory neuron,0.8,Outside target region
+TCAACAAAGATAATTC-1,11285,4755,False,Excitatory neuron,1.0,Outside target region
+ATGACGCGTTCTATCC-1,11096,4865,False,Inhibitory neuron,0.8,Outside target region
+ATTTGCGCGAGTAGCT-1,11286,4973,False,Inhibitory neuron,1.0,Outside target region
+TTCTTGGACGATCTGC-1,11096,5083,False,Inhibitory neuron,0.8,Outside target region
+AGACGACGATGCCGCT-1,11286,5191,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GGTCTCTGAATGGACT-1,11097,5301,False,Excitatory neuron,0.8,Outside target region
+GCTCAATCCGTTTATT-1,11287,5409,False,Inhibitory neuron,0.6,Outside target region
+CCAGAAAGCAACTCAT-1,11097,5519,False,Inhibitory neuron,1.0,Outside target region
+CACCGTTAGGGATCAC-1,11287,5628,False,Excitatory neuron,0.6000000000000001,Outside target region
+AATAACACTAGAACAA-1,11098,5737,False,Excitatory neuron,0.8,Outside target region
+CACCCGGTTTGTGACT-1,11288,5846,False,Inhibitory neuron,0.8,Outside target region
+CCACCAACTTTACTGT-1,11098,5955,False,Excitatory neuron,0.4,Outside target region
+AACTCTCAGTGTGCTC-1,11288,6064,False,Excitatory neuron,1.0,Outside target region
+AAACCGTTCGTCCAGG-1,11099,6173,False,Excitatory neuron,0.4,Outside target region
+CAGCGATTCCCTTCAA-1,11289,6282,False,Excitatory neuron,0.8,Outside target region
+GCTAGCTTGAATAGCT-1,11099,6391,False,Excitatory neuron,0.6,Outside target region
+TTGCGGCATCAGAAAG-1,11289,6500,False,Excitatory neuron,1.0,Outside target region
+AATAGAACAGAGTGGC-1,11099,6610,False,Excitatory neuron,1.0,Outside target region
+GCCATCGAGCTGCGTG-1,11289,6718,False,Excitatory neuron,1.0,Outside target region
+ACACTGATCAAGGTGT-1,11100,6828,False,Excitatory neuron,1.0,Outside target region
+ACCAACGCTTATTTAT-1,11290,6936,False,Excitatory neuron,0.8,Outside target region
+GACATCGATTTATAAC-1,11100,7046,False,Excitatory neuron,0.8,Outside target region
+CAGACACCGATCGCTG-1,11290,7154,False,Excitatory neuron,1.0,Outside target region
+CCAAGAAAGTGGGCGA-1,11101,7264,False,Astrocyte,0.8,Outside target region
+GGTAGACCGTTGGGCG-1,11291,7373,False,Excitatory neuron,1.0,Outside target region
+TCGTTAGGAGTCCCTA-1,11101,7482,False,Inhibitory neuron,1.0,Outside target region
+ACGGCCAACATGGACT-1,11291,7591,False,Excitatory neuron,0.8,Outside target region
+GTGAGTGGTACAACGC-1,11102,7700,False,Inhibitory neuron,0.8,Outside target region
+GAGACTTCGCGACCGA-1,11292,7809,False,Excitatory neuron,0.6,Outside target region
+GAAGTCAGTTGCACTA-1,11102,7918,False,Inhibitory neuron,0.8,Outside target region
+GTTTGGTAGGGTCAAC-1,11292,8027,False,Excitatory neuron,0.6000000000000001,Outside target region
+ACGGCACTTGCTTGGG-1,11103,8136,False,Astrocyte,0.8,Outside target region
+CCTCTGTACTATTCTA-1,11293,8245,True,Inhibitory neuron,0.4,Inhibitory neuron
+CTATTCATGTGTCCCA-1,11103,8355,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+GCCCGATCTGTGGTCG-1,11293,8463,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+TTAGAAGAACATGACT-1,11103,8573,False,Oligodendrocyte/OPC,0.8,Outside target region
+AGGATAAAGTCGGGAT-1,11293,8681,False,Astrocyte,0.6000000000000001,Outside target region
+CGGCAAACATCGTGCG-1,11104,8791,False,Oligodendrocyte/OPC,0.8,Outside target region
+CTAGTTACAACCCGGT-1,11294,8899,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+TTCGACAGAGCCCGTG-1,11104,9009,False,Inhibitory neuron,0.8,Outside target region
+AAGCATACTCTCCTGA-1,11294,9118,False,Inhibitory neuron,1.0,Outside target region
+GACGACGATCCGCGTT-1,11105,9227,False,Inhibitory neuron,1.0,Outside target region
+GGTAGAAGACCGCCTG-1,11295,9336,False,Inhibitory neuron,1.0,Outside target region
+GAGATGGGAGTCGACA-1,11105,9445,False,Inhibitory neuron,0.6,Outside target region
+AACGATAATGCCGTAG-1,11295,9554,False,Inhibitory neuron,1.0,Outside target region
+TGGTCCCACGCTACGG-1,11106,9663,False,Astrocyte,0.8,Outside target region
+CTGCTTGGCGATAGCT-1,11296,9772,False,Astrocyte,0.6000000000000001,Outside target region
+ATCGGAGACAGACGGC-1,11106,9881,False,Astrocyte,0.4,Outside target region
+TAGCGTCCGGTGTGGT-1,11296,9990,False,Inhibitory neuron,0.4,Outside target region
+GTTGAGTCCCGCCGGT-1,11107,10099,False,Astrocyte,1.0,Outside target region
+AAATAGGGTGCTATTG-1,11297,10208,False,Astrocyte,0.6000000000000001,Outside target region
+AAGTGTTTGGAGACGG-1,11107,10318,False,Astrocyte,0.6000000000000001,Outside target region
+AGCACTACCTCACCAG-1,11297,10426,False,Inhibitory neuron,0.8,Outside target region
+TGCCTTGGCCAGGCAA-1,11108,10536,False,Astrocyte,1.0,Outside target region
+TCGTCTTAGGCGTTAA-1,11298,10644,False,Astrocyte,0.6000000000000001,Outside target region
+TTCTGACCGGGCTCAA-1,11108,10754,False,Inhibitory neuron,1.0,Outside target region
+CAGAACTTAGCCCTCT-1,11298,10863,False,Astrocyte,0.4,Outside target region
+AGCTCCTTCGCACATC-1,11108,10972,False,Astrocyte,1.0,Outside target region
+ACAGGCTTGCCCGACT-1,11298,11081,False,Astrocyte,0.6000000000000001,Outside target region
+GCTATACGTCTCGGAC-1,11109,11190,True,Astrocyte,1.0,Astrocyte
+GAGCCAGCTACCTGTG-1,11299,11299,False,Astrocyte,1.0,Outside target region
+TGCTAAGTGTCTATTT-1,11109,11408,True,Astrocyte,0.8,Astrocyte
+GTCCTACGAATAGTCT-1,11299,11517,False,Astrocyte,0.4,Outside target region
+CAGTGTCGGCTGGCCC-1,11110,11626,False,Neuroblast,0.6000000000000001,Outside target region
+CTATCGACGAAATACA-1,11300,11735,True,Astrocyte,0.6,Astrocyte
+CATCATTACCCTGAGG-1,11110,11844,True,Astrocyte,1.0,Astrocyte
+TAAGTTGCGACGTAGG-1,11300,11953,False,Inhibitory neuron,1.0,Outside target region
+AGTGCACGCTTAAGAA-1,11111,12063,True,Inhibitory neuron,0.8,Inhibitory neuron
+TGTGCCGGTGCCGGAA-1,11301,12171,True,Astrocyte,0.6000000000000001,Astrocyte
+AGGAGGCCTTCGCGCG-1,11111,12281,True,Inhibitory neuron,1.0,Inhibitory neuron
+TCCGCGGCCCAATGAA-1,11301,12389,True,Inhibitory neuron,0.8,Inhibitory neuron
+TCCGTTAAGCTAATAT-1,11112,12499,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+AAATCTAGCCCTGCTA-1,11302,12607,True,Astrocyte,1.0,Astrocyte
+CGCAGGCGATCCAAAC-1,11112,12717,True,Inhibitory neuron,0.6000000000000001,Inhibitory neuron
+CCATATGGAAACTATA-1,11302,12826,True,Excitatory neuron,0.4,Excitatory neuron
+CACCGTATCCCATCCG-1,11113,12935,True,Excitatory neuron,0.6000000000000001,Excitatory neuron
+GACCCAATTATGATAC-1,11473,3773,False,Astrocyte,1.0,Outside target region
+GAAGCTCGGACCCGTC-1,11663,3882,False,Astrocyte,0.8,Outside target region
+CGTCGGGTCTAAGCGC-1,11474,3991,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GAGGCCCGACTCCGCA-1,11664,4100,False,Inhibitory neuron,0.8,Outside target region
+TTGCCATAGCCCGCTC-1,11474,4209,False,Excitatory neuron,0.6000000000000001,Outside target region
+TAACATACACGCGATC-1,11664,4318,False,Astrocyte,0.4,Outside target region
+CCGACGGGCATGAGGT-1,11474,4428,False,Excitatory neuron,0.8,Outside target region
+AATGTGCCCGAGGTGT-1,11664,4536,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AGCTGTAACCTCAATC-1,11475,4646,False,Excitatory neuron,1.0,Outside target region
+CGAGTGAAGGTACCAG-1,11665,4754,False,Excitatory neuron,0.8,Outside target region
+AGTCTCACAAGACTAC-1,11475,4864,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AAATTGATAGTCCTTT-1,11665,4972,False,Excitatory neuron,0.6000000000000001,Outside target region
+TAAGTCGCCGAGTATC-1,11476,5082,False,Excitatory neuron,0.8,Outside target region
+GCGGAGAAACTTCGCA-1,11666,5191,False,Excitatory neuron,1.0,Outside target region
+GGCAAAGGCGCCAATA-1,11476,5300,False,Excitatory neuron,0.6000000000000001,Outside target region
+ATTTCCGGGTTCTGCG-1,11666,5409,False,Inhibitory neuron,0.8,Outside target region
+TAAACCCAGGAGGGCA-1,11477,5518,False,Excitatory neuron,0.8,Outside target region
+TTCGGGCGCTAGTCTT-1,11667,5627,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GTGGAGTCGGCGGTTG-1,11477,5736,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GCACGCCTACTTAGAT-1,11667,5845,False,Excitatory neuron,0.6000000000000001,Outside target region
+CAATATTCTTGACCTA-1,11478,5954,False,Excitatory neuron,1.0,Outside target region
+CGTTTGTGTAGAGGGT-1,11668,6063,False,Excitatory neuron,0.8,Outside target region
+CATAGCGTTGCCCACC-1,11478,6173,False,Excitatory neuron,1.0,Outside target region
+TGATACATTTAGCCGT-1,11668,6281,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TTCCGGCCTTGAGGCT-1,11479,6391,False,Excitatory neuron,1.0,Outside target region
+CCTATACCGTCCTGTC-1,11668,6499,False,Excitatory neuron,0.6000000000000001,Outside target region
+TCGTTGCTATCCGGTC-1,11479,6609,False,Excitatory neuron,0.6000000000000001,Outside target region
+TGGCGACTGCTCCAAA-1,11669,6717,False,Excitatory neuron,1.0,Outside target region
+CAGAGGCGATGCATGA-1,11479,6827,False,Excitatory neuron,1.0,Outside target region
+TCACAGGAGAATAAGA-1,11669,6936,False,Excitatory neuron,1.0,Outside target region
+GGGTTAACATTTGAGT-1,11480,7045,False,Excitatory neuron,0.8,Outside target region
+GCGGGCGAGCCTTACC-1,11670,7154,False,Excitatory neuron,1.0,Outside target region
+TGCCAATGGGTACTCT-1,11480,7263,False,Excitatory neuron,1.0,Outside target region
+AGGGACTCTACGCGAC-1,11670,7372,False,Excitatory neuron,1.0,Outside target region
+GACGCCGTAAAGGCTA-1,11481,7481,False,Excitatory neuron,1.0,Outside target region
+AAAGGCTCTCGCGCCG-1,11671,7590,False,Excitatory neuron,0.8,Outside target region
+CTGGCTGGTTGTCAGT-1,11481,7699,False,Excitatory neuron,1.0,Outside target region
+ACATCCCGGCCATACG-1,11671,7808,False,Excitatory neuron,1.0,Outside target region
+CTCTTGTCCCGCTTGG-1,11482,7917,False,Excitatory neuron,1.0,Outside target region
+TACGCCTCCATTCCGA-1,11672,8026,False,Excitatory neuron,1.0,Outside target region
+CGGAGCAATTTAATCG-1,11482,8136,False,Excitatory neuron,1.0,Outside target region
+AACTAGGCTTGGGTGT-1,11672,8244,False,Excitatory neuron,0.8,Outside target region
+GCGTCGCCAGGGTGAT-1,11483,8354,False,Excitatory neuron,0.8,Outside target region
+GTTGGTCATGCTATCC-1,11673,8462,False,Excitatory neuron,0.6000000000000001,Outside target region
+GCTGGCGGCGCATGCT-1,11483,8572,False,Astrocyte,1.0,Outside target region
+TGAGCGGAAAGTGTTC-1,11673,8681,False,Excitatory neuron,0.2,Outside target region
+CTTTCTGTGCGGGCTT-1,11483,8790,False,Astrocyte,1.0,Outside target region
+ATCTAATATCCTACGG-1,11673,8899,False,Astrocyte,0.4,Outside target region
+AACCTTTAAATACGGT-1,11484,9008,False,Astrocyte,0.4,Outside target region
+TTCACTCGAGCACCTA-1,11674,9117,False,Neuroblast,0.4,Outside target region
+CTGCACTCCAGTACAG-1,11484,9226,False,Inhibitory neuron,1.0,Outside target region
+CCATTTCTACCTATTA-1,11674,9335,False,Astrocyte,0.4,Outside target region
+CAAGCGGCACATAATT-1,11485,9444,False,Inhibitory neuron,1.0,Outside target region
+GTTAACATCACTTAAA-1,11675,9553,False,Inhibitory neuron,1.0,Outside target region
+ATATAAATGTAGCTGC-1,11485,9662,False,Inhibitory neuron,1.0,Outside target region
+GCCTCTATACATAGCA-1,11675,9771,False,Inhibitory neuron,0.8,Outside target region
+GTGTCGTATAGCGTTC-1,11486,9881,False,Neuroblast,0.6,Outside target region
+ATACGTACTTAGCCAC-1,11676,9989,False,Astrocyte,0.6000000000000001,Outside target region
+GCTATCATACTCATGG-1,11486,10099,False,Astrocyte,0.6000000000000001,Outside target region
+TATCCAATTGGTTATC-1,11676,10207,False,Astrocyte,1.0,Outside target region
+TCTCCCTGGGCAGCGT-1,11487,10317,False,Astrocyte,0.8,Outside target region
+CCTATAATGAGTGCCC-1,11677,10425,False,Astrocyte,0.4,Outside target region
+CAATGCGAGAAGTATC-1,11487,10535,False,Astrocyte,1.0,Outside target region
+TACCAATAAAGTACCA-1,11677,10644,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GCTAGGCACCACGGAG-1,11488,10753,False,Astrocyte,1.0,Outside target region
+GGTGGACTGCTCTGGC-1,11678,10862,False,Astrocyte,1.0,Outside target region
+TATTCCGAGCTGTTAT-1,11488,10971,False,Inhibitory neuron,1.0,Outside target region
+TTGAGAAGTTTAGCAT-1,11678,11080,False,Astrocyte,1.0,Outside target region
+GTCCGGACCTGAAATT-1,11488,11189,False,Astrocyte,1.0,Outside target region
+CTGTGGTCGGGAGATA-1,11678,11298,False,Astrocyte,0.8,Outside target region
+CATGTAAGAGACATTT-1,11489,11407,False,Astrocyte,0.8,Outside target region
+CACGTTTCGTACACAC-1,11679,11516,False,Astrocyte,1.0,Outside target region
+CATCCTCTCAAAGATC-1,11489,11626,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GATTAACCGAAAGCCC-1,11679,11734,False,Inhibitory neuron,1.0,Outside target region
+AACGCTGTTGCTGAAA-1,11490,11844,False,Inhibitory neuron,0.8,Outside target region
+TTCAGCTGGCGTGCCC-1,11680,11952,True,Astrocyte,0.4,Astrocyte
+TAGAGGTTCTACTTGT-1,11490,12062,True,Inhibitory neuron,1.0,Inhibitory neuron
+GTATCAAACGTTAGCT-1,11680,12170,False,Astrocyte,0.8,Outside target region
+AATCATGTAAAGACTC-1,11491,12280,True,Inhibitory neuron,0.8,Inhibitory neuron
+AGTCACTAGCTCTCGA-1,11681,12389,True,Inhibitory neuron,0.4,Inhibitory neuron
+GCGAAACGATCGGGAG-1,11491,12498,True,Astrocyte,1.0,Astrocyte
+ATACGGAACGTCGTTT-1,11853,3991,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CGCGCAAATGTCCAGA-1,11854,4209,False,Astrocyte,0.4,Outside target region
+TCTAATACTGCCTCAG-1,12044,4317,False,Astrocyte,0.6000000000000001,Outside target region
+CTCGGTTGTCGGCCCT-1,11854,4427,False,Inhibitory neuron,0.6,Outside target region
+GGTAACCGGGAGGATA-1,12044,4535,False,Astrocyte,0.6000000000000001,Outside target region
+CAGGCGCACGGTGGTC-1,11854,4645,False,Excitatory neuron,0.8,Outside target region
+TCATCGATGGTCCCAA-1,12044,4754,False,Astrocyte,0.8,Outside target region
+CAAAGATTATTGGGCC-1,11855,4863,False,Excitatory neuron,0.8,Outside target region
+ACAATGAATACGGAGA-1,12045,4972,False,Excitatory neuron,0.8,Outside target region
+GCTCCTGACATACTGG-1,11855,5081,False,Excitatory neuron,0.8,Outside target region
+GATGACAAGTAGGGCA-1,12045,5190,False,Excitatory neuron,0.8,Outside target region
+TACGCCGAGGGTACCC-1,11856,5299,False,Excitatory neuron,0.8,Outside target region
+AAGCGTCCCTCATCGA-1,12046,5408,False,Excitatory neuron,0.8,Outside target region
+CACTCCTATGTAAGAT-1,11856,5517,False,Excitatory neuron,1.0,Outside target region
+TCGAGCCAGGCAGGCC-1,12046,5626,False,Excitatory neuron,0.8,Outside target region
+TCGTCAAGTACGCGCA-1,11857,5735,False,Excitatory neuron,1.0,Outside target region
+CCCGTAGCTGGGAAGA-1,12047,5844,False,Excitatory neuron,0.6000000000000001,Outside target region
+ACCCTATGCCATATCG-1,11857,5954,False,Excitatory neuron,1.0,Outside target region
+GTGGTATAGTCTGCCG-1,12047,6062,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CCGGTTTGTAATTGTG-1,11858,6172,False,Excitatory neuron,0.8,Outside target region
+GTCGCCGTTGTGTGTT-1,12048,6280,False,Inhibitory neuron,0.8,Outside target region
+TACTGAACAGATTTAG-1,11858,6390,False,Excitatory neuron,1.0,Outside target region
+TATTAACCTGACCGCG-1,12048,6499,False,Excitatory neuron,0.8,Outside target region
+CTGTAGCCATCTCACT-1,11858,6608,False,Excitatory neuron,1.0,Outside target region
+TACTATGGTTCCTCAG-1,12048,6717,False,Excitatory neuron,0.8,Outside target region
+GAGTCAGACCAGAATC-1,11859,6826,False,Excitatory neuron,0.8,Outside target region
+TAAGGCATAACATCAA-1,12049,6935,False,Excitatory neuron,0.8,Outside target region
+CTTCCGCTCCGTGAAG-1,11859,7044,False,Excitatory neuron,0.8,Outside target region
+GGGCTATGATCGATGG-1,12049,7153,False,Excitatory neuron,0.4,Outside target region
+GGTCGGTCGTCCACAG-1,11860,7262,False,Excitatory neuron,1.0,Outside target region
+GGGACCCGTATATCTT-1,12050,7371,False,Excitatory neuron,0.8,Outside target region
+GAAAGCAGTGCACTTT-1,11860,7480,False,Excitatory neuron,0.8,Outside target region
+AGCGCATAATGAATCG-1,12050,7589,False,Excitatory neuron,1.0,Outside target region
+GCTGCTAAGTAGTCGA-1,11861,7699,False,Excitatory neuron,1.0,Outside target region
+AATAGTCCGTCCCGAC-1,12051,7807,False,Excitatory neuron,1.0,Outside target region
+AGCAGCCAGATGAATA-1,11861,7917,False,Excitatory neuron,1.0,Outside target region
+CCTCGCGCTGTGCGAT-1,12051,8025,False,Excitatory neuron,0.8,Outside target region
+TTGTGTATGCCACCAA-1,11862,8135,False,Excitatory neuron,0.8,Outside target region
+TGCTCGGCGAAACCCA-1,12052,8243,False,Astrocyte,1.0,Outside target region
+CGATTAAATATCTCCT-1,11862,8353,False,Excitatory neuron,1.0,Outside target region
+TGCCGTGGATCGTCCT-1,12052,8462,False,Microglia,0.6,Outside target region
+GTGGACGCATTTGTCC-1,11863,8571,False,Excitatory neuron,1.0,Outside target region
+ACCCGGAAACTCCCAG-1,12053,8680,False,Astrocyte,1.0,Outside target region
+CCGCATGTGGTACGAT-1,11863,8789,False,Excitatory neuron,0.6,Outside target region
+GCAAACCTTGGCCATA-1,12053,8898,False,Neuroblast,0.8,Outside target region
+ATTCACTGATGTTGGA-1,11863,9007,False,Astrocyte,1.0,Outside target region
+ACTCCCTAATGCTAAA-1,12053,9116,False,Astrocyte,1.0,Outside target region
+TCCTAAATTGGGAAGC-1,11864,9225,False,Astrocyte,1.0,Outside target region
+GAACAGATTACTAAAT-1,12054,9334,False,Astrocyte,1.0,Outside target region
+ATACAGGCCCTCCAAT-1,11864,9444,False,Oligodendrocyte/OPC,0.4,Outside target region
+CGATTCGCCTGGCTGC-1,12054,9552,False,Astrocyte,1.0,Outside target region
+TCCGCCTGTCTACAAG-1,11865,9662,False,Inhibitory neuron,0.8,Outside target region
+CACATCTCACCGACGA-1,12055,9770,False,Astrocyte,1.0,Outside target region
+CGTCGTCCTTCGCGAA-1,11865,9880,False,Inhibitory neuron,0.8,Outside target region
+CGTTGAATACCGCGCT-1,12055,9988,False,Inhibitory neuron,1.0,Outside target region
+ACCAATATGCAAGTTA-1,11866,10098,False,Oligodendrocyte/OPC,1.0,Outside target region
+ACGGATGGTGCGGATA-1,12056,10207,False,Astrocyte,1.0,Outside target region
+CACCCTAACAAGATCT-1,11866,10316,False,Astrocyte,0.8,Outside target region
+AAGCTCTTTCATGGTG-1,12056,10425,False,Astrocyte,0.4,Outside target region
+CATGGGTATGCCTTAT-1,11867,10534,True,Astrocyte,0.4,Astrocyte
+GCGCGTCATTGGTACA-1,12057,10643,False,Astrocyte,1.0,Outside target region
+TCTGAAGCACGTGGTC-1,11867,10752,False,Astrocyte,0.8,Outside target region
+AAGTTCACTCCAAGCT-1,12057,10861,False,Astrocyte,0.8,Outside target region
+TTGGACCTATAACAGT-1,11868,10970,False,Astrocyte,1.0,Outside target region
+ATCAGCCTCATGCTGC-1,12058,11079,False,Astrocyte,0.6000000000000001,Outside target region
+AGTACTCTTATGCCCA-1,11868,11189,False,Astrocyte,0.6000000000000001,Outside target region
+GCGCTTAAATAATTGG-1,12058,11297,False,Oligodendrocyte/OPC,1.0,Outside target region
+TTGTGAACCTAATCCG-1,11868,11407,False,Astrocyte,1.0,Outside target region
+AGTCGTCGACCACCAA-1,12058,11515,False,Neuroblast,0.4,Outside target region
+TCCTTTAAATCCGCTT-1,11869,11625,False,Inhibitory neuron,0.4,Outside target region
+ACTGAAACGCCGTTAG-1,12059,11733,False,Inhibitory neuron,0.8,Outside target region
+GCACACACTGGTAGCC-1,11869,11843,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TAAGGGCCTGTCCGAT-1,12059,11952,False,Inhibitory neuron,0.8,Outside target region
+GCTAGAGTAGAGATGT-1,11870,12061,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+CACAGGGCCATATAGT-1,12060,12170,False,Astrocyte,0.8,Outside target region
+CCATGCCCTAGATTTC-1,11870,12279,False,Astrocyte,1.0,Outside target region
+TCGCGTAGCAGTGTCC-1,12060,12388,False,Astrocyte,0.6000000000000001,Outside target region
+GACGAGGCTAATAAAC-1,11871,12497,False,Astrocyte,0.6000000000000001,Outside target region
+GGACCTCTAGGCCGCC-1,12234,4862,False,Astrocyte,0.6000000000000001,Outside target region
+TCGAATATCCCGCAGG-1,12235,5080,False,Astrocyte,0.6000000000000001,Outside target region
+GCGACCCAACCATCTG-1,12425,5189,False,Astrocyte,0.4,Outside target region
+AGAGAAGGAGTACAAT-1,12235,5298,False,Astrocyte,1.0,Outside target region
+GGCTCCTCCACCTGTT-1,12425,5407,False,Astrocyte,1.0,Outside target region
+TCAGTGTATACGTCAT-1,12236,5517,False,Astrocyte,1.0,Outside target region
+ATTATTATGTCCGTCA-1,12426,5625,False,Astrocyte,1.0,Outside target region
+TTAGGTCATAACCGAC-1,12236,5735,False,Astrocyte,0.4,Outside target region
+AAGATGGCACCGGACC-1,12426,5843,False,Astrocyte,1.0,Outside target region
+CTACAAGAAATAACCC-1,12237,5953,False,Excitatory neuron,0.6000000000000001,Outside target region
+ACTATTTCCGGGCCCA-1,12427,6061,False,Astrocyte,1.0,Outside target region
+TTGTTTCACATCCAGG-1,12237,6171,False,Excitatory neuron,0.4,Outside target region
+CGCTGTGTGGATGTTG-1,12427,6280,False,Astrocyte,1.0,Outside target region
+TCAACATAGCGCCCTA-1,12238,6389,False,Excitatory neuron,0.6000000000000001,Outside target region
+GGCCGTTTGGGTTTCA-1,12428,6498,False,Astrocyte,0.8,Outside target region
+TACTCTTTCGTCTTCA-1,12238,6607,False,Excitatory neuron,0.8,Outside target region
+TTCGCGCGCCATACGA-1,12428,6716,False,Astrocyte,0.4,Outside target region
+CGGAAAGAATCAAACG-1,12238,6825,False,Excitatory neuron,0.6000000000000001,Outside target region
+AGGCAGGGAGCGTACT-1,12428,6934,False,Oligodendrocyte/OPC,0.6,Outside target region
+CCTTTAAGGGAGCACT-1,12239,7043,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CGCCCAGCACGCCTAG-1,12429,7152,False,Astrocyte,0.6000000000000001,Outside target region
+AGTATTTGGCACGACC-1,12239,7262,False,Excitatory neuron,0.6000000000000001,Outside target region
+TATCCGCACCGTCGGG-1,12429,7370,False,Inhibitory neuron,0.4,Outside target region
+ACCCGTGTCATCAGTA-1,12240,7480,False,Excitatory neuron,0.8,Outside target region
+CAACTGCTCATCCGAT-1,12430,7588,False,Astrocyte,0.8,Outside target region
+CCGGAGCGTACTTTCT-1,12240,7698,False,Inhibitory neuron,0.6000000000000001,Outside target region
+TGAGGAGTGCCAGCTT-1,12241,7916,False,Astrocyte,0.8,Outside target region
+GGGCAGAGCAATCGTT-1,12241,8134,False,Astrocyte,0.6000000000000001,Outside target region
+TACCTACTCCCAGTAT-1,12242,8352,False,Astrocyte,1.0,Outside target region
+ATACCTAACCAAGAAA-1,12242,8570,False,Astrocyte,1.0,Outside target region
+GTCGGGAAGCAGAAAC-1,12432,8679,False,Astrocyte,0.6000000000000001,Outside target region
+AATTAACGGATTTCCA-1,12243,8788,False,Astrocyte,1.0,Outside target region
+GAACCCTCTGTGTTCT-1,12433,8897,False,Astrocyte,1.0,Outside target region
+ATATAAAGCGCTCGTG-1,12243,9007,False,Astrocyte,0.8,Outside target region
+CCTGGTCGAATGTGGG-1,12433,9115,False,Astrocyte,0.6000000000000001,Outside target region
+CTAGGTTCGGACGTGA-1,12243,9225,False,Astrocyte,1.0,Outside target region
+TCGGGAGACAGCGTAC-1,12433,9333,False,Astrocyte,1.0,Outside target region
+CATAAGAAGCTTGGCT-1,12244,9443,False,Astrocyte,1.0,Outside target region
+AAGCACCCTGCGTATC-1,12434,9551,False,Inhibitory neuron,0.6000000000000001,Outside target region
+AGTTTGCACCTGCCTC-1,12244,9661,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GACTGCAAATCGAGCT-1,12434,9770,False,Inhibitory neuron,1.0,Outside target region
+GTGTATATCAGCGGGC-1,12245,9879,False,Astrocyte,0.8,Outside target region
+CTTCAACTCCACTTGG-1,12435,9988,False,Oligodendrocyte/OPC,0.6000000000000001,Outside target region
+ACTTACGCATCCACGC-1,12245,10097,False,Astrocyte,0.4,Outside target region
+CATGAGATGCACTCTC-1,12435,10206,False,Astrocyte,1.0,Outside target region
+GAGCACCTGTGTCCAG-1,12246,10315,False,Astrocyte,1.0,Outside target region
+CGCGACCGCGACAGAT-1,12436,10424,False,Astrocyte,0.8,Outside target region
+GTCCCGCGACGTTATG-1,12246,10533,False,Astrocyte,1.0,Outside target region
+GCAGTGTGGCTATAGG-1,12436,10642,False,Astrocyte,1.0,Outside target region
+ATACTGCCTTACACCG-1,12247,10751,False,Inhibitory neuron,0.4,Outside target region
+TACAGAAACGGTGGGC-1,12437,10860,False,Astrocyte,0.6000000000000001,Outside target region
+GGCGCGGAGATCTTTC-1,12247,10970,False,Inhibitory neuron,0.6,Outside target region
+CGTTAATGTCCCGACG-1,12437,11078,False,Astrocyte,1.0,Outside target region
+GCTAACTGAAGTCTGA-1,12248,11188,False,Astrocyte,0.4,Outside target region
+AGTGATAACCTGCGCG-1,12438,11296,False,Astrocyte,0.6000000000000001,Outside target region
+TATGATCTTCTCTTTA-1,12248,11406,False,Astrocyte,1.0,Outside target region
+TGTACCTACACGAGGG-1,12438,11515,False,Inhibitory neuron,1.0,Outside target region
+ATATCGTTCCTCGAAC-1,12248,11624,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CGGCGCCATCAATCCC-1,12438,11733,False,Inhibitory neuron,0.8,Outside target region
+CCTGTTTGAAGACACG-1,12249,11842,False,Astrocyte,0.8,Outside target region
+GCCACTCAGAGCGCGA-1,12439,11951,False,Inhibitory neuron,0.4,Outside target region
+TCGGCTTGTATCGACG-1,12249,12060,False,Inhibitory neuron,0.8,Outside target region
+TAGATGGTTCCTTACT-1,12439,12169,False,Astrocyte,1.0,Outside target region
+ATCGTTAGCTAGCGGA-1,12250,12278,True,Neuroblast,0.4,Neuroblast
+TATACGCGTCATCACT-1,12623,9006,False,Endothelial,0.4,Outside target region
+TCAAATTTGAGACTCA-1,12623,9224,False,Astrocyte,1.0,Outside target region
+GTTAAGGGTGCGATGT-1,12813,9333,False,Astrocyte,0.4,Outside target region
+AGCAAAGGCCGCTAGT-1,12623,9442,False,Astrocyte,1.0,Outside target region
+TTATAGGTAATTGTCT-1,12813,9551,False,Astrocyte,0.6000000000000001,Outside target region
+TTGTGCAGCCACGTCA-1,12624,9660,False,Astrocyte,0.8,Outside target region
+ACGGACTCTCAAAGCG-1,12814,9769,False,Astrocyte,0.8,Outside target region
+ATGCTCTGGCGCGGTA-1,12624,9878,False,Astrocyte,0.8,Outside target region
+ATAATCTTGGAGAACC-1,12814,9987,False,Astrocyte,1.0,Outside target region
+CTCATTGCTCTAACAA-1,12625,10096,False,Astrocyte,1.0,Outside target region
+TAGGTGACGATAACCT-1,12815,10205,False,Astrocyte,0.6000000000000001,Outside target region
+CGGATCCTCAAGGACT-1,12625,10314,False,Astrocyte,0.8,Outside target region
+GGGCGTGGTTTCCCAG-1,12815,10423,False,Astrocyte,1.0,Outside target region
+TGGCTATGTGACATAC-1,12626,10533,False,Excitatory neuron,0.6,Outside target region
+CTTAGTGTAGTAGCAT-1,12816,10641,False,Astrocyte,1.0,Outside target region
+GGATTGCTGTGACTCC-1,12626,10751,False,Astrocyte,1.0,Outside target region
+ACTTCCATGCGGGACA-1,12816,10859,False,Astrocyte,0.6000000000000001,Outside target region
+ACTCAAGTGCAAGGCT-1,12627,10969,True,Astrocyte,1.0,Astrocyte
+ACAAGGATGCTTTAGG-1,12817,11077,False,Astrocyte,0.6000000000000001,Outside target region
+TTGAACGACGTGCTGA-1,12627,11187,False,Astrocyte,0.6000000000000001,Outside target region
+ATTCATCGTTGAGGCA-1,12817,11296,False,Excitatory neuron,0.8,Outside target region
+TGCAACCCATCTGCGG-1,12627,11405,True,Astrocyte,1.0,Astrocyte
+AGTGCTAAACACAGCA-1,12817,11514,False,Astrocyte,0.6000000000000001,Outside target region
+AACTCCAGAGCGTGTT-1,12628,11623,False,Astrocyte,0.8,Outside target region
+TCTCCACAAGTTGAAT-1,12818,11732,False,Astrocyte,1.0,Outside target region
+CTTTGCATCGCTCTTG-1,12628,11841,False,Astrocyte,0.8,Outside target region
+TCACAAACCGAGGTAC-1,12818,11950,False,Inhibitory neuron,0.4,Outside target region
+CCGTAGGAAATCCCTG-1,12629,12059,False,Inhibitory neuron,0.4,Outside target region
+ATCCACATCGACAGAA-1,13003,9441,False,Neuroblast,0.6,Outside target region
+CAGCAGTCTGTGCTGC-1,13003,9659,False,Astrocyte,0.6000000000000001,Outside target region
+CTCACTGTGATACTTA-1,13193,9768,False,Astrocyte,1.0,Outside target region
+TTAATTGCTTTGGGTG-1,13004,9877,False,Astrocyte,0.6000000000000001,Outside target region
+GTAGTCTACGATATTG-1,13194,9986,False,Astrocyte,1.0,Outside target region
+TTGCCGCTTTCTAGTA-1,13004,10096,False,Astrocyte,0.4,Outside target region
+GAACCTTTAACGATCC-1,13194,10204,False,Astrocyte,1.0,Outside target region
+TGGACCAATCTAAGAT-1,13005,10314,False,Astrocyte,1.0,Outside target region
+CTAGTAGAAAGGGATT-1,13195,10422,False,Astrocyte,1.0,Outside target region
+AACCTCGCTTTAGCCC-1,13005,10532,False,Astrocyte,0.8,Outside target region
+GAGTGTCAACCAGAAA-1,13195,10640,False,Astrocyte,1.0,Outside target region
+GTGATCCTTGTCATGA-1,13006,10750,False,Astrocyte,1.0,Outside target region
+CTCAACTAACCCGGAT-1,13196,10859,False,Excitatory neuron,1.0,Outside target region
+AGTGGCGTCTGAAGGT-1,13006,10968,False,Astrocyte,1.0,Outside target region
+GGGAAGGGCTTTCTCA-1,13196,11077,False,Astrocyte,0.4,Outside target region
+AGGCCTGAGAATCTCG-1,13007,11186,False,Excitatory neuron,1.0,Outside target region
+AGCCACAGGTTACCCG-1,13197,11295,False,Excitatory neuron,0.6,Outside target region
+TGCAATCTAACACGGT-1,13007,11404,False,Astrocyte,0.4,Outside target region
+GTTTGGGTTTCGCCCG-1,13197,11513,False,Excitatory neuron,0.4,Outside target region
+CCTATGTCCACTCCAC-1,13007,11622,False,Excitatory neuron,1.0,Outside target region
+CTGCCTTTCTAGTAAA-1,13197,11731,False,Excitatory neuron,0.8,Outside target region
+TTAGTAAACCTGCTCT-1,13008,11841,False,Excitatory neuron,0.8,Outside target region
+CGTCGCATGTGAGCCA-1,13573,9985,False,Astrocyte,0.6000000000000001,Outside target region
+AGAAGGTTGTAGGTCG-1,13384,10095,False,Astrocyte,1.0,Outside target region
+GGCCGGCGTCTGCTAT-1,13574,10203,False,Astrocyte,1.0,Outside target region
+TTGACCAGGAACAACT-1,13384,10313,False,Astrocyte,1.0,Outside target region
+AGTCGTATAAAGCAGA-1,13574,10422,False,Astrocyte,0.6000000000000001,Outside target region
+GGCGTAGGGAAAGCTG-1,13385,10531,False,Astrocyte,1.0,Outside target region
+AAACCTAAGCAGCCGG-1,13575,10640,False,Astrocyte,1.0,Outside target region
+ATTGCCTTTATGTTTG-1,13385,10749,False,Astrocyte,1.0,Outside target region
+CAGGCAGTCTTACCAG-1,13575,10858,False,Astrocyte,1.0,Outside target region
+AGCTAAGTACGCAGGC-1,13386,10967,False,Excitatory neuron,0.8,Outside target region
+AAATCCGATACACGCC-1,13576,11076,False,Inhibitory neuron,0.6000000000000001,Outside target region
+CGAGAGCTTTCACTAC-1,13386,11185,False,Excitatory neuron,1.0,Outside target region
+CGCCCAGCGTTTCACG-1,13576,11294,False,Inhibitory neuron,0.8,Outside target region
+TTAAGTATTGTTATCC-1,13387,11403,False,Astrocyte,0.6000000000000001,Outside target region
+GTATCCTTTGGTAACC-1,13387,11622,False,Excitatory neuron,1.0,Outside target region
+GATTGGGAAAGGTTGT-1,13764,10312,False,Astrocyte,1.0,Outside target region
+TGAATACCGACGCGTA-1,13764,10530,False,Astrocyte,0.8,Outside target region
+AATCGTGAGCCGAGCA-1,13954,10639,False,Inhibitory neuron,0.6000000000000001,Outside target region
+GAACAACTGGGATGAA-1,13955,10857,False,Astrocyte,1.0,Outside target region
+TCGCCGACATATTCGC-1,13765,10966,False,Astrocyte,0.8,Outside target region
+CGATAGTCGTACTGCA-1,13766,11185,False,Excitatory neuron,0.4,Outside target region

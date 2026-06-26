@@ -49,6 +49,39 @@ def cmd_envcheck(args: argparse.Namespace) -> int:
     return int(ret.returncode)
 
 
+def cmd_stage3b(args: argparse.Namespace) -> int:
+    root = _project_root(args.project_root)
+    cmd = [
+        sys.executable,
+        "-m",
+        "src.stages.stage3b_st_unsupported",
+        "--project_root",
+        str(root),
+        "--sample",
+        args.sample,
+        "--fdr",
+        str(args.fdr),
+        "--n_calibration",
+        str(args.n_calibration),
+        "--n_spatial_permutations",
+        str(args.n_spatial_permutations),
+        "--random_seed",
+        str(args.random_seed),
+        "--sc_expr_source",
+        args.sc_expr_source,
+        "--sc_profile_source",
+        args.sc_profile_source,
+        "--expression_scale",
+        args.expression_scale,
+        "--sc_profile_scale",
+        args.sc_profile_scale,
+        "--max_genes",
+        str(args.max_genes),
+    ]
+    ret = subprocess.run(cmd, cwd=root)
+    return int(ret.returncode)
+
+
 def cmd_bundle(args: argparse.Namespace) -> int:
     root = _project_root(args.project_root)
     out_dir = (root / args.out_dir).resolve() if not Path(args.out_dir).is_absolute() else Path(args.out_dir).resolve()
@@ -94,6 +127,55 @@ def build_parser() -> argparse.ArgumentParser:
     pe = sub.add_parser("envcheck", help="run Stage0 environment check")
     pe.add_argument("--project-root", default=None, help="repo root path")
     pe.set_defaults(_fn=cmd_envcheck)
+
+    ps = sub.add_parser(
+        "stage3b",
+        help="detect ST regions unsupported by the SC reference",
+    )
+    ps.add_argument("--project-root", default=None, help="repo root path")
+    ps.add_argument("--sample", required=True, help="dataset id")
+    ps.add_argument("--fdr", type=float, default=0.05, help="BH FDR level")
+    ps.add_argument(
+        "--n-calibration",
+        type=int,
+        default=0,
+        help="pseudo-ST count; 0 uses observed spot count",
+    )
+    ps.add_argument(
+        "--n-spatial-permutations",
+        type=int,
+        default=200,
+        help="spatial region permutation count",
+    )
+    ps.add_argument("--random-seed", type=int, default=42)
+    ps.add_argument(
+        "--sc-expr-source",
+        choices=["normalized", "data", "counts", "auto"],
+        default="normalized",
+    )
+    ps.add_argument(
+        "--sc-profile-source",
+        choices=["normalized", "data", "counts", "auto"],
+        default="normalized",
+    )
+    ps.add_argument(
+        "--expression-scale",
+        choices=["log1p", "linear"],
+        default="log1p",
+        help="scale of Stage1 expression values",
+    )
+    ps.add_argument(
+        "--sc-profile-scale",
+        choices=["log1p", "linear"],
+        default="log1p",
+    )
+    ps.add_argument(
+        "--max-genes",
+        type=int,
+        default=0,
+        help="compute-budget cap; 0 uses all common genes",
+    )
+    ps.set_defaults(_fn=cmd_stage3b)
 
     pb = sub.add_parser("bundle", help="create distributable project bundle zip")
     pb.add_argument("--project-root", default=None, help="repo root path")

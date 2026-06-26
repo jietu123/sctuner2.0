@@ -1,0 +1,40 @@
+{
+  "section": "ST8059051",
+  "target_label": "Thalamic excitatory",
+  "assignment_level": "broad_category",
+  "target_region_spots": 482,
+  "top_types": [
+    {
+      "assigned_type": "Inhibitory neuron",
+      "spots": 237,
+      "fraction": 0.491701244813278
+    },
+    {
+      "assigned_type": "Astrocyte",
+      "spots": 130,
+      "fraction": 0.2697095435684647
+    },
+    {
+      "assigned_type": "Excitatory neuron",
+      "spots": 92,
+      "fraction": 0.1908713692946058
+    },
+    {
+      "assigned_type": "Oligodendrocyte/OPC",
+      "spots": 17,
+      "fraction": 0.0352697095435684
+    },
+    {
+      "assigned_type": "Neuroblast",
+      "spots": 3,
+      "fraction": 0.0062240663900414
+    },
+    {
+      "assigned_type": "Microglia",
+      "spots": 3,
+      "fraction": 0.0062240663900414
+    }
+  ],
+  "png": "E:\\AAA\u6587\u4ef6\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\cell2location_stage3b_case\\thalamic_top20\\cell2location_ST8059051_thalamic_excitatory_forced_assignment_composition.png",
+  "pdf": "E:\\AAA\u6587\u4ef6\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\cell2location_stage3b_case\\thalamic_top20\\cell2location_ST8059051_thalamic_excitatory_forced_assignment_composition.pdf"
+}

@@ -1,0 +1,15 @@
+ligand,ligand_score,classification,pathway
+TXLNA,0.492681571627036,high_confidence_false_communication,Hypoxia
+ADM,1.0,high_confidence_false_communication,NFkB
+TNC,0.16117117445635407,high_confidence_false_communication,NFkB
+KITLG,0.06301935268086946,high_confidence_false_communication,NFkB
+BMP2,0.10242502220581179,high_confidence_false_communication,TGFb
+VEGFA,0.5785333360244329,high_confidence_false_communication,TNFa
+THBS2,0.42029254174751984,insufficient_observed_ST_evidence,Estrogen
+VWF,0.8752377170949898,insufficient_observed_ST_evidence,NFkB
+ADAM9,0.43206137606663797,insufficient_observed_ST_evidence,NFkB
+EFNB3,0.042812649095256276,insufficient_observed_ST_evidence,NFkB
+RGMA,0.1625490185768979,insufficient_observed_ST_evidence,TGFb
+FN1,0.3604959583472058,insufficient_observed_ST_evidence,TNFa
+CXCL12,0.3307919176781328,insufficient_observed_ST_evidence,TNFa
+TGFB1,0.6915589421197057,observed_ST_supported,TGFb

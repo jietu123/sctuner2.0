@@ -1,0 +1,13 @@
+{
+  "nearest_spacing_px": 218.0,
+  "neighbor_radius_px": 294.3,
+  "target_spots": 482,
+  "core_spots": 409,
+  "boundary_spots": 73,
+  "hit_core": 364,
+  "missed_core": 45,
+  "hit_boundary": 11,
+  "missed_boundary": 62,
+  "core_recall": 0.8899755501222494,
+  "boundary_recall": 0.1506849315068493
+}

@@ -1,0 +1,3 @@
+method,evaluated_spots,unsupported_core_spots,supported_region_spots,unsupported_correct,supported_correct,unsupported_contribution,supported_contribution,abstention_aware_accuracy,incorrect_fraction
+CytoSPACE,1323,482,841,0,382,0.0,0.2887377173091459,0.2887377173091459,0.7112622826908541
+SVTuner,1323,482,841,375,356,0.2834467120181406,0.2690854119425548,0.5525321239606954,0.4474678760393046

@@ -88,6 +88,19 @@ def parse_args() -> argparse.Namespace:
         help="override cells_per_spot for CytoSPACE mapping (optional)",
     )
     p.add_argument(
+        "--stage3b_blank_regions",
+        action="store_true",
+        help=(
+            "exclude Stage3B unsupported-region spots before CytoSPACE mapping; "
+            "restore them as explicit zero-assignment rows after mapping"
+        ),
+    )
+    p.add_argument(
+        "--stage3b_scores_path",
+        default=None,
+        help="optional Stage3B spot score CSV override",
+    )
+    p.add_argument(
         "--filter_scope",
         choices=["unsupported_all", "missing_only", "missing_detected_only"],
         default="unsupported_all",
@@ -1217,6 +1230,86 @@ def _mass_diff(before: pd.DataFrame, after: pd.DataFrame, type_cols: list[str]) 
     return diffs
 
 
+def load_stage3b_blank_spots(
+    project_root: Path,
+    sample: str,
+    dataset_cfg: dict,
+    scores_override: str | None = None,
+) -> tuple[pd.DataFrame, Path]:
+    if scores_override:
+        scores_path = Path(scores_override)
+        if not scores_path.is_absolute():
+            scores_path = project_root / scores_path
+    else:
+        scores_path = (
+            processed_dir(project_root, sample, dataset_cfg)
+            / "stage3b_st_unsupported"
+            / "spot_unsupported_scores.csv"
+        )
+    scores_path = scores_path.resolve()
+    if not scores_path.exists():
+        raise FileNotFoundError(f"Stage3B spot scores not found: {scores_path}")
+    scores = pd.read_csv(scores_path, index_col=0)
+    scores.index = scores.index.astype(str)
+    if "is_unsupported_region" not in scores.columns:
+        raise ValueError(
+            f"Stage3B scores lack is_unsupported_region: {scores_path}"
+        )
+    mask = scores["is_unsupported_region"].astype(str).str.lower().eq("true")
+    blank = scores.loc[mask].copy()
+    blank.index.name = "spot_id"
+    if blank.empty:
+        raise ValueError(
+            "Stage3B blank-region mode requested, but no unsupported-region spots "
+            f"were found in {scores_path}"
+        )
+    return blank, scores_path
+
+
+def restore_blank_spot_rows(
+    csv_path: Path,
+    full_spot_ids: Sequence[str],
+    blank_spot_ids: set[str],
+) -> dict[str, int]:
+    if not csv_path.exists():
+        raise FileNotFoundError(f"CytoSPACE spot output not found: {csv_path}")
+    frame = pd.read_csv(csv_path)
+    if frame.empty:
+        raise ValueError(f"CytoSPACE spot output is empty: {csv_path}")
+    spot_column = "spot_id" if "spot_id" in frame.columns else frame.columns[0]
+    frame = frame.rename(columns={spot_column: "spot_id"})
+    frame["spot_id"] = frame["spot_id"].astype(str)
+    if frame["spot_id"].duplicated().any():
+        raise ValueError(f"Duplicate spot IDs in {csv_path}")
+    numeric_columns = [column for column in frame.columns if column != "spot_id"]
+    frame[numeric_columns] = frame[numeric_columns].apply(
+        pd.to_numeric,
+        errors="coerce",
+    ).fillna(0.0)
+    restored = (
+        frame.set_index("spot_id")
+        .reindex([str(x) for x in full_spot_ids], fill_value=0.0)
+    )
+    restored.index.name = "spot_id"
+    blank_present = blank_spot_ids.intersection(restored.index)
+    if blank_present:
+        restored.loc[list(blank_present), numeric_columns] = 0.0
+    restored.to_csv(csv_path)
+    nonzero_blank = int(
+        (
+            restored.loc[list(blank_present), numeric_columns]
+            .abs()
+            .sum(axis=1)
+            > 0
+        ).sum()
+    ) if blank_present else 0
+    return {
+        "full_spots": int(len(restored)),
+        "blank_rows": int(len(blank_present)),
+        "blank_nonzero_rows": nonzero_blank,
+    }
+
+
 
 
 def build_stage4_outputs(
@@ -1504,6 +1597,37 @@ def main():
         sc_expr_source=args.sc_expr_source,
     )
     print(f"[stage4] sc_expr_source={args.sc_expr_source}")
+    full_st_spot_ids = st_expr.index.astype(str).tolist()
+    stage3b_blank = pd.DataFrame()
+    stage3b_scores_path: Path | None = None
+    stage3b_blank_ids: set[str] = set()
+    if args.stage3b_blank_regions:
+        stage3b_blank, stage3b_scores_path = load_stage3b_blank_spots(
+            project_root,
+            args.sample,
+            storage_cfg,
+            args.stage3b_scores_path,
+        )
+        stage3b_blank_ids = set(stage3b_blank.index.astype(str))
+        unknown_blank_ids = sorted(stage3b_blank_ids.difference(full_st_spot_ids))
+        if unknown_blank_ids:
+            raise ValueError(
+                f"{len(unknown_blank_ids)} Stage3B blank spots are absent from Stage1 ST, "
+                f"e.g. {unknown_blank_ids[:5]}"
+            )
+        mapped_spot_ids = [
+            spot_id for spot_id in full_st_spot_ids if spot_id not in stage3b_blank_ids
+        ]
+        if not mapped_spot_ids:
+            raise ValueError("Stage3B blank mask removes every ST spot")
+        st_expr = st_expr.loc[mapped_spot_ids].copy()
+        st_coords = st_coords.loc[mapped_spot_ids].copy()
+        print(
+            "[stage4] Stage3B pre-mapping blank mask applied: "
+            f"full_spots={len(full_st_spot_ids)}, "
+            f"blank_spots={len(stage3b_blank_ids)}, "
+            f"mapped_spots={len(mapped_spot_ids)}"
+        )
 
     full_type_list = []
     for t in sc_meta["cell_type"].dropna().tolist():
@@ -1658,6 +1782,72 @@ def main():
         active_type_list,
         alias_map,
     )
+    blank_restore_audit: dict[str, dict[str, int]] = {}
+    if args.stage3b_blank_regions:
+        assigned_spot_columns = (
+            ("assigned_locations.csv", "SpotID"),
+            ("cell_assignment.csv", "assigned_spot"),
+        )
+        assignment_blank_hits: dict[str, int] = {}
+        for filename, spot_column in assigned_spot_columns:
+            path = cyto_out_dir / filename
+            if not path.exists():
+                assignment_blank_hits[filename] = 0
+                continue
+            frame = pd.read_csv(path, usecols=lambda c: c == spot_column)
+            if spot_column not in frame.columns:
+                raise ValueError(f"{path} lacks required spot column {spot_column}")
+            hits = int(frame[spot_column].astype(str).isin(stage3b_blank_ids).sum())
+            assignment_blank_hits[filename] = hits
+            if hits:
+                raise ValueError(
+                    f"Pre-mapping Stage3B mask violation: {hits} assignments in "
+                    f"blank spots in {path}"
+                )
+
+        for filename in (
+            "cell_type_assignments_by_spot.csv",
+            "fractional_abundances_by_spot.csv",
+        ):
+            blank_restore_audit[filename] = restore_blank_spot_rows(
+                cyto_out_dir / filename,
+                full_st_spot_ids,
+                stage3b_blank_ids,
+            )
+            if blank_restore_audit[filename]["blank_nonzero_rows"]:
+                raise ValueError(
+                    f"Restored Stage3B blank rows are nonzero in {filename}"
+                )
+
+        blank_manifest = stage3b_blank.copy()
+        blank_manifest.insert(0, "blank_reason", "st_unsupported_region")
+        blank_manifest.to_csv(cyto_out_dir / "stage3b_blank_spots.csv")
+        summary["stage3b_blank_regions"] = {
+            "enabled": True,
+            "applied_before_mapping": True,
+            "scores_path": str(stage3b_scores_path),
+            "scores_sha1": sha1(stage3b_scores_path) if stage3b_scores_path else None,
+            "blank_manifest_path": str(cyto_out_dir / "stage3b_blank_spots.csv"),
+            "blank_manifest_sha1": sha1(cyto_out_dir / "stage3b_blank_spots.csv"),
+            "full_spots": int(len(full_st_spot_ids)),
+            "mapped_spots": int(len(st_expr)),
+            "blank_spots": int(len(stage3b_blank_ids)),
+            "mapping_capacity_removed": (
+                int(len(stage3b_blank_ids) * mapping_cps)
+                if mapping_cps is not None
+                else None
+            ),
+            "assignment_blank_hits": assignment_blank_hits,
+            "restored_output_rows": blank_restore_audit,
+        }
+    else:
+        summary["stage3b_blank_regions"] = {
+            "enabled": False,
+            "applied_before_mapping": False,
+            "full_spots": int(len(full_st_spot_ids)),
+            "mapped_spots": int(len(st_expr)),
+            "blank_spots": 0,
+        }
     summary["mapping_cells_per_spot"] = int(mapping_cps) if mapping_cps is not None else None
     summary["truth_filter_enabled"] = bool(filter_to_sim_truth)
     summary["truth_filter_removed"] = int(truth_filter_removed)
