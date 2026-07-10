@@ -1,0 +1,97 @@
+{
+  "phase": "BioApp Phase 4 formal CytoSPACE baseline execution against frozen CTA Immune endpoint",
+  "decision": "PASS",
+  "decision_reasons": [
+    "all required baseline runs completed and raw outputs detected"
+  ],
+  "stage_type": "formal CytoSPACE baseline execution / biological application candidate preparation",
+  "input_phase2c_decision": "PASS",
+  "input_phase3r_decision": "PASS",
+  "manual_authorization_for_phase4": true,
+  "endpoint_frozen": true,
+  "primary_endpoint": "Immune cells",
+  "primary_endpoint_spatial_note": "sparse immune-positive spatial compartments, not a large continuous ROI",
+  "endpoint_used_for_mapping": false,
+  "endpoint_used_for_evaluation": false,
+  "analysis_universe_type": "full_frozen_endpoint_spot_universe",
+  "analysis_universe_spots": 2248,
+  "n_gene_overlap_used": 2000,
+  "ST_expression_input_type": "log1p_CPM_from_counts_in_Phase3R",
+  "ST_expression_input_path": "visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/st_expression_full_2248_data.csv.gz",
+  "ST_expression_note": "The data layer was generated from counts in Phase 3R and was not used to define the endpoint.",
+  "reference_label_column": "cell_type",
+  "total_reference_cells": 4014,
+  "immune_reference_cells": 2414,
+  "nonimmune_reference_cells": 1600,
+  "control_strategy": {
+    "true_nonimmune_size_matched_control_possible": false,
+    "primary_control": "nonimmune-all-dropout control",
+    "primary_control_size_matched": false,
+    "supplementary_control": "random-all-cell size-matched dropout dry/sensitivity design",
+    "random_sensitivity_mapping_run": false
+  },
+  "random_all_cell_size_matched_sensitivity_prepared": true,
+  "random_sensitivity_mapping_run": false,
+  "random_sensitivity_cell_list_path": "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/random_all_cell_size_matched_control_cell_list_seed20260705.txt",
+  "baseline_runs": {
+    "baseline_full_reference": {
+      "attempted": true,
+      "completed": true,
+      "n_reference_cells_input": 4014,
+      "output_detected": true,
+      "ready_for_phase5_endpoint_evaluation": true
+    },
+    "baseline_immune_all_dropout": {
+      "attempted": true,
+      "completed": true,
+      "n_reference_cells_input": 1600,
+      "output_detected": true,
+      "ready_for_phase5_endpoint_evaluation": true
+    },
+    "baseline_nonimmune_all_dropout_control": {
+      "attempted": true,
+      "completed": true,
+      "n_reference_cells_input": 2414,
+      "output_detected": true,
+      "ready_for_phase5_endpoint_evaluation": true
+    }
+  },
+  "all_required_baseline_runs_completed": true,
+  "ready_for_phase5_endpoint_evaluation": true,
+  "CytoSPACE_run": true,
+  "SVTuner_run": false,
+  "Stage4_run": false,
+  "SVTuner_Stage3_run": false,
+  "SVTuner_Stage4_run": false,
+  "contradiction_analysis_run": false,
+  "prevention_analysis_run": false,
+  "endpoint_redefined": false,
+  "expression_markers_used_to_define_endpoint": false,
+  "mapping_outputs_used_to_define_endpoint": false,
+  "baseline_vs_endpoint_metric_computed": false,
+  "SVTuner_vs_endpoint_metric_computed": false,
+  "boundary_violation": false,
+  "biological_application_allowed": false,
+  "cytospace_entrypoint_found": true,
+  "cytospace_entrypoint_path": "external/cytospace/cytospace/cytospace.py:main_cytospace",
+  "cytospace_environment": "E:\\ANACONDA\\envs\\cytospace_v1.1.0_py310\\python.exe",
+  "command_template": "python phase4_run_single_cytospace.py --config <run_config>",
+  "actual_command_executed": {
+    "baseline_full_reference": "E:\\ANACONDA\\envs\\cytospace_v1.1.0_py310\\python.exe E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\phase4_run_single_cytospace.py --config E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\baseline_full_reference\\cytospace_run_config.json",
+    "baseline_immune_all_dropout": "E:\\ANACONDA\\envs\\cytospace_v1.1.0_py310\\python.exe E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\phase4_run_single_cytospace.py --config E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\baseline_immune_all_dropout\\cytospace_run_config.json",
+    "baseline_nonimmune_all_dropout_control": "E:\\ANACONDA\\envs\\cytospace_v1.1.0_py310\\python.exe E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\phase4_run_single_cytospace.py --config E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\baseline_nonimmune_all_dropout_control\\cytospace_run_config.json"
+  },
+  "allowed_claims": [
+    "Formal CytoSPACE baseline runs were executed against the frozen CTA Immune endpoint input universe.",
+    "Full-reference, immune-all-dropout, and nonimmune-all-dropout control baseline outputs were generated or audited.",
+    "Baseline outputs are ready for a later endpoint-specific evaluation phase if all required runs completed."
+  ],
+  "disallowed_claims": [
+    "Baseline creates false niche calls.",
+    "SVTuner improves endpoint recovery.",
+    "SVTuner prevents contradicted interpretation.",
+    "Biological application completed.",
+    "Biological discovery made."
+  ],
+  "output_dir": "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint"
+}

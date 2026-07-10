@@ -1,0 +1,16 @@
+{
+  "version": "Golden Rules v2.1",
+  "new_rule_id": 18,
+  "new_rule": "No reliable formal baseline mapping, no SVTuner biological application.",
+  "phase2_entry_required_checks": [
+    "identifiable ST mapping object",
+    "usable scRNA-seq reference",
+    "sufficient gene intersection",
+    "compatible preprocessing",
+    "baseline CytoSPACE feasibility",
+    "SVTuner-enhanced mapping feasibility",
+    "identical input basis for baseline and SVTuner",
+    "endpoint-specific comparison after mapping"
+  ],
+  "downgrade_if_endpoint_only": "endpoint feasibility only; not main biological application"
+}

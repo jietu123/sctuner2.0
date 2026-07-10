@@ -1,0 +1,14 @@
+{
+  "required_future_svtuner_runs": [
+    "svtuner_immune_all_dropout"
+  ],
+  "optional_future_svtuner_runs": [
+    "svtuner_full_reference_context",
+    "svtuner_nonimmune_all_dropout_control_context"
+  ],
+  "deferred_sensitivity_runs": [
+    "random_all_cell_size_matched_sensitivity"
+  ],
+  "main_condition": "immune-all-dropout",
+  "main_condition_reason": "frozen CTA Immune endpoint tests immune reference incompleteness"
+}

@@ -14,6 +14,8 @@ from PIL import Image, ImageDraw, ImageFont
 HIGHLIGHT_COLOR = "#00CFE8"
 HIGHLIGHT_LW = 0.55
 BASE_BG = "#E4E0D8"
+PANEL_BORDER_COLOR = "#9A9A9A"
+PANEL_BORDER_LW = 0.72
 
 
 def make_deep_purple_magma() -> LinearSegmentedColormap:
@@ -102,7 +104,15 @@ def point_size(n_spots: int, pair_id: str = "") -> float:
     return 2.37
 
 
-def draw_panel(ax, df: pd.DataFrame, mask: pd.Series, title: str, subtitle: str, norm: Normalize):
+def draw_panel(
+    ax,
+    df: pd.DataFrame,
+    mask: pd.Series,
+    title: str,
+    subtitle: str,
+    norm: Normalize,
+    compact_svg: bool = False,
+):
     size = point_size(len(df), str(getattr(draw_panel, "pair_id", "")))
     ax.scatter(df["x"], df["y_plot"], s=size, c=BASE_BG, marker="h", linewidths=0, alpha=0.72, rasterized=True)
     sc = ax.scatter(
@@ -127,7 +137,7 @@ def draw_panel(ax, df: pd.DataFrame, mask: pd.Series, title: str, subtitle: str,
             edgecolors=HIGHLIGHT_COLOR,
             linewidths=HIGHLIGHT_LW,
             alpha=1.0,
-            rasterized=False,
+            rasterized=compact_svg,
             zorder=10,
         )
     ax.set_title(f"{title}\n{subtitle}", loc="left", fontweight="bold", fontsize=9.3, pad=5)
@@ -137,7 +147,10 @@ def draw_panel(ax, df: pd.DataFrame, mask: pd.Series, title: str, subtitle: str,
     ax.set_xlabel("spatial col", fontsize=7.5)
     ax.set_ylabel("spatial row" if title.startswith("A") else "", fontsize=9.0)
     for spine in ax.spines.values():
-        spine.set_visible(False)
+        spine.set_visible(compact_svg)
+        if compact_svg:
+            spine.set_color(PANEL_BORDER_COLOR)
+            spine.set_linewidth(PANEL_BORDER_LW)
     return sc
 
 
@@ -213,6 +226,96 @@ def stack_images(paths: list[Path], out_png: Path, title: str) -> None:
     canvas.save(out_png, optimize=True)
 
 
+def render_compact_editable_svg(
+    root: Path,
+    final_dir: Path,
+    metadata: pd.DataFrame,
+    out_prefix: str,
+) -> Path:
+    """Render a hybrid SVG: editable typography with compact raster spot layers."""
+    plt.rcParams.update(
+        {
+            "font.family": "DejaVu Sans",
+            "svg.fonttype": "none",
+            "svg.image_inline": True,
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+        }
+    )
+    norm = Normalize(0.0, 1.0)
+    n_rows = len(metadata)
+    fig = plt.figure(figsize=(9.2, 3.45 * n_rows + 0.75), dpi=240, facecolor="white")
+    outer = fig.add_gridspec(
+        n_rows,
+        1,
+        left=0.055,
+        right=0.955,
+        top=0.955,
+        bottom=0.025,
+        hspace=0.30,
+    )
+
+    for row_index, (_, row) in enumerate(metadata.iterrows()):
+        pair_id = str(row["pair_id"])
+        target_type = str(row["target_type"])
+        df = load_scene(root, row)
+        inner = outer[row_index, 0].subgridspec(
+            2,
+            3,
+            height_ratios=[0.30, 0.70],
+            width_ratios=[1.0, 1.0, 0.035],
+            wspace=0.045,
+            hspace=0.12,
+        )
+        title_ax = fig.add_subplot(inner[0, :2])
+        title_ax.set_axis_off()
+        title_ax.text(
+            0.0,
+            0.72,
+            display_label(pair_id, target_type),
+            ha="left",
+            va="center",
+            fontsize=10.5,
+            fontweight="bold",
+        )
+        ax_left = fig.add_subplot(inner[1, 0])
+        ax_right = fig.add_subplot(inner[1, 1])
+        cax = fig.add_subplot(inner[1, 2])
+        draw_panel.pair_id = pair_id
+        sc = draw_panel(
+            ax_left,
+            df,
+            df["target_top15"],
+            "A  Real ST target signal",
+            "cyan outline: marker top15 region",
+            norm,
+            compact_svg=True,
+        )
+        draw_panel(
+            ax_right,
+            df,
+            df["blank"],
+            "B  Stage3B blank result",
+            "cyan outline: blanked unsupported region",
+            norm,
+            compact_svg=True,
+        )
+        colorbar = fig.colorbar(sc, cax=cax)
+        colorbar.set_label("target marker\npercentile", fontsize=6.8, labelpad=4)
+        colorbar.ax.tick_params(labelsize=6.8, length=2)
+
+    fig.suptitle(
+        "Stage3B Reference-dropout Spatial Validation",
+        fontsize=14,
+        fontweight="bold",
+        y=0.992,
+    )
+    out_svg = final_dir / f"{out_prefix}.svg"
+    fig.savefig(out_svg, format="svg", facecolor="white")
+    plt.close(fig)
+    return out_svg
+
+
 def main() -> int:
     args = parse_args()
     root = Path(args.project_root).resolve()
@@ -223,7 +326,9 @@ def main() -> int:
     pngs = [render_one(root, scene_dir, row, i + 1) for i, (_, row) in enumerate(metadata.iterrows())]
     out_png = final_dir / f"{args.out_prefix}.png"
     stack_images(pngs, out_png, "Stage3B Reference-dropout Spatial Validation")
+    out_svg = render_compact_editable_svg(root, final_dir, metadata, args.out_prefix)
     print(f"[done] {out_png}")
+    print(f"[done] {out_svg}")
     print(f"[done] scenes={len(pngs)} dir={scene_dir}")
     return 0
 

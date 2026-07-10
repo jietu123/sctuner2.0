@@ -1,0 +1,21 @@
+BioApp Phase 2C - endpoint freeze with validated CTA-to-spot mapping
+
+Decision: PASS
+
+Endpoint frozen: true
+Primary endpoint: Immune cells
+Ready for Phase 3: true
+
+Allowed claim:
+- CTA-derived endpoint was frozen at Visium spot level.
+- CTA-to-spot mapping enabled endpoint-positive, endpoint-negative, ambiguous, and excluded spot definitions.
+
+Disallowed claims:
+- SVTuner improves endpoint recovery.
+- SVTuner prevents contradicted interpretation.
+- Baseline creates false niche calls.
+- Biological application completed.
+- Biological discovery made.
+
+Next:
+BioApp Phase 3 - reference audit and formal baseline feasibility for CTA-defined endpoint

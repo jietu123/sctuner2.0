@@ -1,0 +1,18 @@
+{
+  "phase": "BioApp Phase 9 Golden Rules final check",
+  "decision": "PASS",
+  "biological_question_defined": true,
+  "external_endpoint_predefined": true,
+  "endpoint_independent_from_SVTuner": true,
+  "endpoint_spatially_registered": true,
+  "baseline_comparison_available": true,
+  "SVTuner_vs_endpoint_evaluation_available": true,
+  "endpoint_specific_quantitative_metric_available": true,
+  "endpoint_baseline_SVTuner_spatial_comparison_available": true,
+  "no_endpoint_leakage_or_threshold_tuning_detected": true,
+  "gene_count_material_mismatch": false,
+  "interpretation_boundary_locked": true,
+  "biological_application_allowed": true,
+  "final_claim_allowed_but_not_inserted_into_manuscript": true,
+  "allowed_claim_level": "formal biological-application evidence claim"
+}

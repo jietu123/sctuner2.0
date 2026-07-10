@@ -1,0 +1,17 @@
+{
+  "primary_metric_uses_continuous_score": true,
+  "binary_withheld_threshold_required": false,
+  "binary_threshold_policy": "predefined only if later needed",
+  "allowed_strategies": [
+    "use predefined default SVTuner threshold from method configuration",
+    "use threshold fixed from prior method-validation experiments",
+    "use unsupervised fixed quantile based only on unsupported score distribution, not endpoint labels",
+    "use no binary threshold and report continuous withheld_score as primary"
+  ],
+  "forbidden_strategies": [
+    "maximize CTA endpoint AUROC",
+    "tune threshold based on Phase 5 baseline results",
+    "tune threshold based on visual appearance"
+  ],
+  "threshold_selected_using_endpoint_labels": false
+}

@@ -1,0 +1,12 @@
+cell_type,n_cells,fraction,immune_label,immune_group_suggested
+B cells,400,0.09965122072745392,True,immune
+CD8 T cells,400,0.09965122072745392,True,immune
+Monocytes and Macrophages,400,0.09965122072745392,True,immune
+NK cells,400,0.09965122072745392,True,immune
+Endothelial cells,400,0.09965122072745392,False,nonimmune
+CD4 T cells,400,0.09965122072745392,True,immune
+Epithelial cells,400,0.09965122072745392,False,nonimmune
+PVL,400,0.09965122072745392,False,nonimmune
+Fibroblasts,400,0.09965122072745392,False,nonimmune
+Plasma cells,226,0.05630293971101146,True,immune
+T-cells,188,0.046836073741903336,True,immune

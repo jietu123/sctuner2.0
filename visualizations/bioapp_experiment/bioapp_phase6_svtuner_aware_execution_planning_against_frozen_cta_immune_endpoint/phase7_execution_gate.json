@@ -1,0 +1,18 @@
+{
+  "phase7_name": "BioApp Phase 7 — SVTuner-aware execution against frozen CTA Immune endpoint",
+  "phase7_allowed_only_if_phase6_pass": true,
+  "phase7_requires_manual_authorization": true,
+  "allowed_in_phase7": [
+    "run SVTuner-aware execution for immune-all-dropout condition",
+    "generate raw SVTuner outputs",
+    "generate run logs",
+    "generate output inventory"
+  ],
+  "not_allowed_in_phase7": [
+    "compute final prevention analysis unless explicitly assigned to a later evaluation phase",
+    "claim biological application completed",
+    "modify frozen endpoint",
+    "choose endpoint-dependent thresholds"
+  ],
+  "phase8_expected": "SVTuner-vs-endpoint evaluation and baseline/SVTuner comparison"
+}

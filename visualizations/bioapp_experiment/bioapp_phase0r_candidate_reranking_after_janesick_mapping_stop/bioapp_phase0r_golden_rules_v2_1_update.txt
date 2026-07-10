@@ -1,0 +1,18 @@
+Golden Rules v2.1 update
+
+Golden Rule 18:
+No reliable formal baseline mapping, no SVTuner biological application.
+
+A candidate cannot enter BioApp Phase 2 unless formal baseline mapping feasibility is supported.
+The candidate must support:
+1. identifiable ST mapping object
+2. usable scRNA-seq reference
+3. sufficient gene intersection
+4. compatible preprocessing
+5. baseline CytoSPACE feasibility
+6. SVTuner-enhanced mapping feasibility
+7. identical input basis for baseline and SVTuner
+8. endpoint-specific comparison after mapping
+
+If external endpoint is feasible but mapping mainline is not feasible, the candidate must be downgraded to:
+endpoint feasibility only, not main biological application.

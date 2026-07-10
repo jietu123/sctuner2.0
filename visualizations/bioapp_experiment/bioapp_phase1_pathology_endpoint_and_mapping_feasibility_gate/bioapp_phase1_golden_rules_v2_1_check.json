@@ -1,0 +1,28 @@
+{
+  "stage_type": "computational pathology endpoint and mapping feasibility gate",
+  "biological_question_defined": true,
+  "external_endpoint_predefined": true,
+  "endpoint_independent_from_SVTuner": true,
+  "endpoint_independent_from_CytoSPACE": true,
+  "endpoint_independent_from_Visium_expression": true,
+  "endpoint_spatial_registration_feasible": true,
+  "endpoint_positive_negative_spots_definable_before_mapping": true,
+  "sample_matching_feasible": true,
+  "visium_CTA_data_identifiable": true,
+  "scRNAseq_reference_identifiable": true,
+  "formal_baseline_CytoSPACE_feasible": true,
+  "SVTuner_mapping_feasible": true,
+  "identical_input_basis_for_baseline_and_SVTuner_feasible": true,
+  "endpoint_specific_quantitative_metric_feasible": true,
+  "endpoint_baseline_SVTuner_spatial_comparison_feasible": true,
+  "compute_feasible_on_16GB_RAM_or_downsample_mode": true,
+  "biological_application_allowed_to_phase2": true,
+  "decision": "PASS",
+  "mandatory_phase2_caveats": [
+    "Use processed files only; do not download raw FASTQ.",
+    "Freeze endpoint-positive/negative spot rule before mapping.",
+    "Verify CTA is from H&E/QuPath output and not reconstructed from expression.",
+    "Verify exact selected sample has matching CTA, Visium expression, coordinates, and metadata.",
+    "Run shared-gene/input-basis preflight before CytoSPACE/SVTuner."
+  ]
+}

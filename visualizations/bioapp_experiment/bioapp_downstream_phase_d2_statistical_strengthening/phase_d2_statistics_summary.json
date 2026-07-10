@@ -1,0 +1,60 @@
+{
+  "decision": "PASS",
+  "phase": "BioApp Downstream Phase D2 statistical strengthening",
+  "n_permutations": 2000,
+  "n_bootstrap": 3000,
+  "panel_g_primary_test": {
+    "test": "immune_enriched_vs_tumor_core withheld_binary rate difference",
+    "empirical_p_two_sided": 0.0004997501249375312,
+    "cohen_d_withheld_score": 1.3152656289969695
+  },
+  "panel_g_sensitivity_excluding_mixed_boundary": {
+    "test": "immune_enriched_vs_all_remaining withheld_binary rate difference",
+    "empirical_p_two_sided": 0.0004997501249375312,
+    "observed_statistic": 0.26032458107929807
+  },
+  "panel_g_logistic_regression_status": "fit_failed: Singular matrix",
+  "panel_h_primary_test": {
+    "test": "withheld_rate monotonic trend across frozen boundary bins",
+    "spearman_rho": 0.8503146459584139,
+    "spearman_p_value": 0.007471414639953453,
+    "kendall_tau": 0.7637626158259733,
+    "empirical_permutation_p_one_sided_positive": 0.0069965017491254375
+  },
+  "panel_h_reporting_bin_sensitivity": [
+    {
+      "analysis": "panel_h_reporting_bin_sensitivity",
+      "metric": null,
+      "spearman_rho": 0.5585812268712466,
+      "spearman_p_value": 0.19245253188052203,
+      "kendall_tau": 0.29277002188455997,
+      "kendall_p_value": 0.3620501922003584,
+      "empirical_permutation_p_one_sided_positive": null,
+      "n_permutations": null,
+      "setting": "narrower_reporting_bins",
+      "qualitative_positive_trend": true
+    },
+    {
+      "analysis": "panel_h_reporting_bin_sensitivity",
+      "metric": null,
+      "spearman_rho": 0.5585812268712466,
+      "spearman_p_value": 0.19245253188052203,
+      "kendall_tau": 0.29277002188455997,
+      "kendall_p_value": 0.3620501922003584,
+      "empirical_permutation_p_one_sided_positive": null,
+      "n_permutations": null,
+      "setting": "wider_reporting_bins",
+      "qualitative_positive_trend": true
+    }
+  ],
+  "panel_h_interpretation_note": "Primary frozen-bin topology is significant; narrower/wider reporting-bin sensitivity preserves a positive trend but has weaker nominal significance.",
+  "panel_g_statistical_figure": "panel_g_morphology_domain_concordance_statistical.png",
+  "panel_h_statistical_figure": "panel_h_tumor_stroma_interface_topology_statistical.png",
+  "interpretation": "These analyses evaluate whether SVTuner withheld outputs are statistically associated with frozen morphology-domain and boundary topology.",
+  "claim_boundary": [
+    "No biological discovery claim.",
+    "Frozen morphology domains are proxy labels, not pathology annotations.",
+    "Frozen boundary is a spot-graph proxy, not a pixel-level histology boundary.",
+    "No upstream BioApp metrics, endpoint labels, or thresholds were changed."
+  ]
+}

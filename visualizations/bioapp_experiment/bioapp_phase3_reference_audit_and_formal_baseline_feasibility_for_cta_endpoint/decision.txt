@@ -1,0 +1,51 @@
+BioApp Phase 3 - reference audit and formal baseline feasibility for CTA-defined endpoint
+
+Decision: REVIEW_REQUIRED
+
+Input endpoint:
+CTA-defined Immune cells
+
+Endpoint status:
+Frozen at Phase 2C
+
+Primary endpoint note:
+Sparse immune-positive spatial compartments, not a large continuous ROI.
+
+Reference audit:
+reference_found = true
+reference_metadata_found = true
+recommended_label_column = cell_type
+immune_reference_available = true
+
+Dropout design:
+primary_dropout_design = reference_immune_all_dropout
+primary_dropout_feasible = true
+size_matched_control_feasible = false
+
+Formal baseline feasibility:
+incomplete
+
+Boundary checks:
+CytoSPACE run: false
+SVTuner run: false
+Stage4 run: false
+Formal baseline mapping run: false
+Contradiction analysis run: false
+Prevention analysis run: false
+Endpoint redefined: false
+
+Allowed claims:
+- Reference label vocabulary was audited against the frozen CTA Immune cells endpoint.
+- A formal baseline feasibility plan was established without running CytoSPACE or SVTuner.
+- Endpoint-specific metrics were predefined for later baseline/SVTuner comparison.
+
+Disallowed claims:
+- Baseline creates false niche calls.
+- SVTuner improves endpoint recovery.
+- SVTuner prevents contradicted interpretation.
+- Biological application completed.
+- Biological discovery made.
+
+Next:
+Review reference label vocabulary, dropout design, and baseline input completeness before Phase 4.
+Do not run CytoSPACE/SVTuner/Stage4.

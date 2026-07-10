@@ -1,0 +1,11 @@
+{
+  "design": "nonimmune_all_dropout_control",
+  "labels_to_remove": "all labels not in immune labels",
+  "n_cells_to_remove": 1600,
+  "n_cells_remaining": 2414,
+  "expected_reference_metadata_filter_rule": "exclude rows where cell_type is not in immune labels",
+  "expected_reference_expression_filter_rule": "keep expression rows/cells retained by filtered metadata",
+  "random_seed_if_later_used": null,
+  "phase_to_execute": "future Phase 4 after manual authorization",
+  "mapping_result": false
+}

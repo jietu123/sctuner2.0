@@ -1,0 +1,10 @@
+package,installed,version,load_success,error_message
+Seurat,True,5.3.1,True,
+SeuratObject,True,5.2.0,True,
+data.table,True,1.17.8,True,
+dplyr,True,1.1.4,True,
+tidyr,True,1.3.1,True,
+ggplot2,True,4.0.1,True,
+Matrix,True,1.7.3,True,
+jsonlite,True,2.0.0,True,
+yaml,True,2.3.10,True,

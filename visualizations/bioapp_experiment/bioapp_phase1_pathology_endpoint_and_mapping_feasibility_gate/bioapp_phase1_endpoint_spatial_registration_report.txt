@@ -1,0 +1,7 @@
+Endpoint spatial registration gate
+
+Conclusion: PASS_WITH_CAVEAT.
+The endpoint can be mapped to Visium spots because the CTA workflow aligns QuPath cell/object annotations to Visium spot barcodes.
+The GitHub vignette documents CTA_align with ST_data, image name, scaling factor, pixel size, raw image dimensions, and CTA output.
+The publication states cells whose centroid coordinates fall within Visium spot areas are assigned spot IDs and cell type percentages are computed.
+Phase 2 must select only samples with verified image/metadata matching; the paper notes one sample was excluded due to image metadata mismatch.

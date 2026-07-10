@@ -1,0 +1,8 @@
+BioApp Phase 0R recommendation
+
+Recommended candidate: Computational pathology annotation / breast cancer Visium CTA
+Reason: it currently best satisfies external endpoint + ST + sc reference + plausible formal mapping feasibility + manageable minimal Phase 1 path.
+
+Important constraint: this is not a mapping success claim. Phase 1 must still verify file inventory, endpoint/ST alignment, scRNA reference import, gene intersection, and baseline/SVTuner input compatibility.
+
+Janesick is retired from the main BioApp candidate role because the prior formal CytoSPACE mapping mainline stopped.

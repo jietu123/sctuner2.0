@@ -1,0 +1,9 @@
+{
+  "primary_svtuner_condition": "baseline_immune_all_dropout",
+  "selection_rule": "predefined immune-reference incompleteness scenario",
+  "selected_based_on_SVTuner_output": false,
+  "selected_based_on_future_mapping_output": false,
+  "selected_based_on_endpoint_redefinition": false,
+  "baseline_anchor_phase": "Phase 5",
+  "baseline_anchor_run": "baseline_immune_all_dropout"
+}

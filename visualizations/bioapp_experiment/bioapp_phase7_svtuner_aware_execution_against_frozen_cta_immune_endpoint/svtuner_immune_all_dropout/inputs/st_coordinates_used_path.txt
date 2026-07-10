@@ -1,0 +1,1 @@
+visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/st_coordinates_full_2248.csv

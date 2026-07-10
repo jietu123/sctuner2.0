@@ -1,0 +1,19 @@
+{
+  "design": "reference_immune_all_dropout",
+  "labels_to_remove": [
+    "B cells",
+    "CD8 T cells",
+    "Monocytes and Macrophages",
+    "NK cells",
+    "CD4 T cells",
+    "Plasma cells",
+    "T-cells"
+  ],
+  "n_cells_to_remove": 2414,
+  "n_cells_remaining": 1600,
+  "expected_reference_metadata_filter_rule": "exclude rows where cell_type is in immune labels",
+  "expected_reference_expression_filter_rule": "keep expression rows/cells retained by filtered metadata",
+  "random_seed_if_later_used": null,
+  "phase_to_execute": "future Phase 4 after manual authorization",
+  "mapping_result": false
+}

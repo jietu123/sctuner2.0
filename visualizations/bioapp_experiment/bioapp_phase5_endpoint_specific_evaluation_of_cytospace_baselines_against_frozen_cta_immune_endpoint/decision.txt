@@ -1,0 +1,71 @@
+BioApp Phase 5 - endpoint-specific evaluation of CytoSPACE baseline outputs against frozen CTA Immune endpoint
+
+Decision: PASS
+
+Input endpoint:
+CTA-defined Immune cells
+
+Endpoint status:
+Frozen at Phase 2C
+
+Primary endpoint note:
+Sparse immune-positive spatial compartments, not a large continuous ROI.
+
+Baseline runs evaluated:
+baseline_full_reference
+baseline_immune_all_dropout
+baseline_nonimmune_all_dropout_control
+
+Endpoint analysis set:
+positive = 134
+negative = 1754
+ambiguous = 290
+excluded = 70
+main_analysis_spots = positive + negative = 1888
+
+Spot universe alignment:
+all baseline runs aligned to 2248 frozen endpoint spots = True
+
+Key baseline endpoint metrics:
+baseline_full_reference:
+  mean_immune_score_positive = 0.7115671641791045
+  mean_immune_score_negative = 0.6546702774610413
+  AUROC = 0.561628856855971
+  AUPRC = 0.08768018846487502
+baseline_immune_all_dropout:
+  mean_immune_score_positive = 0.0
+  mean_immune_score_negative = 0.0
+  AUROC = nan
+  AUPRC = nan
+  note = immune labels removed by design
+baseline_nonimmune_all_dropout_control:
+  mean_immune_score_positive = 1.0
+  mean_immune_score_negative = 0.999429874572406
+  AUROC = 0.5387706564100818
+  AUPRC = 0.0764869942577103
+
+Boundary checks:
+CytoSPACE rerun: false
+SVTuner run: false
+Stage4 run: false
+SVTuner Stage3 run: false
+SVTuner Stage4 run: false
+Prevention analysis run: false
+Endpoint redefined: false
+Endpoint used for mapping: false
+Endpoint used for evaluation: true
+SVTuner-vs-endpoint metric computed: false
+
+Allowed claims:
+- CytoSPACE baseline outputs were evaluated against the frozen CTA Immune endpoint.
+- Endpoint-specific baseline metrics were computed for later comparison with SVTuner-aware outputs.
+- The frozen CTA endpoint was used only for evaluation, not for mapping or endpoint selection.
+
+Disallowed claims:
+- SVTuner improves endpoint recovery.
+- SVTuner prevents contradicted interpretation.
+- Biological application completed.
+- Biological discovery made.
+
+Next:
+BioApp Phase 6 - SVTuner-aware execution planning against frozen CTA Immune endpoint

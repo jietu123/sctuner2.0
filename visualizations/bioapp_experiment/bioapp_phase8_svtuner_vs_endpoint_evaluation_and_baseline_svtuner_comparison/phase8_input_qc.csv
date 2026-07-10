@@ -1,0 +1,6 @@
+input,status,notes
+Phase 2C frozen endpoint,ok,PASS
+Phase 5 baseline anchor,ok,baseline_immune_all_dropout
+Phase 6 planning,ok,threshold selected using endpoint labels = false
+Phase 7 raw SVTuner output,ok,svtuner_immune_all_dropout
+gene count audit,ok,"formal_gene_intersection.txt contains 2000 non-empty unique gene lines; Stage3B also reports 2000 genes. The previous 1999 count is attributable to a line-count/read-mode artifact, not a material mismatch."

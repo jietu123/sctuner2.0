@@ -1,0 +1,15 @@
+{
+  "phase": "BioApp Downstream Phase D2 statistical strengthening",
+  "SVTuner_rerun": false,
+  "Stage3_rerun": false,
+  "Stage4_run": false,
+  "CytoSPACE_rerun": false,
+  "mapping_regenerated": false,
+  "morphology_domains_redefined": false,
+  "tumor_stroma_boundary_redefined": false,
+  "CTA_endpoint_redefined": false,
+  "threshold_redefined": false,
+  "endpoint_label_tuning": false,
+  "only_frozen_D0_D1_outputs_consumed": true,
+  "guardrails_passed": true
+}

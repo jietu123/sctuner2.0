@@ -1,0 +1,24 @@
+{
+  "candidate_id": "T1_XENIUM_JANESICK_BREAST_2023",
+  "candidate_name": "Janesick Xenium-Visium breast cancer",
+  "candidate_status": "RETIRED_FROM_MAIN_BIOAPP_CANDIDATE",
+  "reason": "Prior formal CytoSPACE mapping mainline stopped.",
+  "not_deleted_as_scientific_reference": true,
+  "retired_only_as_current_main_svtuner_biological_application_candidate": true,
+  "endpoint_roi_feasibility_informative": true,
+  "formal_mapping_branch_reliable_enough_for_current_experiment": false,
+  "allowed_future_roles": [
+    "endpoint feasibility reference",
+    "ROI validation precedent",
+    "negative candidate / cautionary case"
+  ],
+  "disallowed_future_roles": [
+    "main BioApp experiment",
+    "formal SVTuner mapping biological application",
+    "endpoint-specific mapping comparison"
+  ],
+  "historical_status": [
+    "Janesick Phase 3.1: formal stop",
+    "Janesick Phase 3.2: formal mapping mainline stopped"
+  ]
+}

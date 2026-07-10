@@ -1,0 +1,70 @@
+{
+  "datasets": [
+    {
+      "group": "real_brca",
+      "target_type": "Endothelial cells",
+      "scenarios": [
+        {
+          "sample": "real_brca7_endothelial_marker_control_sc_missing_endothelial_cells",
+          "row_label": "Control ST\n- Endothelial cells (SC)",
+          "stage3b_blank_spots": 382
+        },
+        {
+          "sample": "real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells",
+          "row_label": "- Epithelial cells (ST)\n- Endothelial cells (SC)",
+          "stage3b_blank_spots": 382
+        },
+        {
+          "sample": "real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells",
+          "row_label": "- Epithelial cells, PCs (ST)\n- Endothelial cells (SC)",
+          "stage3b_blank_spots": 382
+        }
+      ]
+    },
+    {
+      "group": "mouse_brain_refined",
+      "target_type": "Ext_L56",
+      "scenarios": [
+        {
+          "sample": "mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56",
+          "row_label": "Control ST\n- Ext_L56 (SC)",
+          "stage3b_blank_spots": 2701
+        },
+        {
+          "sample": "mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56",
+          "row_label": "- Micro (ST)\n- Ext_L56 (SC)",
+          "stage3b_blank_spots": 2734
+        },
+        {
+          "sample": "mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56",
+          "row_label": "- Micro, Oligo_2 (ST)\n- Ext_L56 (SC)",
+          "stage3b_blank_spots": 2689
+        }
+      ]
+    },
+    {
+      "group": "human_lung_5loc",
+      "target_type": "B_cell",
+      "scenarios": [
+        {
+          "sample": "human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell",
+          "row_label": "Control ST\n- B_cell (SC)",
+          "stage3b_blank_spots": 391
+        },
+        {
+          "sample": "human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell",
+          "row_label": "- AT2 (ST)\n- B_cell (SC)",
+          "stage3b_blank_spots": 390
+        },
+        {
+          "sample": "human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell",
+          "row_label": "- AT2, Fibroblast (ST)\n- B_cell (SC)",
+          "stage3b_blank_spots": 394
+        }
+      ]
+    }
+  ],
+  "order_preserved": true,
+  "svg": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\simulations\\simulation_stage3ab_joint_triptych_overview_stack_3datasets.svg",
+  "png": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\simulations\\simulation_stage3ab_joint_triptych_overview_stack_3datasets.png"
+}

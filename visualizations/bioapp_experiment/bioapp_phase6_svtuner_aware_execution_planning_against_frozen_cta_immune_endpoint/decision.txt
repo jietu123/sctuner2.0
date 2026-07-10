@@ -1,0 +1,58 @@
+BioApp Phase 6 - SVTuner-aware execution planning against frozen CTA Immune endpoint
+
+Decision: PASS
+
+Input endpoint:
+CTA-defined Immune cells
+
+Endpoint status:
+Frozen at Phase 2C
+
+Primary endpoint note:
+Sparse immune-positive spatial compartments, not a large continuous ROI.
+
+Baseline anchor:
+baseline_immune_all_dropout
+
+Primary future SVTuner condition:
+svtuner_immune_all_dropout
+
+Analysis universe:
+2248 frozen endpoint spots
+2000 exact-overlap genes
+main analysis set = positive + negative = 1888
+
+Planning outputs:
+svtuner input manifest generated = True
+svtuner output contract generated = True
+metric alignment plan generated = True
+threshold policy generated = True
+command dry plan generated = True
+entrypoint found = True
+entrypoint ambiguous = False
+
+Boundary checks:
+SVTuner run: false
+SVTuner Stage3 run: false
+SVTuner Stage4 run: false
+Stage4 run: false
+CytoSPACE rerun: false
+Prevention analysis run: false
+SVTuner-vs-endpoint metric computed: false
+Endpoint redefined: false
+Threshold selected using endpoint labels: false
+
+Allowed claims:
+- SVTuner-aware execution was planned against the frozen CTA Immune endpoint.
+- The primary SVTuner execution condition and output contract were frozen.
+- Future SVTuner-vs-endpoint metrics were aligned to Phase 5 baseline metrics.
+
+Disallowed claims:
+- SVTuner improves endpoint recovery.
+- SVTuner prevents contradicted interpretation.
+- Biological application completed.
+- Biological discovery made.
+
+Next:
+BioApp Phase 7 - SVTuner-aware execution against frozen CTA Immune endpoint
+Manual authorization required before execution.

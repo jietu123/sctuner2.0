@@ -1,0 +1,22 @@
+{
+  "endpoint_type": "CTA-defined compartment endpoint",
+  "endpoint_classes": [
+    "Tumor",
+    "Immune cells",
+    "Stroma"
+  ],
+  "primary_endpoint": "Immune cells",
+  "freeze_rule": {
+    "min_total_CTA_objects": 2,
+    "min_class_count_positive": 2,
+    "positive_fraction_threshold": 0.6,
+    "negative_fraction_threshold": 0.2
+  },
+  "primary_endpoint_recommendation_rule": [
+    "Immune cells if eligible",
+    "else Tumor if eligible",
+    "else Stroma if eligible",
+    "else null"
+  ],
+  "selection_independent_from_mapping_or_SVTuner_outputs": true
+}

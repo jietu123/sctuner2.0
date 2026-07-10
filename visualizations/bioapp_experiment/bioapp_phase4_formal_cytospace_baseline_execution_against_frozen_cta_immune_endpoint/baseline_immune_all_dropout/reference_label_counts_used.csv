@@ -1,0 +1,5 @@
+cell_type,n_cells,fraction
+Endothelial cells,400,0.25
+Epithelial cells,400,0.25
+Fibroblasts,400,0.25
+PVL,400,0.25

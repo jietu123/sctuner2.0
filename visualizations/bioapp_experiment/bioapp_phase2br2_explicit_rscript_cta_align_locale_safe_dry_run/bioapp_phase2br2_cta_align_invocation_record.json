@@ -1,0 +1,20 @@
+{
+  "official_CTA_align_source_success": false,
+  "CTA_align_locale_issue_detected": true,
+  "locale_safe_patch_used": true,
+  "official_CTA_align_function_used": false,
+  "alignment_logic_reproduced_from_script": true,
+  "original_CTA_align_modified": false,
+  "explicit_Rscript_used": true,
+  "explicit_Rscript_path": "E:/R/R-4.5.1/bin/x64/Rscript.exe",
+  "seurat_coordinate_export_used": true,
+  "vectorized_python_geometry_used": true,
+  "parameters": {
+    "image_name": "BCSA2TumB1",
+    "scaling_factor": 0.3,
+    "pixel_size": 0.172,
+    "raw_image_width": 47616,
+    "raw_image_height": 48128,
+    "tiff_image": true
+  }
+}

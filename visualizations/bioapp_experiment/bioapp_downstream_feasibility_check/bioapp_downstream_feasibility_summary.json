@@ -1,0 +1,107 @@
+{
+  "decision": "FEASIBLE_WITH_CAUTION",
+  "experiment_1_he_morphology_domain_concordance": "feasible as low-cost patch-feature and domain-proxy screen",
+  "experiment_2_tumor_stroma_interface_topology": "feasible as CTA-fraction boundary proxy; stronger if H&E morphology domains are frozen",
+  "inputs_present": {
+    "embedded_tissue_image": true,
+    "spot_coordinates": true,
+    "cta_composition": true,
+    "endpoint_status": true,
+    "baseline_svtuner_scores": true
+  },
+  "counts": {
+    "n_spots": 2248,
+    "image_width": 594,
+    "image_height": 600,
+    "coords_within_image": true,
+    "primary_endpoint_counts": {
+      "negative": 1754,
+      "ambiguous": 290,
+      "positive": 134,
+      "excluded": 70
+    },
+    "tumor_endpoint_counts": {
+      "positive": 1690,
+      "negative": 246,
+      "ambiguous": 242,
+      "excluded": 70
+    },
+    "stroma_endpoint_counts": {
+      "negative": 1832,
+      "ambiguous": 250,
+      "positive": 96,
+      "excluded": 70
+    },
+    "dominant_CTA_counts": {
+      "Tumor": 1824,
+      "Immune cells": 217,
+      "Stroma": 137,
+      "unmapped": 70
+    },
+    "withheld_binary_counts": {
+      "False": 2099,
+      "True": 149
+    }
+  },
+  "feature_screen_top_abs_associations": [
+    {
+      "feature": "rgb_mean",
+      "endpoint_pos_vs_neg_d": 1.4197271607884103,
+      "withheld_vs_not_d": 1.1362443025613824,
+      "spearman_withheld_score": 0.22354569896932275,
+      "spearman_immune_fraction": 0.371103697684325,
+      "spearman_tumor_fraction": -0.5737804003154583,
+      "spearman_stroma_fraction": 0.3866884789279066
+    },
+    {
+      "feature": "darkness",
+      "endpoint_pos_vs_neg_d": -1.4197271607884099,
+      "withheld_vs_not_d": -1.1362443025613835,
+      "spearman_withheld_score": -0.22354227047414263,
+      "spearman_immune_fraction": -0.37110720909013123,
+      "spearman_tumor_fraction": 0.5737811204880096,
+      "spearman_stroma_fraction": -0.38668736037393436
+    },
+    {
+      "feature": "saturation",
+      "endpoint_pos_vs_neg_d": -1.3473536606315426,
+      "withheld_vs_not_d": -1.0578816322453428,
+      "spearman_withheld_score": -0.17351907933793057,
+      "spearman_immune_fraction": -0.35989388706506376,
+      "spearman_tumor_fraction": 0.5274238831960568,
+      "spearman_stroma_fraction": -0.3136888371405376
+    },
+    {
+      "feature": "red_blue",
+      "endpoint_pos_vs_neg_d": 0.48148308025178344,
+      "withheld_vs_not_d": 0.6051222073098523,
+      "spearman_withheld_score": 0.27674650026455466,
+      "spearman_immune_fraction": 0.04047677636472064,
+      "spearman_tumor_fraction": -0.11028956975810958,
+      "spearman_stroma_fraction": 0.12134370531416129
+    },
+    {
+      "feature": "edge_proxy",
+      "endpoint_pos_vs_neg_d": -0.5954931784063826,
+      "withheld_vs_not_d": -0.37797529584031,
+      "spearman_withheld_score": -0.2273741059163395,
+      "spearman_immune_fraction": -0.06610305082080142,
+      "spearman_tumor_fraction": 0.1426760306447649,
+      "spearman_stroma_fraction": -0.10158165265280625
+    }
+  ],
+  "interface_summary": {
+    "boundary_proxy_available": true,
+    "n_boundary_proxy_spots": 1374,
+    "median_abs_distance_endpoint_positive": 7.249628073218654,
+    "median_abs_distance_withheld": 7.279999999999973,
+    "median_abs_distance_not_withheld": 0.0,
+    "spearman_abs_distance_withheld_score": 0.41567621797285176
+  },
+  "cautions": [
+    "Current embedded H&E is low-resolution 600x594; patch features are feasible but limited.",
+    "CTA Tumor/Stroma/Immune fractions provide strong domain proxies, but pure H&E morphology-domain labels are not yet frozen.",
+    "Tumor-stroma boundary can be approximated from CTA fractions and the spot graph; a pathology-grade H&E segmentation would be stronger.",
+    "Downstream panels should be treated as validation/preparation until morphology-domain labels are explicitly frozen."
+  ]
+}

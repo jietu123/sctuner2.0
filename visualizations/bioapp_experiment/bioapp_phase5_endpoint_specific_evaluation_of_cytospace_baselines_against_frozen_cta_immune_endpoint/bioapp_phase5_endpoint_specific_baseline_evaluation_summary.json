@@ -1,0 +1,87 @@
+{
+  "phase": "BioApp Phase 5 endpoint-specific evaluation of CytoSPACE baseline outputs against frozen CTA Immune endpoint",
+  "decision": "PASS",
+  "decision_reasons": [
+    "baseline outputs parsed, aligned, and evaluated against frozen CTA Immune endpoint"
+  ],
+  "stage_type": "baseline-vs-endpoint evaluation / biological application candidate preparation",
+  "input_phase2c_decision": "PASS",
+  "input_phase4_decision": "PASS",
+  "endpoint_frozen": true,
+  "primary_endpoint": "Immune cells",
+  "primary_endpoint_spatial_note": "sparse immune-positive spatial compartments, not a large continuous ROI",
+  "endpoint_positive_spots": 134,
+  "endpoint_negative_spots": 1754,
+  "endpoint_ambiguous_spots": 290,
+  "endpoint_excluded_spots": 70,
+  "main_analysis_spots": 1888,
+  "baseline_runs_evaluated": [
+    "baseline_full_reference",
+    "baseline_immune_all_dropout",
+    "baseline_nonimmune_all_dropout_control"
+  ],
+  "spot_universe_aligned_all_runs": true,
+  "n_spots_expected": 2248,
+  "n_gene_overlap_used_in_phase4": 2000,
+  "metrics_computed": {
+    "mean_immune_score_by_endpoint_status": true,
+    "effect_size": true,
+    "AUROC_AUPRC": true,
+    "endpoint_positive_enrichment": true,
+    "nonimmune_assignment_burden": true
+  },
+  "baseline_metric_highlights": {
+    "baseline_full_reference": {
+      "mean_immune_score_positive": 0.7115671641791045,
+      "mean_immune_score_negative": 0.6546702774610413,
+      "delta_mean_positive_minus_negative": 0.056896886718063144,
+      "AUROC": 0.561628856855971,
+      "AUPRC": 0.08768018846487502,
+      "mean_nonimmune_score_positive": 0.2884328358208955
+    },
+    "baseline_immune_all_dropout": {
+      "mean_immune_score_positive": 0.0,
+      "mean_immune_score_negative": 0.0,
+      "delta_mean_positive_minus_negative": 0.0,
+      "AUROC": null,
+      "AUPRC": null,
+      "mean_nonimmune_score_positive": 1.0,
+      "metric_note": "immune labels removed by design"
+    },
+    "baseline_nonimmune_all_dropout_control": {
+      "mean_immune_score_positive": 1.0,
+      "mean_immune_score_negative": 0.999429874572406,
+      "delta_mean_positive_minus_negative": 0.0005701254275940482,
+      "AUROC": 0.5387706564100818,
+      "AUPRC": 0.0764869942577103,
+      "mean_nonimmune_score_positive": 0.0
+    }
+  },
+  "endpoint_used_for_mapping": false,
+  "endpoint_used_for_evaluation": true,
+  "endpoint_redefined": false,
+  "expression_markers_used_to_define_endpoint": false,
+  "mapping_outputs_used_to_define_endpoint": false,
+  "CytoSPACE_rerun": false,
+  "SVTuner_run": false,
+  "Stage4_run": false,
+  "SVTuner_Stage3_run": false,
+  "SVTuner_Stage4_run": false,
+  "prevention_analysis_run": false,
+  "SVTuner_vs_endpoint_metric_computed": false,
+  "baseline_vs_endpoint_metric_computed": true,
+  "biological_application_allowed": false,
+  "ready_for_phase6_svtuner_execution": true,
+  "allowed_claims": [
+    "CytoSPACE baseline outputs were evaluated against the frozen CTA Immune endpoint.",
+    "Endpoint-specific baseline metrics were computed for later comparison with SVTuner-aware outputs.",
+    "The frozen CTA endpoint was used only for evaluation, not for mapping or endpoint selection."
+  ],
+  "disallowed_claims": [
+    "SVTuner improves endpoint recovery.",
+    "SVTuner prevents contradicted interpretation.",
+    "Biological application completed.",
+    "Biological discovery made."
+  ],
+  "output_dir": "visualizations/bioapp_phase5_endpoint_specific_evaluation_of_cytospace_baselines_against_frozen_cta_immune_endpoint"
+}

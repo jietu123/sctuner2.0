@@ -1,0 +1,11 @@
+{
+  "design": "random_all_cell_size_matched_control_dry_design",
+  "labels_to_remove": "random cells from full reference; not generated in Phase 3R",
+  "n_cells_to_remove": 2414,
+  "n_cells_remaining": 1600,
+  "expected_reference_metadata_filter_rule": "future fixed-seed random removal from full reference",
+  "expected_reference_expression_filter_rule": "keep expression rows/cells retained by future random cell list",
+  "random_seed_if_later_used": 20260705,
+  "phase_to_execute": "future sensitivity stage only after manual authorization",
+  "mapping_result": false
+}

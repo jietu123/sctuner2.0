@@ -1,0 +1,42 @@
+{
+  "phase": "BioApp Main Figure V3.12 Panel A evidence-chain schematic redesign",
+  "embedded_image_source": "ST_data.RData::bcsa@images[['BCSA2TumB1']]@image",
+  "image_slot_class": "VisiumV1",
+  "embedded_image_dimensions": [
+    600,
+    594,
+    3
+  ],
+  "lowres_scale_used": 0.0416,
+  "hires_scale_available": 0.1385,
+  "hires_scale_used": false,
+  "coordinate_columns_used": [
+    "imagecol",
+    "imagerow"
+  ],
+  "x_plot_formula": "imagecol * lowres",
+  "y_plot_formula": "imagerow * lowres",
+  "bounds_check_passed": true,
+  "x_min": 95.056,
+  "x_max": 515.7984,
+  "y_min": 59.6128,
+  "y_max": 526.5728,
+  "image_width": 594.0,
+  "image_height": 600.0,
+  "axis_origin": "upper-left",
+  "axis_flipped": false,
+  "fov1_crop_image_coordinates": [
+    177.55046399999998,
+    295.358336,
+    234.02079999999998,
+    364.76959999999997
+  ],
+  "fov2_crop_image_coordinates": [
+    442.37606400000004,
+    560.1839359999999,
+    341.14079999999996,
+    471.8896
+  ],
+  "alignment_verified_for_visualization": true,
+  "notes": "Recovered Seurat VisiumV1 image-slot route; not a raw Space Ranger bundle overlay."
+}

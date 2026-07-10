@@ -1,0 +1,2 @@
+n_endpoint_positive_spots,mean_baseline_forced_nonimmune_burden,mean_retained_burden_binary,mean_prevented_burden_binary,mean_retained_burden_continuous,mean_prevented_burden_continuous,fraction_burden_prevented_binary,fraction_burden_prevented_continuous,metric_note
+134,1.0,0.5522388059701493,0.44776119402985076,0.47944378297022544,0.5205562170297745,0.44776119402985076,0.5205562170297745,withheld-aware forced-call burden estimate; not a post-Stage4 remapping result

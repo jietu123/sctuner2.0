@@ -1,0 +1,16 @@
+Read and validate data ...
+Time to read and validate data: 0.61 seconds
+Estimating number of cells in each spot ...
+Time to estimate number of cells per spot: 0.09 seconds
+Down/up sample of scRNA-seq data according to estimated cell type fractions
+Time to down/up sample scRNA-seq data: 0.05 seconds
+Building cost matrix ...
+Time to build cost matrix: 1.23 seconds
+Solving linear assignment problem ...
+Total cost =  -2252064290
+
+Time to solve linear assignment problem: 74.19 seconds
+Total time to run CytoSPACE core algorithm: 81.47 seconds
+Saving results ...
+1 spots had no cells mapped to them. Saved unfiltered version of assigned locations to E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\baseline_immune_all_dropout\cytospace_output/unassigned_locations.csv
+Total execution time: 91.42 seconds

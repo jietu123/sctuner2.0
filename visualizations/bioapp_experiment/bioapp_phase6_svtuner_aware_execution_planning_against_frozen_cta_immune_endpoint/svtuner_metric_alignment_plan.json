@@ -1,0 +1,18 @@
+{
+  "endpoint_analysis_set": {
+    "positive": "CTA Immune-positive spots",
+    "negative": "CTA Immune-negative spots",
+    "ambiguous": "excluded from main metrics",
+    "excluded": "excluded from main metrics",
+    "main_analysis_set": "positive + negative"
+  },
+  "baseline_anchor": "baseline_immune_all_dropout",
+  "planned_metrics_not_computed_in_phase6": [
+    "withheld enrichment in CTA Immune-positive spots",
+    "withheld AUROC / AUPRC",
+    "endpoint-positive nonimmune assignment reduction",
+    "contradiction prevention rate",
+    "endpoint-concordant interpretation score"
+  ],
+  "phase6_computation": "none"
+}

@@ -1,0 +1,4 @@
+file_path,file_type,matched_terms,contains_coordinate_columns,contains_image_metadata,contains_transform_matrix,contains_keypoints,contains_image_file_references,usable_for_recovery,notes
+data/raw/新建文件夹/BreastCancer_CTA-main/CTA_align.R,.r,HE|SpaceRanger|Tum|Visium|image|jpeg|spaceranger|spatial|tif|tiff|tissue,True,True,False,False,False,True,Contains CTA alignment parameters but not an inverse transform or local image path.
+data/raw/新建文件夹/BreastCancer_CTA-main/CTA_output.txt,.txt,HE|Tum|image|tif,False,False,False,False,True,False,
+data/raw/新建文件夹/BreastCancer_CTA-main/README.md,.md,BCSA|H&E|HE|SpaceRanger|Tum|TumB1|Visium|image|jpeg|spaceranger|spatial|tif|tiff|tissue,False,True,False,False,False,False,

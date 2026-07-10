@@ -1,0 +1,15 @@
+{
+  "stage_type": "formal CytoSPACE baseline execution / biological application candidate preparation",
+  "biological_question_defined": true,
+  "external_endpoint_predefined": true,
+  "endpoint_independent_from_SVTuner": true,
+  "endpoint_spatially_registered": true,
+  "baseline_comparison_available": true,
+  "endpoint_specific_improvement_defined": true,
+  "endpoint_specific_quantitative_metric_available": false,
+  "endpoint_baseline_SVTuner_spatial_comparison_available": false,
+  "interpretation_boundary_defined": true,
+  "biological_application_allowed": false,
+  "allowed_claim_level": "formal baseline execution only",
+  "decision": "PASS"
+}

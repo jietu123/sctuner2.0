@@ -1,0 +1,41 @@
+BioApp Phase 0 — external endpoint admission
+
+Stage objective:
+Screen public and local candidate data scenarios for an independent external spatial endpoint paired with a Visium/ST mapping object and scRNA-seq reference.
+
+Decision: PASS
+Candidate datasets screened: 6
+Tier 1 candidates: 1
+Tier 2 candidates: 2
+Rejected candidates: 3
+
+Does at least one Tier 1 candidate exist?
+Yes
+
+Most recommended candidate: Janesick Xenium-Visium breast cancer
+External endpoint: Xenium-derived single-cell spatial annotations can define B-cell, plasma-cell, or humoral immune endpoint-positive regions independently of SVTuner.
+Biological question: Does SVTuner better recover or avoid forced contradiction in a Xenium-defined humoral/B-lineage spatial region in serial breast cancer sections?
+ST mapping object: Yes - Visium CytAssist whole-transcriptome data are part of the study
+scRNA-seq reference: Yes - scFFPE-seq reference data are part of the study
+
+Why it preliminarily satisfies Golden Rules v2.0:
+- The biological question is endpoint-specific and defined before analysis.
+- The endpoint is a Xenium-derived cell/ROI annotation independent from SVTuner.
+- Public companion material describes Xenium/Visium serial-section registration.
+- Visium CytAssist data and scFFPE-seq reference data are part of the same study.
+- Endpoint-specific metrics and spatial comparison are definable after Phase 1 inventory and later mapping.
+- Interpretation is bounded to endpoint concordance / prevention of forced contradictory calls, not discovery of new biology from real data alone.
+
+Main risk: The old local Janesick formal-mapping line was stopped after CytoSPACE timeout/fallback collapse; Phase 1 must re-inventory files and feasibility from scratch.
+
+Is Phase 1 worth starting?
+Yes, after manual review, because Phase 0 found one Tier 1 public candidate. Phase 1 must still verify files, local paths, registration, and run feasibility before any mapping.
+
+Hard boundaries honored:
+- No large raw datasets downloaded.
+- CytoSPACE was not run.
+- SVTuner was not run.
+- Stage4 was not run.
+- No formal metrics were recomputed.
+- No dropout experiment was created.
+- No manuscript text was written.

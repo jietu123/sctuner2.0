@@ -1,0 +1,4 @@
+endpoint_class,n_positive,n_negative,n_ambiguous,n_excluded,positive_fraction_among_mapped,negative_fraction_among_mapped,median_C_fraction_positive,mean_C_fraction_positive,dominant_class_purity_positive,number_of_positive_components,largest_positive_component_size,largest_positive_component_fraction,eligible_endpoint
+Tumor,1690,246,242,70,0.7759412304866851,0.11294765840220386,1.0,0.9358622994035292,1.0,9,1674,0.9905325443786982,True
+Immune cells,134,1754,290,70,0.06152433425160698,0.8053259871441689,0.8,0.8003675586627567,1.0,51,15,0.11194029850746269,True
+Stroma,96,1832,250,70,0.0440771349862259,0.8411386593204775,0.8452380952380952,0.8469387459966503,1.0,41,23,0.23958333333333334,True

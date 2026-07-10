@@ -1,0 +1,4 @@
+run_name,n_endpoint_spots,n_baseline_spots,n_overlap_spots,n_endpoint_missing_from_baseline,n_baseline_not_in_endpoint,spot_universe_aligned,notes
+baseline_full_reference,2248,2248,2248,0,0,True,
+baseline_immune_all_dropout,2248,2248,2248,0,0,True,
+baseline_nonimmune_all_dropout_control,2248,2248,2248,0,0,True,

@@ -1,0 +1,20 @@
+{
+  "phase": "BioApp Phase 0 — external endpoint admission",
+  "decision": "PASS",
+  "candidate_datasets_screened": 6,
+  "tier1_candidates": 1,
+  "tier2_candidates": 2,
+  "rejected_candidates": 3,
+  "recommended_candidate": "Janesick Xenium-Visium breast cancer",
+  "external_endpoint": "Xenium-derived single-cell spatial annotations can define B-cell, plasma-cell, or humoral immune endpoint-positive regions independently of SVTuner.",
+  "st_mapping_object": "Yes - Visium CytAssist whole-transcriptome data are part of the study",
+  "scRNAseq_reference": "Yes - scFFPE-seq reference data are part of the study",
+  "biological_application_allowed_preliminary": true,
+  "large_raw_data_downloaded": false,
+  "cytospace_run": false,
+  "svtuner_run": false,
+  "stage4_run": false,
+  "formal_metrics_recomputed": false,
+  "output_directory": "E:/AAA文件/Experiment/SVTuner/sctuner2.0/visualizations/bioapp_phase0_external_endpoint_admission",
+  "next": "Manual review before BioApp Phase 1 data inventory and feasibility"
+}

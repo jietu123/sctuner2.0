@@ -1,0 +1,23 @@
+{
+  "phase": "BioApp Coordinate Registration Recovery Audit",
+  "decision": "REGISTRATION_RECOVERED_EMBEDDED_IMAGE",
+  "audit_only": true,
+  "main_figure_redrawn": false,
+  "SVTuner_rerun": false,
+  "Stage3_rerun": false,
+  "Stage4_run": false,
+  "CytoSPACE_rerun": false,
+  "endpoint_redefined": false,
+  "new_biological_endpoint_introduced": false,
+  "threshold_selected_using_endpoint_labels": false,
+  "new_mapping_or_new_computation": false,
+  "data_changed": false,
+  "metrics_changed": false,
+  "threshold_changed": false,
+  "endpoint_labels_changed": false,
+  "conclusions_changed": false,
+  "h_and_e_used_in_manuscript_figure": false,
+  "external_image_used_without_verification": false,
+  "all_quantitative_claims_based_on_full_frozen_analysis_set": true,
+  "guardrails_passed": true
+}

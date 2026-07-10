@@ -1,0 +1,13 @@
+baseline_run,nonimmune_label,mean_fraction_in_endpoint_positive,label_present_in_run
+baseline_full_reference,Endothelial cells,0.0855188343994314,True
+baseline_full_reference,Epithelial cells,0.0,True
+baseline_full_reference,Fibroblasts,0.1392857142857143,True
+baseline_full_reference,PVL,0.06362828713574982,True
+baseline_immune_all_dropout,Endothelial cells,0.2818407960199005,True
+baseline_immune_all_dropout,Epithelial cells,0.007462686567164179,True
+baseline_immune_all_dropout,Fibroblasts,0.42052238805970144,True
+baseline_immune_all_dropout,PVL,0.29017412935323383,True
+baseline_nonimmune_all_dropout_control,Endothelial cells,0.0,False
+baseline_nonimmune_all_dropout_control,Epithelial cells,0.0,False
+baseline_nonimmune_all_dropout_control,Fibroblasts,0.0,False
+baseline_nonimmune_all_dropout_control,PVL,0.0,False

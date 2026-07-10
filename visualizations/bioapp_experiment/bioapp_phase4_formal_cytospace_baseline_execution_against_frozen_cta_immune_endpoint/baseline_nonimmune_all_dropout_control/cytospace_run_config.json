@@ -1,0 +1,29 @@
+{
+  "scRNA_path": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\baseline_nonimmune_all_dropout_control\\inputs\\reference_expression_used.csv",
+  "cell_type_path": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\baseline_nonimmune_all_dropout_control\\inputs\\cell_type_labels.csv",
+  "cell_type_fraction_estimation_path": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\baseline_nonimmune_all_dropout_control\\inputs\\cell_type_fractions.csv",
+  "st_path": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\baseline_nonimmune_all_dropout_control\\inputs\\st_expression_used.csv",
+  "coordinates_path": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\baseline_nonimmune_all_dropout_control\\inputs\\st_coordinates_used.csv",
+  "reference_expression_used": "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_nonimmune_all_dropout_control/inputs/reference_expression_used.csv.gz",
+  "reference_metadata_used": "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_nonimmune_all_dropout_control/reference_metadata_used.csv",
+  "n_reference_cells_input": 2414,
+  "n_reference_labels_input": 7,
+  "reference_labels_input": [
+    "B cells",
+    "CD4 T cells",
+    "CD8 T cells",
+    "Monocytes and Macrophages",
+    "NK cells",
+    "Plasma cells",
+    "T-cells"
+  ],
+  "n_ST_spots_input": 2248,
+  "n_genes_input": 2000,
+  "run_name": "baseline_nonimmune_all_dropout_control",
+  "cytospace_package_path": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\external\\cytospace",
+  "output_folder": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\\baseline_nonimmune_all_dropout_control\\cytospace_output",
+  "solver_method": "lap_CSPR",
+  "mean_cell_numbers": 5,
+  "number_of_processors": 1,
+  "seed": 20260705
+}

@@ -1,0 +1,2 @@
+candidate_id,candidate_type,source,image_path_or_object,explicitly_linked_to_BCSA2TumB1,image_dimensions,scale_factor_used,bounds_check_passed,accepted_for_v3_candidate,notes
+embedded_image_slot_001,embedded_seurat_image_slot,ST_data.RData::bcsa@images[['BCSA2TumB1']]@image,embedded array,True,600x594x3,0.0416,True,True,Audit preview generated; not used as manuscript background in this phase.

@@ -1,0 +1,10 @@
+BioApp Phase 1 risk report
+
+Main residual risks:
+1. Raw SND/DORIS data are restricted and approximately 300GB; Phase 2 must avoid raw FASTQ.
+2. Processed data availability and exact selected-sample files must be verified before mapping.
+3. One sample in the paper was excluded because of image metadata mismatch; Phase 2 must avoid mismatched samples.
+4. Endpoint thresholds must be frozen before any CytoSPACE/SVTuner mapping.
+5. CytoSPACE feasibility is literature-supported, not yet locally executed for this candidate.
+
+Decision impact: these are Phase 2 inventory/preflight risks, not Phase 1 blockers.

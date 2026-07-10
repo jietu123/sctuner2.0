@@ -1,0 +1,15 @@
+{
+  "embedded_image_source": "ST_data.RData::bcsa@images[['BCSA2TumB1']]@image",
+  "image_slot_class": "VisiumV1",
+  "embedded_image_dimensions": [600, 594, 3],
+  "lowres_scale_used": 0.0416,
+  "hires_scale_available": 0.1385,
+  "coordinate_columns_used": ["imagecol", "imagerow"],
+  "x_min": 94.9578,
+  "x_max": 515.2653,
+  "y_min": 59.5512,
+  "y_max": 526.0285,
+  "image_width": 594,
+  "image_height": 600,
+  "bounds_check_passed": true
+}

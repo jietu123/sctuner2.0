@@ -353,12 +353,42 @@ def draw_panel_b(
         vmax,
         show_blank=True,
     )
+    dropout_values = dropout["local_moran"][:, pair_index].astype(float)
+    svtuner_values = svtuner["local_moran"][:, pair_index].astype(float)
+    dropout_valid = np.isfinite(dropout_values) & dropout["supported"].astype(bool)
+    svtuner_valid = np.isfinite(svtuner_values) & svtuner["supported"].astype(bool)
+    hotspot_threshold = float(np.nanquantile(dropout_values[dropout_valid], 0.95))
+    dropout_mean = float(np.nanmean(dropout_values[dropout_valid]))
+    svtuner_mean = float(np.nanmean(svtuner_values[svtuner_valid]))
+    dropout_hotspots = int((dropout_values[dropout_valid] >= hotspot_threshold).sum())
+    svtuner_hotspots = int((svtuner_values[svtuner_valid] >= hotspot_threshold).sum())
+    mean_reduction = (
+        100.0 * (dropout_mean - svtuner_mean) / dropout_mean
+        if dropout_mean > 0
+        else np.nan
+    )
+    hotspot_reduction = (
+        100.0 * (dropout_hotspots - svtuner_hotspots) / dropout_hotspots
+        if dropout_hotspots > 0
+        else np.nan
+    )
     cax = fig.add_subplot(inner[0, 2])
     sm = plt.cm.ScalarMappable(norm=Normalize(vmin=0, vmax=vmax), cmap="YlOrRd")
     colorbar = fig.colorbar(sm, cax=cax)
     colorbar.set_label("Local Moran", fontsize=7)
     colorbar.ax.tick_params(labelsize=6.5, length=2)
-    return {"pair": label, "cytospace_top10_spots": n1, "svtuner_top10_spots": n2}
+    return {
+        "pair": label,
+        "cytospace_top10_spots": n1,
+        "svtuner_top10_spots": n2,
+        "fixed_hotspot_threshold": hotspot_threshold,
+        "cytospace_mean_local_moran": dropout_mean,
+        "svtuner_mean_local_moran": svtuner_mean,
+        "mean_local_moran_reduction_percent": mean_reduction,
+        "cytospace_fixed_threshold_hotspots": dropout_hotspots,
+        "svtuner_fixed_threshold_hotspots": svtuner_hotspots,
+        "fixed_threshold_hotspot_reduction_percent": hotspot_reduction,
+    }
 
 
 def ligand_target_matrix(
@@ -616,6 +646,81 @@ def save_tables(
     ).to_csv(out_dir / "panel_c_ligand_annotations.csv", index=False)
 
 
+def save_panel_b_only(
+    communication_dir: Path,
+    validation: pd.DataFrame,
+    out_dir: Path,
+) -> None:
+    """Export the existing Panel B visual grammar as a standalone figure."""
+    fig = plt.figure(figsize=(7.4, 3.75), dpi=420, facecolor="white")
+    grid = fig.add_gridspec(
+        1,
+        1,
+        left=0.075,
+        right=0.94,
+        top=0.82,
+        bottom=0.25,
+    )
+    panel_b = draw_panel_b(fig, grid[0, 0], communication_dir, validation)
+    fig.text(0.025, 0.935, "B", fontsize=12, fontweight="bold", va="top")
+    fig.text(
+        0.075,
+        0.935,
+        "Local LR hotspots after reference dropout",
+        fontsize=10.5,
+        fontweight="bold",
+        va="top",
+    )
+    fig.text(
+        0.50,
+        0.155,
+        (
+            "Mean local Moran I: "
+            f"{panel_b['cytospace_mean_local_moran']:.4f} "
+            "\N{RIGHTWARDS ARROW} "
+            f"{panel_b['svtuner_mean_local_moran']:.4f}    |    "
+            "Absolute change: "
+            f"\N{GREEK CAPITAL LETTER DELTA}I = "
+            f"{panel_b['svtuner_mean_local_moran'] - panel_b['cytospace_mean_local_moran']:.4f}"
+        ),
+        ha="center",
+        va="center",
+        fontsize=7.5,
+        fontweight="bold",
+    )
+    fig.text(
+        0.50,
+        0.105,
+        (
+            "Fixed-threshold hotspots: "
+            f"{panel_b['cytospace_fixed_threshold_hotspots']} "
+            "\N{RIGHTWARDS ARROW} "
+            f"{panel_b['svtuner_fixed_threshold_hotspots']}"
+        ),
+        ha="center",
+        va="center",
+        fontsize=7.5,
+        fontweight="bold",
+    )
+    fig.text(
+        0.075,
+        0.025,
+        (
+            "Metrics use the common supported-spot set; hotspot threshold is fixed "
+            f"at the CytoSPACE-dropout P95 (Local Moran I >= "
+            f"{panel_b['fixed_hotspot_threshold']:.3f}). Gray spots are Stage3B-withheld."
+        ),
+        fontsize=6.3,
+        color="#444444",
+    )
+    png = out_dir / "stage3b_communication_panel_b_local_lr_hotspots.png"
+    pdf = out_dir / "stage3b_communication_panel_b_local_lr_hotspots.pdf"
+    fig.savefig(png, dpi=420, facecolor="white")
+    fig.savefig(pdf, facecolor="white")
+    plt.close(fig)
+    print(f"[done] {png}")
+
+
 def plot_figure(root: Path, communication_dir: Path, validation_dir: Path, out_dir: Path) -> None:
     validation = pd.read_csv(validation_dir / "observed_st_downstream_validation.csv")
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -692,6 +797,7 @@ def plot_figure(root: Path, communication_dir: Path, validation_dir: Path, out_d
     fig.savefig(pdf, facecolor="white")
     plt.close(fig)
     save_tables(out_dir, panel_a, panel_b, matrix, ligand_score, class_by_ligand, pathway_by_ligand)
+    save_panel_b_only(communication_dir, validation, out_dir)
     print(f"[done] {png}")
 
 

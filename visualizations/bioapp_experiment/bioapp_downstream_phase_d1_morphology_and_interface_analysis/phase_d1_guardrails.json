@@ -1,0 +1,13 @@
+{
+  "phase": "BioApp Downstream Phase D1 morphology-domain and interface analysis",
+  "SVTuner_rerun": false,
+  "Stage3_rerun": false,
+  "Stage4_run": false,
+  "CytoSPACE_rerun": false,
+  "endpoint_redefined": false,
+  "threshold_selected_using_endpoint_labels": false,
+  "uses_frozen_phase_d0_domains_and_boundary": true,
+  "uses_frozen_phase8_scores": true,
+  "formal_metrics_recomputed": false,
+  "guardrails_passed": true
+}

@@ -1,0 +1,10 @@
+metric,value,source
+withheld_AUROC,0.8305238346466074,SVTuner withheld_score vs endpoint
+withheld_AUPRC,0.2836551170002947,SVTuner withheld_score vs endpoint
+withheld_enrichment_delta,0.14531536161140934,positive minus negative withheld_score
+withheld_binary_positive_rate,0.44776119402985076,Phase 7 binary withheld output
+withheld_binary_negative_rate,0.021664766248574687,Phase 7 binary withheld output
+contradiction_prevention_rate,0.44776119402985076,withheld-aware forced-call burden
+fraction_burden_prevented_binary,0.44776119402985076,withheld-aware forced-call burden
+fraction_burden_prevented_continuous,0.5205562170297745,withheld-aware forced-call burden
+endpoint_concordant_interpretation_score_positive,0.44776119402985076,positive spots withheld rate

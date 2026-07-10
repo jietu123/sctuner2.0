@@ -1,0 +1,14 @@
+Janesick is not deleted as a scientific reference.
+Janesick is retired only as the current main SVTuner biological application candidate.
+Reason: prior formal CytoSPACE mapping mainline stopped.
+Endpoint/ROI feasibility alone is insufficient because the current experiment requires formal baseline mapping + SVTuner mapping + endpoint-specific comparison.
+
+Allowed future roles:
+- endpoint feasibility reference
+- ROI validation precedent
+- negative candidate / cautionary case
+
+Disallowed roles:
+- main BioApp experiment
+- formal SVTuner mapping biological application
+- endpoint-specific mapping comparison

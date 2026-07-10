@@ -1,0 +1,13 @@
+{
+  "explicit_Rscript_used": true,
+  "Rscript_path": "E:/R/R-4.5.1/bin/x64/Rscript.exe",
+  "Rscript_exists": true,
+  "R_version": "R version 4.5.1 (2025-06-13 ucrt)",
+  "R_home": "E:/R/R-4.5.1",
+  "libPaths": "E:/R/R-4.5.1/library",
+  "locale": "C",
+  "encoding": "native.enc",
+  "platform": "x86_64-w64-mingw32",
+  "return_code": 0,
+  "stderr": "During startup - Warning messages:\n1: Setting LC_COLLATE=C.UTF-8 failed \n2: Setting LC_CTYPE=C.UTF-8 failed \n3: Setting LC_MONETARY=C.UTF-8 failed \n4: Setting LC_TIME=C.UTF-8 failed"
+}

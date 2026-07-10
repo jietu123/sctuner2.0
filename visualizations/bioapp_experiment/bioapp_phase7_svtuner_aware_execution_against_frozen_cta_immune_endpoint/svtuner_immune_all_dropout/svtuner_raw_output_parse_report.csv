@@ -1,0 +1,20 @@
+field_name,required_by_contract,available,source_file,parse_method,missing_reason,notes
+barcode,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+primary_endpoint_status,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+baseline_anchor_run,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+svtuner_condition,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+reference_supported_status,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+reference_unrepresented_score,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+withheld_score,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+withheld_binary,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+supported_assignment_score,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+svtuner_immune_score,True,False,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,not available from raw output,Phase7 raw contract field
+svtuner_nonimmune_score,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+svtuner_dominant_label,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+svtuner_dominant_fraction,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+baseline_immune_score_from_phase5,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+baseline_nonimmune_score_from_phase5,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+baseline_dominant_label_from_phase5,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+baseline_dominant_fraction_from_phase5,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+score_parse_status,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field
+svtuner_output_available,True,True,stage3b spot_unsupported_scores.csv / Phase5 baseline anchor / Phase2C endpoint freeze,direct merge by barcode; no endpoint-dependent tuning,,Phase7 raw contract field

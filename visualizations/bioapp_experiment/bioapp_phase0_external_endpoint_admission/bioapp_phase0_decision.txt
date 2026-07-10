@@ -1,0 +1,7 @@
+PASS
+
+Reason:
+At least one Tier 1 candidate was found.
+
+Manual review is required before BioApp Phase 1 data inventory and feasibility.
+No mapping may be started directly from Phase 0.

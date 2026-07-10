@@ -1,0 +1,5 @@
+scale_factor_name,value,source,notes
+spot,113.337099163943,obj@images[['BCSA2TumB1']]@scale.factors,""
+fiducial,183.083006341753,obj@images[['BCSA2TumB1']]@scale.factors,""
+hires,0.13852334,obj@images[['BCSA2TumB1']]@scale.factors,""
+lowres,0.041557003,obj@images[['BCSA2TumB1']]@scale.factors,""

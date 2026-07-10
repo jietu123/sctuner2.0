@@ -1,0 +1,7 @@
+file_path,candidate_entrypoint_type,contains_stage3,contains_stage4,contains_cytospace_call,baseline_only_mode_possible,svtuner_mode_possible,notes
+src/svtuner/run.py,cli_or_stage_module,True,True,True,True,True,candidate only; not executed in Phase 6
+src/svtuner/cli.py,cli_or_stage_module,True,True,True,False,True,candidate only; not executed in Phase 6
+src/stages/stage3_type_plugin.py,cli_or_stage_module,True,True,False,False,True,candidate only; not executed in Phase 6
+src/stages/stage3b_st_unsupported.py,cli_or_stage_module,True,True,False,False,True,candidate only; not executed in Phase 6
+src/stages/stage4_cytospace.py,cli_or_stage_module,True,True,True,True,True,candidate only; not executed in Phase 6
+scripts/run_project_mainline.py,cli_or_stage_module,True,True,True,True,True,candidate only; not executed in Phase 6

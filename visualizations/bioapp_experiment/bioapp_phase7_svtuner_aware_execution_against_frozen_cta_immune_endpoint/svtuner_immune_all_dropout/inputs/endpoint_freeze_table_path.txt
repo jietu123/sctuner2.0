@@ -1,0 +1,1 @@
+visualizations/bioapp_phase2c_endpoint_freeze_with_validated_cta_to_spot_mapping/spot_level_endpoint_freeze.csv

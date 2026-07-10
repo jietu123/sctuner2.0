@@ -1,0 +1,28 @@
+{
+  "phase": "BioApp Main Figure V3.11 top-row A/B/C redesign",
+  "d2_raw_value_min": 0.0,
+  "d2_raw_value_max": 1.0,
+  "d2_raw_value_mean": 0.9995551601423488,
+  "d2_raw_value_median": 1.0,
+  "d2_raw_value_std": 0.021086535399450653,
+  "d2_unique_value_count": 3,
+  "d2_plotted_positive_unique_value_count_rounded_6dp": 1,
+  "d2_plotted_positive_min": 0.9999999999999998,
+  "d2_plotted_positive_max": 1.0,
+  "d2_percentiles": {
+    "p1": 1.0,
+    "p5": 1.0,
+    "p10": 1.0,
+    "p25": 1.0,
+    "p50": 1.0,
+    "p75": 1.0,
+    "p90": 1.0,
+    "p95": 1.0,
+    "p99": 1.0
+  },
+  "d2_exact_constant": true,
+  "d2_near_constant": false,
+  "display_mapping_selected": "constant_footprint",
+  "display_mapping_visualization_only": true,
+  "underlying_values_changed": false
+}

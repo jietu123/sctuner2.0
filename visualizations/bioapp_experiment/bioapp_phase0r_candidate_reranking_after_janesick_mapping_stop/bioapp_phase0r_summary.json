@@ -1,0 +1,23 @@
+{
+  "phase": "BioApp Phase 0R - candidate reranking after Janesick formal-mapping stop",
+  "decision": "PASS",
+  "timestamp": "2026-07-03T15:30:41",
+  "janesick_retired_as_main_bioapp_candidate": true,
+  "janesick_retirement_reason": "prior formal CytoSPACE mapping mainline stopped",
+  "golden_rules_v2_1_mapping_feasibility_gate_added": true,
+  "previous_candidates_re_ranked": 6,
+  "expanded_candidates_screened": 4,
+  "active_tier1_candidates": 1,
+  "tier2_candidates": 2,
+  "rejected_or_retired_candidates": 6,
+  "recommended_candidate": "Computational pathology annotation / breast cancer Visium CTA",
+  "large_raw_data_downloaded": false,
+  "cytospace_run": false,
+  "svtuner_run": false,
+  "stage4_run": false,
+  "formal_metrics_recomputed": false,
+  "phase0_input_available": true,
+  "phase1_input_available": true,
+  "output_directory": "E:\\AAA\u6587\u4ef6\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\bioapp_phase0r_candidate_reranking_after_janesick_mapping_stop",
+  "next": "Manual review before BioApp Phase 1 for the newly recommended candidate"
+}

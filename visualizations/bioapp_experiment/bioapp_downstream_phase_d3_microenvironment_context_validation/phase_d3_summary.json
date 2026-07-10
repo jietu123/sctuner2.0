@@ -1,0 +1,62 @@
+{
+  "decision": "PASS",
+  "phase": "BioApp Downstream Phase D3 spatial microenvironment context validation",
+  "n_spots": 2248,
+  "neighbor_radius_image_px": 11.94336000000002,
+  "niche_k": 6,
+  "niche_silhouette_score": 0.35573120960313553,
+  "niche_name_map": {
+    "0": "mixed_tumor_boundary_niche",
+    "1": "tumor_interior",
+    "2": "stroma_interface_niche",
+    "3": "immune_associated_niche",
+    "4": "deep_tumor_core",
+    "5": "low_signal_edge_context"
+  },
+  "top_withheld_niche": {
+    "niche_label": "stroma_interface_niche",
+    "n_spots": 76,
+    "mean_withheld_score": 0.5287071286472507,
+    "withheld_rate": 0.3815789473684211,
+    "cta_endpoint_rate": 0.1346153846153846,
+    "mean_immune_fraction": 0.1918438832286071,
+    "mean_tumor_fraction": 0.21126018688393264,
+    "mean_stroma_fraction": 0.5311064562032497,
+    "mean_n1_entropy": 0.48697148650453653
+  },
+  "top_neighbor_enrichment": {
+    "hop": "1-hop",
+    "neighbor_niche": "immune_associated_niche",
+    "observed_neighbor_fraction": 0.5552154195011335,
+    "null_mean": 0.10287666439335305,
+    "null_sd": 0.01912812286088113,
+    "enrichment_z": 23.647838232619108,
+    "empirical_p_one_sided": 0.0004997501249375312,
+    "n_permutations": 2000
+  },
+  "moran_statistics": [
+    {
+      "metric": "withheld_score",
+      "moran_i": 0.41037930829907193,
+      "moran_empirical_p_positive": 0.0004997501249375312,
+      "geary_c": 0.5482740925699672,
+      "geary_empirical_p_low": 0.0004997501249375312,
+      "n_permutations": 2000
+    },
+    {
+      "metric": "withheld_binary",
+      "moran_i": 0.56808215809298,
+      "moran_empirical_p_positive": 0.0004997501249375312,
+      "geary_c": 0.3485199181426141,
+      "geary_empirical_p_low": 0.0004997501249375312,
+      "n_permutations": 2000
+    }
+  ],
+  "interpretation": "SVTuner withheld outputs show preferential localization within computational local spatial microenvironment contexts.",
+  "claim_boundary": [
+    "Niches derive from unsupervised clustering of local neighborhood descriptors.",
+    "SVTuner withheld outputs were not used to define niches.",
+    "Niches are computational proxy niches, not pathology annotations.",
+    "No new biological discovery claim is made."
+  ]
+}

@@ -1,0 +1,13 @@
+BioApp Phase 2B-R2 CTA_align dry run report
+
+official_CTA_align_source_success: False
+locale_safe_patch_used: True
+official_CTA_align_function_used: False
+alignment_logic_reproduced_from_script: True
+CTA_to_spot_mapping_generated: True
+mapping_rows: 3807
+spots_with_CTA_mapping: 2178
+Endpoint_frozen: false
+CytoSPACE_run: false
+SVTuner_run: false
+Stage4_run: false

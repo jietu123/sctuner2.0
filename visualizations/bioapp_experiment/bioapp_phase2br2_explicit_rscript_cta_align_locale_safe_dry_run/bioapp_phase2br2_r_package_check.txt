@@ -1,0 +1,11 @@
+BioApp Phase 2B-R2 R package check
+
+Seurat: installed=True; version=5.3.1; load_success=True; error=
+SeuratObject: installed=True; version=5.2.0; load_success=True; error=
+data.table: installed=True; version=1.17.8; load_success=True; error=
+dplyr: installed=True; version=1.1.4; load_success=True; error=
+tidyr: installed=True; version=1.3.1; load_success=True; error=
+ggplot2: installed=True; version=4.0.1; load_success=True; error=
+Matrix: installed=True; version=1.7.3; load_success=True; error=
+jsonlite: installed=True; version=2.0.0; load_success=True; error=
+yaml: installed=True; version=2.3.10; load_success=True; error=

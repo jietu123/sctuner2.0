@@ -1,0 +1,16 @@
+{
+  "phase": "BioApp Downstream Phase D3 spatial microenvironment context validation",
+  "SVTuner_rerun": false,
+  "Stage3_rerun": false,
+  "Stage4_run": false,
+  "CytoSPACE_rerun": false,
+  "mapping_regenerated": false,
+  "endpoint_redefined": false,
+  "morphology_domains_redefined": false,
+  "tumor_stroma_boundary_redefined": false,
+  "CTA_labels_redefined": false,
+  "threshold_redefined": false,
+  "niche_clustering_used_svtuner_outputs": false,
+  "withheld_outputs_used_only_for_evaluation": true,
+  "guardrails_passed": true
+}

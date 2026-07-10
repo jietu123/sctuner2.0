@@ -1,0 +1,31 @@
+{
+  "decision": "PASS",
+  "phase": "BioApp Downstream Phase D0 morphology-domain and boundary freeze",
+  "domain_definition_status": "frozen",
+  "boundary_definition_status": "frozen",
+  "morphology_domain_type": "CTA composition plus low-resolution H&E patch feature proxy; not pathology-grade segmentation",
+  "domain_counts": {
+    "tumor_core": 1602,
+    "immune_enriched": 312,
+    "stroma_rich": 147,
+    "mixed_boundary": 94,
+    "unmapped_or_excluded": 93
+  },
+  "boundary_summary": {
+    "boundary_definition": "stroma_rich/mixed_boundary spots directly adjacent to frozen tumor_core domains",
+    "median_nearest_neighbor_distance_image_px": 7.238400000000013,
+    "neighbor_radius_image_px": 11.94336000000002,
+    "interface_band_width_image_px": 9.048000000000016,
+    "n_boundary_seed_spots": 217,
+    "n_interface_band_spots": 948,
+    "n_tumor_region_spots_for_boundary": 1602,
+    "n_stroma_or_immune_region_spots_for_boundary": 241
+  },
+  "ready_for_panel_g_morphology_domain_concordance": true,
+  "ready_for_panel_h_tumor_stroma_interface_topology": true,
+  "cautions": [
+    "Morphology domains are conservative proxy labels and should not be described as pathologist-annotated regions.",
+    "Boundary is a spot-graph proxy derived from CTA Tumor/Stroma-rich and mixed-boundary fractions.",
+    "SVTuner outputs were not used to define domains or boundary."
+  ]
+}

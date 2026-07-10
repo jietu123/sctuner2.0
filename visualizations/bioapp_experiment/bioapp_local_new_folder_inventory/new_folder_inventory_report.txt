@@ -1,0 +1,66 @@
+Local new-folder data inventory
+
+Input directory:
+sctuner2.0/data/raw/新建文件夹
+
+Files read:
+- 2025-97-1/documentation/File_list.csv
+- 2025-97-1/documentation/README.txt
+- BreastCancer_CTA-main/README.md
+- BreastCancer_CTA-main/CTA_align.R
+- BreastCancer_CTA-main/CTA_output.txt
+- BreastCancer_CTA-main/ST_data.RData
+- s41698-025-01104-3.pdf
+
+Key files found:
+- CTA_output.txt: QuPath-derived CTA annotation, 99.553 MB.
+- ST_data.RData: processed Visium/Seurat object, 10.957 MB.
+- CTA_align.R: alignment function mapping CTA cell coordinates to Visium spot IDs.
+- README.md: documents using image_name=BCSA2TumB1, scaling_factor=0.3, pixel_size=0.172, raw_image_width=47616, raw_image_height=48128, tiff_image=TRUE.
+- 2025-97 documentation: confirms raw FASTQ files are large and should not be used for the immediate endpoint-alignment retry.
+- s41698-025-01104-3.pdf: publication describing computational tissue annotation for breast cancer Visium sections.
+
+CTA_output structure:
+- Rows: 102664 CTA objects.
+- Columns: 134.
+- Image value: Cell_200616_BC-SA2_V10F24-112_KT.C1-Spot000001.tif (1).
+- Required fields are present: Classification, Centroid X um, Centroid Y um.
+- Classification distribution:
+  - Tumor: 85061
+  - Immune cells: 10737
+  - Stroma: 6866
+- Centroid X range: 1620.2 to 7251.2 um.
+- Centroid Y range: 1784.9 to 7286.6 um.
+
+CTA_align.R interpretation:
+- Reads Seurat image coordinates from ST_data@images[[image_name]].
+- Converts Visium image coordinates to full-resolution coordinates using scaling_factor.
+- Converts QuPath CTA centroid coordinates from micrometers to pixels using pixel_size when tiff_image=TRUE.
+- Reverses the Y axis to match Visium orientation.
+- Assigns each CTA object to a Visium spot if the object centroid falls inside the spot capture square.
+- Returns per-spot counts and fractions for Tumor, Immune, and Stroma.
+
+Publication interpretation:
+- The paper defines CTA as an H&E/QuPath-derived computational pathology annotation pipeline.
+- CTA maps tumor, stroma, and immune compartments in Visium-assayed breast tumor sections.
+- The publication uses CTA to evaluate deconvolution methods and improve interpretation of intratumoral heterogeneity.
+- This makes CTA suitable as an external endpoint source, provided the CTA-to-Visium barcode mapping is generated before any SVTuner or CytoSPACE-based claim.
+
+ST_data.RData status:
+- Rscript/R is not available in the current PATH.
+- PowerShell command R resolves to the Invoke-History alias, not an R executable.
+- pyreadr is installed but cannot parse this file: LibrdataError, unrecognized object.
+- This is consistent with the file being a Seurat S4 object.
+- Therefore, ST_data.RData internals were not fully parsed in the current environment.
+
+Current conclusion:
+The directory contains the critical files needed to retry the CTA endpoint-to-Visium alignment:
+1. CTA_output.txt provides external pathology-derived object labels and coordinates.
+2. ST_data.RData should provide the matching Visium/Seurat object and spot coordinates.
+3. CTA_align.R provides the official alignment logic from CTA object coordinates to Visium barcodes.
+
+Remaining blocker:
+Use an R environment with Seurat, tidyverse, and data.table to load ST_data.RData and run CTA_align. The endpoint must be frozen from CTA-derived spot labels, not from expression markers or mapping outputs.
+
+Recommended next step:
+Run a BioApp Phase 2B retry focused only on loading ST_data.RData, running CTA_align with the documented parameters, and exporting a real CTA-to-Visium spot table. Do not run CytoSPACE, SVTuner, Stage3, Stage4, contradiction rate, or prevention rate at this step.

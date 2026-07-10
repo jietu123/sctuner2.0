@@ -1,0 +1,8 @@
+{
+  "threshold_selected_using_endpoint_labels": false,
+  "binary_threshold_used": true,
+  "binary_threshold_value": null,
+  "threshold_source": "predefined_default_stage3b_fdr_0.05",
+  "endpoint_labels_used_for_threshold": false,
+  "notes": "Stage3B uses the predefined method FDR and spatial-region gate; CTA endpoint labels were not used."
+}

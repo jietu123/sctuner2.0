@@ -1,0 +1,43 @@
+{
+  "immune_removed_cell_count": 2414,
+  "nonimmune_total_cells": 1600,
+  "true_nonimmune_size_matched_control_possible": false,
+  "evaluated_strategies": [
+    {
+      "strategy": "A",
+      "name": "nonimmune-all-dropout control",
+      "feasible": true,
+      "n_cells_to_remove": 1600,
+      "size_matched_to_immune_all_dropout": false,
+      "note": "label-level clean but not size-matched when nonimmune pool is smaller"
+    },
+    {
+      "strategy": "B",
+      "name": "random-all-cell size-matched dropout control",
+      "feasible": true,
+      "n_cells_to_remove": 2414,
+      "size_matched_to_immune_all_dropout": true,
+      "note": "dry design only; would require later fixed seed and explicit cell list"
+    },
+    {
+      "strategy": "C",
+      "name": "downsampled immune dropout matched to nonimmune-all removal",
+      "feasible": true,
+      "n_cells_to_remove": 1600,
+      "size_matched_to_nonimmune_all_dropout": true,
+      "note": "does not simulate complete immune reference absence"
+    },
+    {
+      "strategy": "D",
+      "name": "no strict size-matched control",
+      "feasible": true,
+      "n_cells_to_remove": null,
+      "note": "explicit limitation if used"
+    }
+  ],
+  "recommended_primary_control": "nonimmune-all-dropout control",
+  "recommended_supplementary_control": "random-all-cell size-matched dropout dry design",
+  "control_limitations": "true nonimmune size-matched control impossible because nonimmune pool is smaller than immune dropout size",
+  "requires_manual_approval_before_phase4": true,
+  "control_strategy_resolved": true
+}

@@ -1,0 +1,8 @@
+python=E:\ANACONDA\envs\cytospace_v1.1.0_py310\python.exe
+NUMBA_DISABLE_JIT=1
+NUMBA_CACHE_DIR=C:\Users\Aimyon\AppData\Local\Temp\numba_cache_svtuner
+PYTHONPATH=E:\AAA文件\Experiment\SVTuner\sctuner2.0\external\cytospace
+entrypoint=external/cytospace/cytospace/cytospace.py:main_cytospace
+solver_method=lap_CSPR
+downsample_off=true
+plot_off=true

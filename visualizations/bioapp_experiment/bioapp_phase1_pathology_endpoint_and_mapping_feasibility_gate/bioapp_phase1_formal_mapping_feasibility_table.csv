@@ -1,0 +1,10 @@
+﻿check,status,evidence,risk
+identifiable ST mapping object,PASS,Processed Visium spatial data and ST_data.RData workflow are described.,Need exact processed object for selected sample.
+usable scRNA-seq reference,PASS,Paper used public Wu et al. breast tumor scRNA-seq reference for seven deconvolution methods.,Need local processed expression and metadata import.
+sufficient gene intersection likely,PASS_WITH_CAVEAT,Same paper performed deconvolution of Visium data with scRNA reference.,Phase 2 must compute actual shared genes.
+compatible preprocessing,PASS_WITH_CAVEAT,"Paper provides method-specific folders and code, including CytoSPACE.",Our SVTuner input contract may require conversion from R/Seurat to CSV.
+baseline CytoSPACE feasibility,PASS_WITH_CAVEAT,Paper evaluated CytoSPACE among seven deconvolution methods.,Need reproduce our own CytoSPACE input without relying on paper's final outputs.
+SVTuner-enhanced mapping feasibility,PASS_WITH_CAVEAT,"If CytoSPACE input tables can be built, SVTuner Stage3/Stage4 can share identical basis.",Requires Phase 2 preflight and no use of post hoc endpoint labels inside mapping.
+identical input basis for baseline and SVTuner,PASS_WITH_CAVEAT,"Can be designed by freezing same ST matrix, scRNA reference, genes, and cell labels.",Must be audited before Phase 3.
+endpoint-specific comparison after mapping,PASS,CTA provides spot-level tumor/immune/stroma endpoint percentages for comparison.,Thresholds for endpoint-positive/negative spots must be frozen before mapping.
+expected compute feasibility on RTX 4060 / i5-12600 / 16GB RAM,PASS_WITH_CAVEAT,Minimal sample/downsampled mode should be possible if using processed matrices rather than raw FASTQ.,Full raw dataset is about 300GB and not appropriate for Phase 1.

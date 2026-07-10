@@ -1,0 +1,25 @@
+paths:
+  sc_expr: unused
+  sc_meta: null
+  st_expr: null
+  st_meta: null
+qc:
+  sc_min_genes: 0
+  sc_max_genes: 100000
+  sc_max_mt: 100
+  st_min_genes: 0
+  st_max_genes: Inf
+  st_max_mt: 100
+gene_filter:
+  min_cells_sc: 0
+  min_cells_st: 0
+stage3:
+  strong_th: 0.7
+  weak_th: 0.4
+  st_cluster_k: 0
+  unknown_floor: 0.3
+  min_cells_rare_type: 20
+  eps: 1.0e-08
+  plugin_genes_path: data/processed/high/cytospace_fig2j_merscope_batch_000/stage1_preprocess/hvg_genes.txt
+storage:
+  group: high

@@ -1,0 +1,2 @@
+file,exists,n_rows_cells,n_columns_including_cell_id,first_column
+data/processed/cytospace_fig2d_tme/cytospace_fig2d_tme_brca_her2_ffpe/stage1_preprocess/exported/sc_expression_normalized.csv,True,4014,2001,cell_id

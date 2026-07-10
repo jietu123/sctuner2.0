@@ -1,0 +1,106 @@
+{
+  "stage": "stage3b_st_unsupported",
+  "sample": "svtuner_immune_all_dropout",
+  "status": "ok",
+  "config": {
+    "fdr": 0.05,
+    "n_calibration": 0,
+    "n_spatial_permutations": 200,
+    "random_seed": 20260705,
+    "sc_expr_source": "normalized",
+    "sc_profile_source": "normalized",
+    "expression_scale": "log1p",
+    "sc_profile_scale": "log1p",
+    "max_genes": 2000,
+    "enable_residual_program_branch": true,
+    "residual_program_components": 8,
+    "residual_program_candidate_fdr_factor": 2.0,
+    "residual_program_min_whole_profile_overlap": 0.5,
+    "residual_program_min_reference_orthogonal_score": 0.3,
+    "enable_compensatory_diagnostics": true
+  },
+  "inputs": {
+    "sc_expression": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage1_preprocess\\exported\\sc_expression_normalized.csv",
+    "st_expression": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage1_preprocess\\exported\\st_expression_normalized.csv",
+    "sc_metadata": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage1_preprocess\\exported\\sc_metadata.csv",
+    "st_coordinates": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage1_preprocess\\exported\\st_coordinates.csv"
+  },
+  "dimensions": {
+    "sc_cells": 1600,
+    "st_spots": 2248,
+    "genes": 2000,
+    "sc_types": 4,
+    "calibration_spots": 2248
+  },
+  "detection": {
+    "spot_candidates": 217,
+    "spatial_components": 61,
+    "unsupported_regions": 6,
+    "unsupported_region_spots": 149,
+    "spatial_edges": 6716,
+    "selected_evidence_model": "whole_profile=reconstruction_composite;residual_program=residual_program_c1_pos",
+    "whole_profile": {
+      "spot_candidates": 173,
+      "unsupported_regions": 7,
+      "unsupported_region_spots": 98,
+      "selected_model": "reconstruction_composite",
+      "model_largest_components": {
+        "reconstruction_composite": 30,
+        "reference_orthogonal_residual": 30
+      },
+      "model_count": 2
+    },
+    "residual_program": {
+      "enabled": true,
+      "region_gate": {
+        "min_whole_profile_overlap": 0.5,
+        "min_reference_orthogonal_score": 0.3,
+        "candidate_spots_before_gate": 243,
+        "unsupported_region_spots_before_gate": 170,
+        "accepted_region_spots": 137
+      },
+      "spot_candidates": 137,
+      "unsupported_regions": 8,
+      "unsupported_region_spots": 137,
+      "selected_model": "residual_program_c1_pos",
+      "model_largest_components": {
+        "residual_program_c1_pos": 49,
+        "residual_program_c1_neg": 0,
+        "residual_program_c2_pos": 38,
+        "residual_program_c2_neg": 7,
+        "residual_program_c3_pos": 0,
+        "residual_program_c3_neg": 6,
+        "residual_program_c4_pos": 0,
+        "residual_program_c4_neg": 0,
+        "residual_program_c5_pos": 0,
+        "residual_program_c5_neg": 1,
+        "residual_program_c6_pos": 4,
+        "residual_program_c6_neg": 4,
+        "residual_program_c7_pos": 1,
+        "residual_program_c7_neg": 0,
+        "residual_program_c8_pos": 1,
+        "residual_program_c8_neg": 1
+      },
+      "model_count": 16
+    }
+  },
+  "guardrails": {
+    "uses_simulation_truth": false,
+    "uses_missing_type_labels": false,
+    "uses_type_whitelist": false,
+    "modifies_stage3a_or_stage4": false,
+    "decision_rule": "whole-profile unsupported detection OR unsupervised residual-program detection; both branches use self-calibrated spot evidence and spatial permutation, without missing-type labels or cell-type whitelists"
+  },
+  "outputs": {
+    "spot_scores": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage3b_st_unsupported\\spot_unsupported_scores.csv",
+    "regions": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage3b_st_unsupported\\unsupported_regions.csv",
+    "whole_profile_regions": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage3b_st_unsupported\\whole_profile_unsupported_regions.csv",
+    "residual_program_regions": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage3b_st_unsupported\\residual_program_regions.csv",
+    "residual_genes": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage3b_st_unsupported\\unsupported_region_residual_genes.csv",
+    "residual_program_scores": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage3b_st_unsupported\\residual_program_scores.csv",
+    "residual_program_gene_loadings": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage3b_st_unsupported\\residual_program_gene_loadings.csv",
+    "compensatory_substitution_scores": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage3b_st_unsupported\\compensatory_substitution_scores.csv",
+    "mixture_weights": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage3b_st_unsupported\\supported_mixture_weights.csv",
+    "type_profiles": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint\\svtuner_immune_all_dropout\\stage3b_st_unsupported\\sc_type_profiles.csv"
+  }
+}

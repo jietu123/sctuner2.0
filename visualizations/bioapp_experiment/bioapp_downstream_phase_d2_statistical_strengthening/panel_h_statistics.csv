@@ -1,0 +1,7 @@
+analysis,metric,spearman_rho,spearman_p_value,kendall_tau,kendall_p_value,empirical_permutation_p_one_sided_positive,n_permutations,setting,qualitative_positive_trend,comparison,n_group_a,n_group_b,mean_group_a,mean_group_b,cohen_d,cliffs_delta,withheld_rate_group_a,withheld_rate_tumor_side
+panel_h_topology_trend,withheld_rate,0.8503146459584139,0.007471414639953453,0.7637626158259733,0.008839740160738536,0.0069965017491254375,2000.0,,,,,,,,,,,
+panel_h_reporting_bin_sensitivity,,0.5585812268712466,0.19245253188052203,0.29277002188455997,0.3620501922003584,,,narrower_reporting_bins,True,,,,,,,,,
+panel_h_reporting_bin_sensitivity,,0.5585812268712466,0.19245253188052203,0.29277002188455997,0.3620501922003584,,,wider_reporting_bins,True,,,,,,,,,
+panel_h_effect_size,withheld_score,,,,,,,,,tumor_side_vs_interface,52.0,1819.0,0.5098284262590705,0.37517646642215213,1.236877527595405,0.5882775827800567,0.21153846153846154,0.016492578339747113
+panel_h_effect_size,withheld_score,,,,,,,,,tumor_side_vs_outer_side,223.0,1819.0,0.5111808248897085,0.37517646642215213,1.2638028630516376,0.6337710810404377,0.2556053811659193,0.016492578339747113
+panel_h_effect_size,withheld_score,,,,,,,,,tumor_side_vs_outside,154.0,1819.0,0.5012374035189152,0.37517646642215213,1.1546342923014443,0.5731563653498782,0.33116883116883117,0.016492578339747113

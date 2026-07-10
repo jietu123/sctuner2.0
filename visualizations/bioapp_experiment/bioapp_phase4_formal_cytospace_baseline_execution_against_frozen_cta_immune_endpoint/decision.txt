@@ -1,0 +1,55 @@
+BioApp Phase 4 - formal CytoSPACE baseline execution against frozen CTA Immune endpoint
+
+Decision: PASS
+
+Input endpoint:
+CTA-defined Immune cells
+
+Endpoint status:
+Frozen at Phase 2C
+
+Primary endpoint note:
+Sparse immune-positive spatial compartments, not a large continuous ROI.
+
+Analysis universe:
+full_frozen_endpoint_spot_universe
+spots = 2248
+genes = 2000
+
+Baseline runs:
+baseline_full_reference: completed = True
+baseline_immune_all_dropout: completed = True
+baseline_nonimmune_all_dropout_control: completed = True
+
+Control strategy:
+true non-immune size-matched control possible = false
+primary control = nonimmune-all-dropout control
+supplementary control = random-all-cell size-matched dropout dry/sensitivity design
+random sensitivity mapping run = false
+
+Boundary checks:
+CytoSPACE run: true
+SVTuner run: false
+Stage4 run: false
+SVTuner Stage3 run: false
+SVTuner Stage4 run: false
+Contradiction analysis run: false
+Prevention analysis run: false
+Endpoint redefined: false
+Baseline-vs-endpoint metric computed: false
+SVTuner-vs-endpoint metric computed: false
+
+Allowed claims:
+- Formal CytoSPACE baseline runs were executed against the frozen CTA Immune endpoint input universe.
+- Full-reference, immune-all-dropout, and nonimmune-all-dropout control baseline outputs were generated or audited.
+- Baseline outputs are ready for a later endpoint-specific evaluation phase if all required runs completed.
+
+Disallowed claims:
+- Baseline creates false niche calls.
+- SVTuner improves endpoint recovery.
+- SVTuner prevents contradicted interpretation.
+- Biological application completed.
+- Biological discovery made.
+
+Next:
+BioApp Phase 5 - endpoint-specific evaluation of CytoSPACE baseline outputs against frozen CTA Immune endpoint

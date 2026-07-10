@@ -1,0 +1,33 @@
+CytoSPACE log file 
+
+Start time: Sun Jul  5 13:31:20 2026
+
+INPUT ARGUMENTS
+scRNA_path: E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\baseline_nonimmune_all_dropout_control\inputs\reference_expression_used.csv
+cell_type_path: E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\baseline_nonimmune_all_dropout_control\inputs\cell_type_labels.csv
+st_path: E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\baseline_nonimmune_all_dropout_control\inputs\st_expression_used.csv
+coordinates_path: E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\baseline_nonimmune_all_dropout_control\inputs\st_coordinates_used.csv
+n_cells_per_spot_path: None
+cell_type_fraction_estimation_path: E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\baseline_nonimmune_all_dropout_control\inputs\cell_type_fractions.csv
+st_cell_type_path: None
+output_folder: E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint\baseline_nonimmune_all_dropout_control\cytospace_output
+mean_cell_numbers: 5
+downsample_off: True
+scRNA_max_transcripts_per_cell: 1500
+plot_off: True
+geometry: honeycomb
+output_prefix: 
+seed: 20260705
+solver_method: lap_CSPR
+sampling_method: duplicates
+distance_metric: Pearson_correlation
+single_cell: False
+
+sampling_sub_spots: False
+
+Time to read and validate data: 0.8 seconds
+Number of genes used for mapping: 2000
+Number of spots satisfying input for mapping: 2248
+Number of cells satisfying input for mapping: 2414
+Time to run CytoSPACE core algorithm: 80.94 seconds
+Total execution time: 88.73 seconds

@@ -1,0 +1,2 @@
+number_of_spots_in_ST_data,number_of_spots_with_CTA_mapping,CTA_objects_total,CTA_objects_captured,CTA_objects_not_captured,barcodes_matched,barcodes_unmatched,coordinate_completeness,CTA_class_distribution_after_spot_aggregation,whether_endpoint_freeze_appears_possible
+2248,2178,102664,48080,54584,2178,70,True,"{'Immune cells': 4907, 'Stroma': 2990, 'Tumor': 40183}",True

@@ -1,0 +1,2 @@
+run_name,completed,return_code,runtime_seconds,n_ST_spots_input,n_genes_input,n_reference_cells_input,raw_outputs_detected,spot_level_contract_generated,n_contract_rows,contract_spot_universe_aligned,error_detected,ready_for_phase8_evaluation,notes
+svtuner_immune_all_dropout,True,0,34.85728621482849,2248,2000,1600,True,True,2248,True,False,True,Phase7 raw SVTuner-aware execution QC; no endpoint metrics computed

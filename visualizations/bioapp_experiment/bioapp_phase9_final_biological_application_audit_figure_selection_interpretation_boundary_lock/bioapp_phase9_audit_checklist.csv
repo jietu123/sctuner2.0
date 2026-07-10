@@ -1,0 +1,28 @@
+check,observed,pass,notes
+BioApp Phase 2C endpoint freeze,PASS,True,
+BioApp Phase 3R review resolution,PASS,True,
+BioApp Phase 4 formal CytoSPACE baseline execution,PASS,True,
+BioApp Phase 5 endpoint-specific baseline evaluation,PASS,True,
+BioApp Phase 6 SVTuner-aware planning,PASS,True,
+BioApp Phase 7 SVTuner-aware raw execution,PASS,True,
+BioApp Phase 8 SVTuner-vs-endpoint evaluation,PASS,True,
+endpoint_frozen,True,True,Phase 2C endpoint freeze audit
+primary_endpoint_is_Immune_cells,True,True,Phase 2C endpoint freeze audit
+endpoint_independent_no_expression_markers,True,True,Phase 2C endpoint freeze audit
+endpoint_independent_no_mapping_outputs,True,True,Phase 2C endpoint freeze audit
+phase8_golden_rules_decision,True,True,Phase 8 final audit
+no_endpoint_redefinition,True,True,Phase 8 final audit
+no_threshold_tuning_with_endpoint,True,True,Phase 8 final audit
+no_stage3_rerun,True,True,Phase 8 final audit
+no_stage4_run,True,True,Phase 8 final audit
+no_cytospace_rerun,True,True,Phase 8 final audit
+gene_count_no_material_mismatch,True,True,Phase 8 final audit
+phase7_raw_output_used,True,True,Phase 8 final audit
+baseline_svtuner_same_condition,True,True,Phase 8 final audit
+spatial_comparison_available,True,True,Phase 8 final audit
+candidate_evidence_chain_complete,True,True,Phase 8 final audit
+withheld_AUROC_supports_endpoint_concordance,True,True,Metric adequacy audit
+positive_withheld_rate_exceeds_negative,True,True,Metric adequacy audit
+withheld_enrichment_positive_delta,True,True,Metric adequacy audit
+burden_reduction_supported,True,True,Metric adequacy audit
+operational_prevention_rate_positive,True,True,Metric adequacy audit

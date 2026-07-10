@@ -34,3 +34,6 @@ external/cytospace/cytospace_results*/
 external/cytospace/cytospace_results_brca/
 external/cytospace/data/
 external/cytospace/images/
+
+# GitHub archive stores the exact Phase 4 Matrix Market outputs as matrix.mtx.gz.
+visualizations/bioapp_experiment/**/assigned_expression/matrix.mtx

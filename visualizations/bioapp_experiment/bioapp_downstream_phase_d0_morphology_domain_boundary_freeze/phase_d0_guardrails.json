@@ -1,0 +1,15 @@
+{
+  "phase": "BioApp Downstream Phase D0 morphology-domain and boundary freeze",
+  "SVTuner_rerun": false,
+  "Stage3_rerun": false,
+  "Stage4_run": false,
+  "CytoSPACE_rerun": false,
+  "endpoint_redefined": false,
+  "threshold_selected_using_endpoint_labels": false,
+  "new_mapping_or_new_computation": "only downstream morphology-domain/boundary derivation from frozen inputs",
+  "domain_definitions_use_svtuner_outputs": false,
+  "boundary_definitions_use_svtuner_outputs": false,
+  "data_changed": false,
+  "metrics_changed": false,
+  "guardrails_passed": true
+}

@@ -1,0 +1,135 @@
+column_index,column_name,dtype,non_null_count,example_value,role_guess
+0,Image,object,102664,Cell_200616_BC-SA2_V10F24-112_KT.C1-Spot000001.tif (1),identifier
+1,Object ID,object,102664,f20d2689-af21-4156-9551-9691f7923db4,identifier
+2,Object type,object,102664,Cell,identifier
+3,Name,float64,0,nan,other
+4,Classification,object,102664,Tumor,CTA_class
+5,Parent,object,102664,Annotation,other
+6,ROI,object,102664,Polygon,other
+7,Centroid X µm,float64,102664,6334.2,coordinate
+8,Centroid Y µm,float64,102664,2436.4,coordinate
+9,Nucleus: Area,float64,102664,33.75,other
+10,Nucleus: Perimeter,float64,102664,25.9664,other
+11,Nucleus: Circularity,float64,102664,0.629,other
+12,Nucleus: Max caliper,float64,102664,8.7156,other
+13,Nucleus: Min caliper,float64,102664,6.5151,other
+14,Nucleus: Eccentricity,float64,102664,0.6705,other
+15,Nucleus: Hematoxylin OD mean,float64,102664,0.5416,other
+16,Nucleus: Hematoxylin OD sum,float64,102664,75.8303,other
+17,Nucleus: Hematoxylin OD std dev,float64,102664,0.1393,other
+18,Nucleus: Hematoxylin OD max,float64,102664,0.8325,other
+19,Nucleus: Hematoxylin OD min,float64,102664,0.2856,other
+20,Nucleus: Hematoxylin OD range,float64,102664,0.5469,other
+21,Nucleus: Eosin OD mean,float64,102664,0.4314,other
+22,Nucleus: Eosin OD sum,float64,102664,60.3909,other
+23,Nucleus: Eosin OD std dev,float64,102664,0.1972,other
+24,Nucleus: Eosin OD max,float64,102664,0.8749,other
+25,Nucleus: Eosin OD min,float64,102664,0.1773,other
+26,Nucleus: Eosin OD range,float64,102664,0.6976,other
+27,Cell: Area,float64,102664,180.0,other
+28,Cell: Perimeter,float64,102664,54.018,other
+29,Cell: Circularity,float64,102664,0.7752,other
+30,Cell: Max caliper,float64,102664,18.7144,other
+31,Cell: Min caliper,float64,102664,14.5282,other
+32,Cell: Eccentricity,float64,102664,0.5914,other
+33,Cell: Hematoxylin OD mean,float64,102664,0.2629,other
+34,Cell: Hematoxylin OD std dev,float64,102664,0.1854,other
+35,Cell: Hematoxylin OD max,float64,102664,0.8325,other
+36,Cell: Hematoxylin OD min,float64,102664,0.0298,other
+37,Cell: Eosin OD mean,float64,102664,0.5157,other
+38,Cell: Eosin OD std dev,float64,102664,0.2832,other
+39,Cell: Eosin OD max,float64,102664,1.0896,other
+40,Cell: Eosin OD min,float64,102664,0.0817,other
+41,Cytoplasm: Hematoxylin OD mean,float64,102664,0.1959,other
+42,Cytoplasm: Hematoxylin OD std dev,float64,102664,0.1217,other
+43,Cytoplasm: Hematoxylin OD max,float64,102664,0.7756,other
+44,Cytoplasm: Hematoxylin OD min,float64,102664,0.0298,other
+45,Cytoplasm: Eosin OD mean,float64,102664,0.536,other
+46,Cytoplasm: Eosin OD std dev,float64,102664,0.2968,other
+47,Cytoplasm: Eosin OD max,float64,102664,1.0896,other
+48,Cytoplasm: Eosin OD min,float64,102664,0.0817,other
+49,Nucleus/Cell area ratio,float64,102664,0.1861,other
+50,Smoothed: 25 µm: Nucleus: Area,float64,102664,40.6328,other
+51,Smoothed: 25 µm: Nucleus: Perimeter,float64,102664,28.8286,other
+52,Smoothed: 25 µm: Nucleus: Circularity,float64,102664,0.6126,other
+53,Smoothed: 25 µm: Nucleus: Max caliper,float64,102664,10.5705,other
+54,Smoothed: 25 µm: Nucleus: Min caliper,float64,102664,6.3924,other
+55,Smoothed: 25 µm: Nucleus: Eccentricity,float64,102664,0.7625,other
+56,Smoothed: 25 µm: Nucleus: Hematoxylin OD mean,float64,102664,0.6127,other
+57,Smoothed: 25 µm: Nucleus: Hematoxylin OD sum,float64,102664,111.0192,other
+58,Smoothed: 25 µm: Nucleus: Hematoxylin OD std dev,float64,102664,0.1469,other
+59,Smoothed: 25 µm: Nucleus: Hematoxylin OD max,float64,102664,0.9213,other
+60,Smoothed: 25 µm: Nucleus: Hematoxylin OD min,float64,102664,0.3202,other
+61,Smoothed: 25 µm: Nucleus: Hematoxylin OD range,float64,102664,0.6012,other
+62,Smoothed: 25 µm: Nucleus: Eosin OD mean,float64,102664,0.3848,other
+63,Smoothed: 25 µm: Nucleus: Eosin OD sum,float64,102664,64.0344,other
+64,Smoothed: 25 µm: Nucleus: Eosin OD std dev,float64,102664,0.157,other
+65,Smoothed: 25 µm: Nucleus: Eosin OD max,float64,102664,0.7776,other
+66,Smoothed: 25 µm: Nucleus: Eosin OD min,float64,102664,0.1387,other
+67,Smoothed: 25 µm: Nucleus: Eosin OD range,float64,102664,0.6388,other
+68,Smoothed: 25 µm: Cell: Area,float64,102664,167.6167,other
+69,Smoothed: 25 µm: Cell: Perimeter,float64,102664,51.0161,other
+70,Smoothed: 25 µm: Cell: Circularity,float64,102664,0.7967,other
+71,Smoothed: 25 µm: Cell: Max caliper,float64,102664,18.5008,other
+72,Smoothed: 25 µm: Cell: Min caliper,float64,102664,12.9627,other
+73,Smoothed: 25 µm: Cell: Eccentricity,float64,102664,0.6893,other
+74,Smoothed: 25 µm: Cell: Hematoxylin OD mean,float64,102664,0.3247,other
+75,Smoothed: 25 µm: Cell: Hematoxylin OD std dev,float64,102664,0.218,other
+76,Smoothed: 25 µm: Cell: Hematoxylin OD max,float64,102664,0.9213,other
+77,Smoothed: 25 µm: Cell: Hematoxylin OD min,float64,102664,0.0346,other
+78,Smoothed: 25 µm: Cell: Eosin OD mean,float64,102664,0.4376,other
+79,Smoothed: 25 µm: Cell: Eosin OD std dev,float64,102664,0.2361,other
+80,Smoothed: 25 µm: Cell: Eosin OD max,float64,102664,0.9639,other
+81,Smoothed: 25 µm: Cell: Eosin OD min,float64,102664,0.0563,other
+82,Smoothed: 25 µm: Cytoplasm: Hematoxylin OD mean,float64,102664,0.2236,other
+83,Smoothed: 25 µm: Cytoplasm: Hematoxylin OD std dev,float64,102664,0.1366,other
+84,Smoothed: 25 µm: Cytoplasm: Hematoxylin OD max,float64,102664,0.7698,other
+85,Smoothed: 25 µm: Cytoplasm: Hematoxylin OD min,float64,102664,0.0346,other
+86,Smoothed: 25 µm: Cytoplasm: Eosin OD mean,float64,102664,0.4559,other
+87,Smoothed: 25 µm: Cytoplasm: Eosin OD std dev,float64,102664,0.2518,other
+88,Smoothed: 25 µm: Cytoplasm: Eosin OD max,float64,102664,0.9639,other
+89,Smoothed: 25 µm: Cytoplasm: Eosin OD min,float64,102664,0.0825,other
+90,Smoothed: 25 µm: Nucleus/Cell area ratio,float64,102664,0.2444,other
+91,Smoothed: 25 µm: Nearby detection counts,int64,102664,5,other
+92,Smoothed: 50 µm: Nucleus: Area,float64,102664,42.0702,other
+93,Smoothed: 50 µm: Nucleus: Perimeter,float64,102664,28.362,other
+94,Smoothed: 50 µm: Nucleus: Circularity,float64,102664,0.6722,other
+95,Smoothed: 50 µm: Nucleus: Max caliper,float64,102664,10.4914,other
+96,Smoothed: 50 µm: Nucleus: Min caliper,float64,102664,6.0939,other
+97,Smoothed: 50 µm: Nucleus: Eccentricity,float64,102664,0.7686,other
+98,Smoothed: 50 µm: Nucleus: Hematoxylin OD mean,float64,102664,0.5503,other
+99,Smoothed: 50 µm: Nucleus: Hematoxylin OD sum,float64,102664,104.9547,other
+100,Smoothed: 50 µm: Nucleus: Hematoxylin OD std dev,float64,102664,0.1178,other
+101,Smoothed: 50 µm: Nucleus: Hematoxylin OD max,float64,102664,0.8137,other
+102,Smoothed: 50 µm: Nucleus: Hematoxylin OD min,float64,102664,0.3049,other
+103,Smoothed: 50 µm: Nucleus: Hematoxylin OD range,float64,102664,0.5087,other
+104,Smoothed: 50 µm: Nucleus: Eosin OD mean,float64,102664,0.2808,other
+105,Smoothed: 50 µm: Nucleus: Eosin OD sum,float64,102664,50.3984,other
+106,Smoothed: 50 µm: Nucleus: Eosin OD std dev,float64,102664,0.1037,other
+107,Smoothed: 50 µm: Nucleus: Eosin OD max,float64,102664,0.5483,other
+108,Smoothed: 50 µm: Nucleus: Eosin OD min,float64,102664,0.0903,other
+109,Smoothed: 50 µm: Nucleus: Eosin OD range,float64,102664,0.4581,other
+110,Smoothed: 50 µm: Cell: Area,float64,102664,157.3097,other
+111,Smoothed: 50 µm: Cell: Perimeter,float64,102664,48.1828,other
+112,Smoothed: 50 µm: Cell: Circularity,float64,102664,0.8243,other
+113,Smoothed: 50 µm: Cell: Max caliper,float64,102664,17.6547,other
+114,Smoothed: 50 µm: Cell: Min caliper,float64,102664,11.9981,other
+115,Smoothed: 50 µm: Cell: Eccentricity,float64,102664,0.6961,other
+116,Smoothed: 50 µm: Cell: Hematoxylin OD mean,float64,102664,0.3053,other
+117,Smoothed: 50 µm: Cell: Hematoxylin OD std dev,float64,102664,0.1911,other
+118,Smoothed: 50 µm: Cell: Hematoxylin OD max,float64,102664,0.8137,other
+119,Smoothed: 50 µm: Cell: Hematoxylin OD min,float64,102664,0.0372,other
+120,Smoothed: 50 µm: Cell: Eosin OD mean,float64,102664,0.3062,other
+121,Smoothed: 50 µm: Cell: Eosin OD std dev,float64,102664,0.1542,other
+122,Smoothed: 50 µm: Cell: Eosin OD max,float64,102664,0.7069,other
+123,Smoothed: 50 µm: Cell: Eosin OD min,float64,102664,0.0432,other
+124,Smoothed: 50 µm: Cytoplasm: Hematoxylin OD mean,float64,102664,0.2057,other
+125,Smoothed: 50 µm: Cytoplasm: Hematoxylin OD std dev,float64,102664,0.11,other
+126,Smoothed: 50 µm: Cytoplasm: Hematoxylin OD max,float64,102664,0.5857,other
+127,Smoothed: 50 µm: Cytoplasm: Hematoxylin OD min,float64,102664,0.0372,other
+128,Smoothed: 50 µm: Cytoplasm: Eosin OD mean,float64,102664,0.3207,other
+129,Smoothed: 50 µm: Cytoplasm: Eosin OD std dev,float64,102664,0.1628,other
+130,Smoothed: 50 µm: Cytoplasm: Eosin OD max,float64,102664,0.7069,other
+131,Smoothed: 50 µm: Cytoplasm: Eosin OD min,float64,102664,0.0754,other
+132,Smoothed: 50 µm: Nucleus/Cell area ratio,float64,102664,0.2713,other
+133,Smoothed: 50 µm: Nearby detection counts,int64,102664,19,other

@@ -1,0 +1,51 @@
+$objects_loaded
+[1] "bcsa"
+
+$object_classes
+$object_classes$bcsa
+[1] "Seurat"
+attr(,"package")
+[1] "SeuratObject"
+
+
+$Seurat_object_name
+[1] "bcsa"
+
+$Seurat_object_found
+[1] TRUE
+
+$image_slot_names
+[1] "BCSA2TumB1"
+
+$selected_image_slot
+[1] "BCSA2TumB1"
+
+$number_of_spots
+[1] 2248
+
+$spot_barcodes_found
+[1] TRUE
+
+$metadata_columns
+[1] "barcode"              "orig.ident"           "nCount_Spatial"      
+[4] "nFeature_Spatial"     "type"                 "spaceranger_clusters"
+[7] "percent_mito"         "percent_ribo"         "percent_hb"          
+
+$coordinate_columns
+ [1] "barcode"                    "tissue"                    
+ [3] "row"                        "col"                       
+ [5] "imagerow"                   "imagecol"                  
+ [7] "pxl_col_in_fullres"         "pxl_row_in_fullres"        
+ [9] "pxl_row_in_fullres_reverse" "spot_radius_fullres"       
+[11] "xmin"                       "xmax"                      
+[13] "ymin"                       "ymax"                      
+
+$assay_names
+[1] "Spatial"
+
+$spatial_coordinates_found
+[1] TRUE
+
+$spot_radius_fullres
+[1] 188.8952
+

@@ -1,0 +1,27 @@
+{
+  "required_spot_level_fields": [
+    "barcode",
+    "primary_endpoint_status",
+    "baseline_anchor_run",
+    "svtuner_condition",
+    "reference_supported_status",
+    "reference_unrepresented_score",
+    "withheld_score",
+    "withheld_binary",
+    "supported_assignment_score",
+    "svtuner_immune_score",
+    "svtuner_nonimmune_score",
+    "svtuner_dominant_label",
+    "svtuner_dominant_fraction",
+    "baseline_immune_score_from_phase5",
+    "baseline_nonimmune_score_from_phase5",
+    "baseline_dominant_label_from_phase5",
+    "baseline_dominant_fraction_from_phase5",
+    "score_parse_status",
+    "svtuner_output_available"
+  ],
+  "primary_condition": "svtuner_immune_all_dropout",
+  "baseline_anchor": "baseline_immune_all_dropout",
+  "withheld_binary_threshold_note": "Threshold must be fixed in Phase 7 before evaluation and cannot be chosen using endpoint performance.",
+  "immune_all_dropout_note": "For immune-all-dropout, immune labels may be unavailable; primary endpoint alignment should use withheld/reference-unrepresented enrichment."
+}

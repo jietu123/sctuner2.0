@@ -1,0 +1,31 @@
+SVTuner command dry plan
+
+Future run name:
+svtuner_immune_all_dropout
+
+Input ST expression:
+visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/st_expression_full_2248_data.csv.gz
+
+Input coordinates:
+visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/st_coordinates_full_2248.csv
+
+Immune-all-dropout reference expression / metadata:
+visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_immune_all_dropout/inputs/reference_expression_used.csv.gz
+visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_immune_all_dropout/reference_metadata_used.csv
+
+Formal gene intersection:
+visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/formal_gene_intersection.txt
+
+Expected output directory:
+visualizations/bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint/svtuner_immune_all_dropout
+
+Expected spot-level output:
+svtuner_immune_all_dropout_spot_level_output.csv
+
+Expected command template:
+python <svtuner_entrypoint> --condition svtuner_immune_all_dropout --input-manifest <svtuner_future_input_manifest.json> --output <phase7_output_dir>
+
+Environment notes:
+Use the project SVTuner/CytoSPACE environment. Phase 7 must explicitly disable endpoint-dependent threshold tuning.
+
+No SVTuner command was executed in Phase 6.

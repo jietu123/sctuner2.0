@@ -1,0 +1,15 @@
+{
+  "source": "visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/formal_gene_intersection.txt",
+  "raw_line_count": 2000,
+  "nonempty_line_count": 2000,
+  "unique_gene_count": 2000,
+  "header_detected": false,
+  "header_aware_gene_count": 2000,
+  "stage3b_reported_gene_count": 2000,
+  "phase_summary_gene_count": 2000,
+  "final_effective_gene_count_for_phase8": 2000,
+  "count_discrepancy_detected": false,
+  "discrepancy_explanation": "formal_gene_intersection.txt contains 2000 non-empty unique gene lines; Stage3B also reports 2000 genes. The previous 1999 count is attributable to a line-count/read-mode artifact, not a material mismatch.",
+  "material_mismatch": false,
+  "decision_impact": "none"
+}

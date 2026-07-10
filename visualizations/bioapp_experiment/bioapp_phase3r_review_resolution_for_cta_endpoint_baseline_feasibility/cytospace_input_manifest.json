@@ -1,0 +1,20 @@
+{
+  "phase": "BioApp Phase 3R review resolution for CTA endpoint baseline feasibility",
+  "dry_plan_only": true,
+  "cytospace_run": false,
+  "reference_dir": "data/processed/cytospace_fig2d_tme/cytospace_fig2d_tme_brca_her2_ffpe/stage1_preprocess/exported",
+  "reference_expression": "data/processed/cytospace_fig2d_tme/cytospace_fig2d_tme_brca_her2_ffpe/stage1_preprocess/exported/sc_expression_normalized.csv",
+  "reference_metadata": "data/processed/cytospace_fig2d_tme/cytospace_fig2d_tme_brca_her2_ffpe/stage1_preprocess/exported/sc_metadata.csv",
+  "reference_label_column": "cell_type",
+  "st_expression_counts_genes_by_spots": "visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/st_expression_full_2248_counts.csv.gz",
+  "st_expression_counts_spots_by_genes": "visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/st_expression_full_2248_counts_spots_by_genes.csv.gz",
+  "st_expression_data_genes_by_spots": "visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/st_expression_full_2248_data.csv.gz",
+  "st_expression_data_spots_by_genes": "visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/st_expression_full_2248_data_spots_by_genes.csv.gz",
+  "st_coordinates": "visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/st_coordinates_full_2248.csv",
+  "formal_gene_intersection": "visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/formal_gene_intersection.txt",
+  "analysis_spot_universe": "full_frozen_endpoint_spot_universe",
+  "analysis_spot_count": 2248,
+  "n_gene_overlap_exact": 2000,
+  "manifest_ready_for_phase4": true,
+  "note": "No CytoSPACE command was executed in Phase 3R. This is a dry plan only."
+}

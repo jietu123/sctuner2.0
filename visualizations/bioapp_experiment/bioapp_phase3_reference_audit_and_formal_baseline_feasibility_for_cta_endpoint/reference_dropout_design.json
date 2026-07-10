@@ -1,0 +1,46 @@
+{
+  "primary_dropout_design": {
+    "name": "reference_immune_all_dropout",
+    "definition": "remove all immune-related labels from the scRNA reference",
+    "n_cells_removed": 2414,
+    "n_cells_remaining": 1600,
+    "removed_label_list": [
+      "B cells",
+      "CD8 T cells",
+      "Monocytes and Macrophages",
+      "NK cells",
+      "CD4 T cells",
+      "Plasma cells",
+      "T-cells"
+    ],
+    "remaining_label_list": [
+      "Endothelial cells",
+      "Epithelial cells",
+      "PVL",
+      "Fibroblasts"
+    ],
+    "removed_fraction": 0.6013951170901843,
+    "primary_dropout_feasible": true
+  },
+  "size_matched_control_dropout_design": {
+    "name": "reference_immune_size_matched_nonimmune_dropout_control",
+    "definition": "remove non-immune labels approximating the immune removed cell count",
+    "candidate_nonimmune_labels": [
+      "Endothelial cells",
+      "Epithelial cells",
+      "PVL",
+      "Fibroblasts"
+    ],
+    "selected_control_labels_or_cells": [
+      "Endothelial cells",
+      "Epithelial cells",
+      "PVL",
+      "Fibroblasts"
+    ],
+    "control_removed_cell_count": 1600,
+    "control_remaining_cell_count": 2414,
+    "size_match_ratio": 0.6628003314001657,
+    "size_matched_control_feasible": false,
+    "notes": "Label-level non-immune control cannot size-match the immune-all dropout within the 0.8-1.25 ratio; manual decision or a later cell-level control design is required."
+  }
+}

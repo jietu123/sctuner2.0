@@ -1,0 +1,49 @@
+{
+  "metrics": [
+    {
+      "metric_name": "External-endpoint contradiction rate",
+      "definition": "Among CTA Immune-positive spots, quantify the fraction or mass assigned by baseline to non-immune compartments.",
+      "required_inputs": [
+        "frozen CTA Immune-positive spots",
+        "baseline spot-level immune/non-immune assignment scores"
+      ],
+      "phase_to_compute": "Phase 4/5 after formal baseline output audit",
+      "allowed_claim": "Baseline-vs-endpoint contradiction can be quantified after baseline outputs exist.",
+      "disallowed_claim": "Do not claim baseline creates false niche calls in Phase 3."
+    },
+    {
+      "metric_name": "Endpoint-positive enrichment score",
+      "definition": "Compare immune-related assignment score in CTA Immune-positive spots versus CTA Immune-negative spots.",
+      "required_inputs": [
+        "frozen endpoint labels",
+        "mapping-derived immune assignment score"
+      ],
+      "phase_to_compute": "Phase 4/5 after formal baseline output audit",
+      "allowed_claim": "Endpoint enrichment metric is predefined before mapping comparison.",
+      "disallowed_claim": "Do not report enrichment values in Phase 3."
+    },
+    {
+      "metric_name": "Endpoint-specific AUROC/AUPRC",
+      "definition": "Use mapping-derived immune assignment score to classify CTA Immune-positive versus CTA Immune-negative spots.",
+      "required_inputs": [
+        "frozen endpoint labels",
+        "mapping-derived immune assignment score"
+      ],
+      "phase_to_compute": "Phase 4/5 after formal baseline output audit",
+      "allowed_claim": "Classification metric is predefined before formal comparison.",
+      "disallowed_claim": "Do not report AUROC/AUPRC in Phase 3."
+    },
+    {
+      "metric_name": "Contradiction prevention rate",
+      "definition": "Among baseline contradicted CTA Immune-positive spots, quantify the fraction converted by SVTuner to reference-unrepresented or withheld.",
+      "required_inputs": [
+        "baseline contradiction candidates",
+        "SVTuner Stage3/Stage4 outputs",
+        "structured output audit"
+      ],
+      "phase_to_compute": "Later SVTuner phase only",
+      "allowed_claim": "Prevention metric is defined as a future SVTuner evaluation endpoint.",
+      "disallowed_claim": "Do not claim prevention before SVTuner outputs and audit exist."
+    }
+  ]
+}

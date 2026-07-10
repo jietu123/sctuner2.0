@@ -1,0 +1,10 @@
+item,status,evidence_file,value,required_for_phase4,notes
+Frozen Phase 2C endpoint,pass,visualizations/bioapp_phase2c_endpoint_freeze_with_validated_cta_to_spot_mapping/spot_level_endpoint_freeze.csv,2248 spots,True,Primary endpoint is CTA-defined Immune cells.
+scRNA metadata / labels,pass,data/processed/cytospace_fig2d_tme/cytospace_fig2d_tme_brca_her2_ffpe/stage1_preprocess/exported/sc_metadata.csv,"4014 cells, 11 labels",True,Recommended label column: cell_type
+scRNA expression matrix,pass,data/processed/cytospace_fig2d_tme/cytospace_fig2d_tme_brca_her2_ffpe/stage1_preprocess/exported/sc_expression_normalized.csv,"None cells, 2000 genes",True,CSV header read only; no mapping executed.
+ST expression matrix for frozen endpoint,incomplete,visualizations/bioapp_phase2br2_explicit_rscript_cta_align_locale_safe_dry_run/_ascii_runtime/ST_data.RData,R ST expression inventory failed,True,Read-only RData assay inventory; no ST expression export or mapping executed.
+Existing exported ST expression barcode compatibility,incomplete,data/processed/cytospace_fig2d_tme/cytospace_fig2d_tme_brca_her2_ffpe/stage1_preprocess/exported/st_expression_normalized.csv,1399 / 2248 frozen endpoint spots overlap,False,Existing exported ST expression is not treated as sufficient unless it covers all frozen endpoint spots.
+Gene overlap,incomplete,,not checked,True,Computed from Phase 2B-R2 ST_data.RData gene names and recommended scRNA expression header.
+CytoSPACE backend/entry,pass,external/cytospace,available,True,Entry exists; no CytoSPACE command executed.
+Primary immune dropout design,pass,visualizations/bioapp_phase3_reference_audit_and_formal_baseline_feasibility_for_cta_endpoint/reference_dropout_design.json,2414,True,Design only; no reference files generated.
+Size-matched non-immune control design,manual_review_required,visualizations/bioapp_phase3_reference_audit_and_formal_baseline_feasibility_for_cta_endpoint/reference_dropout_design.json,0.6628003314001657,False,Label-level non-immune control cannot size-match the immune-all dropout within the 0.8-1.25 ratio; manual decision or a later cell-level control design is required.

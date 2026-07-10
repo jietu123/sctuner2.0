@@ -1,0 +1,8 @@
+analysis,test,observed_statistic,empirical_p_two_sided,n_permutations,comparison,metric,n_group_a,n_group_b,mean_group_a,mean_group_b,cohen_d,cliffs_delta,status
+panel_g_domain_permutation,immune_vs_tumor_core,0.2751848650725055,0.0004997501249375312,2000.0,,,,,,,,,
+panel_g_domain_permutation,immune_vs_all_remaining,0.2608901317528556,0.0004997501249375312,2000.0,,,,,,,,,
+panel_g_sensitivity_excluding_mixed_boundary,immune_vs_all_remaining,0.26032458107929807,0.0004997501249375312,2000.0,,,,,,,,,
+panel_g_effect_size,,,,,immune_enriched_vs_tumor_core,withheld_score,312.0,1602.0,0.501284948126278,0.3640599139277772,1.3152656289969695,0.6419899804731265,
+panel_g_effect_size,,,,,immune_enriched_vs_all_remaining,withheld_score,312.0,1843.0,0.501284948126278,0.37776646313346135,1.1269393941368373,0.5819907619961879,
+panel_g_effect_size,,,,,immune_enriched_vs_all_remaining_excluding_mixed_boundary,withheld_score,312.0,1749.0,0.501284948126278,0.37458275449510026,1.1577909282221157,0.5940903959771884,
+panel_g_logistic_regression,,,,,,,,,,,,,fit_failed: Singular matrix

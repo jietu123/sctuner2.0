@@ -1,0 +1,48 @@
+{
+  "image_slot_name": "BCSA2TumB1",
+  "image_slot_class": "VisiumV1",
+  "slot_names": ["image", "scale.factors", "coordinates", "spot.radius", "assay", "key", "misc"],
+  "coordinate_dimensions": [2248, 5],
+  "coordinate_columns": ["tissue", "row", "col", "imagerow", "imagecol"],
+  "coordinate_summary": {
+    "tissue": {
+      "min": 1,
+      "max": 1,
+      "mean": 1
+    },
+    "row": {
+      "min": 2,
+      "max": 76,
+      "mean": 49.6637
+    },
+    "col": {
+      "min": 11,
+      "max": 127,
+      "mean": 76.7037
+    },
+    "imagerow": {
+      "min": 1433,
+      "max": 12658,
+      "mean": 8661.4915
+    },
+    "imagecol": {
+      "min": 2285,
+      "max": 12399,
+      "mean": 8012.9933
+    }
+  },
+  "scale_factors": {
+    "spot": 113.3371,
+    "fiducial": 183.083,
+    "hires": 0.1385,
+    "lowres": 0.0416
+  },
+  "embedded_image_found": true,
+  "embedded_image_class": "array",
+  "embedded_image_dimensions": [600, 594, 3],
+  "key": "bcsa2tumb1_",
+  "assay": "Spatial",
+  "misc_names": null,
+  "spot_radius": 0.0127,
+  "boundary_slots_present": []
+}

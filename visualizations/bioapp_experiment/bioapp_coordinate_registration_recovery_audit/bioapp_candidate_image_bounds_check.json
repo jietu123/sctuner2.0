@@ -1,0 +1,12 @@
+{
+  "image_width": 594,
+  "image_height": 600,
+  "lowres_scale": 0.0416,
+  "hires_scale": 0.1385,
+  "lowres_bounds_pass": true,
+  "hires_bounds_pass": false,
+  "lowres_x_min": 94.9578,
+  "lowres_x_max": 515.2653,
+  "lowres_y_min": 59.5512,
+  "lowres_y_max": 526.0285
+}

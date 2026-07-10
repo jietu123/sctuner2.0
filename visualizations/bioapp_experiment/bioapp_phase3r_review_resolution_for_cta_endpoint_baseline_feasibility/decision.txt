@@ -1,0 +1,59 @@
+BioApp Phase 3R — review resolution for CTA endpoint baseline feasibility
+
+Decision: PASS
+
+Input endpoint:
+CTA-defined Immune cells
+
+Endpoint status:
+Frozen at Phase 2C
+
+Primary endpoint note:
+sparse immune-positive spatial compartments, not a large continuous ROI
+
+ST expression coverage:
+full_2248_coverage_achieved = true
+n_overlap_endpoint_ST_expression = 2248
+n_endpoint_missing_from_ST_expression = 0
+
+Gene overlap:
+n_gene_overlap_exact = 2000
+formal_gene_overlap_sufficient = true
+
+CytoSPACE input manifest:
+generated = true
+ready = true
+
+Control strategy:
+true_nonimmune_size_matched_control_possible = false
+recommended_primary_control = nonimmune-all-dropout control
+recommended_supplementary_control = random-all-cell size-matched dropout dry design
+control_strategy_resolved = true
+
+Boundary checks:
+CytoSPACE run: false
+SVTuner run: false
+Stage4 run: false
+Formal baseline mapping run: false
+Contradiction analysis run: false
+Prevention analysis run: false
+Endpoint redefined: false
+
+Decision reasons:
+- Phase 3R review items resolved; Phase 4 can be considered after manual authorization
+
+Allowed claims:
+- Phase 3 review items were resolved or explicitly identified.
+- ST/reference input harmonization was audited for the frozen CTA Immune endpoint.
+- A CytoSPACE input manifest was prepared without running CytoSPACE.
+- Control strategy was reviewed without generating mapping results.
+
+Disallowed claims:
+- Baseline creates false niche calls.
+- SVTuner improves endpoint recovery.
+- SVTuner prevents contradicted interpretation.
+- Biological application completed.
+- Biological discovery made.
+
+Next:
+BioApp Phase 4 — formal CytoSPACE baseline execution against frozen CTA Immune endpoint

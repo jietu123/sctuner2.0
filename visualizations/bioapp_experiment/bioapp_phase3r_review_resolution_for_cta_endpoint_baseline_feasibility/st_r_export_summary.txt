@@ -1,0 +1,10 @@
+object_name=bcsa
+assay_name=Spatial
+image_name=BCSA2TumB1
+n_spots=2248
+n_genes=33525
+counts_exported=true
+data_exported=true
+data_source=log1p_CPM_from_counts_in_Phase3R
+metadata_rows=2248
+coordinates_rows=2248

@@ -1,0 +1,9 @@
+Control strategy resolution
+
+immune_removed_cell_count = 2414
+nonimmune_total_cells = 1600
+true_nonimmune_size_matched_control_possible = false
+recommended_primary_control = nonimmune-all-dropout control
+recommended_supplementary_control = random-all-cell size-matched dropout dry design
+control_limitations = true nonimmune size-matched control impossible because nonimmune pool is smaller than immune dropout size
+requires_manual_approval_before_phase4 = true

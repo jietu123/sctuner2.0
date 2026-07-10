@@ -1,0 +1,9 @@
+Endpoint independence audit
+
+Conclusion: PASS_WITH_CAVEAT.
+CTA is acceptable as an independent external endpoint if Phase 2 uses published H&E/QuPath-derived CTA labels or CTA-to-spot outputs, not marker-expression-derived labels.
+It is independent from SVTuner and CytoSPACE because those methods do not generate the CTA endpoint.
+It is independent from Visium expression for endpoint generation because CTA is image-derived, although it is aligned onto Visium coordinates.
+Phase 2 must freeze endpoint-positive and endpoint-negative definitions before any mapping.
+
+Primary sources: https://www.nature.com/articles/s41698-025-01104-3; https://github.com/JohanHartmanGroupBioteam/BreastCancer_CTA; https://researchdata.se/en/catalogue/dataset/2025-97

@@ -1,0 +1,6 @@
+Formal mapping feasibility gate
+
+Conclusion: PASS_WITH_CAVEAT.
+The candidate satisfies Golden Rule 18 at Phase 1 evidence level: a Visium mapping object, scRNA reference, and endpoint-specific comparison route are identifiable.
+The paper evaluated several deconvolution methods including CytoSPACE using the public scRNA reference and CTA endpoint, so baseline mapping is plausible.
+This is not a formal mapping result. Phase 2 must perform file-level import, shared-gene preflight, and identical-input-basis design before any CytoSPACE/SVTuner run.

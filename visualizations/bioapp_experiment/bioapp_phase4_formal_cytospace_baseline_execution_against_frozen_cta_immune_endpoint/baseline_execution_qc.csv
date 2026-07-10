@@ -1,0 +1,4 @@
+run_name,completed,return_code,runtime_seconds,n_ST_spots_input,n_genes_input,n_reference_cells_input,n_reference_labels_input,output_detected,error_detected,ready_for_phase5_endpoint_evaluation,notes
+baseline_full_reference,True,0,96.316,2248,2000,4014,11,True,False,True,
+baseline_immune_all_dropout,True,0,96.815,2248,2000,1600,4,True,False,True,
+baseline_nonimmune_all_dropout_control,True,0,93.655,2248,2000,2414,7,True,False,True,

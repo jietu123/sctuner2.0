@@ -1,0 +1,23 @@
+{
+  "phase": "BioApp Phase 9 interpretation boundary lock",
+  "decision": "PASS",
+  "biological_application_allowed": true,
+  "allowed_final_claim_if_pass": "SVTuner provides biological-application evidence that its unsupported/withheld output is concordant with an independent CTA-defined Immune endpoint under an immune-all-dropout condition, reducing forced non-immune assignment burden relative to the baseline mapping.",
+  "claim_scope": "CTA-defined Immune endpoint under immune-all-dropout condition only",
+  "mandatory_caveats": [
+    "Endpoint-positive spots are sparse immune-positive spatial compartments, not a large continuous ROI.",
+    "Withheld regions are endpoint-concordant, but this does not prove every withheld spot is an immune cell.",
+    "Burden reduction is withheld-aware forced-call burden, not post-Stage4 remapping.",
+    "No endpoint-dependent threshold tuning or endpoint redefinition was performed."
+  ],
+  "disallowed_claims": [
+    "SVTuner discovered a new immune niche.",
+    "SVTuner proves the biological identity of all withheld spots.",
+    "SVTuner definitively improves all biological interpretations.",
+    "SVTuner replaces spatial transcriptomics annotation.",
+    "The withheld regions are confirmed immune cells without external validation.",
+    "Any claim based on newly tuned thresholds or redefined endpoints."
+  ],
+  "layout_only_figure_optimization_allowed": true,
+  "data_metric_threshold_label_conclusion_changes_allowed": false
+}

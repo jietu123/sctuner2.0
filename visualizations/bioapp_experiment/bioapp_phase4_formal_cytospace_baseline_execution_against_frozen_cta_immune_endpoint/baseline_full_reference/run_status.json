@@ -1,0 +1,40 @@
+{
+  "run_name": "baseline_full_reference",
+  "CytoSPACE_run": true,
+  "SVTuner_run": false,
+  "Stage4_run": false,
+  "endpoint_used_for_mapping": false,
+  "endpoint_used_for_evaluation": false,
+  "n_ST_spots_input": 2248,
+  "n_genes_input": 2000,
+  "n_reference_cells_input": 4014,
+  "n_reference_labels_input": 11,
+  "reference_labels_input": [
+    "B cells",
+    "CD4 T cells",
+    "CD8 T cells",
+    "Endothelial cells",
+    "Epithelial cells",
+    "Fibroblasts",
+    "Monocytes and Macrophages",
+    "NK cells",
+    "PVL",
+    "Plasma cells",
+    "T-cells"
+  ],
+  "return_code": 0,
+  "runtime_seconds": 96.316,
+  "completed": true,
+  "output_files_detected": [
+    "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_full_reference/cytospace_output/assigned_locations.csv",
+    "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_full_reference/cytospace_output/cell_type_assignments_by_spot.csv",
+    "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_full_reference/cytospace_output/fractional_abundances_by_spot.csv",
+    "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_full_reference/cytospace_output/log.txt",
+    "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_full_reference/cytospace_output/unassigned_locations.csv",
+    "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_full_reference/cytospace_output/assigned_expression/barcodes.tsv",
+    "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_full_reference/cytospace_output/assigned_expression/genes.tsv",
+    "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/baseline_full_reference/cytospace_output/assigned_expression/matrix.mtx"
+  ],
+  "error_detected": false,
+  "error_summary": null
+}

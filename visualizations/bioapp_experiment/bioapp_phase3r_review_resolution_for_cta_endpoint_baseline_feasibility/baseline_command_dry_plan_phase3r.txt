@@ -1,0 +1,13 @@
+BioApp Phase 3R baseline command dry plan
+
+No CytoSPACE command was executed in Phase 3R.
+This is a dry plan only.
+
+Reference expression: data/processed/cytospace_fig2d_tme/cytospace_fig2d_tme_brca_her2_ffpe/stage1_preprocess/exported/sc_expression_normalized.csv
+Reference metadata: data/processed/cytospace_fig2d_tme/cytospace_fig2d_tme_brca_her2_ffpe/stage1_preprocess/exported/sc_metadata.csv
+ST expression, spots x genes: visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/st_expression_full_2248_data_spots_by_genes.csv.gz
+ST coordinates: visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/st_coordinates_full_2248.csv
+Formal gene intersection: visualizations/bioapp_phase3r_review_resolution_for_cta_endpoint_baseline_feasibility/formal_gene_intersection.txt
+Manifest ready for Phase 4: True
+
+Future Phase 4 may construct the actual CytoSPACE command from this manifest only after manual authorization.

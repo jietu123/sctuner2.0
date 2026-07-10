@@ -1,0 +1,32 @@
+BioApp Phase 3 baseline command dry plan
+
+This file is a dry plan only. No CytoSPACE command was executed in Phase 3.
+
+Frozen endpoint:
+- CTA-defined Immune cells
+- Endpoint table: visualizations/bioapp_phase2c_endpoint_freeze_with_validated_cta_to_spot_mapping/spot_level_endpoint_freeze.csv
+
+Recommended reference input:
+- scRNA metadata: data/processed/cytospace_fig2d_tme/cytospace_fig2d_tme_brca_her2_ffpe/stage1_preprocess/exported/sc_metadata.csv
+- scRNA expression: data/processed/cytospace_fig2d_tme/cytospace_fig2d_tme_brca_her2_ffpe/stage1_preprocess/exported/sc_expression_normalized.csv
+- reference label column: cell_type
+
+ST input for future Phase 4:
+- source RData: visualizations/bioapp_phase2br2_explicit_rscript_cta_align_locale_safe_dry_run/_ascii_runtime/ST_data.RData
+- read-only audit: n_ST_spots=unknown, n_ST_genes=unknown
+- Phase 4 must export or provide a CytoSPACE-ready ST expression table covering all frozen endpoint spots before running baseline.
+
+Planned branches:
+1. full reference baseline would use the recommended scRNA reference without immune dropout.
+2. immune-dropout reference baseline would use reference_immune_all_dropout.
+3. size-matched control baseline would require manual decision because label-level non-immune size matching is not feasible.
+
+Command template only:
+python <cytospace_wrapper> --st-expression <future_ST_expression_csv> --st-coordinates <future_ST_coordinates_csv> --sc-expression <sc_expression_csv> --sc-metadata <sc_metadata_csv> --label-column cell_type --output <future_output_dir>
+
+Expected output files:
+- assigned_locations.csv
+- assigned_locations_with_labels.csv
+- spot-level immune assignment summaries
+
+No CytoSPACE command was executed in Phase 3.

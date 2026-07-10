@@ -1,0 +1,12 @@
+{
+  "baseline_anchor_condition": "baseline_immune_all_dropout",
+  "phase5_metric_anchor": {
+    "mean_immune_score_positive": 0.0,
+    "mean_immune_score_negative": 0.0,
+    "delta_mean_positive_minus_negative": 0.0,
+    "AUROC": null,
+    "AUPRC": null,
+    "mean_nonimmune_score_positive": 1.0,
+    "metric_note": "immune labels removed by design"
+  }
+}

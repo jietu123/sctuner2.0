@@ -1,276 +1,165 @@
-# 论文材料准备B：Stage3B 与 ST-only unsupported-region 实验材料
+# 论文材料准备B：Stage3B 与 ST-only unsupported-region
 
-本文档记录项目中围绕 Stage3B 开发、验证和保留下来的实验材料。这里的 Stage3B 指的是：当某些细胞类型在 ST 数据中存在，但在 scRNA-seq reference 中不存在时，SVTuner 应识别这些不被 reference 支持的 ST 空间区域，并在后续映射中将对应位置保留为空白/abstention，而不是强行分配给 reference 中剩余的细胞类型。
+> 状态：已按项目现存脚本、CSV、JSON 和论文候选图重新核对。本文所有结果值均来自项目内可追溯文件，不使用已删除旧结果。相对路径均以 `sctuner2.0/` 为根。
 
-与 Stage3A 的区别：
+## 0. 结论摘要
 
-- Stage3A 处理的是 `SC-only unsupported type`：scRNA-seq reference 中存在，但 ST 数据中不存在或缺乏支持的类型，应在 SC reference 侧过滤。
-- Stage3B 处理的是 `ST-only unsupported region`：ST 数据中存在，但 scRNA-seq reference 中不存在的类型或区域，应在 ST 空间侧留白。
+Stage3B 处理的不是 Stage3A 的“SC reference 中存在、ST 中缺失”的问题，而是相反方向的 reference mismatch：**ST 中存在真实表达结构，但 scRNA-seq reference 缺少相应类型或状态**。如果仍进行强制映射，缺失类型区域会被解释成 reference 中剩余的相似类型；Stage3B 的任务是在映射前识别这类 reference-unsupported spots，并允许后端在这些位置 abstain/blank。
 
-核心目标：
+项目现有证据支持以下结论：
 
-1. 避免 CytoSPACE 等强制映射方法把 ST-only 区域错误分配给相似或邻近的 reference 细胞类型。
-2. 在不使用白名单的前提下，由 Stage3B 自动检测 unsupported ST spots。
-3. 在模拟数据和真实数据上证明：Stage3B 能识别需要留白的空间区域，并减少由强制映射导致的虚假解释。
+1. 在 9 个 Stage3A+Stage3B 联合模拟场景中，Stage3A 和 Stage3B 检查均为 `9/9` 通过；Stage3B dominant-region recall 为 `0.9948`，dominant-region precision 为 `0.9736`，target mass recall 为 `0.9908`，zero-target false-positive rate 为 `0.000593`。
+2. 模拟结果不能写成“真实数据中可完美留白”。在 6 个真实 reference-dropout 场景、top15 marker core 定义下，blank spots 的平均 target-associated fraction 为 `0.9379`，平均 core recall 仅为 `0.5778`，说明当前方法偏向高精度、保守覆盖。
+3. 在真实 mouse brain `ST8059051 / Thalamic excitatory` 主案例中，Stage3B 对 top15 marker region 的 recall 为 `0.9586`、precision 为 `0.7199`；abstention-aware accuracy 从 CytoSPACE 的 `0.3295` 提升到 `0.5721`。
+4. 当 `Thalamic excitatory` 从 reference 中移除后，CytoSPACE 将 362 个目标 spots 中的 `52.76%` 强制分配为 inhibitory neuron、`24.31%` 分配为 astrocyte、`18.78%` 分配为 excitatory neuron，说明错误不是自然留白，而是系统性替代。
+5. 在 BRCA HER2 FFPE plasma-cell dropout 下，Stage3B 将 reference-relative coupling absolute error 从 `1.0000` 降到 `0.3501`，material spurious pairs 从 `10` 降到 `0`；代表性 `KITLG->KIT` local Moran 均值下降 `84.28%`，固定阈值 hotspots 从 `110` 降到 `84`。
 
-## 1. Stage3B 核心实现
+论文中最稳健的定位是：
 
-### 1.1 核心脚本
+> Stage3B is a reference-adequacy diagnostic and abstention layer that detects spatial expression regions insufficiently explained by the available single-cell reference, thereby reducing forced surrogate assignments and their downstream spatial artifacts.
 
-主实现：
+## 1. Stage3A 与 Stage3B 的边界
+
+| 模块 | mismatch 方向 | 诊断对象 | 主要动作 | 主要风险 |
+|---|---|---|---|---|
+| Stage3A | SC-only | reference 中不被 ST 支持的类型 | 从 mapping pool 过滤或重标记 SC cells | 误删相似但真实存在的类型 |
+| Stage3B | ST-only | ST 中不被 reference 解释的 spots/regions | 对相应空间位置 abstain/blank | 漏掉边界或弱信号区域，或在 domain shift 下产生额外 blank |
+
+Stage3B 的核心实现：
 
 ```text
 src/stages/stage3b_st_unsupported.py
 ```
 
-相关 CLI / pipeline 调用：
+配套脚本：
 
 ```text
-src/svtuner/cli.py
 scripts/generate_st_only_reference_dropout_from_sim.py
 scripts/visualize_stage3b_st_only_triptych.py
 scripts/evaluate_stage3b_simulation.py
+scripts/prepare_stage3b_realdata_reference_dropout_scenarios.py
+scripts/plot_stage3b_reference_dropout_spatial_stack.py
+scripts/plot_stage3b_reference_dropout_panel_a_blank_composition.py
+scripts/plot_stage3b_threshold_robustness.py
 ```
 
-### 1.2 设计逻辑
+## 2. Stage3B 算法逻辑
 
-Stage3B 的基本思想是：当 reference 中缺少某一类 ST 中实际存在的细胞类型时，该区域不能被简单地强制映射到现有 reference 类型上。Stage3B 通过 ST 表达结构、reference 支持程度、局部空间一致性和相似类型干扰处理来判断哪些 ST spots 属于 unsupported region。
+### 2.1 输入和输出
 
-核心输出形式：
+Stage3B 使用：
 
-- 对每个 spot 给出是否属于 unsupported / blank region 的判定。
-- 后续 mapping 中，这些 spot 不再被强行映射，而是保留为空白。
-- 可视化中通常用灰色或 blank 标记这些区域。
+- SC expression 与 cell-type labels；
+- ST expression；
+- SC/ST 共同基因；
+- ST 坐标，仅用于空间连通和区域检验；
+- 预先设定的统计参数，例如默认 FDR `0.05` 和空间置换次数 `200`。
 
-### 1.3 关键改进
+主要输出包括 spot-level unsupported score、candidate/region flags、blank fraction、区域表和 summary。下游 Stage4 可以据此阻止在 unsupported spots 上继续强制分配。
 
-在真实 cell2location mouse brain case 中，最初 Stage3B 对 `Oligodendrocyte/OPC` 区域识别不足。原因不是简单阈值问题，而是：
+### 2.2 Reference reconstruction 与异常特征
 
-1. 目标类型和 reference 中相似类型之间存在表达相似性，容易被误判为仍有支持。
-2. 原始逐 spot 判定容易受边界 spot 和相似类型互相解释的影响。
-3. 对真实数据中目标区域定义的 top marker threshold 会影响评估口径。
+1. 按 SC label 构建 cell-type expression profiles。
+2. 对每个 ST spot 用非负最小二乘拟合 reference type profiles。
+3. 从 observed ST 与 reference reconstruction 的差异中计算四类特征：relative reconstruction error、cosine deficit、positive residual fraction 和 residual concentration。
+4. 从真实 SC cells 生成 supported pseudo-ST calibration，使异常定义相对于“reference 能够解释的混合”建立，而不是相对于人工目标类型建立。
+5. 对异常方向做 one-sided Stouffer 聚合和 Benjamini-Hochberg 校正。
 
-后续优化方向：
+### 2.3 空间区域与 residual-program 分支
 
-- 增加相似类型诊断与抑制逻辑。
-- 使用空间一致性约束减少零散误判。
-- 在真实数据评估中使用 marker-defined region，例如 top15% 或 top20%，区分算法检测和评估定义。
+逐 spot 异常只作为候选。Stage3B 进一步基于坐标构建空间边，并对连通区域进行置换检验。只有通过区域显著性检验的结构才进入 unsupported region。
 
-当前主分析中以 top15% 作为主要真实目标区域定义，top20% 保留为敏感性/备选分析。
+对于整体 profile reconstruction 尚可、但存在局部正残差程序的情况，代码还包含 residual-program branch：
 
-## 2. 复合模拟数据实验：Stage3A + Stage3B 同时存在
+- 对 novelty-weighted positive residual 做低秩分解；
+- 检验 residual components 的 signed tails；
+- 要求区域与 whole-profile anomaly 有足够重叠；
+- 要求 reference-orthogonal score 达到门槛；
+- 再经过空间区域 gate。
 
-### 2.1 实验目的
+该分支用于处理“部分未被 reference 表达程序解释”的情况，而不是依赖某个已知 marker 白名单。
 
-原始模拟实验只覆盖了 Stage3A：即 scRNA-seq reference 中存在但 ST 中不存在的类型。Stage3B 新增后，需要构造复合型模拟场景，同时满足：
+### 2.4 白名单与评估真值的严格区分
 
-- ST 中存在但 SC reference 中不存在的细胞类型，需要 Stage3B 识别并留白。
-- SC reference 中存在但 ST 中不存在的目标类型，需要 Stage3A 正确过滤。
-- 无缺失、单缺失、双缺失三类 Stage3A 场景都能与 Stage3B 留白目标共存。
+Stage3B 主算法不接收“待留白目标类型”作为检测白名单。模拟场景中的 target label、真实数据中的 marker-defined region 用于**事后评估和画图**，不用于 Stage3B 的 score 或阈值选择。
 
-因此每个数据集保留三组复合型模拟场景：
+需要同时承认两个限制：
 
-1. Stage3A 无缺失 + Stage3B ST-only 留白。
-2. Stage3A 单类型缺失 + Stage3B ST-only 留白。
-3. Stage3A 双类型缺失 + Stage3B ST-only 留白。
+1. 模拟数据的生成过程知道被删除类型，因而真值边界比真实数据清晰；高分不等于真实数据可完美恢复。
+2. 真实数据的 top10/top15/top20/top25 marker core 是评估口径，不是单细胞级 ground truth；因此应写作 marker-defined target-associated region，而不是 definitive cell-type truth。
 
-### 2.2 BRCA 复合模拟场景
+## 3. Stage3A+Stage3B 联合模拟
 
-保留场景：
+### 3.1 设计
+
+每个数据集包含三行：Stage3A 无缺失、单缺失、双缺失；同时从 SC reference 删除一个在 ST 中仍存在的类型，形成 Stage3B 目标。
+
+| 数据组 | Stage3B 目标 | Stage3A 单缺失 | Stage3A 双缺失 |
+|---|---|---|---|
+| Real BRCA | Endothelial cells | Epithelial cells | Epithelial cells + PCs |
+| Human lung 5-location | B cell | AT2 | AT2 + Fibroblast |
+| Mouse brain refined | Ext_L56 | Micro | Micro + Oligo_2 |
+
+论文总览图：
 
 ```text
-real_brca7_endothelial_marker_control_sc_missing_endothelial_cells
-real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells
-real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells
+visualizations/simulations/simulation_stage3ab_joint_triptych_overview_stack_3datasets.svg
+visualizations/simulations/simulation_stage3ab_joint_triptych_overview_stack_3datasets.png
 ```
 
-实验含义：
-
-- Stage3B 留白目标：`Endothelial cells`。
-- Stage3A 单缺失目标：`Epithelial cells`。
-- Stage3A 双缺失目标：`Epithelial cells + PCs`。
-
-保留可视化：
-
-```text
-visualizations/simulations/real_brca/real_brca7_endothelial_marker_control_sc_missing_endothelial_cells/st_only_stage3b_triptych.png
-visualizations/simulations/real_brca/real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells/st_only_stage3b_triptych.png
-visualizations/simulations/real_brca/real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells/st_only_stage3b_triptych.png
-```
-
-配套配置：
-
-```text
-configs/datasets/real_brca7_endothelial_marker_control_sc_missing_endothelial_cells.yaml
-configs/datasets/real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells.yaml
-configs/datasets/real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells.yaml
-```
-
-可用于论文说明：
-
-- 同一个 ST-only 留白目标可以嵌入 Stage3A 无缺失、单缺失、双缺失场景。
-- Stage3B 留白不依赖人工白名单，而由算法输出。
-- Stage3A 与 Stage3B 可以同时运行，互不破坏。
-
-### 2.3 Human Lung 5-location 复合模拟场景
-
-保留场景：
-
-```text
-human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell
-human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell
-human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell
-```
-
-实验含义：
-
-- Stage3B 留白目标：`B cell`。
-- Stage3A 单缺失目标：`AT2`。
-- Stage3A 双缺失目标：`AT2 + Fibroblast`。
-
-保留可视化：
-
-```text
-visualizations/simulations/human_lung_5loc/human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell/st_only_stage3b_triptych.png
-visualizations/simulations/human_lung_5loc/human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell/st_only_stage3b_triptych.png
-visualizations/simulations/human_lung_5loc/human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell/st_only_stage3b_triptych.png
-```
-
-配套配置：
-
-```text
-configs/datasets/human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell.yaml
-configs/datasets/human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell.yaml
-configs/datasets/human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell.yaml
-```
-
-可用于论文说明：
-
-- 在 Lung 这类空间结构明显的数据中，Stage3B 可以在保留 Stage3A 过滤结果的同时识别 ST-only 留白区域。
-- 该组可以和原 Stage3A Lung 无缺失/单缺失/双缺失场景一起讲，形成完整的 mismatch 类型扩展。
-
-### 2.4 Mouse Brain refined 复合模拟场景
-
-保留场景：
-
-```text
-mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56
-mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56
-mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56
-```
-
-实验含义：
-
-- Stage3B 留白目标：`Ext_L56`。
-- Stage3A 单缺失目标：`Micro`，并使用 `Inh_Pvalb` 作为补充细胞类型。
-- Stage3A 双缺失目标：`Micro + Oligo_2`，并使用 `Inh_Pvalb` 作为补充细胞类型。
-
-保留可视化：
-
-```text
-visualizations/simulations/mouse_brain_refined/mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56/st_only_stage3b_triptych.png
-visualizations/simulations/mouse_brain_refined/mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56/st_only_stage3b_triptych.png
-visualizations/simulations/mouse_brain_refined/mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56/st_only_stage3b_triptych.png
-```
-
-配套配置：
-
-```text
-configs/datasets/mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56.yaml
-configs/datasets/mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56.yaml
-configs/datasets/mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56.yaml
-```
-
-可用于论文说明：
-
-- Mouse brain 中存在更强的相似神经细胞类型干扰，适合说明 Stage3B 的相似类型处理必要性。
-- 该组也用于证明 Stage3B 不是只在肿瘤组织或 Lung 结构中有效。
-
-### 2.5 复合模拟总览与检查
-
-保留汇总文件：
+审计表：
 
 ```text
 visualizations/simulations/composite_stage3a_stage3b_recheck.csv
 ```
 
-含义：
+### 3.2 九场景汇总
 
-- 用于记录 9 个复合模拟场景中 Stage3A 与 Stage3B 的联合检查结果。
-- 应作为论文结果整理时的内部证据表，不一定直接作为主图。
+| 指标 | 9 场景均值/计数 |
+|---|---:|
+| Stage3A expected vs detected 完全一致 | 9/9 |
+| Stage3B scenario check 通过 | 9/9 |
+| dominant-region recall | 0.9948 |
+| dominant-region precision | 0.9736 |
+| target-positive recall | 0.8060 |
+| target mass recall | 0.9908 |
+| zero-target false-positive rate | 0.000593 |
 
-保留总览图：
+分数据集结果：
 
-```text
-visualizations/simulations/simulation_triptych_overview_stack_3datasets.png
-```
+| 数据组 | dominant recall | dominant precision | positive recall | zero-target FP rate |
+|---|---:|---:|---:|---:|
+| Real BRCA | 0.9948 | 1.0000 | 0.9948 | 0.000000 |
+| Human lung | 0.9924 | 0.9555 | 0.8451 | 0.000593 |
+| Mouse brain refined | 0.9971 | 0.9654 | 0.5780 | 0.001184 |
 
-含义：
+Mouse brain 的 dominant-region 指标很高，但 positive recall 只有 `0.5780`。这解释了为什么空间图中主要核心区域可以被正确留白，而混合 spots、边界 spots 和低占比目标 spots 仍然保留。论文中应强调“dominant unsupported region recovery”，不能将其扩展为所有 target-positive spots 的完整恢复。
 
-- 三个数据集的空间映射结果总览。
-- 可作为补充材料或内部核验图。
+### 3.3 复合多方法 composition recovery
 
-## 3. 复合模拟多方法比较
+全区域结果：
 
-### 3.1 实验目的
+| 方法 | n | mean | median | SD |
+|---|---:|---:|---:|---:|
+| CytoSPACE | 9 | 0.5154 | 0.5492 | 0.1078 |
+| SVTuner + CytoSPACE | 9 | 0.5166 | 0.5191 | 0.0654 |
+| Tangram, all genes | 9 | 0.4377 | 0.4639 | 0.1106 |
+| Tangram, marker genes | 9 | 0.4628 | 0.4517 | 0.1204 |
+| novoSpaRc | 9 | 0.4914 | 0.4766 | 0.1020 |
+| SpaOTsc | 9 | 0.3950 | 0.4087 | 0.1178 |
+| CellTrek | 9 | 0.5309 | 0.5403 | 0.1166 |
 
-在复合型 Stage3A + Stage3B 模拟场景上，比较 SVTuner 与多种 mapping 方法的 composition recovery 表现。
+Supported-region-aware 结果：
 
-需要注意：
+| 方法 | mean | median |
+|---|---:|---:|
+| CytoSPACE | 0.6493 | 0.6474 |
+| SVTuner + CytoSPACE | 0.6501 | 0.6604 |
+| CellTrek | 0.6554 | 0.6894 |
 
-- 该实验不应该作为 Stage3B 最强核心证据，因为传统 composition recovery 指标可能把 SVTuner 的正确留白视作未映射，从而低估优势。
-- 该实验更适合作为补充分析，说明在复合 mismatch 条件下 SVTuner 整体表现没有崩溃，并可在 supported region 上进行较公平比较。
+这组 benchmark 不支持“SVTuner 在传统 composition recovery 上显著领先所有方法”。它的正确用途是说明：引入 abstention 后，supported regions 的整体恢复没有明显崩溃。Stage3B 的主指标必须是 unsupported-region detection、abstention-aware accuracy 和 forced-assignment reduction。
 
-### 3.2 保留可视化
-
-```text
-visualizations/method_comparison/composite_no_noise/composition_recovery_7mapping_methods_composite_no_noise_boxplot.png
-visualizations/method_comparison/composite_no_noise/composition_recovery_7mapping_methods_composite_no_noise_supported_regions_boxplot.png
-```
-
-配套 CSV：
-
-```text
-visualizations/method_comparison/composite_no_noise/composition_recovery_7mapping_methods_composite_no_noise_cell_type.csv
-visualizations/method_comparison/composite_no_noise/composition_recovery_7mapping_methods_composite_no_noise_scenario.csv
-visualizations/method_comparison/composite_no_noise/composition_recovery_7mapping_methods_composite_no_noise_summary.csv
-visualizations/method_comparison/composite_no_noise/composition_recovery_7mapping_methods_composite_no_noise_supported_regions_cell_type.csv
-visualizations/method_comparison/composite_no_noise/composition_recovery_7mapping_methods_composite_no_noise_supported_regions_scenario.csv
-visualizations/method_comparison/composite_no_noise/composition_recovery_7mapping_methods_composite_no_noise_supported_regions_summary.csv
-```
-
-论文建议：
-
-- 如果放正文，建议只放 supported-region-aware 版本。
-- 如果 SVTuner 在全局 composition recovery 中不是第一，不应过度强调全局指标。
-- 需要在图注中说明：blank region 的正确 abstention 不适合用传统强制映射准确率直接评价。
-
-## 4. 真实 cell2location mouse brain case：Thalamic excitatory
-
-### 4.1 实验目的
-
-该实验是 Stage3B 在真实 ST 数据上的核心 case study。构造方式不是模拟 ST，而是：
-
-1. 使用真实 ST 数据。
-2. 从 scRNA-seq reference 中剔除目标细胞类型。
-3. 检查 Stage3B 是否能识别目标类型在 ST 中富集、但 reference 不支持的空间区域。
-4. 比较 baseline CytoSPACE 在该区域中的强制分配，以及 SVTuner 的留白结果。
-
-最终定版目标：
-
-```text
-ST8059051 + Thalamic excitatory
-```
-
-主要阈值：
-
-```text
-top15% marker-defined target region
-```
-
-top20% 作为敏感性和备选结果保留。
-
-### 4.2 top15 主结果
+## 4. 真实主案例：ST8059051 Thalamic excitatory
 
 主目录：
 
@@ -278,512 +167,235 @@ top20% 作为敏感性和备选结果保留。
 visualizations/cell2location_stage3b_case/thalamic_top15/
 ```
 
-#### 面板 A：真实目标类型空间信号
+### 4.1 Target region 定义
+
+- ST spots：`2,409`
+- target SC cells：`1,868`
+- marker genes：`30`
+- marker-region quantile：`0.85`，即 top15%
+- marker-region spots：`362`，占全部 spots 的 `15.03%`
+- marker-score threshold：`0.5541`
+
+目标 broad label 为 `Thalamic excitatory`；reference dropout 对应 `Ext_Thal_1` 和 `Ext_Thal_2`。
+
+### 4.2 Stage3B 空间检测
+
+| 指标 | 数值 |
+|---|---:|
+| Stage3B blank spots | 482 |
+| target-region overlap | 347 |
+| target-region missed | 15 |
+| blank outside marker region | 135 |
+| precision | 0.7199 |
+| recall | 0.9586 |
+| target core spots | 302 |
+| core hits | 301 |
+| boundary spots | 60 |
+| boundary hits | 46 |
+
+命中 spots 的 median marker score 为 `1.0836`，漏检 spots 为 `0.5993`；命中 spots 的 median residual z 为 `4.6145`，漏检 spots 为 `1.4276`。因此误差主要集中在弱信号和边界，而不是核心区域。
+
+### 4.3 Baseline forced assignment
+
+362 个 target-region spots 在 CytoSPACE baseline 中被解释为：
+
+| 被强制分配类型 | spots | 比例 |
+|---|---:|---:|
+| Inhibitory neuron | 191 | 52.76% |
+| Astrocyte | 88 | 24.31% |
+| Excitatory neuron | 68 | 18.78% |
+| Oligodendrocyte/OPC | 13 | 3.59% |
+| Neuroblast | 1 | 0.28% |
+| Microglia | 1 | 0.28% |
+
+该结果说明 reference 缺失会把目标区域转换成具有解释诱惑力的相似类型，而不是产生显式失败信号。
+
+### 4.4 Abstention-aware accuracy
+
+评估集包含 `1,290` spots：362 个 unsupported core spots，加上 928 个 supported-region spots。
+
+| 方法 | unsupported correct | supported correct | accuracy |
+|---|---:|---:|---:|
+| CytoSPACE | 0 | 425 | 0.3295 |
+| SVTuner | 347 | 391 | 0.5721 |
+
+绝对提升为 `0.2426`。SVTuner 在 supported-region correct 上从 425 降至 391，因此结果不是“无代价改善”；收益来自正确 abstention 大于 supported-region 损失。
+
+## 5. 六个真实 reference-dropout 场景
+
+空间图：
 
 ```text
-visualizations/cell2location_stage3b_case/thalamic_top15/cell2location_ST8059051_thalamic_excitatory_marker_region.png
+visualizations/stage3b_realdata_candidate_scan/spatial_9x2/stage3b_reference_dropout_spatial_stack_recommended_6x2.svg
 ```
 
-含义：
-
-- 展示真实 ST 数据中 `Thalamic excitatory` marker-rich 区域。
-- 目标区域由 marker score 的 top15% 定义。
-- 该图不是 Stage3B 输出，而是真实数据目标区域定义。
-
-#### 面板 B：Stage3B 留白识别区域
-
-```text
-visualizations/cell2location_stage3b_case/thalamic_top15/cell2location_ST8059051_thalamic_excitatory_stage3b_miss_diagnostics_spatial.png
-```
-
-含义：
-
-- 展示 Stage3B 识别出的 blank / unsupported region。
-- 可与面板 A 对比，判断 Stage3B 是否主要落在真实目标类型富集区域。
-
-#### 面板 C：baseline 强制映射空间分布
-
-```text
-visualizations/cell2location_stage3b_case/thalamic_top15/cell2location_ST8059051_thalamic_excitatory_baseline_forced_assignment_region.png
-```
-
-含义：
-
-- 只关注真实目标区域内，CytoSPACE baseline 被迫映射成哪些 reference 类型。
-- 这个图说明：如果没有 Stage3B 留白，目标区域会被解释为 reference 中剩余类型。
-
-#### 面板 D：baseline 强制映射组成比例
-
-```text
-visualizations/cell2location_stage3b_case/thalamic_top15/cell2location_ST8059051_thalamic_excitatory_forced_assignment_composition.png
-```
-
-含义：
-
-- 对面板 C 的量化汇总。
-- 展示目标区域中 baseline 强制分配到各 reference 类型的比例。
-
-#### 面板 E：abstention-aware accuracy
-
-```text
-visualizations/cell2location_stage3b_case/thalamic_top15/cell2location_ST8059051_thalamic_excitatory_abstention_aware_region_accuracy.png
-```
-
-含义：
-
-- 用区域感知方式评价 baseline 与 SVTuner。
-- supported region 中正常评价映射是否合理。
-- unsupported target region 中，如果应该留白且模型正确留白，则计为正确。
-- 避免把正确 blank 误算为 mapping failure。
-
-### 4.3 top20 备选结果
-
-目录：
-
-```text
-visualizations/cell2location_stage3b_case/thalamic_top20/
-```
-
-用途：
-
-- 用作阈值敏感性分析。
-- top20 比 top15 更严格地要求 Stage3B 识别更多目标区域，因此通常更难。
-- 不建议作为主图，但可以作为补充材料或内部审查。
-
-保留主图类型与 top15 相同：
-
-```text
-marker_region.png
-stage3b_miss_diagnostics_spatial.png
-baseline_forced_assignment_region.png
-forced_assignment_composition.png
-abstention_aware_region_accuracy.png
-```
-
-## 5. 真实多场景 Stage3B reference-dropout 验证
-
-### 5.1 实验目的
-
-单一真实 case 容易被认为是特例。因此构建多个真实数据 reference-dropout 场景，检验 Stage3B blank region 是否与真实目标 marker-defined region 一致。
-
-最终保留 6 个推荐场景：
-
-1. Mouse embryo：`Endoderm/Gut`
-2. Mouse embryo：`Erythroid`
-3. BRCA TNBC：`Plasma cells`
-4. CRC fresh frozen：`B cells`
-5. BRCA HER2 FFPE：`Plasma cells`
-6. BRCA HER2 FFPE：`Epithelial cells`
-
-### 5.2 空间对比图
-
-保留主图：
-
-```text
-visualizations/stage3b_realdata_candidate_scan/spatial_9x2/stage3b_reference_dropout_spatial_stack_recommended_6x2.png
-```
-
-含义：
-
-- 每个场景一行。
-- 左列：真实 ST target marker signal，并用轮廓标出 marker top15 region。
-- 右列：Stage3B blank result，并用轮廓标出 Stage3B 留白区域。
-- 该图主要证明 Stage3B 识别的 blank region 与真实 target marker-rich region 空间上高度对应。
-
-配套文件：
-
-```text
-visualizations/stage3b_realdata_candidate_scan/spatial_9x2/stage3b_reference_dropout_spatial_stack_recommended_6x2_manifest.csv
-visualizations/stage3b_realdata_candidate_scan/spatial_9x2/stage3b_reference_dropout_spatial_stack_recommended_6x2_metadata.csv
-visualizations/stage3b_realdata_candidate_scan/spatial_9x2/stage3b_reference_dropout_spatial_stack_recommended_6x2_scenes/
-```
-
-### 5.3 新 Panel A：blank-region composition accuracy
-
-保留主图：
+定量图：
 
 ```text
 visualizations/stage3b_realdata_candidate_scan/panel_a_blank_composition/stage3b_reference_dropout_panel_a_blank_region_composition.png
 ```
 
-含义：
+top15 结果：
 
-- 替代早期 violin 设计。
-- 不再强调误差大小，而是直接展示 Stage3B blank region 与 marker-defined target region 的组成关系。
-- 用来回答：Stage3B 留白区域到底有多少来自真实目标区域。
+| 场景 | blank spots | inside core | near core | outside associated | inside fraction | target-associated fraction |
+|---|---:|---:|---:|---:|---:|---:|
+| Mouse embryo Endoderm/Gut | 832 | 702 | 5 | 125 | 0.8438 | 0.8498 |
+| Mouse embryo Erythroid | 812 | 686 | 21 | 105 | 0.8448 | 0.8707 |
+| BRCA TNBC Plasma cells | 97 | 91 | 6 | 0 | 0.9381 | 1.0000 |
+| CRC B cells | 298 | 234 | 43 | 21 | 0.7852 | 0.9295 |
+| BRCA HER2 FFPE Plasma cells | 337 | 231 | 100 | 6 | 0.6855 | 0.9822 |
+| BRCA HER2 FFPE Epithelial cells | 204 | 159 | 44 | 1 | 0.7794 | 0.9951 |
 
-配套表：
+跨场景均值：inside-core fraction `0.8128`，near-core fraction `0.1251`，outside fraction `0.0621`，target-associated fraction `0.9379`，median target-associated fraction `0.9559`。
 
-```text
-visualizations/stage3b_realdata_candidate_scan/panel_a_blank_composition/stage3b_reference_dropout_panel_a_blank_region_composition_summary.csv
-```
+这组真实结果应写成“blank spots predominantly localized to marker-defined target-associated regions”，而不是“blank 完全正确”。
 
-论文建议：
+## 6. Marker-core 阈值鲁棒性
 
-- 该图适合与 6x2 空间图配套使用。
-- 6x2 空间图提供直观证据，Panel A 提供跨场景定量总结。
+| 定义 | mean target-associated | median target-associated | mean inside | mean outside | mean core recall |
+|---|---:|---:|---:|---:|---:|
+| top10 | 0.8972 | 0.8961 | 0.6817 | 0.1028 | 0.7260 |
+| top15 | 0.9379 | 0.9559 | 0.8128 | 0.0621 | 0.5778 |
+| top20 | 0.9479 | 0.9635 | 0.8732 | 0.0521 | 0.4644 |
+| top25 | 0.9567 | 0.9733 | 0.8977 | 0.0433 | 0.3824 |
 
-### 5.4 阈值鲁棒性分析
+随着 marker core 扩大，blank composition 看起来更“纯”，但 core recall 下降。原因是评估 denominator 增大，而 Stage3B blank set 相对保守。top15 是 purity 与 coverage 的折中，并非通过最大化某个结果指标后选择。
 
-保留目录：
-
-```text
-visualizations/stage3b_realdata_candidate_scan/stage3b_threshold_robustness/
-```
+## 7. Reference-missing stress test
 
 主图：
-
-```text
-visualizations/stage3b_realdata_candidate_scan/stage3b_threshold_robustness/stage3b_threshold_robustness_summary.png
-```
-
-含义：
-
-- 比较 top10%、top15%、top20%、top25% 等 target-region 定义下，Stage3B blank region 与真实目标区域的关系是否稳定。
-- 该实验来自对 top15/top20 选择问题的延伸。
-
-论文建议：
-
-- 可作为补充材料。
-- 如果正文空间有限，可以不放，但可以在方法或补充说明中引用。
-
-## 6. Reference-missing stress test：多目标强制映射与表达相似性
-
-### 6.1 实验目的
-
-该实验不是空间图，而是解释机制：当 reference 缺失某些 ST-only 类型时，baseline CytoSPACE 会把这些区域强制分配给哪些剩余 reference 类型，以及这种错误分配是否与表达相似性有关。
-
-保留主图：
 
 ```text
 visualizations/stage3b_reference_missing_stress/cell2location_reference_missing_multitarget_panels_bc.png
 ```
 
-### 6.2 Panel B：forced assignment heatmap
+7 个 broad categories 均在同一 362-spot target-region 口径下分别从 reference 删除。forced-assignment heatmap 和 expression-similarity heatmap 共同说明 surrogate assignment 与类型相似性有关。例如：
 
-配套文件：
+- Excitatory neuron 缺失后，`79.01%` 被分配为 inhibitory neuron；两类 expression cosine similarity 为 `0.9688`。
+- Inhibitory neuron 缺失后，`50.55%` 被分配为 excitatory neuron、`34.81%` 为 astrocyte。
+- Oligodendrocyte/OPC 缺失后，`64.64%` 被分配为 astrocyte。
+- Neuroblast 缺失后，`54.70%` 被分配为 excitatory neuron；两类 similarity 为 `0.8666`。
 
-```text
-visualizations/stage3b_reference_missing_stress/cell2location_reference_missing_multitarget_panels_bc_cytospace_forced_assignment.csv
-```
+这些例子支持“错误具有表达相似性驱动的结构”，但当前图没有给出跨矩阵单元的正式相关检验，因此不应写成已证明的 causal correlation。
 
-含义：
+## 8. False spatial niche / coupling
 
-- 行：被从 reference 中移除的 ST-only 目标类型。
-- 列：baseline CytoSPACE 在目标区域中实际强制分配的 reference 类型。
-- 值：分配比例或加权比例。
+场景：BRCA HER2 FFPE，Plasma cells reference dropout。
 
-该图用于说明：没有 Stage3B 时，目标区域不会自然留白，而是会被 baseline 分配给某些相似或常见 reference 类型。
-
-### 6.3 Panel C：expression similarity heatmap
-
-配套文件：
-
-```text
-visualizations/stage3b_reference_missing_stress/cell2location_reference_missing_multitarget_panels_bc_expression_similarity.csv
-```
-
-含义：
-
-- 行：ST-only 目标类型。
-- 列：reference 中剩余类型。
-- 值：表达相似性。
-
-该图解释 Panel B：baseline 的错误分配往往不是随机的，而是受表达相似性影响。因此 Stage3B 需要显式处理相似类型干扰，而不是只靠简单阈值。
-
-### 6.4 thalamic top15 B/C 备选图
-
-保留但不是主线：
-
-```text
-visualizations/stage3b_reference_missing_stress/cell2location_thalamic_top15_reference_missing_panels_bc.png
-```
-
-用途：
-
-- 这是单目标 `Thalamic excitatory` case 的 B/C 热图。
-- 当前主线更推荐使用 multitarget 版本。
-
-## 7. False spatial niche / neighborhood coupling 实验
-
-### 7.1 实验目的
-
-该实验属于更深一层的下游验证：不仅说明 baseline 把 unsupported region 映射错，还说明这种错误映射可能制造虚假的空间邻域结构或细胞类型 coupling 关系。
-
-选择场景：
-
-```text
-BRCA HER2 FFPE + Plasma cells reference dropout
-```
-
-保留主图：
+主图：
 
 ```text
 visualizations/stage3b_false_spatial_niche/candidate_validation/brca_her2_plasma/cytospace_fig2d_tme_brca_her2_ffpe_sc_missing_plasma_cells_ncem_style.png
 ```
 
-配套文件：
+关键值：
 
-```text
-visualizations/stage3b_false_spatial_niche/candidate_validation/brca_her2_plasma/cytospace_fig2d_tme_brca_her2_ffpe_sc_missing_plasma_cells_coupling_matrices.csv
-visualizations/stage3b_false_spatial_niche/candidate_validation/brca_her2_plasma/cytospace_fig2d_tme_brca_her2_ffpe_sc_missing_plasma_cells_pair_statistics.csv
-visualizations/stage3b_false_spatial_niche/candidate_validation/brca_her2_plasma/cytospace_fig2d_tme_brca_her2_ffpe_sc_missing_plasma_cells_summary.csv
-```
+| 指标 | 数值 |
+|---|---:|
+| total spots | 2,518 |
+| marker target spots | 378 |
+| Stage3B blank spots | 337 |
+| target/blank overlap | 231 |
+| precision | 0.6855 |
+| recall | 0.6111 |
+| CytoSPACE absolute coupling error | 1.0000 |
+| SVTuner absolute coupling error | 0.3501 |
+| material-effect threshold | 0.02530 |
+| CytoSPACE material spurious pairs | 10 |
+| SVTuner material spurious pairs | 0 |
 
-### 7.2 图的核心解释
+`uses_target_markers_in_stage3b=False`，因此 target markers 仅用于评估 target region，没有进入 Stage3B 检测。
 
-该图借鉴 NCEM / spatial graph 类型论文的可视化风格，重点不是复现原论文生物结论，而是把其空间邻域分析逻辑迁移到 Stage3B 问题上。
+建议表述：
 
-核心比较：
+> Reference dropout induced broad reference-relative neighborhood coupling changes, whereas Stage3B abstention reduced the aggregate coupling error and eliminated material spurious pairs under the predefined effect threshold.
 
-- Full reference：作为参考基线。
-- CytoSPACE dropout：Plasma cells 从 reference 中删除后，baseline 被迫将目标区域分配给其他类型。
-- SVTuner Stage3B：unsupported region 被留白，减少由强制分配造成的虚假邻域组成变化。
+这里的 coupling 是 project-specific reference-relative diagnostic，不应等同于经过独立生物学验证的真实细胞互作。
 
-论文可用结论：
+## 9. Communication validation
 
-- Reference dropout 会诱导 baseline 出现 reference-relative neighborhood composition changes。
-- Stage3B abstention 可以减少这类由 reference 缺失造成的虚假空间邻域解释。
-
-### 7.3 compact 版本
-
-保留但不是主线：
-
-```text
-visualizations/stage3b_false_spatial_niche/brca_her2_plasma_compact/
-```
-
-用途：
-
-- 这是精简版尝试。
-- 当前更建议使用 `candidate_validation/brca_her2_plasma` 下的 NCEM-style 图。
-
-## 8. 通信下游实验：false communication validation
-
-### 8.1 实验目的
-
-该实验是 Stage3B 的下游升级实验：验证 reference 缺失导致的强制映射是否会进一步诱导虚假的 spatial communication / ligand-receptor 解释。
-
-选择场景：
-
-```text
-BRCA HER2 FFPE + Plasma cells reference dropout
-```
-
-保留主图：
+主图：
 
 ```text
 visualizations/stage3b_communication_validation/brca_her2_ffpe_plasma/strict_reference_style/stage3b_communication_strict_reference_style.png
 ```
 
-配套脚本：
+### 9.1 Pathway-level false-pair summary
+
+| Pathway | selected pairs | false fraction | Fisher p |
+|---|---:|---:|---:|
+| NFkB | 8 | 0.625 | 0.0900 |
+| TGFb | 3 | 0.333 | 0.7850 |
+| TNFa | 3 | 0.333 | 0.7850 |
+| Hypoxia | 1 | 1.000 | 0.3810 |
+
+这些 pathway p-values 未达到常用显著性门槛，因此 Panel A 只能作为描述性汇总，不应用于显著通路发现声明。
+
+### 9.2 KITLG->KIT local hotspot
+
+| 指标 | CytoSPACE dropout | SVTuner | 变化 |
+|---|---:|---:|---:|
+| top10% spots | 507 | 474 | -33 |
+| mean local Moran | 0.02765 | 0.00435 | -84.28% |
+| fixed-threshold hotspots | 110 | 84 | -23.64% |
+
+Panel C 的 ligand-target matrix 和 ligand scores 用于提供表达响应背景。最高 ligand scores 包括 `ADM=1.0000`、`VWF=0.8752`、`TGFB1=0.6916`、`VEGFA=0.5785`，但这些是当前验证框架中的归一化 scores，不应作为新 ligand discovery 独立报告。
+
+## 10. 论文图组织
+
+正文建议分成三层：
+
+1. **算法和联合模拟**：Stage3A+Stage3B joint overview，加 9 场景检测指标。
+2. **真实 reference-dropout 主证据**：6x2 spatial stack + blank composition；Thalamic top15 深入案例作为定量放大。
+3. **下游后果**：forced-assignment/similarity heatmap 和 false niche；communication 放补充材料。
+
+推荐正文图候选：
 
 ```text
-scripts/run_stage3b_spatial_communication_inference.py
-scripts/validate_stage3b_communication_with_observed_st.py
-scripts/plot_stage3b_communication_strict_reference_style.py
-```
-
-配套数据：
-
-```text
-data/processed/stage3b_spatial_communication/brca_her2_ffpe_plasma/
-data/processed/stage3b_communication_downstream_validation/brca_her2_ffpe_plasma/
-```
-
-### 8.2 Panel A：dropout-induced false communication pathway enrichment
-
-配套文件：
-
-```text
-visualizations/stage3b_communication_validation/brca_her2_ffpe_plasma/strict_reference_style/panel_a_spatialdm_fig2c_pathway_dotplot_values.csv
-```
-
-含义：
-
-- 统计 reference dropout 后被诱导出来的 false communication LR pairs。
-- 按 pathway 汇总，展示哪些通路更容易受到 reference 缺失和强制映射影响。
-
-注意：
-
-- 当前 Panel A 点数不多，因为候选 LR pairs 被汇总到有限 pathway 中。
-- 它更适合作为通信实验的入口说明，而不是唯一核心证据。
-
-### 8.3 Panel B：local LR hotspot comparison
-
-配套文件：
-
-```text
-visualizations/stage3b_communication_validation/brca_her2_ffpe_plasma/strict_reference_style/panel_b_spatialdm_fig3f_hotspot_summary.csv
-```
-
-含义：
-
-- 借鉴 SpatialDM 局部热点图风格。
-- 展示特定 LR pair 在 CytoSPACE dropout 与 SVTuner Stage3B 下的 local Moran / hotspot 分布。
-- 证明 Stage3B 留白后，某些由强制映射产生的局部通信热点被削弱。
-
-当前代表 pair：
-
-```text
-KITLG -> KIT
-```
-
-### 8.4 Panel C：ligand-target evidence heatmap
-
-配套文件：
-
-```text
-visualizations/stage3b_communication_validation/brca_her2_ffpe_plasma/strict_reference_style/panel_c_renoir_fig4gh_ligand_target_matrix.csv
-visualizations/stage3b_communication_validation/brca_her2_ffpe_plasma/strict_reference_style/panel_c_renoir_fig4gh_ligand_score.csv
-visualizations/stage3b_communication_validation/brca_her2_ffpe_plasma/strict_reference_style/panel_c_ligand_annotations.csv
-```
-
-含义：
-
-- 借鉴 Renoir Fig.4g/h 的 ligand-target heatmap 视觉逻辑。
-- 展示 dropout-induced false communication 中 ligand 与 downstream target evidence 的关系。
-- 该图用于把空间通信候选和下游表达响应联系起来。
-
-注意：
-
-- 当前图是风格借鉴，不是严格复现 Renoir 数据结构。
-- ligand score 与 target regulatory potential 来自本项目通信验证结果。
-
-## 9. 论文图组织建议
-
-### 9.1 推荐正文主线
-
-建议将 Stage3B 部分组织为四层证据：
-
-1. 复合模拟数据：证明 Stage3A 与 Stage3B 可以同时运行。
-2. 真实多场景 reference-dropout：证明 Stage3B blank region 与真实 marker-defined target region 一致。
-3. 单真实 case 深入：展示 baseline 强制分配、SVTuner 留白、abstention-aware accuracy。
-4. 下游验证：证明错误强制映射会影响 neighborhood / communication 解释，而 Stage3B 可以缓解。
-
-### 9.2 推荐主图候选
-
-主图候选 1：Stage3B 多场景空间验证
-
-```text
-visualizations/stage3b_realdata_candidate_scan/spatial_9x2/stage3b_reference_dropout_spatial_stack_recommended_6x2.png
+visualizations/simulations/simulation_stage3ab_joint_triptych_overview_stack_3datasets.svg
+visualizations/stage3b_realdata_candidate_scan/spatial_9x2/stage3b_reference_dropout_spatial_stack_recommended_6x2.svg
 visualizations/stage3b_realdata_candidate_scan/panel_a_blank_composition/stage3b_reference_dropout_panel_a_blank_region_composition.png
-```
-
-主图候选 2：Thalamic excitatory case study
-
-```text
-visualizations/cell2location_stage3b_case/thalamic_top15/cell2location_ST8059051_thalamic_excitatory_marker_region.png
-visualizations/cell2location_stage3b_case/thalamic_top15/cell2location_ST8059051_thalamic_excitatory_stage3b_miss_diagnostics_spatial.png
-visualizations/cell2location_stage3b_case/thalamic_top15/cell2location_ST8059051_thalamic_excitatory_baseline_forced_assignment_region.png
-visualizations/cell2location_stage3b_case/thalamic_top15/cell2location_ST8059051_thalamic_excitatory_forced_assignment_composition.png
 visualizations/cell2location_stage3b_case/thalamic_top15/cell2location_ST8059051_thalamic_excitatory_abstention_aware_region_accuracy.png
+visualizations/stage3b_false_spatial_niche/candidate_validation/brca_her2_plasma/cytospace_fig2d_tme_brca_her2_ffpe_sc_missing_plasma_cells_ncem_style.png
 ```
 
-主图候选 3：下游通信验证
+补充材料候选：top20 sensitivity、threshold robustness、multitarget forced-assignment heatmaps、communication panels 和 composite method comparison。
+
+## 11. 写作边界
+
+可以写：
+
+- Stage3B detects spatial regions insufficiently explained by the available reference.
+- Blank calls were predominantly associated with independently defined marker-rich regions across six reference-dropout settings.
+- Stage3B reduced forced surrogate assignment and reference-relative downstream artifacts.
+- Detection was conservative in mixed and boundary spots.
+
+不能写：
+
+- Stage3B perfectly recovers every missing type or every target-positive spot.
+- Real-data blank regions are definitive single-cell ground truth.
+- Stage3B used no truth information anywhere in the experiment；正确说法是算法未使用 target labels，但模拟生成和事后评价使用了真值。
+- Communication analysis discovered new biological signaling pathways.
+- Composite composition recovery proves broad superiority over all mapping methods.
+
+## 12. 可直接用于 Results 的英文段落
+
+> In nine joint mismatch simulations, Stage3A recovered all prespecified SC-only missing-type sets and Stage3B recovered dominant ST-only regions with a mean recall of 0.995 and precision of 0.974. The mean target-mass recall was 0.991, while the zero-target false-positive rate was 5.93e-4. Recovery was more conservative for mixed target-positive spots in the mouse-brain simulations, where positive-spot recall was 0.578 despite a dominant-region recall of 0.997.
+
+> Across six real reference-dropout settings, 93.8% of Stage3B blank spots were located within or near independently defined top-15% marker cores, whereas mean core recall was 57.8%. This precision-coverage pattern indicates that Stage3B preferentially abstains in strongly unsupported spatial compartments rather than exhaustively masking all spots associated with the removed type.
+
+> In the ST8059051 thalamic case, Stage3B overlapped 347 of 362 marker-defined target spots, yielding a recall of 0.959 and precision of 0.720. An abstention-aware evaluation increased accuracy from 0.329 for CytoSPACE to 0.572 for SVTuner, while revealing a modest reduction in supported-region correct calls (425 to 391). Without abstention, 52.8% of target-region spots were forced to inhibitory neurons and 24.3% to astrocytes.
+
+## 13. 关键证据文件
 
 ```text
-visualizations/stage3b_communication_validation/brca_her2_ffpe_plasma/strict_reference_style/stage3b_communication_strict_reference_style.png
+visualizations/simulations/composite_stage3a_stage3b_recheck.csv
+visualizations/method_comparison/composite_no_noise/*summary.csv
+visualizations/cell2location_stage3b_case/thalamic_top15/*summary.json
+visualizations/stage3b_realdata_candidate_scan/panel_a_blank_composition/*summary.csv
+visualizations/stage3b_realdata_candidate_scan/stage3b_threshold_robustness/*summary.csv
+visualizations/stage3b_reference_missing_stress/*forced_assignment.csv
+visualizations/stage3b_reference_missing_stress/*expression_similarity.csv
+visualizations/stage3b_false_spatial_niche/candidate_validation/brca_her2_plasma/*summary.csv
+visualizations/stage3b_communication_validation/brca_her2_ffpe_plasma/strict_reference_style/*.csv
 ```
-
-### 9.3 推荐补充材料
-
-复合模拟 9 场景：
-
-```text
-visualizations/simulations/real_brca/*_sc_missing_endothelial_cells/st_only_stage3b_triptych.png
-visualizations/simulations/human_lung_5loc/*_sc_missing_b_cell/st_only_stage3b_triptych.png
-visualizations/simulations/mouse_brain_refined/*_sc_missing_ext_l56/st_only_stage3b_triptych.png
-```
-
-阈值鲁棒性：
-
-```text
-visualizations/stage3b_realdata_candidate_scan/stage3b_threshold_robustness/stage3b_threshold_robustness_summary.png
-```
-
-多方法复合模拟：
-
-```text
-visualizations/method_comparison/composite_no_noise/composition_recovery_7mapping_methods_composite_no_noise_supported_regions_boxplot.png
-```
-
-多目标强制映射解释：
-
-```text
-visualizations/stage3b_reference_missing_stress/cell2location_reference_missing_multitarget_panels_bc.png
-```
-
-## 10. 当前保留但需谨慎使用的材料
-
-### 10.1 top20 thalamic case
-
-```text
-visualizations/cell2location_stage3b_case/thalamic_top20/
-```
-
-说明：
-
-- top20 是更严格的 target-region 定义。
-- 可以证明结论对阈值并非完全依赖，但主图建议使用 top15。
-
-### 10.2 Panel A violin 旧版
-
-```text
-visualizations/stage3b_realdata_candidate_scan/panel_a_violin/
-```
-
-说明：
-
-- 这是早期设计，用 marker percentile violin 比较真实目标区域与 Stage3B blank region。
-- 视觉上 Stage3B 的低分尾部较明显，容易削弱结论。
-- 当前已被 blank-region composition Panel A 替代。
-
-### 10.3 thalamic-only B/C heatmap
-
-```text
-visualizations/stage3b_reference_missing_stress/cell2location_thalamic_top15_reference_missing_panels_bc.png
-```
-
-说明：
-
-- 单目标版本解释力不如 multitarget。
-- 如果版面有限，优先使用 multitarget panels B/C。
-
-### 10.4 composite method comparison
-
-```text
-visualizations/method_comparison/composite_no_noise/
-```
-
-说明：
-
-- 可以作为补充，但不建议作为 Stage3B 的最核心证据。
-- 原因是传统 mapping 指标天然偏向强制映射方法，可能低估正确留白。
-
-## 11. 需要避免的表述
-
-避免说：
-
-- Stage3B 在所有真实数据中完全准确识别所有 ST-only spots。
-- Stage3B 的优势主要体现在传统全局 composition recovery 上。
-- 所有下游 communication 分析都是严格 ligand-receptor 生物实验验证。
-
-建议说：
-
-- Stage3B identifies reference-unsupported ST regions and abstains from forced assignment.
-- Correct abstention should be credited in unsupported regions rather than treated as mapping failure.
-- In reference-dropout experiments, Stage3B blank regions are enriched for marker-defined target regions across multiple real ST datasets.
-- Forced assignment can create misleading neighborhood or communication patterns, while Stage3B reduces this failure mode by leaving unsupported regions unassigned.
-
-## 12. 当前阶段结论
-
-目前 Stage3B 相关实验已经形成完整证据链：
-
-1. 模拟数据证明：Stage3B 可以与 Stage3A 同时处理双向 mismatch。
-2. 真实多场景证明：Stage3B blank region 与 marker-defined ST-only target region 空间一致。
-3. 单 case study 证明：baseline 在 unsupported region 中会强制分配，而 SVTuner 可以留白。
-4. 机制热图证明：baseline 的强制分配与表达相似性有关，相似类型会造成混淆。
-5. 下游实验证明：错误强制分配可能进一步影响 spatial niche 和 communication 解释。
-
-这些材料可以支持论文中一个独立的 Stage3B 小节：`Detection and abstention of reference-unsupported ST regions`。

@@ -1,0 +1,9 @@
+{
+  "design": "random_all_cell_size_matched_control_phase4_prepared",
+  "seed": 20260705,
+  "n_cells_to_remove": 2414,
+  "n_cells_remaining": 1600,
+  "cell_list_path": "visualizations/bioapp_phase4_formal_cytospace_baseline_execution_against_frozen_cta_immune_endpoint/random_all_cell_size_matched_control_cell_list_seed20260705.txt",
+  "mapping_run": false,
+  "phase_to_execute": "later optional sensitivity phase after manual authorization"
+}

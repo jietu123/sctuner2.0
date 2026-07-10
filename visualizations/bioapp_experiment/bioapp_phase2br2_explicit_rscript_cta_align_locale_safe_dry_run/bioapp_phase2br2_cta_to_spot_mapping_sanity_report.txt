@@ -1,0 +1,12 @@
+BioApp Phase 2B-R2 CTA-to-spot mapping sanity report
+
+number_of_spots_in_ST_data: 2248
+number_of_spots_with_CTA_mapping: 2178
+CTA_objects_total: 102664
+CTA_objects_captured: 48080
+CTA_objects_not_captured: 54584
+barcodes_matched: 2178
+barcodes_unmatched: 70
+coordinate_completeness: True
+CTA_class_distribution_after_spot_aggregation: {'Immune cells': 4907, 'Stroma': 2990, 'Tumor': 40183}
+whether_endpoint_freeze_appears_possible: True

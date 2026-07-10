@@ -1,0 +1,44 @@
+{
+  "decision": "PASS",
+  "phase": "BioApp Downstream Phase D1 morphology-domain and interface analysis",
+  "panel_g_generated": true,
+  "panel_h_generated": true,
+  "n_spots": 2248,
+  "domain_top_withheld_binary_rate": [
+    {
+      "morphology_domain": "immune_enriched",
+      "withheld_binary_rate": 0.28205128205128205,
+      "endpoint_positive_rate": 1.0,
+      "mean_cta_immune_fraction": 0.5952527177340872
+    },
+    {
+      "morphology_domain": "unmapped_or_excluded",
+      "withheld_binary_rate": 0.23655913978494625,
+      "endpoint_positive_rate": 0.125,
+      "mean_cta_immune_fraction": 0.053763440860215055
+    },
+    {
+      "morphology_domain": "stroma_rich",
+      "withheld_binary_rate": 0.1836734693877551,
+      "endpoint_positive_rate": 0.0,
+      "mean_cta_immune_fraction": 0.09367246116280968
+    }
+  ],
+  "boundary_bins": [
+    "deep tumor\n(<-4)",
+    "inner tumor\n(-4,-2)",
+    "tumor edge\n(-2,-1)",
+    "near tumor\n(-1,0)",
+    "interface side\n(0,1)",
+    "outer side\n(1,2)",
+    "outer domain\n(2,4)",
+    "far outside\n(>4)"
+  ],
+  "interpretation_status": "downstream validation prototype; not final biological claim",
+  "ready_for_visual_review": true,
+  "cautions": [
+    "Morphology domains are proxy labels from Phase D0, not pathologist annotations.",
+    "Panel H uses a frozen spot-graph boundary proxy and should not be described as a pixel-resolution histology boundary.",
+    "No upstream BioApp metrics, endpoint labels, or thresholds were modified."
+  ]
+}

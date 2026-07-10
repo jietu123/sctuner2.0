@@ -1,0 +1,21 @@
+{
+  "source_rdata": "visualizations/bioapp_phase2br2_explicit_rscript_cta_align_locale_safe_dry_run/_ascii_runtime/ST_data.RData",
+  "objects_loaded": "bcsa",
+  "object_classes": {
+    "bcsa": "Seurat"
+  },
+  "seurat_object_name": "bcsa",
+  "seurat_object_class": "Seurat",
+  "seurat_version": "5.3.1",
+  "seuratobject_version": "5.2.0",
+  "assays": "Spatial",
+  "reductions": null,
+  "images": "BCSA2TumB1",
+  "selected_image_slot": "BCSA2TumB1",
+  "default_assay": "Spatial",
+  "metadata_columns": ["orig.ident", "nCount_Spatial", "nFeature_Spatial", "type", "spaceranger_clusters", "percent_mito", "percent_ribo", "percent_hb"],
+  "misc_names": null,
+  "tool_names": null,
+  "command_names": null,
+  "project_name": "SeuratProject"
+}

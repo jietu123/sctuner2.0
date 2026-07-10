@@ -1,0 +1,1 @@
+BioApp Phase 1 checked the computational pathology endpoint and mapping feasibility gate for the breast cancer Visium CTA candidate. No data download, CytoSPACE, SVTuner, Stage4, mapping, or formal metric recomputation was performed.

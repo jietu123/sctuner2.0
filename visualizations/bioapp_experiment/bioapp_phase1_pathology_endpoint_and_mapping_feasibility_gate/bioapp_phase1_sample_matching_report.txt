@@ -1,0 +1,6 @@
+Sample matching gate
+
+Conclusion: PASS_WITH_CAVEAT.
+CTA and Visium are paired by the study design for breast cancer tumor-region samples.
+The scRNA reference is public breast tumor scRNA-seq, not necessarily same donor; this is acceptable for mapping feasibility but must be labeled as external reference.
+Phase 2 must identify one selected sample where CTA output, Visium expression, spot coordinates, and image metadata agree.

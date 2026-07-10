@@ -1,0 +1,35 @@
+{
+  "run_name": "baseline_nonimmune_all_dropout_control",
+  "immune_labels_expected": [
+    "B cells",
+    "CD8 T cells",
+    "Monocytes and Macrophages",
+    "NK cells",
+    "CD4 T cells",
+    "Plasma cells",
+    "T-cells"
+  ],
+  "nonimmune_labels_expected": [
+    "Endothelial cells",
+    "Epithelial cells",
+    "Fibroblasts",
+    "PVL"
+  ],
+  "immune_labels_present_in_run": [
+    "B cells",
+    "CD8 T cells",
+    "Monocytes and Macrophages",
+    "NK cells",
+    "CD4 T cells",
+    "Plasma cells",
+    "T-cells"
+  ],
+  "nonimmune_labels_present_in_run": [],
+  "labels_missing_from_run": [
+    "Endothelial cells",
+    "Epithelial cells",
+    "Fibroblasts",
+    "PVL"
+  ],
+  "label_grouping_source": "Phase 3R / Phase 4 fixed vocabulary"
+}

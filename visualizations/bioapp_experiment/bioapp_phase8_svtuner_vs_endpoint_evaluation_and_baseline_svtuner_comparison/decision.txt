@@ -1,0 +1,65 @@
+BioApp Phase 8 - SVTuner-vs-endpoint evaluation and baseline/SVTuner comparison
+
+Decision: PASS
+
+Input endpoint:
+CTA-defined Immune cells
+
+Endpoint status:
+Frozen at Phase 2C
+
+Primary endpoint note:
+Sparse immune-positive spatial compartments, not a large continuous ROI.
+
+Baseline anchor:
+baseline_immune_all_dropout
+
+SVTuner condition:
+svtuner_immune_all_dropout
+
+Analysis universe:
+2248 frozen endpoint spots
+main analysis set = positive + negative = 1888
+
+Gene count audit:
+final_effective_gene_count_for_phase8 = 2000
+gene_count_material_mismatch = False
+
+SVTuner-vs-endpoint metrics:
+mean_withheld_score_positive = 0.5205562170297745
+mean_withheld_score_negative = 0.37524085541836516
+withheld_enrichment_delta = 0.14531536161140934
+withheld_AUROC = 0.8305238346466074
+withheld_AUPRC = 0.2836551170002947
+withheld_binary_positive_rate = 0.44776119402985076
+withheld_binary_negative_rate = 0.021664766248574687
+
+Baseline/SVTuner comparison:
+contradiction_prevention_rate = 0.44776119402985076
+mean_prevented_forced_nonimmune_burden_positive_binary = 0.44776119402985076
+mean_prevented_forced_nonimmune_burden_positive_continuous = 0.5205562170297745
+
+Spatial comparison:
+endpoint_baseline_SVTuner_spatial_comparison_available = True
+
+Boundary checks:
+SVTuner rerun: false
+Stage3 rerun: false
+Stage4 run: false
+CytoSPACE rerun: false
+Endpoint redefined: false
+Threshold selected using endpoint labels: false
+Biological application final claim made: false
+
+Allowed claims:
+- SVTuner raw unsupported / withheld outputs were evaluated against the frozen CTA Immune endpoint.
+- Baseline and SVTuner-aware outputs were compared under the immune-all-dropout condition.
+- Endpoint-specific comparison metrics were generated for final biological-application audit.
+
+Disallowed claims:
+- Biological application completed.
+- Biological discovery made.
+- SVTuner definitively improves biological interpretation.
+
+Next:
+BioApp Phase 9 - final biological-application audit, figure selection, and interpretation boundary lock

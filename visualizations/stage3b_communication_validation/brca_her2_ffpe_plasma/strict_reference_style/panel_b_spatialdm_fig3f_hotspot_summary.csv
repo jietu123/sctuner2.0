@@ -1,2 +1,2 @@
-pair,cytospace_top10_spots,svtuner_top10_spots
-KITLG->KIT,507,474
+pair,cytospace_top10_spots,svtuner_top10_spots,fixed_hotspot_threshold,cytospace_mean_local_moran,svtuner_mean_local_moran,mean_local_moran_reduction_percent,cytospace_fixed_threshold_hotspots,svtuner_fixed_threshold_hotspots,fixed_threshold_hotspot_reduction_percent
+KITLG->KIT,507,474,0.2579549551010132,0.027645935074834888,0.004345206514125581,84.28265673646587,110,84,23.636363636363637
