@@ -1,76 +1,168 @@
 # SVTuner 2.0
 
-SVTuner is a pre-mapping type-coordination workflow for spatial transcriptomics cell-to-spot assignment. The project focuses on a specific failure mode: a single-cell reference may contain cell types or states that are not supported by the spatial transcriptomics sample, yet a downstream mapper can still assign those unsupported cells into spatial locations. SVTuner addresses this by detecting unsupported or profile-masked cell types before mapping, then running the same mapping backend with a cleaned cell pool.
+SVTuner is a reference-adequacy and abstention layer for spatial transcriptomics mapping. It detects two reciprocal forms of single-cell/spatial-reference mismatch before or alongside a downstream mapper:
 
-In this repository, the maintained primary comparison is:
+- **Stage3A, SC-only mismatch:** a cell type or state exists in the single-cell reference but is unsupported by the spatial sample. SVTuner filters or relabels those reference cells before mapping.
+- **Stage3B, ST-only mismatch:** a spatial expression region exists in ST but is unsupported by the available single-cell reference. SVTuner identifies those spots and allows the mapping workflow to abstain instead of forcing a surrogate assignment.
 
-- `CytoSPACE baseline`: CytoSPACE mapping with the original single-cell labels.
-- `SVTuner + CytoSPACE`: Stage3 type diagnostics followed by CytoSPACE route2 mapping using `plugin_type` labels and filtered unsupported cells.
+The maintained backend is [CytoSPACE](external/cytospace). SVTuner is not a replacement for CytoSPACE and should not be described as a generally superior mapping algorithm. Its intended use is to make a mapper mismatch-aware when the reference and spatial sample do not contain the same biological types or states.
 
-The repository also contains benchmarking utilities and curated visualizations for simulated missing-type settings, real profile-mask settings, CytoSPACE Fig.2-style reproductions, and cell-level high-resolution profile-mask experiments.
+This is a research repository. Code, dataset configurations, audit tables, manuscript notes, and selected paper figures are versioned. Most raw data and large run outputs are local and intentionally excluded from Git.
+
+## Current Evidence Snapshot
+
+The current simulation endpoint is an **abstention-aware whole-space recovery score**. Every truth spot remains in the denominator. A nonblank spot receives its normalized composition-overlap score; an SVTuner blank receives `1` only when independent simulation truth confirms that the SC-reference-dropped type is dominant at that spot, and an incorrect blank receives `0`.
+
+| Method | No noise, mean (n=9) | 10% SC noise, mean (n=9) |
+|---|---:|---:|
+| CytoSPACE | 0.5154 | 0.5046 |
+| **SVTuner** | **0.7104** | **0.6220** |
+| Tangram, all genes | 0.4377 | 0.4513 |
+| Tangram, marker genes | 0.4628 | 0.4687 |
+| novoSpaRc | 0.4914 | 0.4889 |
+| SpaOTsc | 0.3950 | 0.3836 |
+| CellTrek | 0.5309 | 0.4352 |
+
+Under no added noise, SVTuner exceeded CytoSPACE in `9/9` scenarios, with an absolute mean improvement of `0.1950` (`37.83%`). Of `10,445` predicted blank spots, `10,389` were correct, giving abstention precision `0.9946` and recall `0.9540` against `10,890` truth-unsupported spots.
+
+Under 10% scRNA-seq expression perturbation, SVTuner exceeded CytoSPACE in `7/9` scenarios, with an absolute mean improvement of `0.1174` (`23.27%`). Abstention precision and recall decreased to `0.9614` and `0.9039`. The two human-lung missing-type scenarios had small negative deltas (`-0.0030` and `-0.0035`), so the result is an aggregate benefit, not uniform robustness.
+
+The final biological application uses an independent computational-pathology annotation (CTA) Immune endpoint in breast-cancer Visium, not the retired Xenium/B-lineage candidate. Under an immune-all-dropout reference perturbation, the frozen analysis reported:
+
+| Biological-application metric | Value |
+|---|---:|
+| Analysis spots, positive / negative | 134 / 1,754 |
+| Mean withheld score, positive / negative | 0.5206 / 0.3752 |
+| AUROC / AUPRC | 0.8305 / 0.2837 |
+| Binary withheld rate, positive / negative | 0.4478 / 0.02166 |
+| Risk ratio / odds ratio | 20.67 / 36.21 |
+| CTA-positive vs withheld Jaccard | 0.2691 |
+| Binary / continuous forced-burden prevention | 0.4478 / 0.5206 |
+
+These are withheld-aware burden estimates under a frozen reference-dropout experiment, not post-remapping cell-composition improvements or new biological discoveries.
 
 ## Repository Layout
 
 ```text
-configs/datasets/      Dataset YAML files for real, simulated, profile-mask, Fig.2-style, and high-resolution scenarios.
-r_scripts/             R preprocessing entry point for standard real-data Stage1 export.
-scripts/               Data construction, mapping wrappers, metric calculation, and visualization scripts.
-src/stages/            Core pipeline stages: environment check, Stage1 IO helpers, Stage3A/3B diagnostics, Stage4 CytoSPACE mapping.
-src/svtuner/           Command-line wrapper and bundle helper.
-src/utils/             Shared path and cell-type-name utilities.
-visualizations/        Curated figures retained for paper-level inspection.
-data/                  Local raw/processed data; ignored by Git.
-result/                Local mapping outputs and metric intermediates; ignored by Git.
-logs/                  Local run logs; ignored by Git.
-external/              External method code or local method resources; large folders are ignored where appropriate.
+configs/                 Environment, pipeline, and dataset YAML files
+data/                    Local raw, simulated, and processed data (Git-ignored)
+docs/                    Development audits (currently Git-ignored)
+external/cytospace/      Vendored CytoSPACE backend
+r_scripts/               R Stage1 preprocessing
+result/                  Local mappings and intermediates (Git-ignored)
+scripts/                 Experiment, benchmark, audit, and figure entry points
+src/stages/              Stage0, Stage1 IO, Stage3A, Stage3B, and Stage4
+src/svtuner/             CLI and pipeline orchestration
+src/utils/               Shared path and cell-type utilities
+tests/                   Stage3B and Stage4 blank-restoration tests
+visualizations/          Curated figures and source-value tables
 ```
 
-Large data and run outputs are intentionally not versioned. The repository tracks code, configs, documentation, and selected figure outputs.
+The three manuscript evidence summaries are:
 
-## Core Pipeline
+- [Stage3A and SC-only mismatch](论文材料准备.md)
+- [Stage3B and ST-only unsupported regions](论文材料准备B.md)
+- [Independent CTA Immune biological application](生物学应用实验论文材料准备.md)
 
-The current maintained pipeline stops after producing two Stage4 mapping outputs: CytoSPACE baseline and SVTuner + CytoSPACE route2.
+## Installation
 
-### Stage0: Environment Check
+The validated environment is Windows with Python 3.10.19. The complete pinned environment, including R/Seurat and the local CytoSPACE install, is in [`configs/environment.yml`](configs/environment.yml).
 
 ```powershell
-python -m src.stages.stage0_envcheck
+conda env create -f configs/environment.yml
+conda activate cytospace_v1.1.0_py310
+python -m pip install -e .
 ```
 
-### Stage1: Preprocessing
+If the environment already exists:
 
-Stage1 converts raw or simulated inputs into a common exported format used by Stage3 and Stage4.
+```powershell
+conda activate cytospace_v1.1.0_py310
+python -m pip install -e external/cytospace
+python -m pip install -e .
+```
 
-Common exported files:
+The package metadata intentionally does not install the scientific stack by itself; use the pinned environment rather than relying on `pip install -e .` alone.
+
+When `Rscript` is not on `PATH`, copy the local configuration template and set the machine-specific path:
+
+```powershell
+Copy-Item configs/project_config.local.yaml.example configs/project_config.local.yaml
+```
+
+`configs/project_config.local.yaml` is Git-ignored. Do not commit absolute machine paths.
+
+Verify the environment and CLI:
+
+```powershell
+svtuner envcheck
+svtuner version
+```
+
+For repeated CytoSPACE runs, assigned-expression export can be disabled to reduce storage:
+
+```powershell
+$env:PYTHONNOUSERSITE = "1"
+$env:CYTOSPACE_SKIP_ASSIGNED_EXPRESSION = "1"
+```
+
+The external Tangram, novoSpaRc, SpaOTsc, and CellTrek benchmark methods may use a separate Python environment. Their runners write a common output contract and are not required for the core SVTuner/CytoSPACE workflow.
+
+## Input Contract
+
+Each sample requires `configs/datasets/<sample>.yaml` and Stage1 exports under:
 
 ```text
-data/processed/<sample>/stage1_preprocess/exported/sc_expression_normalized.csv
-data/processed/<sample>/stage1_preprocess/exported/st_expression_normalized.csv
-data/processed/<sample>/stage1_preprocess/exported/sc_metadata.csv
-data/processed/<sample>/stage1_preprocess/exported/st_coordinates.csv
+data/processed/<sample>/stage1_preprocess/exported/
 ```
 
-For real datasets using the R preprocessing path:
+Core files are:
+
+```text
+sc_expression_normalized.csv   cells x genes
+st_expression_normalized.csv   spots x genes
+sc_metadata.csv                cell annotations
+st_coordinates.csv             spot coordinates
+```
+
+Simulation evaluation additionally uses:
+
+```text
+sim_info.json
+sim_truth_query_cell_spot.csv
+sim_truth_spot_type_fraction.csv
+```
+
+Real-data preprocessing:
 
 ```powershell
-Rscript r_scripts\stage1_preprocess.R --sample <sample> --project_root . --export_csv
+Rscript r_scripts/stage1_preprocess.R `
+  --sample <sample> `
+  --project_root . `
+  --export_csv
 ```
 
-For simulation-derived datasets, Stage1 exports can be prepared from an existing simulation source:
+Simulation-derived Stage1 preparation:
 
 ```powershell
-python scripts\prepare_stage1_from_sim_source.py --project_root . --sample <sample>
+python scripts/prepare_stage1_from_sim_source.py `
+  --project_root . `
+  --sample <sample>
 ```
 
-### Stage3: Unsupported Type Diagnostics
+## Core Workflows
 
-Stage3 is the core SVTuner layer. It does not assign cells to spots. It evaluates whether each single-cell type is supported by the spatial sample and writes adjusted metadata for Stage4.
+### Stage3A: unsupported SC reference types
+
+Stage3A builds type-level marker evidence, evaluates support in ST, applies the maintained identity/similarity protections, and produces `plugin_type` annotations for mapping.
 
 ```powershell
-python -m src.stages.stage3_type_plugin --sample <sample> --sc_expr_source normalized
+python -m src.stages.stage3_type_plugin `
+  --sample <sample> `
+  --sc_expr_source normalized
 ```
 
-Main Stage3 outputs:
+Main outputs:
 
 ```text
 data/processed/<sample>/stage3_typematch/type_support.csv
@@ -80,24 +172,49 @@ data/processed/<sample>/stage3_typematch/stage3_adjusted_annotations.csv
 result/<sample>/stage3_typematch/stage3_summary.json
 ```
 
-Current Stage3 logic is intentionally simplified to the mechanisms used in the retained experiments:
+Run the same CytoSPACE backend as an unfiltered baseline and as the Stage3A-adjusted route:
 
-- Build marker evidence for each reference cell type.
-- Score support of each type in the ST expression matrix.
-- Detect low-support or profile-masked candidates.
-- Use marker-identity diagnostics to avoid assigning unsupported evidence to the wrong type.
-- Apply T/NK similarity protection where related immune states are difficult to separate from weak support alone.
-- Generate `plugin_type` labels and a type prior matrix for downstream route2 mapping.
+```powershell
+# Baseline
+python -m src.stages.stage4_cytospace `
+  --sample <sample> `
+  --filter_mode none `
+  --cell_type_column sc_meta `
+  --stage4_suffix _baseline
 
-Unused legacy rescue/protection branches were removed from the maintained workflow. The retained Stage3 output is therefore easier to audit: unsupported-type decisions are represented directly in `type_support.csv`, `stage3_summary.json`, and `stage3_adjusted_annotations.csv`.
+# SVTuner Stage3A route
+python -m src.stages.stage4_cytospace `
+  --sample <sample> `
+  --filter_mode plugin_unknown `
+  --filter_scope unsupported_all `
+  --cell_type_column plugin_type `
+  --stage4_suffix _route2
+```
 
-### Stage3B: ST-Only Unsupported Regions
+The convenience wrapper executes Stage1, Stage3A, baseline Stage4, and route2 Stage4:
 
-Stage3B covers the reciprocal failure mode: expression regions present in ST
-but unsupported by any cell type in the SC reference. It is currently an
-independent diagnostic stage and does not modify Stage3A labels. By default it
-does not alter Stage4; the optional Stage4 integration below applies its blank
-mask before mapping.
+```powershell
+svtuner run --sample <sample>
+```
+
+For simulation inputs that do not need the R preprocessing path:
+
+```powershell
+svtuner run --sample <sample> --use-python-stage1
+```
+
+### Stage3B: unsupported ST regions
+
+Stage3B fits supported SC-reference mixtures to ST and combines reconstruction-error and reference-orthogonal residual evidence. It uses self-calibration, spot-level FDR, spatial coherence, and permutation-based region validation. The algorithm does not read simulation truth, missing-type labels, CTA endpoint labels, or a target whitelist; truth and external endpoints are used only after execution for evaluation.
+
+```powershell
+svtuner stage3b `
+  --sample <sample> `
+  --fdr 0.05 `
+  --n-spatial-permutations 200
+```
+
+Equivalent module entry point:
 
 ```powershell
 python -m src.stages.stage3b_st_unsupported `
@@ -105,21 +222,7 @@ python -m src.stages.stage3b_st_unsupported `
   --n_spatial_permutations 200
 ```
 
-When the package is installed, the equivalent unified command is:
-
-```powershell
-svtuner stage3b --sample <sample>
-```
-
-Stage3B self-calibrates two complementary evidence families from the SC
-reference: supported-mixture reconstruction error and reference-orthogonal
-positive residual. It selects the evidence family by spatial coherence, applies
-two-model correction, spot-level FDR control, and max-statistic spatial
-permutation. It does not read simulation truth, `missing_type`, or type
-whitelists. The only decision-level control is the FDR level; calibration
-count, permutation count, and optional gene count are compute-budget settings.
-
-Main Stage3B outputs:
+Main outputs:
 
 ```text
 data/processed/<sample>/stage3b_st_unsupported/spot_unsupported_scores.csv
@@ -129,8 +232,7 @@ data/processed/<sample>/stage3b_st_unsupported/supported_mixture_weights.csv
 result/<sample>/stage3b_st_unsupported/stage3b_summary.json
 ```
 
-To preserve detected unsupported regions as blanks, Stage4 must apply the
-Stage3B mask before constructing CytoSPACE inputs:
+To preserve Stage3B regions as explicit blanks, pass the mask to Stage4:
 
 ```powershell
 python -m src.stages.stage4_cytospace `
@@ -141,390 +243,219 @@ python -m src.stages.stage4_cytospace `
   --stage4_suffix _stage3b_blank
 ```
 
-In this mode, masked spots are excluded from ST expression, coordinates, and
-mapping capacity before CytoSPACE runs. The final spot-level tables restore
-those spot IDs as explicit all-zero rows for complete-coordinate reporting.
-`stage4_summary.json` records the mask hash, removed capacity, assignment
-violations, and zero-row audit.
+Masked spots are excluded from mapping capacity. Final spot-level outputs restore the full coordinate universe and represent masked spots as all-zero rows. `stage4_summary.json` records mask and zero-row audits.
 
-### Stage4: CytoSPACE Baseline and Route2
+Main Stage4 outputs are:
 
-Baseline mapping uses the original `sc_meta` cell-type labels:
+```text
+result/<sample>/stage4_cytospace_<suffix>/cytospace_output/cell_assignment.csv
+result/<sample>/stage4_cytospace_<suffix>/cytospace_output/fractional_abundances_by_spot.csv
+result/<sample>/stage4_cytospace_<suffix>/stage4_summary.json
+```
+
+## Joint Simulation Benchmark
+
+The retained composite benchmark crosses Stage3A missing-type conditions with one Stage3B reference-dropout target:
+
+| Group | Stage3B target | Stage3A rows |
+|---|---|---|
+| Real BRCA | Endothelial cells | control; Epithelial cells; Epithelial cells + PCs |
+| Human lung 5-location | B cell | control; AT2; AT2 + Fibroblast |
+| Mouse brain refined | Ext_L56 | control; Micro; Micro + Oligo_2 |
+
+The same nine scenarios are evaluated with no added noise and with 10% SC-expression perturbation. In the noise experiment, the measured perturbation fraction is `0.099912-0.099969`; ST expression, coordinates, and simulation truth remain unchanged. Seven methods produce `63` method-scenario rows per noise level.
+
+External-method runs can be resumed with:
 
 ```powershell
-python -m src.stages.stage4_cytospace `
-  --sample <sample> `
+# No noise
+python scripts/run_nine_scenario_method_benchmark.py `
   --project_root . `
-  --missing_type "__AUTO__" `
-  --n_processors 1 `
-  --n_subspots 800 `
-  --mapping_cells_per_spot <2-or-5> `
-  --sc_expr_source normalized `
-  --filter_mode none `
-  --cell_type_column sc_meta `
-  --filter_scope unsupported_all `
-  --stage4_suffix _baseline
-```
+  --scenario_preset composite
 
-Route2 mapping uses Stage3-adjusted `plugin_type` labels and filters Stage3-detected missing/unsupported cells:
-
-```powershell
-python -m src.stages.stage4_cytospace `
-  --sample <sample> `
+# 10% SC noise
+python scripts/run_nine_scenario_method_benchmark.py `
   --project_root . `
-  --missing_type "__AUTO__" `
-  --n_processors 1 `
-  --n_subspots 800 `
-  --mapping_cells_per_spot <2-or-5> `
-  --sc_expr_source normalized `
-  --filter_mode plugin_unknown `
-  --cell_type_column plugin_type `
-  --filter_scope unsupported_all `
-  --stage4_suffix _route2
+  --scenario_preset composite `
+  --sample_suffix _scnoise10
 ```
 
-Main Stage4 outputs:
+These commands run Tangram, novoSpaRc, SpaOTsc, and CellTrek. The CytoSPACE baseline and SVTuner Stage3B-blank outputs must already exist for each scenario.
 
-```text
-result/<sample>/stage4_cytospace_baseline/cytospace_output/cell_assignment.csv
-result/<sample>/stage4_cytospace_baseline/cytospace_output/fractional_abundances_by_spot.csv
-result/<sample>/stage4_cytospace_route2/cytospace_output/cell_assignment.csv
-result/<sample>/stage4_cytospace_route2/cytospace_output/fractional_abundances_by_spot.csv
-result/<sample>/stage4_cytospace_*/stage4_summary.json
-```
-
-To avoid verbose CytoSPACE output and large assigned-expression exports during repeated runs:
+Rebuild the abstention-aware summaries and boxplots:
 
 ```powershell
-$env:CYTOSPACE_SKIP_ASSIGNED_EXPRESSION = "1"
-```
-
-## Maintained CLI Entry Points
-
-Run the maintained Stage1/Stage3/Stage4 pipeline:
-
-```powershell
-python -m svtuner run --sample <sample>
-```
-
-Run the project mainline wrapper:
-
-```powershell
-python scripts\run_project_mainline.py --sample <sample> --project_root .
-```
-
-Build a distributable code/config/docs bundle:
-
-```powershell
-python -m svtuner bundle
-python -m svtuner bundle --include-raw-data --include-results --name svtuner_full_delivery
-```
-
-## Data Scenario Groups
-
-### 1. Low-resolution real profile-mask scenarios
-
-These are real ST datasets with one target type masked or suppressed to test whether Stage3 and route2 can avoid reconstructing unsupported target-like signal.
-
-Current representative config names include:
-
-```text
-adult_mouse_kidney_real_profile_mask_endo
-ffpe_mouse_brain_sagittal_real_profile_mask_microglia
-human_breast_cancer_real_profile_mask_basal_cell
-human_breast_cancer_visium_ff_wta_real_profile_mask_macrophage
-human_breast_cancer_wta_120_real_profile_mask_endothelial_cell
-human_cervical_cancer_real_profile_mask_epithelial_cell
-human_heart_ff_real_profile_mask_endothelial_cell
-human_intestine_cancer_real_profile_mask_endothelial_cell
-human_lymph_node_real_profile_mask_b_cell
-mouse_embryo_real_profile_mask_erythroid
-```
-
-The key visualization family is:
-
-```text
-visualizations/masked_scenarios/
-visualizations/simulations/real_profile_mask_fig2c_only/
-visualizations/simulations/real_profile_mask_fig2d_only/
-visualizations/simulations/real_profile_mask_expression_recovery/
-```
-
-### 2. Simulated missing-type scenarios
-
-Simulations are built on real or real-like spatial scaffolds and contain explicit truth files. They are used for direct mapping-quality comparisons.
-
-Maintained simulation groups:
-
-```text
-real_brca
-human_lung_5loc
-mouse_brain_refined
-```
-
-Representative samples:
-
-```text
-real_brca7_candidate_stable_control
-real_brca7_candidate_stable_control_missing_epithelial_cells
-real_brca7_candidate_stable_control_missing_epithelial_cells_pcs
-
-human_lung_5loc_fine9_clustered_sim
-human_lung_5loc_fine9_clustered_sim_missing_at2
-human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast
-
-mouse_brain_refined7_balanced_clustered_sim
-mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_ext_l56
-mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_ext_l56
-```
-
-Simulation truth files are expected under `data/sim/<group>/<sample>/` and copied into Stage1 exports when needed:
-
-```text
-sim_info.json
-sim_truth_query_cell_spot.csv
-sim_truth_spot_type_fraction.csv
-```
-
-### 3. 10% scRNA reference-noise scenarios
-
-The `_scnoise10` scenarios perturb the single-cell reference expression while keeping ST expression, coordinates, and truth unchanged. They are used for Stage3 filtering robustness and the same seven-method composition-recovery benchmark as the 0% noise scenarios. Per-scenario mapping visualizations are not retained for the 10% noise experiment.
-
-Generator:
-
-```powershell
-python scripts\generate_sc_noise_from_processed_sim.py `
+# No noise
+python scripts/plot_method_comparison_composition_recovery.py `
   --project_root . `
-  --sim_group <group> `
-  --source_sample <source_sample> `
-  --target_sample <source_sample>_scnoise10 `
-  --noise_fraction 0.10 `
-  --seed 42 `
-  --overwrite
+  --scenario_preset composite `
+  --route2_stage4_dir stage4_cytospace_stage3b_blank `
+  --reward_correct_stage3b_abstention `
+  --abstention_truth_rule target_dominant `
+  --out_dir visualizations/method_comparison/composite_no_noise `
+  --output_prefix composition_recovery_7mapping_methods_composite_no_noise_abstention_aware `
+  --title "Spatial cell-type composition recovery, abstention-aware whole-space evaluation" `
+  --ylabel "Abstention-aware recovery score"
+
+# 10% SC noise
+python scripts/plot_method_comparison_composition_recovery.py `
+  --project_root . `
+  --scenario_preset composite `
+  --sample_suffix _scnoise10 `
+  --route2_stage4_dir stage4_cytospace_stage3b_blank `
+  --reward_correct_stage3b_abstention `
+  --abstention_truth_rule target_dominant `
+  --out_dir visualizations/method_comparison/composite_scnoise10 `
+  --output_prefix composition_recovery_7mapping_methods_composite_scnoise10_abstention_aware `
+  --title "Spatial cell-type composition recovery, 10% SC noise" `
+  --ylabel "Abstention-aware recovery score"
 ```
 
-### 3.1 Simulation benchmark scope
-
-The benchmark covers control, single-missing, and double-missing scenarios for real BRCA, human lung, and mouse brain at both 0% and 10% scRNA-seq reference noise. This gives nine scenarios per noise level.
-
-### 4. CytoSPACE Fig.2-style profile-mask experiments
-
-The repository keeps several CytoSPACE Fig.2-inspired experiments. These are not direct claims that the datasets are identical to the paper in every detail; they are controlled experiments using the same style of biological readout and visualization logic.
-
-Retained figure families include:
+Authoritative result tables:
 
 ```text
-visualizations/cytospace_fig2c_melanoma_stage3_profile_mask/
-visualizations/cytospace_fig2d_profile_mask_mapping/
-visualizations/cytospace_fig2d_profile_mask_benchmark/
-visualizations/cytospace_fig2e_stage3_profile_mask/
-visualizations/cytospace_fig2i_mouse_kidney_stage3_unsupported_decoy_sensitivity/
-visualizations/cytospace_fig2k_tcell_states_stage3_decoy/
+visualizations/method_comparison/composite_no_noise/
+  composition_recovery_7mapping_methods_composite_no_noise_abstention_aware_summary.csv
+  composition_recovery_7mapping_methods_composite_no_noise_abstention_aware_scenario.csv
+
+visualizations/method_comparison/composite_scnoise10/
+  composition_recovery_7mapping_methods_composite_scnoise10_abstention_aware_summary.csv
+  composition_recovery_7mapping_methods_composite_scnoise10_abstention_aware_scenario.csv
+  composite_scnoise10_execution_audit.csv
 ```
 
-These experiments are designed to distinguish two cases:
+The previous naive whole-space score incorrectly treated correct SVTuner blanks as zero. The previous predicted-supported-region score used a method-dependent evaluation subset. Both are retired and must not be mixed with the current benchmark.
 
-- Forced/white-list filtering, which is not sufficient as evidence for Stage3.
-- Stage3-detected profile-mask or decoy scenarios, where unsupported targets are identified from expression evidence before route2 mapping.
+## Biological Application
 
-Only the latter are retained as the main SVTuner-supporting experiments.
+The completed application is a breast-cancer Visium experiment with a frozen, independent CTA-defined `Immune cells` endpoint:
 
-### 5. Cell-level high-resolution profile-mask scenarios
+1. CTA objects were registered to `2,248` Visium spots before mapping evaluation.
+2. The frozen main set contains `134` endpoint-positive and `1,754` endpoint-negative spots; `290` ambiguous and `70` unmatched spots are excluded from the primary comparison.
+3. All `2,414` immune cells were removed from a `4,014`-cell SC reference, leaving `1,600` non-immune cells.
+4. CytoSPACE, which has no abstention mechanism, necessarily assigned the immune-positive spots to the remaining non-immune reference.
+5. Stage3B ran at its predefined FDR `0.05` without CTA labels or endpoint-tuned thresholds.
+6. Phase 8 evaluated the frozen Stage3B output; Phase 9 locked the allowed interpretation.
 
-The high-resolution cell-level scenarios use cell-level spatial data from selected Vizgen-style datasets. These are treated as high-resolution/cell-level experiments, distinct from spot-level low-resolution ST scenarios.
+The Xenium-defined B-lineage/humoral candidate was screened in Phase 0 but retired after the formal CytoSPACE feasibility mainline stopped. It is not the completed biological application and should not be presented as such.
 
-Current retained high-resolution profile-mask configs:
+Phase scripts and frozen outputs are under:
 
 ```text
-highres_humanbreastcancerpatient1_profile_mask_monocytes_and_macrophages
-highres_humancoloncancerpatient1_profile_mask_fibroblasts
-highres_humanlungcancerpatient1_profile_mask_plasma_cells
-highres_humanmelanomapatient1_profile_mask_fibroblasts
-highres_humanmelanomapatient2_profile_mask_b_cells
+scripts/run_bioapp_phase*.py
+visualizations/bioapp_experiment/
 ```
 
-Main high-resolution visualization outputs:
-
-```text
-visualizations/highres_profile_mask_mapping/highres_profile_mask_mapping_stack_5x4.png
-visualizations/highres_targeted_validation_fig2c/targeted_fig2c_monocytes_and_macrophages_ecotyper_monocytes_and_macrophages_ce9_humancoloncancerpatient1.png
-visualizations/highres_profile_mask_fig2d/all_candidates/fig2d_highres_profile_mask_benchmark.png
-visualizations/highres_profile_mask_fig2d/targeted_validation/targeted_fig2d_highres_fixed_panel.png
-visualizations/highres_profile_mask_fig2c_expression_enrichment/
-```
-
-## External Mapping Methods
-
-The retained method-comparison runners are:
-
-### Tangram
-
-Marker-gene mode:
+The final audit can be rerun when its local prerequisites are present:
 
 ```powershell
-python scripts\run_tangram_marker_mapping.py `
-  --project_root . `
-  --group <group> `
-  --sample <sample> `
-  --top_n_marker 50 `
-  --num_epochs 200 `
-  --device cpu
+python scripts/run_bioapp_phase9_final_biological_application_audit.py
 ```
 
-All-gene mode:
-
-```powershell
-python scripts\run_tangram_marker_mapping.py `
-  --project_root . `
-  --group <group> `
-  --sample <sample> `
-  --gene_mode all `
-  --num_epochs 200 `
-  --device cpu
-```
-
-### novoSpaRc and SpaOTsc
-
-Both optimal-transport methods use the maintained unified runner:
-
-```powershell
-python scripts\run_ot_mapping.py `
-  --method novosparc `
-  --project_root . `
-  --group <group> `
-  --sample <sample>
-
-python scripts\run_ot_mapping.py `
-  --method spaotsc `
-  --project_root . `
-  --group <group> `
-  --sample <sample>
-```
-
-### CellTrek-style runner
-
-```powershell
-python scripts\run_celltrek_mapping.py `
-  --project_root . `
-  --group <group> `
-  --sample <sample> `
-  --max_genes 2000 `
-  --n_pcs 30 `
-  --ntree 500
-```
-
-Standardized method outputs are written under:
+The recommended paper figure is:
 
 ```text
-result/<sample>/stage4_mapping/<method>/
+visualizations/bioapp_experiment/
+  bioapp_main_figure_v3_12_panel_A_evidence_chain_redesign/
+  fig_bioapp_main_composite_v3_12.svg
 ```
 
-Expected files include:
+The exploratory downstream D0-D3 analyses test morphology, interface, and local microenvironment context. They support nonrandom spatial context but do not establish a new pathological niche or causal biology.
+
+## Other Retained Evidence
+
+Beyond the joint simulations and CTA application, the repository retains:
+
+- ten low-resolution real profile-mask scenarios;
+- six real Stage3B reference-dropout settings;
+- a detailed mouse-brain `ST8059051 / Thalamic excitatory` Stage3B case;
+- CytoSPACE Fig.2-style state-enrichment and ordering experiments;
+- five cell-level high-resolution profile-mask datasets;
+- forced-assignment, false-spatial-niche, and communication stress tests.
+
+Representative figures:
 
 ```text
-cell_assignment.csv
-spot_type_fraction.csv
-metrics_simulation.json
-run.log
-```
-
-The complete nine-scenario benchmark can be resumed with `scripts/run_nine_scenario_method_benchmark.py`. Pass `--sample_suffix _scnoise10` for the 10% noise scenarios. Pearson correlation and Euclidean distance remain exploratory methods and are not part of the retained seven-method comparison.
-
-## Key Visualization Outputs
-
-The following retained outputs are currently the most relevant for paper-level review:
-
-```text
-visualizations/simulations/simulation_triptych_overview_stack_3datasets.png
+visualizations/simulations/simulation_stage3ab_joint_triptych_overview_stack_3datasets.svg
+visualizations/stage3b_realdata_candidate_scan/spatial_9x2/
+  stage3b_reference_dropout_spatial_stack_recommended_6x2.svg
 visualizations/masked_scenarios/masked_scenarios_real_stack_10x4.png
-
-visualizations/simulations/real_profile_mask_fig2c_only/fig2_panel_c_real_profile_mask.png
-visualizations/simulations/real_profile_mask_fig2d_only/fig2_panel_d_real_profile_mask.png
-visualizations/simulations/real_profile_mask_expression_recovery/expression_recovery_cosine_summary_bar.png
-
-visualizations/cytospace_fig2c_melanoma_stage3_profile_mask/fig2c_cd4_ce9_stage3_detected_macrophage_mask_baseline_vs_route2.png
-visualizations/cytospace_fig2d_profile_mask_mapping/cytospace_fig2d_profile_mask_mapping_stack_6x4.png
-visualizations/cytospace_fig2d_profile_mask_benchmark/fig2d_profile_mask_benchmark.png
-visualizations/cytospace_fig2e_stage3_profile_mask/fig2e_stage3_profile_mask_route2_ce9_ce10.png
-visualizations/cytospace_fig2i_mouse_kidney_stage3_unsupported_decoy_sensitivity/fig2i_stage3_detected_state32like_n1000_baseline_vs_route2_four_panel.png
-visualizations/cytospace_fig2k_tcell_states_stage3_decoy/fig2k_stage3_detected_cd4_state_decoy_baseline_vs_route2.png
-
-visualizations/highres_profile_mask_mapping/highres_profile_mask_mapping_stack_5x4.png
-visualizations/highres_targeted_validation_fig2c/targeted_fig2c_monocytes_and_macrophages_ecotyper_monocytes_and_macrophages_ce9_humancoloncancerpatient1.png
-visualizations/highres_profile_mask_fig2d/all_candidates/fig2d_highres_profile_mask_benchmark.png
-visualizations/highres_profile_mask_fig2d/targeted_validation/targeted_fig2d_highres_fixed_panel.png
+visualizations/highres_profile_mask_fig2d/targeted_validation/
+  targeted_fig2d_highres_fixed_panel.png
 ```
 
-Simulation overview figures compare truth, CytoSPACE baseline mapping, and SVTuner + CytoSPACE route2 mapping. Real profile-mask and Fig.2-style figures focus on whether route2 suppresses unsupported target-like signal or improves downstream biological readouts after Stage3-detected profile masking.
+Editable vector assets in the repository root include:
 
-## Environment Notes
+```text
+1_editable.svg
+FIG1B_editable.svg
+A简洁版_editable.svg
+B_editable.svg
+SVTuner_2_0_workflow_realistic_style_editable.svg
+```
 
-Primary environment:
+## Testing
+
+The maintained unit tests cover Stage3B calibration/spatial logic and Stage4 blank-mask restoration:
 
 ```powershell
-conda activate cytospace_v1.1.0_py310
-Set-Location "E:\AAA文件\Experiment\SVTuner\sctuner2.0"
-$py = "E:\ANACONDA\envs\cytospace_v1.1.0_py310\python.exe"
+python -m pytest -q tests
 ```
 
-For CytoSPACE-heavy runs:
+The explicit `tests` path is required because local ignored raw-data folders may contain vendored upstream repositories with their own optional-dependency test suites.
+
+Useful lightweight checks before committing documentation or analysis changes:
 
 ```powershell
-$env:PYTHONNOUSERSITE = "1"
-$env:CYTOSPACE_SKIP_ASSIGNED_EXPRESSION = "1"
+git diff --check
+svtuner envcheck
 ```
 
-For Tangram, CellTrek, and other user-site installed tools:
+## Data and Git Policy
 
-```powershell
-Remove-Item Env:PYTHONNOUSERSITE -ErrorAction SilentlyContinue
-$env:OMP_NUM_THREADS = "1"
-$env:MKL_NUM_THREADS = "1"
-$env:NUMBA_CACHE_DIR = Join-Path $PWD ".numba_cache"
-```
-
-Some CytoSPACE Fig.2 reproduction work used a separate R/Seurat environment during exploration. The maintained primary workflow does not require merging that R environment into the Python/CytoSPACE environment.
-
-## Storage and Git Policy
-
-The project intentionally ignores large local data, run outputs, logs, and cache directories:
+The repository ignores large or machine-specific content, including:
 
 ```text
 data/
 result/
 logs/
 .numba_cache/
+configs/project_config.local.yaml
 external/CellTrek/
 external/cytospace/data/
 external/cytospace/images/
 ```
 
-This keeps the Git repository focused on reproducible code, configs, documentation, and curated visualization outputs.
+Selected visualizations and source-value CSVs are committed as the auditable paper evidence layer. Reproducing mapping from scratch requires obtaining the corresponding local raw/reference data and satisfying each dataset's license and access conditions.
 
-## Current Project Positioning
+Create a distributable code/configuration bundle with:
 
-SVTuner should be described as a pre-mapping unsupported-type diagnostic and coordination layer rather than a replacement for CytoSPACE. The cleanest comparison is to run the same CytoSPACE backend twice:
+```powershell
+svtuner bundle
+svtuner bundle --include-raw-data --include-results --name svtuner_full_delivery
+```
 
-1. Baseline with original reference labels.
-2. Route2 after Stage3 detects and filters unsupported or profile-masked cell types.
+## Interpretation Boundaries
 
-The retained experiments are organized to support this claim across:
+Supported statements:
 
-- Simulated missing-type datasets with explicit truth.
-- Low-resolution real profile-mask scenarios.
-- CytoSPACE Fig.2-style biological readouts.
-- Cell-level high-resolution profile-mask scenarios.
+- Stage3A can reduce unsupported reference-type reconstruction under tested mismatch conditions.
+- Stage3B can identify spatial regions insufficiently explained by the available SC reference and preserve them as blanks.
+- SVTuner improves the mean abstention-aware whole-space score in the tested no-noise and 10% SC-noise composite benchmarks.
+- The frozen CTA application shows concordance between SVTuner withholding and an independent immune-associated pathology endpoint under immune-all-dropout.
 
-When interpreting results, avoid framing route2 as a generic improvement for all mapping tasks. Its intended advantage is strongest when the single-cell reference contains unsupported, missing, or profile-masked cell types/states that would otherwise be assigned into spatial locations by a downstream mapper.
+Unsupported statements:
 
-## Known Boundary Cases
+- SVTuner perfectly detects every missing type or every target-positive spot.
+- SVTuner is uniformly superior to all mapping methods or under all noise conditions.
+- A correct blank is equivalent to a conventional composition prediction.
+- The CTA experiment proves a new breast-cancer immune mechanism or reports post-remapping composition improvement.
+- Simulation truth, target labels, or CTA endpoint labels are used by the Stage3B algorithm. They are used only for post hoc evaluation.
 
-Stage3 is intentionally conservative. This is important for avoiding false removal of valid cell types, but it also means that some highly similar immune subtypes can be difficult to call as missing without stronger lineage-specific evidence.
+Closely related cell states remain a difficult boundary case because broad lineage markers may preserve apparent support after subtype replacement. Real-data marker cores are evaluation proxies, not definitive single-cell ground truth.
 
-One historical example is a Human Lymph Node simulation where `CD4 Treg` was replaced by `CD4 T cell`. Because these two labels share broad pan-T-cell expression, the detector can retain enough support signal for `CD4 Treg` and fail to mark it as missing. This is a false-negative missing-type diagnosis rather than a false-positive filtering problem. The current interpretation is:
+## License and Status
 
-- SVTuner is suitable for unsupported types or states with detectable expression-profile loss.
-- It should not be claimed to perfectly resolve every closely related subtype replacement.
-- For very similar immune subtypes, additional lineage-specific markers or subtype-level priors may be needed.
+`pyproject.toml` currently declares a proprietary license. External components retain their own licenses; see [`external/cytospace/LICENSE`](external/cytospace/LICENSE).
 
-Obsolete design ideas that are no longer part of the maintained workflow include Stage2 SVG-aware weighting, Stage5/6/7 reporting layers, V5 rescue branches, and the exploratory generic backend API. The maintained project is the simpler Stage1 -> Stage3 -> Stage4 workflow documented above.
+The public package version is `0.1.0`. The maintained command surface is `svtuner run`, `svtuner envcheck`, `svtuner stage3b`, `svtuner bundle`, and `svtuner version`. The many scripts under `scripts/` are experiment-specific research entry points and are not a stable public API.

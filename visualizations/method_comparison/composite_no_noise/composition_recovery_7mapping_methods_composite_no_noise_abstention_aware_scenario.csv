@@ -1,0 +1,82 @@
+group,sample,method,composition_recovery,all_spots,predicted_blank_spots,correct_abstention_spots,incorrect_abstention_spots,truth_unsupported_spots,raw_composition_overlap,abstention_credit,abstention_truth_rule
+real_brca,real_brca7_endothelial_marker_control_sc_missing_endothelial_cells,CytoSPACE,0.6846654619575827,2518,0,0,0,0,0.6846654619575827,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_control_sc_missing_endothelial_cells,SVTuner,0.7845148328735553,2518,382,382,0,384,0.6328071283461526,0.1517077045274027,target_dominant
+real_brca,real_brca7_endothelial_marker_control_sc_missing_endothelial_cells,"Tangram
+(all genes)",0.4793088379991167,2518,0,0,0,0,0.4793088379991167,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_control_sc_missing_endothelial_cells,"Tangram
+(marker genes)",0.5869962184659048,2518,0,0,0,0,0.5869962184659048,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_control_sc_missing_endothelial_cells,novoSpaRc,0.5770230077159684,2518,0,0,0,0,0.5770230077159684,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_control_sc_missing_endothelial_cells,SpaOTsc,0.4277565042323898,2518,0,0,0,0,0.4277565042323898,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_control_sc_missing_endothelial_cells,CellTrek,0.6557528332705074,2518,0,0,0,0,0.6557528332705074,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells,CytoSPACE,0.5491771337894046,2518,0,0,0,0,0.5491771337894046,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells,SVTuner,0.7119076162403215,2518,382,382,0,384,0.5601999117129188,0.1517077045274027,target_dominant
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells,"Tangram
+(all genes)",0.39471435477666517,2518,0,0,0,0,0.39471435477666517,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells,"Tangram
+(marker genes)",0.4430639362599212,2518,0,0,0,0,0.4430639362599212,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells,novoSpaRc,0.45585428135631045,2518,0,0,0,0,0.45585428135631045,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells,SpaOTsc,0.3173214495021652,2518,0,0,0,0,0.3173214495021652,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells,CellTrek,0.6124168651063684,2518,0,0,0,0,0.6124168651063684,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells,CytoSPACE,0.37706633509531473,2518,0,0,0,0,0.37706633509531473,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells,SVTuner,0.5734902789160033,2518,382,382,0,384,0.4217825743886007,0.1517077045274027,target_dominant
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells,"Tangram
+(all genes)",0.2748018868363223,2518,0,0,0,0,0.2748018868363223,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells,"Tangram
+(marker genes)",0.29829480598189756,2518,0,0,0,0,0.29829480598189756,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells,novoSpaRc,0.34748796014129757,2518,0,0,0,0,0.34748796014129757,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells,SpaOTsc,0.2680417621556133,2518,0,0,0,0,0.2680417621556133,0.0,not_applicable
+real_brca,real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells,CellTrek,0.6431064125007153,2518,0,0,0,0,0.6431064125007153,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell,CytoSPACE,0.5934967512928554,3316,0,0,0,0,0.5934967512928554,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell,SVTuner,0.6728190541311143,3316,391,381,10,385,0.5579215873036113,0.11489746682750301,target_dominant
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell,"Tangram
+(all genes)",0.6222385309906611,3316,0,0,0,0,0.6222385309906611,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell,"Tangram
+(marker genes)",0.6206051396689493,3316,0,0,0,0,0.6206051396689493,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell,novoSpaRc,0.6200985407266579,3316,0,0,0,0,0.6200985407266579,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell,SpaOTsc,0.40865948058498713,3316,0,0,0,0,0.40865948058498713,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell,CellTrek,0.5402870429935075,3316,0,0,0,0,0.5402870429935075,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell,CytoSPACE,0.49016512886369284,3316,0,0,0,0,0.49016512886369284,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell,SVTuner,0.63047918900687,3316,390,386,4,397,0.5140738814073526,0.11640530759951749,target_dominant
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell,"Tangram
+(all genes)",0.463867778934074,3316,0,0,0,0,0.463867778934074,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell,"Tangram
+(marker genes)",0.45172253216541886,3316,0,0,0,0,0.45172253216541886,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell,novoSpaRc,0.4766124724829792,3316,0,0,0,0,0.4766124724829792,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell,SpaOTsc,0.3141151918488977,3316,0,0,0,0,0.3141151918488977,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell,CellTrek,0.6096438282912401,3316,0,0,0,0,0.6096438282912401,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell,CytoSPACE,0.36728794145950744,3316,0,0,0,0,0.36728794145950744,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell,SVTuner,0.5665589957222246,3316,394,389,5,397,0.44924898365949834,0.11731001206272618,target_dominant
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell,"Tangram
+(all genes)",0.33824012819176924,3316,0,0,0,0,0.33824012819176924,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell,"Tangram
+(marker genes)",0.3262752890034601,3316,0,0,0,0,0.3262752890034601,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell,novoSpaRc,0.3593887273185979,3316,0,0,0,0,0.3593887273185979,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell,SpaOTsc,0.24616567728945218,3316,0,0,0,0,0.24616567728945218,0.0,not_applicable
+human_lung_5loc,human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell,CellTrek,0.4880137337455912,3316,0,0,0,0,0.4880137337455912,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56,CytoSPACE,0.5787332624662734,8470,0,0,0,0,0.5787332624662734,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56,SVTuner,0.8214653597887961,8470,2701,2685,16,2853,0.5044641791512517,0.3170011806375443,target_dominant
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56,"Tangram
+(all genes)",0.548990966982024,8470,0,0,0,0,0.548990966982024,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56,"Tangram
+(marker genes)",0.59063769344949,8470,0,0,0,0,0.59063769344949,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56,novoSpaRc,0.5803939862781599,8470,0,0,0,0,0.5803939862781599,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56,SpaOTsc,0.5816403162307747,8470,0,0,0,0,0.5816403162307747,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56,CellTrek,0.4631308654665373,8470,0,0,0,0,0.4631308654665373,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56,CytoSPACE,0.5727189064640043,8470,0,0,0,0,0.5727189064640043,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56,SVTuner,0.856245177949804,8470,2734,2723,11,2853,0.5347575746440189,0.32148760330578513,target_dominant
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56,"Tangram
+(all genes)",0.4755682713681968,8470,0,0,0,0,0.4755682713681968,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56,"Tangram
+(marker genes)",0.49448473919553987,8470,0,0,0,0,0.49448473919553987,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56,novoSpaRc,0.5791559280619616,8470,0,0,0,0,0.5791559280619616,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56,SpaOTsc,0.5392653450455397,8470,0,0,0,0,0.5392653450455397,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56,CellTrek,0.47616172122050954,8470,0,0,0,0,0.47616172122050954,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56,CytoSPACE,0.4254039242975367,8470,0,0,0,0,0.4254039242975367,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56,SVTuner,0.7758714501204538,8470,2689,2679,10,2853,0.4595786520094738,0.31629279811097993,target_dominant
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56,"Tangram
+(all genes)",0.3412799792989474,8470,0,0,0,0,0.3412799792989474,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56,"Tangram
+(marker genes)",0.3528262080373063,8470,0,0,0,0,0.3528262080373063,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56,novoSpaRc,0.4268309856301597,8470,0,0,0,0,0.4268309856301597,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56,SpaOTsc,0.4522620829359823,8470,0,0,0,0,0.4522620829359823,0.0,not_applicable
+mouse_brain_refined,mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56,CellTrek,0.2895279428152174,8470,0,0,0,0,0.2895279428152174,0.0,not_applicable

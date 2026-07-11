@@ -89,7 +89,9 @@ def main() -> int:
     args = parse_args()
     if not (0.0 <= args.noise_fraction <= 1.0):
         raise ValueError("--noise_fraction must be in [0,1]")
-    root = Path(args.project_root).resolve()
+    # Preserve subst-drive roots on Windows so long simulation IDs stay below
+    # the legacy MAX_PATH limit used by some file-copy operations.
+    root = Path(args.project_root).absolute()
     rng = np.random.default_rng(args.seed)
 
     raw_src = root / "data" / "sim" / args.sim_group / args.source_sample
@@ -99,7 +101,16 @@ def main() -> int:
     result_dst = root / "result" / args.target_sample
 
     _copytree(raw_src, raw_dst, args.overwrite)
-    _copytree(proc_src, proc_dst, args.overwrite)
+    if proc_dst.exists():
+        if not args.overwrite:
+            raise FileExistsError(f"target exists: {proc_dst} (use --overwrite)")
+        shutil.rmtree(proc_dst)
+    proc_dst.mkdir(parents=True, exist_ok=True)
+    _copytree(
+        proc_src / "stage1_preprocess",
+        proc_dst / "stage1_preprocess",
+        overwrite=False,
+    )
     if result_dst.exists() and args.overwrite:
         shutil.rmtree(result_dst)
     result_dst.mkdir(parents=True, exist_ok=True)

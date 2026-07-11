@@ -347,6 +347,44 @@ def main() -> int:
     src_cfg = read_dataset_config(project_root, source_sample) if source_sample else {}
     src_stage1 = stage1_dir(project_root, source_sample, src_cfg) if source_sample else None
     src_export = src_stage1 / "exported" if src_stage1 else None
+    if source_sample and (
+        src_export is None
+        or not (src_export / "sc_expression_normalized.csv").exists()
+    ):
+        ancestor_sample = source_sample
+        visited: set[str] = set()
+        while ancestor_sample and ancestor_sample not in visited:
+            visited.add(ancestor_sample)
+            ancestor_cfg = read_dataset_config(project_root, ancestor_sample)
+            ancestor_stage1 = stage1_dir(
+                project_root,
+                ancestor_sample,
+                ancestor_cfg,
+            )
+            ancestor_export = ancestor_stage1 / "exported"
+            if (ancestor_export / "sc_expression_normalized.csv").exists():
+                src_stage1 = ancestor_stage1
+                src_export = ancestor_export
+                print(
+                    "[Stage1-fallback] using complete ancestor Stage1 export: "
+                    f"{src_export}"
+                )
+                break
+            ancestor_raw_dir = resolve_sample_dir(
+                project_root,
+                ancestor_sample,
+                sim_group="real_brca",
+                must_exist=True,
+            )
+            ancestor_info_path = ancestor_raw_dir / "sim_info.json"
+            if not ancestor_info_path.exists():
+                break
+            ancestor_info = json.loads(
+                ancestor_info_path.read_text(encoding="utf-8-sig")
+            )
+            ancestor_sample = str(
+                ancestor_info.get("source_sample") or ""
+            ).strip()
     if (
         not args.rebuild_sc_from_raw
         and src_export is not None
@@ -367,6 +405,34 @@ def main() -> int:
         print(f"[Stage1-fallback] source stage1 export not found, rebuild SC from raw: {src_export}")
         raw_sc_expr = raw_dir / "brca_scRNA_GEP.txt"
         raw_sc_meta = raw_dir / "brca_scRNA_celllabels.txt"
+        if not raw_sc_expr.exists() and source_sample:
+            ancestor_sample = source_sample
+            visited: set[str] = set()
+            while ancestor_sample and ancestor_sample not in visited:
+                visited.add(ancestor_sample)
+                source_raw_dir = resolve_sample_dir(
+                    project_root,
+                    ancestor_sample,
+                    sim_group="real_brca",
+                    must_exist=True,
+                )
+                source_sc_expr = source_raw_dir / "brca_scRNA_GEP.txt"
+                if source_sc_expr.exists():
+                    raw_sc_expr = source_sc_expr
+                    print(
+                        "[Stage1-fallback] target SC expression absent; "
+                        f"using ancestor expression: {raw_sc_expr}"
+                    )
+                    break
+                ancestor_info_path = source_raw_dir / "sim_info.json"
+                if not ancestor_info_path.exists():
+                    break
+                ancestor_info = json.loads(
+                    ancestor_info_path.read_text(encoding="utf-8-sig")
+                )
+                ancestor_sample = str(
+                    ancestor_info.get("source_sample") or ""
+                ).strip()
         if not raw_sc_expr.exists() or not raw_sc_meta.exists():
             raise FileNotFoundError(
                 "source stage1 missing and target raw SC files missing: "

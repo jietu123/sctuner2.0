@@ -153,7 +153,7 @@ def _command(
 
 def main() -> int:
     args = parse_args()
-    root = Path(args.project_root).resolve()
+    root = Path(args.project_root).absolute()
     selected = [x.strip() for x in args.methods.split(",") if x.strip()]
     unknown = sorted(set(selected) - set(METHODS))
     if unknown:

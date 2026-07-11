@@ -186,7 +186,7 @@ def _write_mapping_outputs(
 
 def main() -> int:
     args = parse_args()
-    project_root = Path(args.project_root).resolve()
+    project_root = Path(args.project_root).absolute()
     out_dir = (
         Path(args.out_dir).resolve()
         if args.out_dir

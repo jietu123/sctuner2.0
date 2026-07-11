@@ -1234,7 +1234,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     project_root = (
-        Path(args.project_root).resolve() if args.project_root else _ROOT.resolve()
+        Path(args.project_root).absolute() if args.project_root else _ROOT.resolve()
     )
     project_cfg = load_project_config_yaml(project_root, args.config)
     dataset_path, dataset_cfg = _resolve_dataset_config(

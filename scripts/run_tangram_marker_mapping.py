@@ -395,7 +395,7 @@ def _run_tangram(
 
 def main() -> int:
     args = parse_args()
-    project_root = Path(args.project_root).resolve()
+    project_root = Path(args.project_root).absolute()
     os.environ.setdefault("NUMBA_CACHE_DIR", str(project_root / ".numba_cache"))
     Path(os.environ["NUMBA_CACHE_DIR"]).mkdir(parents=True, exist_ok=True)
     method_name = "tangram_marker" if args.gene_mode == "marker" else "tangram_all"

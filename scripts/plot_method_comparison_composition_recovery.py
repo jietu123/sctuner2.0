@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 from typing import Any
 
@@ -59,7 +60,7 @@ COMPOSITE_SCENARIOS: list[tuple[str, str]] = [
 
 METHODS = [
     ("CytoSPACE", "cytospace_baseline"),
-    ("SVTuner + CytoSPACE", "cytospace_route2"),
+    ("SVTuner", "cytospace_route2"),
     ("Tangram\n(all genes)", "tangram_all"),
     ("Tangram\n(marker genes)", "tangram_marker"),
     ("novoSpaRc", "novosparc"),
@@ -70,7 +71,7 @@ METHODS = [
 
 PALETTE = {
     "CytoSPACE": "#E83E78",
-    "SVTuner + CytoSPACE": "#2A9D8F",
+    "SVTuner": "#2A9D8F",
     "Tangram\n(all genes)": "#3AA1B8",
     "Tangram\n(marker genes)": "#6EA35C",
     "novoSpaRc": "#7A4DA0",
@@ -177,6 +178,57 @@ def _composition_recovery(pred: pd.DataFrame, truth: pd.DataFrame) -> tuple[floa
     return scenario_score, pd.DataFrame(rows)
 
 
+def _abstention_aware_composition_recovery(
+    pred: pd.DataFrame,
+    truth: pd.DataFrame,
+    blank_spots: set[str],
+    unsupported_types: list[str],
+    truth_rule: str = "target_dominant",
+) -> tuple[float, dict[str, Any]]:
+    """Score mapping overlap on every spot and reward only truth-supported abstention."""
+    all_spots = truth.index.astype(str)
+    type_cols = sorted(set(pred.columns).union(set(truth.columns)))
+    p = pred.reindex(index=all_spots, columns=type_cols, fill_value=0.0).astype(float)
+    t = truth.reindex(index=all_spots, columns=type_cols, fill_value=0.0).astype(float)
+    p = p.div(p.sum(axis=1).replace(0, np.nan), axis=0).fillna(0.0)
+    t = t.div(t.sum(axis=1).replace(0, np.nan), axis=0).fillna(0.0)
+
+    unsupported_types = [cell_type for cell_type in unsupported_types if cell_type in t.columns]
+    if not unsupported_types:
+        raise ValueError(
+            "None of the reference-dropped cell types are present in simulation truth: "
+            f"{unsupported_types}"
+        )
+    if truth_rule == "target_positive":
+        truth_unsupported = t[unsupported_types].sum(axis=1).gt(0.0)
+    elif truth_rule == "target_dominant":
+        truth_unsupported = t.idxmax(axis=1).isin(unsupported_types)
+    else:
+        raise ValueError(f"Unknown abstention truth rule: {truth_rule}")
+
+    predicted_blank = pd.Series(all_spots.isin(blank_spots), index=all_spots)
+    correct_blank = predicted_blank & truth_unsupported
+    incorrect_blank = predicted_blank & ~truth_unsupported
+    spot_overlap = pd.Series(
+        np.minimum(p.to_numpy(), t.to_numpy()).sum(axis=1),
+        index=all_spots,
+        dtype=float,
+    )
+    spot_score = spot_overlap.copy()
+    spot_score.loc[correct_blank] = 1.0
+    spot_score.loc[incorrect_blank] = 0.0
+    return float(spot_score.mean()), {
+        "all_spots": int(len(all_spots)),
+        "predicted_blank_spots": int(predicted_blank.sum()),
+        "correct_abstention_spots": int(correct_blank.sum()),
+        "incorrect_abstention_spots": int(incorrect_blank.sum()),
+        "truth_unsupported_spots": int(truth_unsupported.sum()),
+        "raw_composition_overlap": float(spot_overlap.mean()),
+        "abstention_credit": float(correct_blank.sum() / max(len(all_spots), 1)),
+        "abstention_truth_rule": truth_rule,
+    }
+
+
 def build_tables(
     project_root: Path,
     sample_suffix: str = "",
@@ -185,7 +237,13 @@ def build_tables(
     scenarios: list[tuple[str, str]] | None = None,
     route2_stage4_dir: str = "stage4_cytospace_route2",
     exclude_stage3b_blank_spots: bool = False,
+    reward_correct_stage3b_abstention: bool = False,
+    abstention_truth_rule: str = "target_dominant",
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
+    if exclude_stage3b_blank_spots and reward_correct_stage3b_abstention:
+        raise ValueError(
+            "Supported-region filtering and whole-space abstention credit are mutually exclusive."
+        )
     selected_methods = methods or METHODS
     selected_scenarios = scenarios or SCENARIOS
     scenario_rows: list[dict[str, Any]] = []
@@ -195,6 +253,21 @@ def build_tables(
             continue
         eval_sample = f"{sample}{sample_suffix}"
         truth = _load_fraction(_truth_path(project_root, group, eval_sample))
+        unsupported_types: list[str] = []
+        if reward_correct_stage3b_abstention:
+            sim_info_path = _truth_path(project_root, group, eval_sample).parent / "sim_info.json"
+            if not sim_info_path.exists():
+                raise FileNotFoundError(f"simulation metadata not found: {sim_info_path}")
+            sim_info = json.loads(sim_info_path.read_text(encoding="utf-8"))
+            unsupported_types = [
+                str(cell_type)
+                for cell_type in sim_info.get("sc_reference_drop_types", [])
+                if str(cell_type)
+            ]
+            if not unsupported_types:
+                raise ValueError(
+                    f"sc_reference_drop_types absent from simulation metadata: {sim_info_path}"
+                )
         if exclude_stage3b_blank_spots:
             supported_spots = _stage3b_supported_spots(
                 project_root,
@@ -214,12 +287,42 @@ def build_tables(
             if exclude_stage3b_blank_spots:
                 pred = pred.loc[pred.index.intersection(truth.index)].copy()
             score, per_type = _composition_recovery(pred, truth)
+            audit: dict[str, Any] = {
+                "all_spots": int(len(truth)),
+                "predicted_blank_spots": 0,
+                "correct_abstention_spots": 0,
+                "incorrect_abstention_spots": 0,
+                "truth_unsupported_spots": 0,
+                "raw_composition_overlap": score,
+                "abstention_credit": 0.0,
+                "abstention_truth_rule": "not_applicable",
+            }
+            if reward_correct_stage3b_abstention and method_dir == "cytospace_route2":
+                blank_spots = set(
+                    pd.read_csv(
+                        project_root
+                        / "result"
+                        / eval_sample
+                        / route2_stage4_dir
+                        / "cytospace_output"
+                        / "stage3b_blank_spots.csv",
+                        index_col=0,
+                    ).index.astype(str)
+                )
+                score, audit = _abstention_aware_composition_recovery(
+                    pred,
+                    truth,
+                    blank_spots,
+                    unsupported_types,
+                    truth_rule=abstention_truth_rule,
+                )
             scenario_rows.append(
                 {
                     "group": group,
                     "sample": eval_sample,
                     "method": method_label,
                     "composition_recovery": score,
+                    **audit,
                 }
             )
             per_type["group"] = group
@@ -234,7 +337,13 @@ def build_tables(
     return scenario_df, per_type_df
 
 
-def plot(df: pd.DataFrame, out_png: Path, out_pdf: Path | None = None, title: str | None = None) -> None:
+def plot(
+    df: pd.DataFrame,
+    out_png: Path,
+    out_pdf: Path | None = None,
+    title: str | None = None,
+    ylabel: str = "Composition recovery score",
+) -> None:
     sns.set_theme(style="whitegrid")
     plt.rcParams.update(
         {
@@ -279,7 +388,7 @@ def plot(df: pd.DataFrame, out_png: Path, out_pdf: Path | None = None, title: st
     )
     ax.set_title(title or "Spatial cell-type composition recovery, no sc noise", fontsize=15, pad=12)
     ax.set_xlabel("")
-    ax.set_ylabel("Composition recovery score", fontsize=12)
+    ax.set_ylabel(ylabel, fontsize=12)
     ax.set_ylim(0, 1.02)
     ax.grid(axis="y", color="#E2E2E2", linestyle="--", linewidth=0.9)
     ax.grid(axis="x", visible=False)
@@ -341,12 +450,31 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Evaluate composition recovery only on spots not flagged as Stage3B unsupported.",
     )
+    p.add_argument(
+        "--reward_correct_stage3b_abstention",
+        action="store_true",
+        help=(
+            "Evaluate all spots, replacing SVTuner blank-spot overlap with 1 only when "
+            "simulation truth confirms a correct abstention."
+        ),
+    )
+    p.add_argument(
+        "--abstention_truth_rule",
+        choices=["target_dominant", "target_positive"],
+        default="target_dominant",
+        help="Simulation-truth rule used to validate a Stage3B abstention.",
+    )
+    p.add_argument(
+        "--ylabel",
+        default="Composition recovery score",
+        help="Y-axis label.",
+    )
     return p.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    project_root = Path(args.project_root).resolve()
+    project_root = Path(args.project_root).absolute()
     out_dir = project_root / args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
     selected_groups = {x.strip() for x in args.groups.split(",") if x.strip()} or None
@@ -359,6 +487,8 @@ def main() -> int:
         scenarios=scenarios,
         route2_stage4_dir=args.route2_stage4_dir,
         exclude_stage3b_blank_spots=args.exclude_stage3b_blank_spots,
+        reward_correct_stage3b_abstention=args.reward_correct_stage3b_abstention,
+        abstention_truth_rule=args.abstention_truth_rule,
     )
     prefix = args.output_prefix
     scenario_df.to_csv(out_dir / f"{prefix}_scenario.csv", index=False, encoding="utf-8")
@@ -374,6 +504,7 @@ def main() -> int:
         out_dir / f"{prefix}_boxplot.png",
         out_dir / f"{prefix}_boxplot.pdf",
         args.title,
+        args.ylabel,
     )
     print(f"[OK] wrote: {out_dir / f'{prefix}_boxplot.png'}")
     print(f"[OK] wrote: {out_dir / f'{prefix}_scenario.csv'}")
