@@ -661,6 +661,7 @@ def run_stage3b(
     sample: str,
     dataset_cfg: dict,
     config: Stage3BConfig,
+    output_suffix: str = "",
 ) -> dict:
     export_dir = processed_dir(project_root, sample, dataset_cfg) / "stage1_preprocess" / "exported"
     profile_source = config.sc_profile_source or config.sc_expr_source
@@ -942,8 +943,9 @@ def run_stage3b(
         (observed_positive - calibration_median) / max(1.0 - calibration_median, 1e-12),
     )
 
-    data_out = processed_dir(project_root, sample, dataset_cfg) / "stage3b_st_unsupported"
-    result_out = result_dir(project_root, sample, dataset_cfg) / "stage3b_st_unsupported"
+    stage3b_dir_name = "stage3b_st_unsupported" + output_suffix
+    data_out = processed_dir(project_root, sample, dataset_cfg) / stage3b_dir_name
+    result_out = result_dir(project_root, sample, dataset_cfg) / stage3b_dir_name
     data_out.mkdir(parents=True, exist_ok=True)
     result_out.mkdir(parents=True, exist_ok=True)
 
@@ -1185,6 +1187,11 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="dataset config path (overrides auto-detection)",
     )
+    parser.add_argument(
+        "--output_suffix",
+        default="",
+        help="suffix appended to the stage3b_st_unsupported output directory",
+    )
     parser.add_argument("--fdr", type=float, default=None, help="BH FDR level")
     parser.add_argument(
         "--n_calibration",
@@ -1256,7 +1263,13 @@ def main() -> int:
     if config.n_spatial_permutations < 1:
         raise ValueError("n_spatial_permutations must be positive")
     print(f"[Stage3B] Dataset config: {dataset_path}")
-    run_stage3b(project_root, args.sample, dataset_cfg, config)
+    run_stage3b(
+        project_root,
+        args.sample,
+        dataset_cfg,
+        config,
+        output_suffix=args.output_suffix,
+    )
     return 0
 
 

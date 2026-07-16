@@ -1,0 +1,11 @@
+COMMAND
+E:\ANACONDA\envs\cytospace_v1.1.0_py310\python.exe -m src.stages.stage3_type_plugin --sample human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell_scnoise10 --project_root V:\ --output_suffix _scnoise10_stage3ab_full
+
+OUTPUT
+[Stage3] sc_expr_source=normalized sc_expr_shape=(13186, 2000)
+[Stage3] V4.3 mismatch_action requires V4.2 results; fallback to ignore.
+[Stage3] type_support.csv -> V:\data\processed\simulation_experiments\human_lung_5loc\human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell_scnoise10\stage3_typematch_scnoise10_stage3ab_full\type_support.csv
+[Stage3] cell_type_relabel.csv -> V:\data\processed\simulation_experiments\human_lung_5loc\human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell_scnoise10\stage3_typematch_scnoise10_stage3ab_full\cell_type_relabel.csv
+[Stage3] stage3_adjusted_annotations.csv -> V:\data\processed\simulation_experiments\human_lung_5loc\human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell_scnoise10\stage3_typematch_scnoise10_stage3ab_full\stage3_adjusted_annotations.csv
+[Stage3] type_prior_matrix.csv -> V:\data\processed\simulation_experiments\human_lung_5loc\human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell_scnoise10\stage3_typematch_scnoise10_stage3ab_full\type_prior_matrix.csv
+[Stage3] stage3_summary.json -> V:\result\simulation_experiments\human_lung_5loc\human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell_scnoise10\stage3_typematch_scnoise10_stage3ab_full\stage3_summary.json

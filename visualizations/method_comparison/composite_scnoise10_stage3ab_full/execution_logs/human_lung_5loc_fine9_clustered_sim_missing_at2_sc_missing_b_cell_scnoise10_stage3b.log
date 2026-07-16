@@ -1,0 +1,9 @@
+COMMAND
+E:\ANACONDA\envs\cytospace_v1.1.0_py310\python.exe -m src.stages.stage3b_st_unsupported --sample human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise10 --project_root V:\ --output_suffix _scnoise10_stage3ab_full
+
+OUTPUT
+[Stage3B] Dataset config: E:\AAAÎÄ¼þ\Experiment\SVTuner\sctuner2.0\configs\datasets\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise10.yaml
+[Stage3B] Loading SC expression: V:\data\processed\simulation_experiments\human_lung_5loc\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise10\stage1_preprocess\exported\sc_expression_counts.csv
+[Stage3B] Loading ST expression: V:\data\processed\simulation_experiments\human_lung_5loc\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise10\stage1_preprocess\exported\st_expression_normalized.csv
+[Stage3B] Done: 82 spot candidates, 5 spatial regions
+[Stage3B] Summary: V:\result\simulation_experiments\human_lung_5loc\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise10\stage3b_st_unsupported_scnoise10_stage3ab_full\stage3b_summary.json

@@ -1,0 +1,9 @@
+COMMAND
+E:\ANACONDA\envs\cytospace_v1.1.0_py310\python.exe -m src.stages.stage3b_st_unsupported --sample real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells_scnoise10 --project_root V:\ --output_suffix _scnoise10_stage3ab_full
+
+OUTPUT
+[Stage3B] Dataset config: E:\AAAÎÄ¼þ\Experiment\SVTuner\sctuner2.0\configs\datasets\real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells_scnoise10.yaml
+[Stage3B] Loading SC expression: V:\data\processed\simulation_experiments\real_brca\real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells_scnoise10\stage1_preprocess\exported\sc_expression_normalized.csv
+[Stage3B] Loading ST expression: V:\data\processed\simulation_experiments\real_brca\real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells_scnoise10\stage1_preprocess\exported\st_expression_normalized.csv
+[Stage3B] Done: 403 spot candidates, 1 spatial regions
+[Stage3B] Summary: V:\result\simulation_experiments\real_brca\real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells_scnoise10\stage3b_st_unsupported_scnoise10_stage3ab_full\stage3b_summary.json

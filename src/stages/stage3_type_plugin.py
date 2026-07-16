@@ -80,6 +80,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--project_root", default=None, help="override project root")
     p.add_argument("--config", default="configs/project_config.yaml", help="project config path")
     p.add_argument("--dataset_config", default=None, help="dataset config path (overrides auto-detection)")
+    p.add_argument(
+        "--output_suffix",
+        default="",
+        help="suffix appended to the stage3_typematch output directory",
+    )
     p.add_argument("--strong_th", type=float, default=None, help="support threshold for strong (overrides config)")
     p.add_argument("--weak_th", type=float, default=None, help="support threshold for weak (overrides config)")
     p.add_argument("--min_effect_size", type=float, default=None, help="灰区效应量阈值（支持度过低也进入灰区）")
@@ -1848,8 +1853,9 @@ def main():
     from src.stages.storage import processed_dir, result_dir, stage1_export_dir
 
     stage1_export = stage1_export_dir(project_root, args.sample, dataset_cfg)
-    out_proc = processed_dir(project_root, args.sample, dataset_cfg) / "stage3_typematch"
-    out_res = result_dir(project_root, args.sample, dataset_cfg) / "stage3_typematch"
+    stage3_dir_name = "stage3_typematch" + args.output_suffix
+    out_proc = processed_dir(project_root, args.sample, dataset_cfg) / stage3_dir_name
+    out_res = result_dir(project_root, args.sample, dataset_cfg) / stage3_dir_name
     out_proc.mkdir(parents=True, exist_ok=True)
     out_res.mkdir(parents=True, exist_ok=True)
 

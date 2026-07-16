@@ -62,6 +62,11 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--sample", default="real_brca", help="sample id")
     p.add_argument("--project_root", default=None, help="override project root")
     p.add_argument("--stage4_suffix", default="", help="suffix appended to stage4_cytospace dir (e.g. '_baseline', '_route2')")
+    p.add_argument(
+        "--stage3_suffix",
+        default="",
+        help="suffix appended to the Stage3A directory read by this run",
+    )
     p.add_argument("--filter_mode", choices=["plugin_unknown", "unsupported", "none"], default="none",
                    help="Filter mode: 'none' for baseline (official CytoSPACE), 'plugin_unknown' or 'unsupported' for Route2")
     p.add_argument("--cell_type_column", choices=["plugin_type", "orig_type", "sc_meta"], default="sc_meta",
@@ -211,9 +216,13 @@ def _clean_spot_index(idx: pd.Index) -> pd.Index:
     return pd.Index([str(x).split("\t")[0] for x in idx])
 
 
-def load_stage3(root: Path, sample: str) -> tuple[pd.DataFrame, pd.DataFrame | None]:
+def load_stage3(
+    root: Path,
+    sample: str,
+    stage3_suffix: str = "",
+) -> tuple[pd.DataFrame, pd.DataFrame | None]:
     cfg = read_dataset_config(root, sample)
-    base = processed_dir(root, sample, cfg) / "stage3_typematch"
+    base = processed_dir(root, sample, cfg) / ("stage3_typematch" + stage3_suffix)
     relabel = pd.read_csv(base / "cell_type_relabel.csv")
     ts_path = base / "type_support.csv"
     ts = pd.read_csv(ts_path) if ts_path.exists() else None
@@ -1495,7 +1504,11 @@ def main():
         else stage4_cfg.get("hotspot_rescue_qvalue_min", "final_fdr")
     )
     storage_cfg = read_dataset_config(project_root, args.sample)
-    stage3_summary_path = result_dir(project_root, args.sample, storage_cfg) / "stage3_typematch" / "stage3_summary.json"
+    stage3_summary_path = (
+        result_dir(project_root, args.sample, storage_cfg)
+        / ("stage3_typematch" + args.stage3_suffix)
+        / "stage3_summary.json"
+    )
     final_fdr = resolve_final_fdr(stage3_cfg, stage3_summary_path)
     qvalue_min = resolve_qvalue_min(qvalue_min_cfg, final_fdr)
     rescue_min_genes = (
@@ -1671,7 +1684,11 @@ def main():
         relabel_filtered = sc_meta[["cell_id"]].copy()
     else:
         # Route2需要Stage3输出进行过滤
-        relabel, type_support = load_stage3(project_root, args.sample)
+        relabel, type_support = load_stage3(
+            project_root,
+            args.sample,
+            args.stage3_suffix,
+        )
 
         # 对 orig_type 做 canonicalize，便于后续与 missing_type 一致匹配
         if "orig_type" in relabel.columns:

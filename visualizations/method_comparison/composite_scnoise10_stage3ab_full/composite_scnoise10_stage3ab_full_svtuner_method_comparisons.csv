@@ -1,0 +1,7 @@
+comparison_method,mean_difference,wins,losses,ties
+CytoSPACE,0.15070404500500217,8,1,0
+Tangram (all genes),0.20399246850382033,8,1,0
+Tangram (marker genes),0.18656901245518837,8,1,0
+novoSpaRc,0.166399046717434,8,1,0
+SpaOTsc,0.27169322208502344,9,0,0
+CellTrek,0.22009203087800847,6,3,0
