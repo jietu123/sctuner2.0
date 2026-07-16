@@ -411,12 +411,12 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--project_root", default=".", help="Project root.")
     p.add_argument(
         "--out_dir",
-        default="visualizations/method_comparison/no_noise",
+        default="visualizations/method_comparison/composition_recovery",
         help="Output directory.",
     )
     p.add_argument(
         "--output_prefix",
-        default="composition_recovery_7mapping_methods_no_noise",
+        default="composition_recovery_7mapping_methods",
         help="Output filename prefix.",
     )
     p.add_argument(

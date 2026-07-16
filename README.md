@@ -280,7 +280,7 @@ python scripts/run_nine_scenario_method_benchmark.py `
   --sample_suffix _scnoise10
 ```
 
-These commands run Tangram, novoSpaRc, SpaOTsc, and CellTrek. The CytoSPACE baseline and SVTuner Stage3B-blank outputs must already exist for each scenario.
+These commands run Tangram, novoSpaRc, SpaOTsc, and CellTrek. The no-noise summary additionally requires the CytoSPACE baseline and SVTuner Stage3B-blank outputs. The full 10% noise SVTuner route is run separately below.
 
 Rebuild the abstention-aware summaries and boxplots:
 
@@ -297,18 +297,11 @@ python scripts/plot_method_comparison_composition_recovery.py `
   --title "Spatial cell-type composition recovery, abstention-aware whole-space evaluation" `
   --ylabel "Abstention-aware recovery score"
 
-# 10% SC noise
-python scripts/plot_method_comparison_composition_recovery.py `
+# 10% SC noise, full Stage3A + Stage3B SVTuner route
+python scripts/run_composite_scnoise10_stage3ab_full.py `
   --project_root . `
-  --scenario_preset composite `
-  --sample_suffix _scnoise10 `
-  --route2_stage4_dir stage4_cytospace_stage3b_blank `
-  --reward_correct_stage3b_abstention `
-  --abstention_truth_rule target_dominant `
-  --out_dir visualizations/method_comparison/composite_scnoise10 `
-  --output_prefix composition_recovery_7mapping_methods_composite_scnoise10_abstention_aware `
-  --title "Spatial cell-type composition recovery, 10% SC noise" `
-  --ylabel "Abstention-aware recovery score"
+  --execute `
+  --resume
 ```
 
 Authoritative result tables:
@@ -318,10 +311,12 @@ visualizations/method_comparison/composite_no_noise/
   composition_recovery_7mapping_methods_composite_no_noise_abstention_aware_summary.csv
   composition_recovery_7mapping_methods_composite_no_noise_abstention_aware_scenario.csv
 
-visualizations/method_comparison/composite_scnoise10/
-  composition_recovery_7mapping_methods_composite_scnoise10_abstention_aware_summary.csv
-  composition_recovery_7mapping_methods_composite_scnoise10_abstention_aware_scenario.csv
-  composite_scnoise10_execution_audit.csv
+visualizations/method_comparison/composite_scnoise10_stage3ab_full/
+  composite_scnoise10_stage3ab_full_method_summary.csv
+  composite_scnoise10_stage3ab_full_source_values.csv
+  composite_scnoise10_stage3ab_full_stage3a_audit.csv
+  composite_scnoise10_stage3ab_full_stage3b_audit.csv
+  composite_scnoise10_stage3ab_full_summary.json
 ```
 
 The previous naive whole-space score incorrectly treated correct SVTuner blanks as zero. The previous predicted-supported-region score used a method-dependent evaluation subset. Both are retired and must not be mixed with the current benchmark.

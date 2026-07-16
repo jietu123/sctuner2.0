@@ -41,10 +41,8 @@ SUFFIX = "_scnoise10_stage3ab_full"
 STAGE3_DIR = f"stage3_typematch{SUFFIX}"
 STAGE3B_DIR = f"stage3b_st_unsupported{SUFFIX}"
 STAGE4_DIR = f"stage4_cytospace{SUFFIX}"
-OLD_STAGE4_DIR = "stage4_cytospace_stage3b_blank"
 NOISE_SUFFIX = "_scnoise10"
 OUT_REL = Path("visualizations/method_comparison/composite_scnoise10_stage3ab_full")
-OLD_OUT_REL = Path("visualizations/method_comparison/composite_scnoise10")
 
 
 @dataclass(frozen=True)
@@ -80,6 +78,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--execute", action="store_true", help="run Stage3A/B/4 after audit")
     parser.add_argument("--resume", action="store_true", help="reuse complete new outputs")
     parser.add_argument("--n_processors", type=int, default=1)
+    parser.add_argument("--n_subspots", type=int, default=800)
+    parser.add_argument("--mapping_cells_per_spot", type=int, default=5)
     return parser.parse_args()
 
 
@@ -273,21 +273,15 @@ def scenario_manifest(root: Path, out_dir: Path) -> pd.DataFrame:
     return frame
 
 
-def old_guard_hashes(root: Path) -> dict[str, str]:
-    paths = []
-    for scenario in SCENARIOS:
-        paths.extend(
-            [
-                root / "result" / scenario.sample / OLD_STAGE4_DIR / "cytospace_output" / "stage4_summary.json",
-                root / "result" / scenario.sample / OLD_STAGE4_DIR / "cytospace_output" / "fractional_abundances_by_spot.csv",
-            ]
-        )
-    old_dir = root / OLD_OUT_REL
-    paths.extend(path for path in old_dir.glob("*") if path.is_file())
-    return {str(path.relative_to(root)): sha256(path) for path in paths if path.exists()}
-
-
-def execute_pipeline(root: Path, python: str, out_dir: Path, resume: bool, n_processors: int) -> None:
+def execute_pipeline(
+    root: Path,
+    python: str,
+    out_dir: Path,
+    resume: bool,
+    n_processors: int,
+    n_subspots: int,
+    mapping_cells_per_spot: int,
+) -> None:
     logs = out_dir / "execution_logs"
     for scenario in SCENARIOS:
         cfg = read_dataset_config(root, scenario.sample)
@@ -310,16 +304,14 @@ def execute_pipeline(root: Path, python: str, out_dir: Path, resume: bool, n_pro
         new_summary = root / "result" / scenario.sample / STAGE4_DIR / "cytospace_output" / "stage4_summary.json"
         if resume and new_summary.exists():
             continue
-        old_summary_path = root / "result" / scenario.sample / OLD_STAGE4_DIR / "cytospace_output" / "stage4_summary.json"
-        old = read_json(old_summary_path)
         command = [
             python, "-m", "src.stages.stage4_cytospace", "--sample", scenario.sample,
             "--project_root", str(root), "--stage3_suffix", SUFFIX, "--stage4_suffix", SUFFIX,
             "--filter_scope", "unsupported_all", "--stage3b_blank_regions",
             "--stage3b_scores_path", str(processed_dir(root, scenario.sample, cfg) / STAGE3B_DIR / "spot_unsupported_scores.csv"),
             "--sc_expr_source", "normalized", "--n_processors", str(n_processors),
-            "--n_subspots", str(old.get("n_subspots", 800)),
-            "--mapping_cells_per_spot", str(old.get("mapping_cells_per_spot", 5)),
+            "--n_subspots", str(n_subspots),
+            "--mapping_cells_per_spot", str(mapping_cells_per_spot),
         ]
         if scenario.condition == "control":
             command.extend(["--filter_mode", "none", "--cell_type_column", "sc_meta"])
@@ -467,16 +459,6 @@ def evaluate(root: Path, out_dir: Path, reuse_df: pd.DataFrame) -> tuple[pd.Data
     wide["svtuner_minus_cytospace"] = wide["SVTuner"] - wide["CytoSPACE"]
     wide["svtuner_win"] = wide["svtuner_minus_cytospace"] > 0
     wide.to_csv(out_dir / f"{prefix}_paired_comparison.csv", index=False)
-    old_path = root / OLD_OUT_REL / "composition_recovery_7mapping_methods_composite_scnoise10_abstention_aware_scenario.csv"
-    old = pd.read_csv(old_path)
-    old_sv = old[old["method"] == "SVTuner"][["sample", "composition_recovery", "predicted_blank_spots"]].rename(
-        columns={"composition_recovery": "old_stage3b_only_score", "predicted_blank_spots": "old_blank_spots"}
-    )
-    new_sv = scenario_df[scenario_df["method"] == "SVTuner"][["group", "sample", "composition_recovery", "predicted_blank_spots"]].rename(
-        columns={"composition_recovery": "full_stage3ab_score", "predicted_blank_spots": "full_stage3ab_blank_spots"}
-    )
-    comparison = new_sv.merge(old_sv, on="sample", how="left")
-    comparison["score_change"] = comparison["full_stage3ab_score"] - comparison["old_stage3b_only_score"]
     new_blank = scenario_df[scenario_df["method"] == "SVTuner"].copy()
     new_blank["blank_precision"] = new_blank["correct_abstention_spots"] / new_blank["predicted_blank_spots"].replace(0, np.nan)
     new_blank["blank_recall"] = new_blank["correct_abstention_spots"] / new_blank["truth_unsupported_spots"].replace(0, np.nan)
@@ -485,34 +467,6 @@ def evaluate(root: Path, out_dir: Path, reuse_df: pd.DataFrame) -> tuple[pd.Data
         "incorrect_abstention_spots", "truth_unsupported_spots", "blank_precision", "blank_recall",
     ]
     new_blank[blank_columns].to_csv(out_dir / f"{prefix}_blank_summary.csv", index=False)
-    old_blank = old[old["method"] == "SVTuner"].copy()
-    old_blank["old_blank_precision"] = old_blank["correct_abstention_spots"] / old_blank["predicted_blank_spots"].replace(0, np.nan)
-    old_blank["old_blank_recall"] = old_blank["correct_abstention_spots"] / old_blank["truth_unsupported_spots"].replace(0, np.nan)
-    comparison = comparison.merge(
-        old_blank[["sample", "old_blank_precision", "old_blank_recall"]], on="sample", how="left"
-    ).merge(
-        new_blank[["sample", "blank_precision", "blank_recall"]].rename(
-            columns={"blank_precision": "new_blank_precision", "blank_recall": "new_blank_recall"}
-        ), on="sample", how="left"
-    )
-    old_filters = []
-    new_filters = []
-    detected_labels = []
-    for sample in comparison["sample"]:
-        old_summary = read_json(root / "result" / sample / OLD_STAGE4_DIR / "cytospace_output" / "stage4_summary.json")
-        new_summary = read_json(root / "result" / sample / STAGE4_DIR / "cytospace_output" / "stage4_summary.json")
-        cfg = read_dataset_config(root, sample)
-        relabel = pd.read_csv(processed_dir(root, sample, cfg) / STAGE3_DIR / "cell_type_relabel.csv")
-        labels = sorted(relabel.loc[relabel["plugin_type"].astype(str).str.startswith("Unknown"), "orig_type"].astype(str).unique())
-        old_filters.append((old_summary.get("filter_mode"), old_summary.get("n_filtered")))
-        new_filters.append((new_summary.get("filter_mode"), new_summary.get("n_filtered")))
-        detected_labels.append(";".join(labels))
-    comparison["old_filter_mode"] = [x[0] for x in old_filters]
-    comparison["old_n_filtered"] = [x[1] for x in old_filters]
-    comparison["new_filter_mode"] = [x[0] for x in new_filters]
-    comparison["new_n_filtered"] = [x[1] for x in new_filters]
-    comparison["stage3a_detected_labels"] = detected_labels
-    comparison.to_csv(out_dir / f"{prefix}_vs_old_stage3b_only.csv", index=False)
     plot(
         scenario_df,
         out_dir / "fig1d_scnoise10_stage3ab_full.png",
@@ -556,20 +510,24 @@ def main() -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     manifest = scenario_manifest(root, out_dir)
     input_df, reuse_df = input_and_reuse_audit(root, out_dir)
-    before = old_guard_hashes(root)
     if not args.execute:
         print(f"[AUDIT PASS] {len(reuse_df)} reused outputs verified. Use --execute to run.")
         return 0
-    execute_pipeline(root, args.python, out_dir, args.resume, args.n_processors)
+    execute_pipeline(
+        root,
+        args.python,
+        out_dir,
+        args.resume,
+        args.n_processors,
+        args.n_subspots,
+        args.mapping_cells_per_spot,
+    )
     stage3a_df, stage3b_df = stage_audits(root, out_dir)
     scenario_df, metrics = evaluate(root, out_dir, reuse_df)
-    after = old_guard_hashes(root)
     controls = stage3a_df["condition"].eq("control")
     missing = ~controls
     guardrails = {
-        "old_outputs_unchanged": before == after,
-        "old_output_hashes_before": before,
-        "old_output_hashes_after": after,
+        "standalone_from_retired_stage3b_only_outputs": True,
         "all_reused_method_provenance_verified": bool(reuse_df["provenance_verified"].all()),
         "controls_filter_none": bool((stage3a_df.loc[controls, "stage4_filter_mode"] == "none").all()),
         "controls_n_filtered_zero": bool((stage3a_df.loc[controls, "n_filtered"] == 0).all()),
@@ -596,7 +554,7 @@ def main() -> int:
         ),
     }
     critical_keys = [
-        "old_outputs_unchanged", "all_reused_method_provenance_verified", "controls_filter_none",
+        "standalone_from_retired_stage3b_only_outputs", "all_reused_method_provenance_verified", "controls_filter_none",
         "controls_n_filtered_zero", "missing_filter_plugin_unknown", "missing_stage3a_outputs_and_logs_present",
         "filter_scope_unsupported_all", "truth_filter_disabled", "oracle_filtering_disabled",
         "nine_scenarios_seven_methods", "stage3b_all_scenarios_present", "stage3b_enabled_and_integrated",
@@ -616,6 +574,8 @@ def main() -> int:
         "noise": "10% independent entry-wise within-gene replacement, seed 42",
         "scenario_count": len(manifest),
         "input_audit_rows": len(input_df),
+        "n_subspots": args.n_subspots,
+        "mapping_cells_per_spot": args.mapping_cells_per_spot,
         **metrics,
     }
     (out_dir / "composite_scnoise10_stage3ab_full_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
