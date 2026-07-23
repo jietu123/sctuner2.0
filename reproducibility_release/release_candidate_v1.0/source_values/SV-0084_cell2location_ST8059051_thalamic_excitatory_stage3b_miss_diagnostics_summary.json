@@ -1,0 +1,23 @@
+{
+  "region_definition": "top15 marker-rich core (quantile=0.85)",
+  "spots_total": 2409,
+  "marker_region_spots": 362,
+  "stage3b_blank_spots": 482,
+  "overlap": 347,
+  "missed_marker_region_spots": 15,
+  "false_positive_blank_spots_outside_marker_region": 135,
+  "precision": 0.7199170124481328,
+  "recall": 0.9585635359116023,
+  "nearest_spacing_px": 218.0,
+  "neighbor_radius_px": 294.3,
+  "target_core_spots": 302,
+  "target_boundary_spots": 60,
+  "hit_core_spots": 301,
+  "missed_core_spots": 1,
+  "hit_boundary_spots": 46,
+  "missed_boundary_spots": 14,
+  "hit_marker_score_median": 1.0836004,
+  "missed_marker_score_median": 0.59934694,
+  "hit_residual_z_median": 4.6144852818879984,
+  "missed_residual_z_median": 1.4275605380273015
+}

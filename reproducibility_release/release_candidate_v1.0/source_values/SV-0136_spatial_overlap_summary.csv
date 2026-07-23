@@ -1,0 +1,5 @@
+set_A,set_B,n_A,n_B,n_overlap,overlap_fraction_A,overlap_fraction_B,jaccard_index,notes
+CTA Immune-positive,SVTuner withheld_binary,134,149,60,0.44776119402985076,0.40268456375838924,0.26905829596412556,Phase 7 binary withheld set
+CTA Immune-positive,high withheld_score top-k (k=149),134,149,37,0.27611940298507465,0.2483221476510067,0.15040650406504066,k fixed to number of withheld_binary spots
+CTA Immune-positive,baseline forced nonimmune,134,2247,134,1.0,0.059635068980863376,0.059635068980863376,baseline_nonimmune_score >= 0.5
+baseline forced nonimmune in CTA-positive,SVTuner withheld_binary,134,149,60,0.44776119402985076,0.40268456375838924,0.26905829596412556,denominator subset vs withheld

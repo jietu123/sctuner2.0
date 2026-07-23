@@ -1,0 +1,2 @@
+n_rows,n_unique_spots,n_overlap_with_frozen_endpoint,withheld_score_available,withheld_binary_available,phase7_contract_import_status,notes
+2248,2248,2248,True,True,ok,Phase 7 raw SVTuner contract imported without rerunning SVTuner or Stage3B.

@@ -1,0 +1,20 @@
+paths:
+  sc_expr: stage1_direct
+  sc_meta: stage1_direct
+  st_expr: stage1_direct
+  st_meta: stage1_direct
+  svg_marker_whitelist: null
+qc:
+  sc_min_genes: 0
+  sc_max_genes: 100000
+  sc_max_mt: 100
+  st_min_genes: 0
+  st_max_genes: .inf
+  st_max_mt: 100
+  hvg_nfeatures: 2000
+  mt_pattern: ^(MT-|mt-)
+gene_filter:
+  min_cells_sc: 0
+  min_cells_st: 0
+storage:
+  group: low_resolution_experiments

@@ -1,0 +1,2 @@
+withheld_binary_positive_count,withheld_binary_negative_count,withheld_binary_positive_rate,withheld_binary_negative_rate,risk_difference_positive_minus_negative,risk_ratio,odds_ratio,Fisher_exact_pvalue,threshold_source
+60,38,0.44776119402985076,0.021664766248574687,0.4260964277812761,20.667714061272584,36.20613614573346,1.948403390827316e-49,Phase 7 predefined Stage3B binary output; no Phase 8 threshold tuning

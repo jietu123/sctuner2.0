@@ -1,0 +1,71 @@
+paths:
+  sc_expr: unused
+  sc_meta: null
+  st_expr: null
+  st_meta: null
+  svg_marker_whitelist: null
+qc:
+  sc_min_genes: 0
+  sc_max_genes: 100000
+  sc_max_mt: 100
+  st_min_genes: 0
+  st_max_genes: Inf
+  st_max_mt: 100
+  hvg_nfeatures: 2000
+  mt_pattern: ^(MT-|mt-)
+gene_filter:
+  min_cells_sc: 0
+  min_cells_st: 0
+stage3:
+  strong_th: 0.7
+  weak_th: 0.4
+  st_cluster_k: 0
+  unknown_floor: 0.3
+  min_cells_rare_type: 20
+  eps: 1.0e-08
+  plugin_genes_path: data/processed/cytospace_fig2d_profile_mask/cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages/stage1_preprocess/hvg_genes.txt
+  gene_weights_path: null
+  auto_missing_detection:
+    enable: true
+    method: adaptive_low_support
+    action: mark_unknown
+    min_cells: 50
+    robust_z_th: -2.0
+    soft_z_th: -0.9
+    require_masked_for_soft: false
+    require_masked_for_hard: true
+    max_fraction_types: 0.3
+    max_types: 2
+    require_confirmation: true
+    confirmation_max_support_score: 0.55
+    confirmation_use_masked_missing: true
+    confirmation_use_marker_identity: true
+    confirmation_marker_identity_z_th: -1.5
+    confirmation_marker_support_score_th: 0.5
+  masked_missing_detection:
+    enable: true
+    apply_to_auto_missing: true
+    neighbor_cosine_th: 0.89
+    neighbor_cell_ratio_min: 0.5
+    marker_top_n: 20
+    min_identity_markers: 3
+    min_marker_specificity: 1.2
+    min_marker_type_mean: 0.001
+    min_marker_st_detect_frac: 0.005
+    st_presence_quantile: 0.9
+    identity_z_th: -0.7
+    pressure_z_th: 0.0
+    min_support_score_for_apply: 0.52
+    max_types: 2
+  marker_identity_diagnostics:
+    enable: true
+    marker_top_n: 80
+    min_identity_markers: 5
+    min_all_specificity: 1.3
+    min_neighbor_specificity: 1.1
+    min_marker_type_mean: 0.001
+    min_marker_st_detect_frac: 0.005
+    st_presence_quantile: 0.9
+    depleted_z_th: -0.9
+storage:
+  group: cytospace_fig2d_profile_mask

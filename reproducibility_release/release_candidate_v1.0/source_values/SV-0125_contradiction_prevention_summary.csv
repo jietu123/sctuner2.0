@@ -1,0 +1,2 @@
+denominator_rule,denominator_spots,prevented_spots,not_prevented_spots,contradiction_prevention_rate,bootstrap_n,bootstrap_95CI_low,bootstrap_95CI_high,metric_note
+CTA Immune-positive spots with baseline_nonimmune_score >= 0.5,134,60,74,0.44776119402985076,1000,0.3582089552238806,0.5298507462686567,Phase 8 operational contradiction prevention metric; not final biological application claim

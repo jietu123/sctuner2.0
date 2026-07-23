@@ -1,0 +1,2 @@
+source,positive_count,negative_count,ambiguous_count,excluded_count,main_analysis_count,used_as_authoritative,notes
+visualizations/bioapp_phase2c_endpoint_freeze_with_validated_cta_to_spot_mapping/spot_level_endpoint_freeze.csv,134,1754,290,70,1888,True,spot_level_endpoint_freeze.csv is authoritative; txt list line-count differences are ignored for endpoint status.

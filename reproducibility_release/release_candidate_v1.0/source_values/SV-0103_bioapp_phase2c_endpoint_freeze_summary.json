@@ -1,0 +1,90 @@
+{
+  "phase": "BioApp Phase 2C endpoint freeze with validated CTA-to-spot mapping",
+  "decision": "PASS",
+  "reason": "",
+  "stage_type": "external endpoint freeze / biological application candidate preparation",
+  "input_phase2br2_decision": "PASS",
+  "validated_CTA_to_spot_mapping_used": true,
+  "CTA_mapping_recomputed": false,
+  "CTA_align_R_modified": false,
+  "ST_spots_total": 2248,
+  "CTA_mapped_spots": 2178,
+  "unmatched_spots": 70,
+  "CTA_objects_total": 102664,
+  "CTA_objects_captured": 48080,
+  "CTA_objects_not_captured": 54584,
+  "endpoint_frozen": true,
+  "primary_endpoint": "Immune cells",
+  "ready_for_phase3": true,
+  "endpoint_freeze_rule": {
+    "min_total_CTA_objects": 2,
+    "min_class_count_positive": 2,
+    "positive_fraction_threshold": 0.6,
+    "negative_fraction_threshold": 0.2
+  },
+  "endpoint_QC": {
+    "Tumor": {
+      "n_positive": 1690,
+      "n_negative": 246,
+      "n_ambiguous": 242,
+      "n_excluded": 70,
+      "positive_fraction_among_mapped": 0.7759412304866851,
+      "negative_fraction_among_mapped": 0.11294765840220386,
+      "median_C_fraction_positive": 1.0,
+      "mean_C_fraction_positive": 0.9358622994035292,
+      "dominant_class_purity_positive": 1.0,
+      "number_of_positive_components": 9,
+      "largest_positive_component_size": 1674,
+      "largest_positive_component_fraction": 0.9905325443786982,
+      "eligible_endpoint": true
+    },
+    "Immune cells": {
+      "n_positive": 134,
+      "n_negative": 1754,
+      "n_ambiguous": 290,
+      "n_excluded": 70,
+      "positive_fraction_among_mapped": 0.06152433425160698,
+      "negative_fraction_among_mapped": 0.8053259871441689,
+      "median_C_fraction_positive": 0.8,
+      "mean_C_fraction_positive": 0.8003675586627567,
+      "dominant_class_purity_positive": 1.0,
+      "number_of_positive_components": 51,
+      "largest_positive_component_size": 15,
+      "largest_positive_component_fraction": 0.11194029850746269,
+      "eligible_endpoint": true
+    },
+    "Stroma": {
+      "n_positive": 96,
+      "n_negative": 1832,
+      "n_ambiguous": 250,
+      "n_excluded": 70,
+      "positive_fraction_among_mapped": 0.0440771349862259,
+      "negative_fraction_among_mapped": 0.8411386593204775,
+      "median_C_fraction_positive": 0.8452380952380952,
+      "mean_C_fraction_positive": 0.8469387459966503,
+      "dominant_class_purity_positive": 1.0,
+      "number_of_positive_components": 41,
+      "largest_positive_component_size": 23,
+      "largest_positive_component_fraction": 0.23958333333333334,
+      "eligible_endpoint": true
+    }
+  },
+  "expression_markers_used_to_define_endpoint": false,
+  "mapping_outputs_used_to_define_endpoint": false,
+  "CytoSPACE_run": false,
+  "SVTuner_run": false,
+  "Stage4_run": false,
+  "formal_metrics_recomputed": false,
+  "allowed_claims": [
+    "CTA-derived endpoint was frozen at Visium spot level.",
+    "CTA-to-spot mapping enabled endpoint-positive, endpoint-negative, ambiguous, and excluded spot definitions."
+  ],
+  "disallowed_claims": [
+    "SVTuner improves endpoint recovery.",
+    "SVTuner prevents contradicted interpretation.",
+    "Baseline creates false niche calls.",
+    "Biological application completed.",
+    "Biological discovery made."
+  ],
+  "output_dir": "visualizations/bioapp_phase2c_endpoint_freeze_with_validated_cta_to_spot_mapping"
+}

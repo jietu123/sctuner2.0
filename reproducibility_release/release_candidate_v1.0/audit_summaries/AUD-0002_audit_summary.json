@@ -1,0 +1,99 @@
+{
+  "audit": "Task 4A dataset provenance, formal identifier, platform and accession audit",
+  "generated_date": "2026-07-22",
+  "decision": "HOLD",
+  "data_availability_ready": false,
+  "dataset_manifest_ready_to_freeze": false,
+  "formal_manuscript_found": false,
+  "formal_bibliography_found": false,
+  "formal_dataset_manifest_found": false,
+  "counts": {
+    "master_records": 37,
+    "experiment_crosswalk_rows": 40,
+    "unresolved_issues": 11,
+    "conflicts": 2,
+    "record_status": {
+      "CONFIRMED": 23,
+      "PARTIAL": 11,
+      "CONFLICT": 1,
+      "PROJECT_GENERATED": 2
+    }
+  },
+  "coverage": {
+    "Joint simulations": {
+      "expected": 9,
+      "audited": 9,
+      "confirmed": 6,
+      "partial": 0,
+      "unresolved": 0,
+      "conflict": 3,
+      "project_generated": 0
+    },
+    "Low-resolution profile masking": {
+      "expected": 10,
+      "audited": 10,
+      "confirmed": 5,
+      "partial": 5,
+      "unresolved": 0,
+      "conflict": 0,
+      "project_generated": 0
+    },
+    "MERSCOPE": {
+      "expected": 5,
+      "audited": 5,
+      "confirmed": 0,
+      "partial": 5,
+      "unresolved": 0,
+      "conflict": 0,
+      "project_generated": 0
+    },
+    "State-decoy experiments": {
+      "expected": 2,
+      "audited": 2,
+      "confirmed": 0,
+      "partial": 0,
+      "unresolved": 0,
+      "conflict": 0,
+      "project_generated": 2
+    },
+    "Real reference dropout": {
+      "expected": 6,
+      "audited": 6,
+      "confirmed": 6,
+      "partial": 0,
+      "unresolved": 0,
+      "conflict": 0,
+      "project_generated": 0
+    },
+    "Detailed Thalamic case": {
+      "expected": 1,
+      "audited": 1,
+      "confirmed": 1,
+      "partial": 0,
+      "unresolved": 0,
+      "conflict": 0,
+      "project_generated": 0
+    },
+    "CTA biological application": {
+      "expected": 1,
+      "audited": 1,
+      "confirmed": 0,
+      "partial": 1,
+      "unresolved": 0,
+      "conflict": 0,
+      "project_generated": 0
+    }
+  },
+  "guardrails": {
+    "stage1_rerun": false,
+    "stage3a_rerun": false,
+    "stage3b_rerun": false,
+    "stage4_rerun": false,
+    "cytospace_rerun": false,
+    "experimental_outputs_modified": false,
+    "formal_manuscript_modified": false,
+    "formal_bibliography_modified": false,
+    "formal_manifest_overwritten": false,
+    "figures_modified": false
+  }
+}

@@ -1,0 +1,14 @@
+gap_id	severity	category	item	status	safe_action	blocking
+GAP-PROV-001	NONBLOCKING_ACCEPTED	provenance	human-lung read-run accession	UNRESOLVED	Retain qualified wording; do not infer or redistribute.	false
+GAP-PROV-002	NONBLOCKING_ACCEPTED	provenance	CID4465 slide identifier	UNRESOLVED	Retain qualified wording; do not infer or redistribute.	false
+GAP-PROV-003	NONBLOCKING_ACCEPTED	provenance	CID4465 capture area	UNRESOLVED	Retain qualified wording; do not infer or redistribute.	false
+GAP-PROV-004	NONBLOCKING_ACCEPTED	provenance	CTA exact chemistry or kit version	UNRESOLVED	Retain qualified wording; do not infer or redistribute.	false
+GAP-PROV-005	NONBLOCKING_ACCEPTED	provenance	Vizgen provider checksum	UNRESOLVED	Retain qualified wording; do not infer or redistribute.	false
+GAP-PROV-006	NONBLOCKING_ACCEPTED	provenance	Vizgen explicit redistribution permission	UNRESOLVED	Retain qualified wording; do not infer or redistribute.	false
+GAP-ENV-001	NONBLOCKING_DOCUMENTED	environment	Mainline Stage1 exact run-local R/Seurat package snapshot	NOT_RETAINED	The frozen specification is R 4.5.2, Seurat 5.3.1 and SeuratObject 5.2.0; formal logs do not contain run-local sessionInfo().	false
+GAP-ENV-002	NONBLOCKING_DOCUMENTED	environment	Legacy Fig. 2 enrichment exact Python runtime	NOT_RETAINED	The source tables and backend implementation are retained, but the original executable and complete package snapshot were not retained.	false
+GAP-ENV-003	NONBLOCKING_DOCUMENTED	environment	Tangram formal mapping runtime snapshot	NOT_RETAINED	Formal outputs and the runner are retained; the historical environment containing the successful Tangram installation is not retained.	false
+GAP-ENV-004	NONBLOCKING_DOCUMENTED	environment	novoSpaRc formal mapping runtime snapshot	NOT_RETAINED	Formal outputs and the runner are retained; exact successful package versions were not recorded.	false
+GAP-ENV-005	NONBLOCKING_DOCUMENTED	environment	SpaOTsc formal mapping runtime snapshot	NOT_RETAINED	Formal outputs and the runner are retained; exact successful package versions were not recorded.	false
+GAP-ENV-006	NONBLOCKING_DOCUMENTED	environment	CellTrek-labelled Python fallback runtime snapshot	NOT_RETAINED	The retained formal runner identifies itself as a Python fallback CellTrek-style implementation; exact historical package versions were not recorded and the official R CellTrek package was not used.	false
+GAP-GIT-001	NONBLOCKING_OPERATIONAL	git	Current working tree is not clean	RELEASE_COMMIT_NOT_READY	Review and commit an intentional release scope before tagging.	false

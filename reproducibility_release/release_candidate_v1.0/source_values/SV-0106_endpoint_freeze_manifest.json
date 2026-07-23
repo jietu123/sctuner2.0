@@ -1,0 +1,10 @@
+{
+  "phase": "BioApp Phase 2C endpoint freeze with validated CTA-to-spot mapping",
+  "decision": "PASS",
+  "endpoint_frozen": true,
+  "primary_endpoint": "Immune cells",
+  "spot_level_endpoint_freeze": "visualizations/bioapp_phase2c_endpoint_freeze_with_validated_cta_to_spot_mapping/spot_level_endpoint_freeze.csv",
+  "spot_level_CTA_composition": "visualizations/bioapp_phase2c_endpoint_freeze_with_validated_cta_to_spot_mapping/spot_level_CTA_composition.csv",
+  "endpoint_eligibility_qc": "visualizations/bioapp_phase2c_endpoint_freeze_with_validated_cta_to_spot_mapping/endpoint_eligibility_qc.csv",
+  "endpoint_definition": "visualizations/bioapp_phase2c_endpoint_freeze_with_validated_cta_to_spot_mapping/endpoint_definition.json"
+}

@@ -1,3 +1,8 @@
 data/raw/real_brca/*.txt filter=lfs diff=lfs merge=lfs -text
 data/processed/real_brca/stage1_preprocess/exported/*.csv filter=lfs diff=lfs merge=lfs -text
 data/processed/real_brca/stage1_preprocess/*.rds filter=lfs diff=lfs merge=lfs -text
+reproducibility_release/release_candidate_v1.0/** -text
+reproducibility_release/manifests/*.tsv -text
+reproducibility_release/manifests/*.json -text
+reproducibility_release/manifests/*.md -text
+reproducibility_release/release_manifest.tsv -text

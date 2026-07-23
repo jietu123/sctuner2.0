@@ -1,0 +1,2 @@
+n_rows,n_unique_spots,n_overlap_with_frozen_endpoint,baseline_immune_score_constant,baseline_nonimmune_score_available,baseline_anchor_import_status,notes
+2248,2248,2248,True,True,ok,baseline anchor imported from Phase 5 without recomputation.

@@ -1,0 +1,2 @@
+method,slide,cell_type,pathway,ES,NES,pval,padj,peak_rank,n_mapped_cells,n_close,n_far,n_exhaustion_genes_used,backend,nperm
+CytoSPACE,mel1_rep2_mask_macrophages_baseline,CD4 T cells,EcoTyper CD4 T cells CE9,0.7297694810661206,2.1713406947443907,0.000999000999000999,0.000999000999000999,2249,1146,580,566,324,python_permutation_gsea,1000

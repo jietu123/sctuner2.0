@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "svtuner"
+version = "0.1.0"
+description = "SVTuner: spatial mapping tuning framework (CLI for Stage1–5 pipeline)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Proprietary" }
+dependencies = []
+
+[project.scripts]
+svtuner = "svtuner.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["svtuner*"]

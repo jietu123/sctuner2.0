@@ -1,0 +1,3 @@
+analysis,comparison,group_a,group_b,observed_mean_difference,empirical_p_one_sided,cohen_d,n_group_a,n_group_b
+niche_effect_size,immune_associated_vs_tumor_dominant,immune_associated_niche,deep_tumor_core,0.11559309843010945,0.0004997501249375312,1.0694815264400503,233,913
+niche_effect_size,interface_related_vs_tumor_dominant,stroma_interface_niche,deep_tumor_core,0.15719908030294427,0.0004997501249375312,1.4999801395314165,76,913

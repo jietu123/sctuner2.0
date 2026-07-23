@@ -1,0 +1,41 @@
+sample,source_sample,target_type,scenario_label,method,metric,mean_cosine,median_cosine,n_spots,n_genes
+adult_mouse_kidney_real_profile_mask_endo,adult_mouse_kidney_real,Endo,"Mouse kidney
+Endo",CytoSPACE,expression_recovery_cosine,0.6082486084173793,0.6142866944794918,3124,2000
+adult_mouse_kidney_real_profile_mask_endo,adult_mouse_kidney_real,Endo,"Mouse kidney
+Endo",SVTuner + CytoSPACE,expression_recovery_cosine,0.6192922286655622,0.6139362740489502,3124,2000
+ffpe_mouse_brain_sagittal_real_profile_mask_microglia,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
+Microglia",CytoSPACE,expression_recovery_cosine,0.44700006777210455,0.45152267095876797,8470,2000
+ffpe_mouse_brain_sagittal_real_profile_mask_microglia,ffpe_mouse_brain_sagittal_real,Microglia,"Mouse brain
+Microglia",SVTuner + CytoSPACE,expression_recovery_cosine,0.45189371879516677,0.457520363956918,8470,2000
+human_breast_cancer_real_profile_mask_basal_cell,human_breast_cancer_real,Basal cell,"BRCA
+Basal cell",CytoSPACE,expression_recovery_cosine,0.6371451433593057,0.6445629644821929,2518,2000
+human_breast_cancer_real_profile_mask_basal_cell,human_breast_cancer_real,Basal cell,"BRCA
+Basal cell",SVTuner + CytoSPACE,expression_recovery_cosine,0.6375551523544326,0.6465991500946731,2518,2000
+human_breast_cancer_visium_ff_wta_real_profile_mask_macrophage,human_breast_cancer_visium_ff_wta_real,Macrophage,"BRCA FF WTA
+Macrophage",CytoSPACE,expression_recovery_cosine,0.5578241455759639,0.5879971631376573,4898,2000
+human_breast_cancer_visium_ff_wta_real_profile_mask_macrophage,human_breast_cancer_visium_ff_wta_real,Macrophage,"BRCA FF WTA
+Macrophage",SVTuner + CytoSPACE,expression_recovery_cosine,0.5586208143784648,0.5888601361645054,4898,2000
+human_breast_cancer_wta_120_real_profile_mask_endothelial_cell,human_breast_cancer_wta_120_real,Endothelial cell,"BRCA WTA120
+Endothelial cell",CytoSPACE,expression_recovery_cosine,0.57843141991152,0.630859788483408,4314,2000
+human_breast_cancer_wta_120_real_profile_mask_endothelial_cell,human_breast_cancer_wta_120_real,Endothelial cell,"BRCA WTA120
+Endothelial cell",SVTuner + CytoSPACE,expression_recovery_cosine,0.5779771008552042,0.6307176291950625,4314,2000
+human_cervical_cancer_real_profile_mask_epithelial_cell,human_cervical_cancer_real,Epithelial cell,"Cervical
+Epithelial cell",CytoSPACE,expression_recovery_cosine,0.4672575481559751,0.47188943390004445,2781,2000
+human_cervical_cancer_real_profile_mask_epithelial_cell,human_cervical_cancer_real,Epithelial cell,"Cervical
+Epithelial cell",SVTuner + CytoSPACE,expression_recovery_cosine,0.47925673294940163,0.49294983096168327,2781,2000
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CytoSPACE,expression_recovery_cosine,0.3024118908072154,0.30528849406202163,228,2000
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",SVTuner + CytoSPACE,expression_recovery_cosine,0.3292853431604227,0.32900883161328476,228,2000
+human_intestine_cancer_real_profile_mask_endothelial_cell,human_intestine_cancer_real,Endothelial cell,"Intestine
+Endothelial cell",CytoSPACE,expression_recovery_cosine,0.4410831515743763,0.44336250273896377,2660,2000
+human_intestine_cancer_real_profile_mask_endothelial_cell,human_intestine_cancer_real,Endothelial cell,"Intestine
+Endothelial cell",SVTuner + CytoSPACE,expression_recovery_cosine,0.4394434459383945,0.4387170603445708,2660,2000
+human_lymph_node_real_profile_mask_b_cell,human_lymph_node_real,B cell,"Lymph node
+B cell",CytoSPACE,expression_recovery_cosine,0.5741095278656813,0.5823426417657709,4033,2000
+human_lymph_node_real_profile_mask_b_cell,human_lymph_node_real,B cell,"Lymph node
+B cell",SVTuner + CytoSPACE,expression_recovery_cosine,0.5814374482648236,0.5886459788392941,4033,2000
+mouse_embryo_real_profile_mask_erythroid,mouse_embryo_real,Erythroid,"Mouse embryo
+Erythroid",CytoSPACE,expression_recovery_cosine,0.6347355266886571,0.6424657492851694,6434,2000
+mouse_embryo_real_profile_mask_erythroid,mouse_embryo_real,Erythroid,"Mouse embryo
+Erythroid",SVTuner + CytoSPACE,expression_recovery_cosine,0.6379305299312262,0.6459793497175209,6434,2000

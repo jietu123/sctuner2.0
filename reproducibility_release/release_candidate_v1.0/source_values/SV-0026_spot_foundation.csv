@@ -1,0 +1,457 @@
+sample,source_sample,target_type,scenario_label,spot_id,masked_support_raw,masked_support_norm,support_rank_low_to_high,support_rank_high_to_low,is_low_support,is_high_support,baseline_reconstructed_score,route2_reconstructed_score,tangram_reconstructed_score,celltrek_reconstructed_score
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTGGATTGGGTACCAC-1,0.003277688863311944,0.0,1,228,True,False,0.09103136564523924,0.1616334573591996,0.15543921094217977,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCAGTCTTGTCATAGA-1,0.004652334487032738,0.027312694114987553,2,227,True,False,0.11857081760778704,0.045939657546420334,0.19357110074752526,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGTTATCATACTTCCA-1,0.005557937854168208,0.045306035329084865,3,226,True,False,0.07941921585840032,0.1163625313282505,0.16622665304703071,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CAAGCACCAAATGCCT-1,0.005580468264978495,0.045753689770438796,4,225,True,False,0.10678004376853359,0.12457244087492195,0.15734377902187677,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGCTTATAGAGACCTG-1,0.006003917151092224,0.05416715262965318,5,224,True,False,0.050226397415317,0.10207806383100668,0.1923738252713858,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGCTATTTAATCCAAC-1,0.006267865529783658,0.059411516125921285,6,223,True,False,0.1164728313796109,0.0,0.2299421858937823,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCTCTGGCCTAGACGG-1,0.006380125050657889,0.06164198913090842,7,222,True,False,0.10033815902748859,0.1747976730551049,0.1401224269759672,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CAGTCGGCCTAGATAT-1,0.006465844935020975,0.06334514879677486,8,221,True,False,0.07939018641222108,0.1392917080377299,0.34356642368889767,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGAACGCCCAGTGCCG-1,0.006522157906419169,0.06446402549922403,9,220,True,False,0.08041649604216618,0.08963756807264285,0.16132628337539565,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCCTGCGTTGATACTC-1,0.006558359724108395,0.06518331573365992,10,219,True,False,0.1392917080377299,0.08857052495335292,0.15935330100224485,0.2045782077629031
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCAACGCGACCGGCAG-1,0.006587539525898684,0.06576308624824309,11,218,True,False,0.09023593414957799,0.09023593414957799,0.20864715703871886,0.22630140926462375
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CTACTATCATAGGTTT-1,0.006649108214427236,0.06698638825992058,12,217,True,False,0.1780288730654719,0.11615178271691157,0.2712383549092679,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTGTATCACACAGAAT-1,0.006787846475845474,0.06974296466824963,13,216,True,False,0.13804097321353634,0.14876211565754777,0.21647036856029503,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TATGACCTTGCGCTGG-1,0.0068291636515632834,0.07056389143119324,14,215,True,False,0.13845208341564008,0.10700722290115301,0.2498309496461641,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGCGTCATGACTGAGC-1,0.007019271112339477,0.07434111723801819,15,214,True,False,0.07147418403026466,0.07729958983634333,0.1133300387678142,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGAACGGCCGGACAAC-1,0.007041697240273942,0.07478669969351658,16,213,True,False,1.047259186021544,0.16521268837632422,0.16601787513182387,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TACATCTTGTTTCTTG-1,0.007215135446249246,0.07823272577173862,17,212,True,False,0.291061189172652,0.07053562068480765,0.17555267372443248,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGTCCTAAGTCACCGC-1,0.007292981804936696,0.0797794471565861,18,211,True,False,0.06214573814537617,0.06537116843688576,0.2006615148277156,0.4556028171723851
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TATGATAAATCTAACG-1,0.007531887614465268,0.08452624239264521,19,210,True,False,0.12160186599318733,0.02762173932948633,0.16914197050831847,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGCATCATGGCTTCAG-1,0.007537494022848577,0.08463763555071785,20,209,True,False,0.045939657546420334,0.07646691648521217,0.18614308794687984,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCAGTAGTCTGATCCA-1,0.00763369650300225,0.08654907284641039,21,208,True,False,0.05037751189604016,0.08487954486211809,0.17907017753134014,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GGTGTTCTGTTTCTAC-1,0.0076671197496375855,0.08721315593511929,22,207,True,False,0.07556671409669834,0.08127294755671016,0.32539663279546116,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACCTAAGTACCTTTCA-1,0.007823583796839123,0.09032192417870595,23,206,True,False,0.08580384734767416,0.134989933570501,0.19869216626227054,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCCAGGCGTTCGCATG-1,0.007877696263986201,0.091397079285951,24,205,True,False,0.05153896145436058,0.13219386493081084,0.18014000283933182,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTATCCTCAAGGAATA-1,0.007989991913285357,0.0936282701229392,25,204,True,False,0.06442807710292184,0.07187723787348582,0.14401427134656658,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CAGTACCAGTTTACGT-1,0.008060521242936118,0.0950296102018988,26,203,True,False,0.06801248153814533,0.1088997023490885,0.11387649793872147,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCTAAAGGCTGACGCT-1,0.008107051599408171,0.09595411712313906,27,202,True,False,0.10649090020803256,0.103807815366747,0.23915751788918158,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ATTGGATTACAGCGTA-1,0.008178693279487193,0.09737755837964689,28,201,True,False,0.1545972402740426,0.12672160346197237,0.23078930402166717,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCCAAGAATACTTCTG-1,0.008218846649110066,0.09817536159763343,29,200,True,False,0.1237206751103575,0.04703902441544099,0.2729623294201911,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CAGTGAATAAATGACT-1,0.008264393790331793,0.09908033311504456,30,199,True,False,0.0940302065267215,0.0940302065267215,0.20866515146703402,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACTCTAAACCTGGGAT-1,0.00828160173690065,0.09942223605560759,31,198,True,False,0.1378248717597515,0.12828276987587087,0.22551189123202606,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTGGACGTGCTGAGAC-1,0.008494910989642189,0.10366045590768604,32,197,True,False,0.09645090368434525,0.07474320592768059,0.3193961035683475,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GATTGACACTCTGCTC-1,0.00854280753026195,0.1046121074028348,33,196,True,False,0.2371875093804685,0.14748234648578198,0.22403659837661222,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TAATCGATCCGTACGT-1,0.008592660582079834,0.10560263262002857,34,195,True,False,0.09902140828005403,0.11328565393967498,0.17179794148454636,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AAATAGCTTAGACTTT-1,0.00874094201410757,0.10854882131478738,35,194,True,False,0.07996915381163884,0.07586481810312215,0.17254756826580284,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTGCCATAGCCCGCTC-1,0.008933692563305291,0.1123785623766936,36,193,True,False,0.05890301902932041,0.09423782608242882,0.2375113846621728,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AACCAAGACTTCTCTG-1,0.00893883232813977,0.11248068384154583,37,192,True,False,0.134989933570501,0.05890301902932041,0.18803130492525097,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCGCTGTGCGTAAATC-1,0.009032945527154283,0.11435060942273578,38,191,True,False,0.06065254999544125,0.11870498466847526,0.13666513334986713,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCGTATCTCGTCGTAG-1,0.009091956068548955,0.1155230838691389,39,190,True,False,0.05804823454940533,0.07147418403026466,0.19129783671008938,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGCCATTACTAAAGAA-1,0.009113385634998384,0.11594886574582781,40,189,True,False,0.10550097060927353,0.04842060082830491,0.23159759941161562,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CATGGATTGTCTTCCG-1,0.009159892090139824,0.11687289777396058,41,188,True,False,0.1562112651593784,0.15466974355451465,0.19282285794207793,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GAGGGCATCGCGTATC-1,0.009176247280668313,0.1171978573914712,42,187,True,False,0.1901130934117217,0.10006349886111958,0.21028658451122403,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CTTTGACGTCGCTTCT-1,0.009197573083982391,0.11762157760897513,43,186,True,False,0.08128920197338732,0.12160186599318733,0.2620786453514303,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CACGAAAGTTAGTCCC-1,0.009204908650513025,0.11776732723444518,44,185,True,False,0.08441554574777817,0.06546154268083483,0.2088273135946192,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCGAGTTCTGCAAAGA-1,0.009482631949408814,0.123285383219532,45,184,True,False,0.07474320592768059,0.1264031528832637,0.19269195166779648,0.1851251432045368
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCCGAATGGTCCTGAG-1,0.009484366084247109,0.12331983856829622,46,183,True,False,0.08425596054239576,0.08425596054239576,0.21700393312072874,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCGGTCCCGGTGAAGG-1,0.00953142052402675,0.12425475844748281,47,182,False,False,0.16747615904283392,0.18257262880520422,0.32470659689939657,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGTGTGACCATGAATC-1,0.009587877752565317,0.12537650138038509,48,181,False,False,0.07729958983634333,0.1375047362059986,0.13104987584734404,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCCGTTTAGCCTTGAA-1,0.009788182288410163,0.12935633183484557,49,180,False,False,0.22310243080840453,0.07771679105872034,0.25431967853197474,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCCTTACGACGGTCCG-1,0.009919017081338573,0.13195587503142525,50,179,False,False,0.2594175871957552,0.35193017468150106,0.24446462701481186,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCAGATTAGGGATATC-1,0.009919122919551231,0.13195797792011024,51,178,False,False,0.23183414322842075,0.18205783042202578,0.24350071051470593,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGTTGAATACCGCGCT-1,0.009953289639864174,0.1326368330117184,52,177,False,False,0.4291507109625569,0.2076489780674881,0.20814658738097908,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CACAGCTAGGGAGTGA-1,0.010120998837043843,0.13596902999674207,53,176,False,False,0.09609807390755336,0.10052054265053609,0.22974336213595709,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AAACAGGGTCTATATT-1,0.010187334221665146,0.1372870410083784,54,175,False,False,0.11328565393967498,0.06442807710292184,0.1905179313685942,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTGGCCGGTTTCTCGG-1,0.0102427604324507,0.13838829875438652,55,174,False,False,0.16521268837632422,0.09609807390755336,0.23154900239113962,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGCGAGAGGGACTTGT-1,0.01026213753101585,0.1387733003553907,56,173,False,False,0.584449827736,0.22732080375722935,0.22873444881030777,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCCGTAACCACAATCC-1,0.010451673138331143,0.14253916406395073,57,172,False,False,0.08857052495335292,0.07509884411962359,0.25848336479373907,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGCATGGATCGGATCT-1,0.010629366314049257,0.14606973170332024,58,171,False,False,0.09598522624380258,0.06514447582329291,0.2631769739198813,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGCCACAGGTCGCGAT-1,0.010679364220346868,0.147063135019442,59,170,False,False,0.2948605087725033,0.06065254999544125,0.1504644175854997,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTACCCTAGGGATTGG-1,0.010734053785709925,0.14814975643245729,60,169,False,False,0.10485631237682343,0.06810784887509133,0.18181161797411735,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGCGTGATTGGGTGTC-1,0.010745967834002508,0.1483864754464863,61,168,False,False,0.1616334573591996,0.09581700699914635,0.18286066653371877,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGCGGTCACAAACCAA-1,0.01076012357922178,0.14866773450880172,62,167,False,False,0.35693113836662427,0.13644635885707726,0.21456659982931925,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TACGCTATAGAAACCT-1,0.010949387011924997,0.15242819040767086,63,166,False,False,0.06409052027450841,0.09621065539036008,0.15840261030895827,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCTACTATAGTAGAGT-1,0.01107526369721171,0.1549292214676896,64,165,False,False,0.06504872071291483,0.26134744785829966,0.20612397717332076,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTGGAAGAATACAGTC-1,0.011215119061855574,0.15770799348641443,65,164,False,False,0.10298512168690727,0.09768419828129266,0.15830296295590837,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CATAAGAAGCTTGGCT-1,0.011611866127701114,0.1655909205939313,66,163,False,False,0.19273231128505883,0.1780288730654719,0.20841303414233953,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ATAGAGTTATCAACTT-1,0.011649161927516201,0.16633194704798282,67,162,False,False,0.09164666618007601,0.07556671409669834,0.21814008709012264,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTGCACGGAGCAGCAC-1,0.011818489398725252,0.16969629735513989,68,161,False,False,0.09423782608242882,0.06465439423869833,0.2562157865215354,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGGCCGTATATTGACC-1,0.011830279454414281,0.16993055277273728,69,160,False,False,0.04703902441544099,0.09333856063409049,0.29235853091673786,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGCTATTCTTAGGCTC-1,0.012060773999471003,0.1745102254503161,70,159,False,False,0.03395053150997966,0.03395053150997966,0.2074209515535249,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTGTTAGCAAATTCGA-1,0.0122637465223313,0.1785430658674887,71,158,False,False,0.06455579967377433,0.12357377022649135,0.2825890304509404,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGCAGATCGTCCTAGG-1,0.012326439795513424,0.17978871213729306,72,157,False,False,0.06340828483103017,0.08853256232830692,0.19467321966530018,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTGTGAGGCATGACGC-1,0.012502491442417673,0.183286664407581,73,156,False,False,0.08780985828466367,0.13845208341564008,0.20870988275840366,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACGCCAGATGATTTCT-1,0.012514935317551112,0.18353391049723483,74,155,False,False,0.0891706740887476,0.07941921585840032,0.22007734155290384,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCATTGTAATTCATAT-1,0.012522847710260705,0.18369112102339924,75,154,False,False,0.162340293035873,0.10963808298026614,0.18791727509742062,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TAGGTCCAAGTAAGGA-1,0.012593702307305584,0.18509892380713733,76,153,False,False,0.13644635885707726,0.1164728313796109,0.23261234048579668,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCGTACCCAAGCGCCA-1,0.012598521577239053,0.18519467739139137,77,152,False,False,0.06465439423869833,0.12256105029370198,0.1616110050321084,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGACTCAGGATGTTAT-1,0.012654645290442242,0.18630979374200898,78,151,False,False,0.08963756807264285,0.028107643961393997,0.2547876529529414,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CTCGTTTCTAATGTTT-1,0.012776865951889937,0.18873818363613803,79,150,False,False,0.09919433613026117,0.13671432260616834,0.2026876495176254,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCGTAAGCTCCGAGGA-1,0.012788294191502942,0.18896525016691268,80,149,False,False,0.06537116843688576,0.12324502967490421,0.2237218775611146,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTGTGAATAACTTAGG-1,0.012804179121026549,0.1892808662163364,81,148,False,False,0.23340454114095283,0.19220337799557793,0.2873120314556077,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GAGCTCTCGGACCTAA-1,0.012856057776428505,0.19031163794516584,82,147,False,False,1.018872303159178,0.10033815902748859,0.1853140798374474,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TAGGTGCTCGCCTAGC-1,0.012894669887214239,0.19107881804804228,83,146,False,False,0.1890885224284688,0.26170568045792286,0.23166672698783936,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGTTCTGCGTTGTATC-1,0.01289868244226039,0.1911585430962321,84,145,False,False,1.2350362132088688,0.26827350489950275,0.20850885147479165,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGATGCATCCTGTGTC-1,0.012993925992086408,0.19305092750275457,85,144,False,False,0.048234165603333747,0.07996915381163884,0.4156447075829614,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTATTAGGGTTCGCGT-1,0.013003121584412655,0.1932336337916184,86,143,False,False,0.31429885069381586,0.08580384734767416,0.19851046268170341,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTGGCTCGCATGAGAC-1,0.013019024374112089,0.19354960470305954,87,142,False,False,0.19039400382800947,0.08128920197338732,0.2288797880917293,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGCGCGGGTGCCAATG-1,0.013028589182834584,0.19373964691495613,88,141,False,False,0.06514447582329291,0.07424527619316666,0.30511628075728564,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TACATTTCTAACGTGC-1,0.013041955605035838,0.1940052229984899,89,140,False,False,0.0,0.10276324775643315,0.23330820982655304,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACGGGAGTGTCGGCCC-1,0.013130637102632176,0.19576722665653212,90,139,False,False,0.12357377022649135,0.039959627084872336,0.1944232216785532,0.14635143105409196
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CTGGACGCAGTCCGGC-1,0.013132292245571896,0.19580011252329596,91,138,False,False,1.2436262530254765,0.1852690547572837,0.26201778886273636,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GGACCTACGGTAACGT-1,0.013344915145126333,0.20002469529369266,92,137,False,False,0.07093024930816699,0.1689791101315788,0.285010048863925,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCCTATAGTGTCAGGG-1,0.013428056021890808,0.2016766129198322,93,136,False,False,0.36121406922222216,0.221523551996868,0.22882596056549578,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GGGTGCATATGAAAGC-1,0.013433669289792644,0.20178814236898093,94,135,False,False,0.09094959276554299,0.09094959276554299,0.2613088154991667,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCTGAGCAACGGTTCT-1,0.013500077330281324,0.20310759697265807,95,134,False,False,0.22691742562671607,0.07671605657643218,0.233035943425655,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTGCCTAGCTATGCTT-1,0.013520690651167169,0.20351716094924518,96,133,False,False,0.23479840070657845,0.31398775803901835,0.2257675993357237,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCAAATTGTTGTGCCG-1,0.013568200742512165,0.20446113412305028,97,132,False,False,0.12457244087492195,0.16159201456354005,0.24096259349898205,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TACCGCGGACTTGCAG-1,0.013586356491541786,0.20482186885432763,98,131,False,False,0.05693669537292442,0.09103136564523924,0.20710837294629145,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCGTTCGGAGACCGGG-1,0.01363082971184302,0.20570550274617264,99,130,False,False,0.103807815366747,0.13804097321353634,0.23723261383162283,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CTAAACGGGTGTAATC-1,0.01382207013265771,0.20950523922079586,100,129,False,False,0.1349853861728595,0.08938898295317209,0.2145269562675798,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGCCTTAAAGCGGAAG-1,0.014062084534561752,0.21427406096603444,101,128,False,False,0.5719958803986044,0.12057712941696819,0.25070006816460444,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCCCGTAATACCTTCT-1,0.014087484397070426,0.21477872825139951,102,127,False,False,0.19962684991577442,0.10273184362825948,0.258404186596314,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGCGAGTCTGCCGGGT-1,0.014156711282452288,0.2161541901976212,103,126,False,False,0.1401105101809385,0.027658318542021918,0.33015507539665984,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CAGACCTGTAAGTGTT-1,0.014217734890268027,0.21736666205604308,104,125,False,False,0.09581700699914635,0.10785713169163084,0.21084761724417403,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGCAATTTGGGCACGG-1,0.014246932592079292,0.21794678822432284,105,124,False,False,0.3170794990385016,0.05021399668082708,0.2133524889778201,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AAGGGACAGATTCTGT-1,0.014438024828711843,0.22174358044249948,106,123,False,False,0.051293540729084,0.01790791139552008,0.21672947307110216,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCAATAGATTTCATCT-1,0.014558470237623473,0.22413669802450847,107,122,False,False,0.2742121638001105,0.265046532465589,0.23235155637401703,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTCACGGTCGTCACGT-1,0.014618790714713689,0.2253351994500437,108,121,False,False,0.16412409553310434,0.07953695550391608,0.29068139786370195,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTGGTTGCGGTGCGCG-1,0.014732342179139556,0.22759134195008526,109,120,False,False,0.12057712941696819,0.10737726846533291,0.39010823600058114,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCGTATTACCCATTGC-1,0.014773167264105684,0.22840249141192265,110,119,False,False,0.10125037077078398,0.08780985828466367,0.2112805595559558,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ATTGACGTAACTCGGT-1,0.014801710139936692,0.22896960690938756,111,118,False,False,0.20156647823170717,0.1805696204606529,0.3138075688761354,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GACCCAATTATGATAC-1,0.01480632848882182,0.22906136841376307,112,117,False,False,0.143520437271054,0.23576042475767756,0.29619075096119885,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CAACTCCTTGATCCCG-1,0.014865569487995466,0.23023842180234216,113,116,False,False,0.10785713169163084,0.10298512168690727,0.24141688055432717,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGGGCCACAAGAGCGC-1,0.014906073762704718,0.2310431971178077,114,115,False,False,0.16007680808776878,0.10157077974874916,0.30988610162390906,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTATCAAACGTTAGCT-1,0.015046002696693336,0.23382343087836246,115,114,False,False,0.38470107507112805,0.2036050870116257,0.2947656904110287,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GACTCGCGGGAATGAC-1,0.015238049181354922,0.237639182953594,116,113,False,False,0.10963808298026614,0.072936195601292,0.22605939108577616,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCCTAGTGTCAGGTGT-1,0.015291027918154676,0.23869181208785298,117,112,False,False,0.2840916252348844,0.34040884013920164,0.20284021118769013,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TAGAGCTACGAAGAAC-1,0.015339755890464045,0.23965998321469728,118,111,False,False,0.7129238901067961,0.09902140828005403,0.3205444419704521,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CTGTACTTCTTAGCAT-1,0.015364097609747475,0.24014362635991873,119,110,False,False,0.072936195601292,0.10649090020803256,0.19016851730111958,0.2537422149660234
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTCTACTCAATTACAA-1,0.015433058916086545,0.24151381154314494,120,109,False,False,0.06611443185796176,0.20604646817401887,0.22404694341218728,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTAGCTCCGGGAGGCT-1,0.015524548074758204,0.24333160033359186,121,108,False,False,0.15232306347807692,0.3135503543377322,0.23889265449161237,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGTAATTTGCAAGCGT-1,0.015549653734158566,0.24383042212731434,122,107,False,False,0.10276324775643315,0.07250858922650215,0.2630285128337865,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCCCGACTTCTTCCCG-1,0.0155999376263074,0.24482950766723316,123,106,False,False,0.11870498466847526,0.09598522624380258,0.26505022757268504,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTCGCTATCTGACGTG-1,0.015615469171945038,0.24513810236816092,124,105,False,False,0.1466653699995698,0.08360597619049533,0.1879772325682906,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGAGCTTTAATGACGC-1,0.015652826710931857,0.24588035551153756,125,104,False,False,0.15392113757716014,0.1349853861728595,0.214548542548337,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CAGATGTTTGTCCCAA-1,0.01566429208257521,0.24610815981484735,126,103,False,False,0.11077659373215502,0.10125037077078398,0.29930746661662916,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CTCTCGATGTGCGCCT-1,0.01579586652471582,0.248722399026412,127,102,False,False,1.0258698220358553,0.06340828483103017,0.4005627230098714,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GACTACAAAGCGGTGG-1,0.016073868732680314,0.25424599662742364,128,101,False,False,0.20814431207147338,0.1488068676852309,0.3076890694846754,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGTATAACAGATCCTG-1,0.01612456820797568,0.25525333934662175,129,100,False,False,0.28850161351214076,0.24453742201029224,0.3406178804956371,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GATCCTCGACACTGGC-1,0.01632240183464695,0.25918407555797024,130,99,False,False,0.12145561074139381,0.11377968255332505,0.31373529668173694,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGCTGAAGTAAACCAA-1,0.01634820114824969,0.2596966794965046,131,98,False,False,0.07250858922650215,0.11857081760778704,0.2233724833696077,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTCCTACGAATAGTCT-1,0.01637913065804571,0.2603112147815322,132,97,False,False,0.15629170278662669,0.1378248717597515,0.26323328136400287,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCCTCAGATCGAGAAC-1,0.01654792846643562,0.2636650412719952,133,96,False,False,0.07771679105872034,0.09919433613026117,0.24030758144857897,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCCAGATGTACGCCAA-1,0.016562915095079213,0.26396280907257896,134,95,False,False,0.10778957830124372,0.11546016136906588,0.18375639198931618,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACTCGTAACCCGTCCT-1,0.01659635188786248,0.26462716130832364,135,94,False,False,0.3640164821238077,0.11564397895375748,0.3518371693116919,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ATATAAAGCGCTCGTG-1,0.017104174280789704,0.2747170327947799,136,93,False,False,0.1978582821106541,0.20053570192541226,0.24503070462908136,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGCGCAAAGCATTTGG-1,0.01721126680720479,0.27684484331227116,137,92,False,False,0.07509884411962359,0.07879103945809633,0.28578094080469574,0.3129871486450608
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CATCATTACCCTGAGG-1,0.017286456508438297,0.2783387798403121,138,91,False,False,0.08108659271413116,0.051293540729084,0.373382799645844,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TAATACTAGAACAGAC-1,0.017854379177262465,0.2896227775971859,139,90,False,False,1.0322334127236241,0.08441554574777817,0.19854295423824114,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GATCCTAAATCGGGAC-1,0.017887541750719948,0.290281681397031,140,89,False,False,0.13671432260616834,0.05153896145436058,0.2430500664700554,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ATATGGGATAGCAACT-1,0.01802247394932691,0.2929626355303875,141,88,False,False,0.05021399668082708,0.06214573814537617,0.2666823146732619,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTATAATCTCCCGGAT-1,0.018077700775371193,0.294059931721246,142,87,False,False,0.2788965677323226,0.16007680808776878,0.2581772883394833,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGAGATCAAATACTCA-1,0.01814157830454548,0.295329107852936,143,86,False,False,0.30558562560866853,0.18772852217717412,0.2600509336252139,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCTACGGCTCAGTCGA-1,0.01825777250130408,0.29763775853296676,144,85,False,False,1.0312055674183054,0.2876645297016679,0.3044744945679092,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACTCGATGTATTTCAT-1,0.018411716556983652,0.3006964573212522,145,84,False,False,0.21498698561209975,0.050226397415317,0.24435489792331658,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGGCACGAGCTCGAGT-1,0.01849978453338629,0.30244627098908355,146,83,False,False,0.1264031528832637,0.06801248153814533,0.30861192782865815,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTGATCACTAACGCCT-1,0.018869973232301763,0.3098015126046908,147,82,False,False,0.24422017926743086,0.14011093571348307,0.25166283614761553,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCTTACCGGAACTCGT-1,0.01894589451818977,0.3113099849138398,148,81,False,False,1.2036913245581524,0.27150184315167886,0.2678304376987236,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AATTCATAAGGGATCT-1,0.019033329725560093,0.3130472261581121,149,80,False,False,0.25931578377358583,0.24530562185505123,0.27059299937059234,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGTAGCCAATTCCGTT-1,0.01908883794504053,0.31415011332653964,150,79,False,False,0.09440904639355667,0.2810306816826608,0.24008166980373485,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GGCTAAAGGGCGGGTC-1,0.019321803455743525,0.31877888136928073,151,78,False,False,0.06810784887509133,0.10678004376853359,0.27289448543497546,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCATCGACGACCGTCG-1,0.019434353956522283,0.3210151358244023,152,77,False,False,0.13945065563944783,0.32241211339860665,0.23134506451886275,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CTAGATGTGAGTGTAA-1,0.01943553162545774,0.32103853480872796,153,76,False,False,0.09229774387228601,0.22654893692990727,0.3466009108228165,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGGGCTGCAGTTACAG-1,0.01944497000071288,0.32122606492691824,154,75,False,False,0.2052845941615013,0.05693669537292442,0.25897011715275453,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GGCCCAATCTAGAGGG-1,0.019592139355707975,0.3241501578761986,155,74,False,False,0.1488068676852309,0.11304837487445675,0.23083596126146735,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CAGTGTCGGCTGGCCC-1,0.019621417241830544,0.324731877218406,156,73,False,False,0.1914877197877796,0.29619805236538,0.22172529497262372,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACTCCCGAATTCGTTT-1,0.0196507335799603,0.32531436055963414,157,72,False,False,0.19034724985057466,0.233339330688316,0.3155636586446209,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AACATATCAACTGGTG-1,0.020124760452446364,0.33473275228698873,158,71,False,False,0.2544240820415207,0.22386521345190638,0.29142719892356367,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ATCTGCACCTCTGCGA-1,0.02015046816509616,0.3352435362155036,159,70,False,False,0.2802967483132092,0.32418190017262,0.25525743101947623,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AAACTTAATTGCACGC-1,0.02038208842706465,0.33984557564793233,160,69,False,False,0.874865444621809,0.0891706740887476,0.3424710255306869,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACGTATTACTCCGATC-1,0.0204287181520564,0.34077205691218604,161,68,False,False,0.3252856531447666,0.048234165603333747,0.24648595529598005,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGTTCATGGTGCGCGT-1,0.020459614821715884,0.3413859396998802,162,67,False,False,0.2933977379841321,0.06409052027450841,0.2699377105860269,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CATTGCGAAATGGGCG-1,0.020617018254093226,0.3445133724920022,163,66,False,False,0.14266066049585532,0.20932475730602923,0.1804282217621693,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TAGTCGATCACGGGTT-1,0.02071958678730274,0.3465512962485204,164,65,False,False,0.24998755637397924,0.11077659373215502,0.3365046527743243,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTCACGAAAGGATCAC-1,0.020795014014565853,0.3480499521570904,165,64,False,False,0.12173808468815049,0.13555002996979373,0.34064662448970595,0.23781468239710243
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AACACACGCTCGCCGC-1,0.020847337332419356,0.34908955883895354,166,63,False,False,1.19817961631477,0.10778957830124372,0.3058735691339546,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CAATTTCGTATAAGGG-1,0.020865835351330443,0.3494570940957015,167,62,False,False,0.2810227328132214,0.21035198377059047,0.28980074951745477,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TAGTCCGTATGCATAA-1,0.02090834439674778,0.3503017019965082,168,61,False,False,0.19838623326682076,0.14090076482698602,0.3694524586342649,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTGATGTGTAGTCCCG-1,0.021019936028140666,0.3525189047733057,169,60,False,False,0.182849191889148,0.08691589786266433,0.23540400634004235,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTGGAACCTACATGCG-1,0.021088196385101666,0.353875162864616,170,59,False,False,1.6230183008327406,0.12145561074139381,0.2945073161360537,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CATGCGACCAGTTTAA-1,0.02114195796789335,0.35494334628628393,171,58,False,False,0.8175429735619845,0.2216950113617038,0.2628094747387181,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTCTTGTAACCTAATG-1,0.021248590455882805,0.35706201634707596,172,57,False,False,0.07671605657643218,0.05804823454940533,0.2345241408612967,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCTCACCTTAGCATCG-1,0.021376180696964918,0.35959709387294825,173,56,False,False,0.16930885096055148,0.08041649604216618,0.30412401317565396,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACGCTAGTGATACACT-1,0.021894847858816704,0.3699024389704014,174,55,False,False,0.16533867737912983,0.10550097060927353,0.26451008695152906,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GATAGCGTACCACGCG-1,0.022034742628708946,0.37268199392799933,175,54,False,False,0.06806494700928341,0.06806494700928341,0.2707787839915825,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GCATAGAGCACTCAGG-1,0.02211887616421649,0.37435363458976506,176,53,False,False,0.1893849527410385,0.1519041439057983,0.27289403144754326,0.2433857593277662
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GGTCTGAGAATCTGGA-1,0.02227129001276381,0.37738192984814106,177,52,False,False,0.23509658486976404,0.17436162596334,0.219633218402658,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GGGCAACCGCACGTGC-1,0.022298753556000195,0.37792760019603683,178,51,False,False,0.19134497717379448,0.396320082080824,0.25131748303124113,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGTACCTTCGAGTGCT-1,0.022428148738776767,0.38049853992489835,179,50,False,False,0.22665865460793247,0.23076561610366828,0.37617700887190075,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CACGTCTATGATGTGG-1,0.02251408198498436,0.3822059388555573,180,49,False,False,0.07646691648521217,0.09243397670970917,0.22988185470104944,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGGGCAGCGGCGTGGT-1,0.022848668699970875,0.38885380827271654,181,48,False,False,0.8634940996221482,0.10290679495754201,0.29864045280604806,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTATCCAATCGAACTC-1,0.022895718871240152,0.38978864334130475,182,47,False,False,0.14011093571348307,0.05037751189604016,0.49272767786006266,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCTAGGTGGCGACGCT-1,0.02332766220192269,0.39837088145588756,183,46,False,True,0.1734333904315969,0.3154718316782029,0.289859910083937,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GACAGCCAGACCTGAC-1,0.023356699243234066,0.398947815477032,184,45,False,True,0.8529143318884118,0.15516008584529645,0.2359384437403692,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCCGAAGTAGTCACCA-1,0.02367795034894534,0.40533072102955114,185,44,False,True,1.2547670216675824,0.10485631237682343,0.28557436034920664,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ATAGGCTAGCTTCGCA-1,0.02375064870978601,0.40677515736866215,186,43,False,True,0.12771081202783952,0.12771081202783952,0.41800173573960414,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TAGTACCACAACTTTC-1,0.023903032529818194,0.4098028559935244,187,42,False,True,0.13572998125822847,0.08786949644950434,0.29944413499071126,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCATACCTTTACTTGT-1,0.024220100097086875,0.41610263924613644,188,41,False,True,0.223360984499589,0.07264160173801391,0.3110573967737854,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCACGTGCCCGATTCA-1,0.024326334493945424,0.418213399674729,189,40,False,True,0.18493035766180893,0.07818568575243276,0.25351165518380586,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTGTATATCAGCGGGC-1,0.02465522030646453,0.4247479984404673,190,39,False,True,0.17044783455112025,0.28258468157228517,0.2593754547374066,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CTTGAGTTAGGGTAAT-1,0.024863620709956926,0.42888868486597753,191,38,False,True,0.15596481719731858,0.26301869797754485,0.2921767803549191,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACGCATTCGTGAGTAC-1,0.024933997548759683,0.4302869951197844,192,37,False,True,0.18428451730112527,0.1901130934117217,0.25578918955472413,0.2944264504822979
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCGGTGACCGCTCCGG-1,0.02512755980971556,0.4341328640000734,193,36,False,True,0.2710349371014374,0.33106779093481037,0.3111554081104753,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGTCGCATGTGAGCCA-1,0.025348682195415955,0.43852632219642224,194,35,False,True,0.15362172114340225,0.04653714099420159,0.34693477256709726,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCCGGAGGAAGGGCTG-1,0.02571379094696782,0.4457806308544233,195,34,False,True,0.24541879165135744,0.3510629649776949,0.3911343908220856,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGCACATGTCCACTAC-1,0.02635725891260843,0.45856563043181625,196,33,False,True,1.193393601387644,0.07093024930816699,0.27000512740840527,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGCGGCAGTATTACGG-1,0.02758718041549918,0.48300281570650183,197,32,False,True,0.1546567159007955,0.2971142201407457,0.2894365918701295,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGAATGCGGGTTCGGA-1,0.028007990601725468,0.4913638505059725,198,31,False,True,0.24023870471401418,0.41425444029770536,0.26878296299615684,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGCATATCAATATGCT-1,0.028661860528706517,0.5043555255955008,199,30,False,True,1.110148980363913,0.30779228954954296,0.31091108851148697,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCCCGTGTGCAATTTG-1,0.030182328718863886,0.5345655534548496,200,29,False,True,0.13993590158458866,0.09645090368434525,0.2995155573836369,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTAGCTAATACGATCT-1,0.030608495733469954,0.5430330225326816,201,28,False,True,0.028107643961393997,0.35283327783839363,0.29777921824497144,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGCACTATGTGAGTGC-1,0.03077200012400496,0.5462816746420539,202,27,False,True,0.19411155790285017,0.26392074000014,0.2926589535312825,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCGTTGACAGGGTCCC-1,0.031158628245260278,0.5539635494684664,203,26,False,True,0.11756799453284643,0.18560568902118108,0.379043233238946,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CTGGGATACGCTACCC-1,0.03169883076809318,0.5646967784634007,204,25,False,True,0.04963639964066967,0.21169658566595217,0.2709444860582627,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGGCGATCAAGTTATG-1,0.03174173623598717,0.5655492628420852,205,24,False,True,0.9420676334588874,0.31117950709307607,0.411600792036893,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TAGTCCGCAGAGAATG-1,0.031848093890156075,0.5676624722576437,206,23,False,True,0.2117067514188751,0.22161482558816623,0.25338309636149403,0.14155396857640107
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ATATTTAACCCTCAAG-1,0.032435048578472056,0.5793246152745034,207,22,False,True,1.1705973785381396,0.10722121385413226,0.43289621245175885,0.36149039876082534
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TTGTGGTGGTACTAAG-1,0.03285108952617285,0.5875908905586774,208,21,False,True,0.14029799505503757,0.22466621541251738,0.33475201644542557,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CTATCGACGAAATACA-1,0.0331917535035795,0.5943595084848876,209,20,False,True,0.9976551606274789,0.18607644951568617,0.4483146207251281,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACCAATATGCAAGTTA-1,0.03427805865694929,0.6159431951147663,210,19,False,True,0.16052495299759834,0.2394357707400553,0.45479973831846743,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ATTATCGGAATGTACG-1,0.03499958844654892,0.6302791971345776,211,18,False,True,0.2410460737082826,0.14954729616049567,0.3854925021062691,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GAATTATAGTGAAAGG-1,0.0351962105089185,0.6341858608980154,212,17,False,True,0.1672592822103761,0.2176031237734076,0.4458292858538405,0.2660950939904991
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CCTCGGACCGGGATAG-1,0.0371163065512893,0.6723360539162878,213,16,False,True,0.3611920345183733,0.22070692124080496,0.333378450194041,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AATTAAAGGTCGGCGT-1,0.037360362499963516,0.6771851767433328,214,15,False,True,0.1833270112014827,0.16280218871395333,0.3433420091759725,0.22127674114932602
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GAGTGTGCGGTACCCA-1,0.03806611186527317,0.6912076391175805,215,14,False,True,0.16641316011197058,0.18340181254845883,0.45041380480973014,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",ACCATATCCGCAATAA-1,0.038242770005713654,0.6947176417462678,216,13,False,True,0.20111245605617212,0.22198759105458254,0.30861482567445275,0.21308147018424692
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",CGGTAGAGGTGCAGGT-1,0.038431184021670464,0.6984612206701767,217,12,False,True,1.219286802014201,0.2364889649830249,0.4809615461890695,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TCCGGCCTAGCGTACA-1,0.03902963761717023,0.7103518343045889,218,11,False,True,0.2724467284118585,0.31090226566202844,0.4131432057763966,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TATATTCGCGTCGATA-1,0.039416394497413645,0.7180362674302428,219,10,False,True,1.5519272498433938,0.19434008482032894,0.3892946942869096,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GTACACTTACCTGAAG-1,0.04088080779141061,0.7471325462577992,220,9,False,True,1.2730720604702495,0.09164666618007601,0.48230126115027055,0.27162345635027374
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GGGCACGAATTGGCCG-1,0.040965522015915336,0.7488157245702018,221,8,False,True,0.5436775633753187,0.21256796772243505,0.30325099823980745,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TACAACGCACAACTCA-1,0.04281830331704745,0.7856284478397945,222,7,False,True,0.22534999210865372,0.15882747707317968,0.41166176117355724,0.1645679646490376
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",GACCGTGCTGACGGTG-1,0.04295938285206526,0.7884315427751978,223,6,False,True,0.3641547063044774,0.30953707297863314,0.40629604515530193,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TGTACGAACAAATCCG-1,0.04353973885172137,0.7999625771180712,224,5,False,True,1.3702008286868508,0.27225277692800065,0.31425384036678944,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AAGCACCCTGCGTATC-1,0.044270514232780514,0.8144822788544409,225,4,False,True,1.2152591126928713,0.06455579967377433,0.3643835885465531,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGTTAAGCGGTCCCGG-1,0.04551418250632656,0.8391925973174174,226,3,False,True,0.4094253069327281,0.23069018815824552,0.49398446142227764,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",AGAAGGTTGTAGGTCG-1,0.05073858547225356,0.9429957285968579,227,2,False,True,0.17636799758141075,0.2460002383417542,0.4219115784377211,0.0
+human_heart_ff_real_profile_mask_endothelial_cell,human_heart_ff_real,Endothelial cell,"Heart FF
+Endothelial cell",TACGCAGTTCTTTCCT-1,0.05360760571199337,1.0,228,1,False,True,1.201157796953861,0.19175477632124469,0.5450633898565745,0.0

@@ -1,0 +1,9 @@
+{
+  "experiment_id": "highres_targeted_validation_fig2c",
+  "raw_sample": "HumanColonCancerPatient1",
+  "profile_mask_sample": "highres_humancoloncancerpatient1_profile_mask_fibroblasts",
+  "masked_target_type": "Fibroblasts",
+  "anchor_cell_type": "Epithelial cells",
+  "readout_cell_type": "Monocytes and Macrophages",
+  "gene_set": "EcoTyper_Monocytes_and_Macrophages_CE9"
+}

@@ -1,0 +1,21 @@
+{
+  "metric": "expression_recovery_cosine",
+  "metric_full_name": "Masked-ST expression recovery cosine similarity",
+  "definition": "Cosine similarity between masked ST expression and spot expression recovered by summing mapped single-cell expression.",
+  "reference_expression": "masked ST expression used by each real profile-mask scenario",
+  "gene_selection": "top 2000 shared genes by variance in masked ST expression",
+  "n_scenarios": 10,
+  "n_route2_better": 8,
+  "method_order": [
+    "CytoSPACE",
+    "SVTuner + CytoSPACE"
+  ],
+  "mean_baseline": 0.5248247030128178,
+  "mean_route2": 0.53126925152931,
+  "method_means": {
+    "CytoSPACE": 0.5248247030128178,
+    "SVTuner + CytoSPACE": 0.53126925152931
+  },
+  "mean_delta_route2_minus_baseline": 0.0064445485164920545,
+  "wilcoxon_pvalue_route2_gt_baseline": 0.013671875
+}

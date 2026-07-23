@@ -1,0 +1,13 @@
+scene,pair_id,target_type,n_spots,target_core_spots,stage3b_blank_spots,inside_target_core_spots,near_target_core_spots,outside_target_associated_spots,neighbor_spacing,neighbor_radius,fraction_inside_target_core,fraction_near_target_core,fraction_outside_target_associated_region
+"Mouse embryo
+Endoderm/Gut",mouse_embryo_real,Endoderm/Gut,6434,965,832,702,5,125,363.4350010662154,908.5875026655385,0.84375,0.006009615384615385,0.1502403846153846
+"Mouse embryo
+Erythroid",mouse_embryo_real,Erythroid,6434,965,812,686,21,105,363.4350010662154,908.5875026655385,0.8448275862068966,0.02586206896551724,0.12931034482758622
+"BRCA TNBC
+Plasma cells",brca_tnbc_fresh_frozen,Plasma cells,1211,182,97,91,6,0,109.0,272.5,0.9381443298969072,0.061855670103092786,0.0
+"CRC
+B cells",crc_fresh_frozen,B cells,3138,471,298,234,43,21,137.55726080436466,343.89315201091165,0.785234899328859,0.14429530201342283,0.07046979865771812
+"BRCA HER2 FFPE
+Plasma cells",brca_her2_ffpe,Plasma cells,2518,378,337,231,100,6,290.0,725.0,0.685459940652819,0.29673590504451036,0.017804154302670624
+"BRCA HER2 FFPE
+Epithelial cells",brca_her2_ffpe,Epithelial cells,2518,378,204,159,44,1,290.0,725.0,0.7794117647058824,0.21568627450980393,0.004901960784313725

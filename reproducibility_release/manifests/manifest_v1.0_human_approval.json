@@ -1,0 +1,39 @@
+{
+  "approval_status": "APPROVED",
+  "approval_date": "2026-07-22",
+  "approval_scope": "Task 4F dataset and experiment manifest v1.0 freeze",
+  "approved_candidate_dataset_path": "reproducibility_release/manifests/dataset_manifest_v1.0_freeze_candidate.tsv",
+  "approved_candidate_dataset_sha1": "64223e7846fc3cc8228a076b0f3e069742f58afe",
+  "approved_candidate_experiment_path": "reproducibility_release/manifests/experiment_manifest_v1.0_freeze_candidate.tsv",
+  "approved_candidate_experiment_sha1": "347539ed5677dc89318772333552d5944821a355",
+  "approved_candidate_metadata_sha1": "80b7d1905b24bf9fe7d5de9bf52f8a1e7998575c",
+  "approval_basis": {
+    "blocking_conflicts": 0,
+    "major_conflicts": 0,
+    "manuscript_match": 174,
+    "manuscript_match_with_qualified_wording": 17,
+    "manuscript_missing_in_manifest": 0,
+    "manuscript_conflict": 0,
+    "validation_passed": 16,
+    "validation_failed": 0,
+    "candidate_generation_deterministic": true
+  },
+  "accepted_unresolved_nonblocking_fields": [
+    "human-lung read-run accession",
+    "CID4465 slide identifier",
+    "CID4465 capture area",
+    "CTA exact chemistry or kit version",
+    "Vizgen provider-supplied checksum",
+    "Vizgen explicit redistribution permission"
+  ],
+  "approval_conditions": [
+    "No unresolved value may be inferred or fabricated.",
+    "No provider-hosted Vizgen raw file may be redistributed without explicit permission.",
+    "Qualified manuscript wording must be retained.",
+    "Any later substantive manifest change requires a new manifest version."
+  ],
+  "formal_manuscript_accessed": false,
+  "formal_manuscript_modified": false,
+  "formal_bibliography_accessed": false,
+  "formal_bibliography_modified": false
+}

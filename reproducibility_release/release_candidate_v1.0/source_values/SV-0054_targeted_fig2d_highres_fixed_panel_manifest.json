@@ -1,0 +1,26 @@
+{
+  "experiment_id": "highres_targeted_validation_fig2d",
+  "design_source": "configs/highres_targeted_validation_fig2d.csv",
+  "n_fixed_profiles": 10,
+  "n_datasets": 5,
+  "route2_improved_profiles": 10,
+  "mean_delta_nes": 0.3980585025153947,
+  "median_delta_nes": 0.2311689223421194,
+  "mean_nes": {
+    "CellTrek": 1.5019807645429912,
+    "CytoSPACE": 1.002336243570396,
+    "SVTuner + CytoSPACE": 1.4003947460857908,
+    "Tangram": 0.591359572888799
+  },
+  "rows_per_method": {
+    "CellTrek": 10,
+    "CytoSPACE": 10,
+    "SVTuner + CytoSPACE": 10,
+    "Tangram": 10
+  },
+  "nperm": 1000,
+  "seed": 19,
+  "fixed_profiles_csv": "visualizations/highres_profile_mask_fig2d/targeted_validation/targeted_fig2d_highres_fixed_panel_fixed_profiles.csv",
+  "source_values_csv": "visualizations/highres_profile_mask_fig2d/targeted_validation/targeted_fig2d_highres_fixed_panel_source_values.csv",
+  "png": "visualizations/highres_profile_mask_fig2d/targeted_validation/targeted_fig2d_highres_fixed_panel.png"
+}

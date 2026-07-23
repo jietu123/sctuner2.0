@@ -1,0 +1,79 @@
+{
+  "decision": "RESOLVED",
+  "formal_analysis": {
+    "n": 1888,
+    "positive": 134,
+    "negative": 1754,
+    "ambiguous": 290,
+    "excluded": 70,
+    "endpoint_file": "visualizations/bioapp_experiment/bioapp_phase2c_endpoint_freeze_with_validated_cta_to_spot_mapping/spot_level_endpoint_freeze.csv",
+    "score_file": "visualizations/bioapp_experiment/bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint/svtuner_immune_all_dropout/svtuner_immune_all_dropout_spot_level_raw_output_contract.csv",
+    "endpoint_column": "primary_endpoint_status",
+    "score_column": "withheld_score",
+    "binary_column": "withheld_binary"
+  },
+  "join_audit": {
+    "endpoint_rows": 2248,
+    "score_rows": 2248,
+    "inner_join_rows": 2248,
+    "left_join_rows": 2248,
+    "endpoint_only_rows": 0,
+    "score_only_rows": 0
+  },
+  "endpoint_warnings": [],
+  "metrics": {
+    "n": 1888,
+    "auroc": 0.8305238346466074,
+    "average_precision": 0.2836551170002947,
+    "trapezoidal_pr_auc": 0.27926762259321025,
+    "positive_prevalence": 0.07097457627118645,
+    "positive_mean_score": 0.5205562170297745,
+    "negative_mean_score": 0.37524085541836516,
+    "mean_score_difference": 0.14531536161140934,
+    "mann_whitney_u": 195203.0,
+    "mann_whitney_pvalue": 2.3655876541811505e-37,
+    "positive_withheld_count": 60,
+    "negative_withheld_count": 38,
+    "positive_withheld_rate": 0.44776119402985076,
+    "negative_withheld_rate": 0.021664766248574687,
+    "score_min": 0.0831969787619414,
+    "score_max": 0.7327204273062451,
+    "score_mean": 0.3855545516344292,
+    "score_std_sample": 0.1164605792918781,
+    "score_unique_values": 1888,
+    "missing_score_count": 0,
+    "nonfinite_score_count": 0,
+    "score_transform_audit": "No audit-side scaling, ranking, clipping, z-scoring, or binarization; Phase 7 continuous withheld_score used verbatim.",
+    "higher_score_meaning": "stronger reference inadequacy / withholding evidence"
+  },
+  "phase8_reported_value": 0.2836551170002947,
+  "phase8_reported_value_reproduced_as_average_precision": true,
+  "raw_score_contract_check": {
+    "withheld_score_vs_unsupported_fraction_estimate_max_abs_diff": 0.0,
+    "withheld_binary_vs_is_unsupported_region_equal": true
+  },
+  "origin_0_2837": "Phase 8 sklearn.metrics.average_precision_score stored as withheld_AUPRC and imported by the Fig. 5b script.",
+  "origin_0_2131": "untraceable legacy value; not reproduced",
+  "root_cause": "untraceable legacy value plus ambiguous AUPRC terminology",
+  "recommended_manuscript_metric": "average precision = 0.2837",
+  "recommended_figure_label": "AP = 0.284",
+  "guardrails": {
+    "Stage3_rerun": false,
+    "Stage4_rerun": false,
+    "CTA_endpoint_modified": false,
+    "Stage3B_threshold_modified": false,
+    "shared_gene_set_modified": false,
+    "formal_manuscript_modified": false,
+    "formal_Fig5_modified": false,
+    "existing_source_value_files_overwritten": false
+  },
+  "software_versions": {
+    "Python": "3.13.5",
+    "implementation": "CPython",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "NumPy": "2.1.0",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.6.1",
+    "SciPy": "1.15.3"
+  }
+}

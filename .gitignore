@@ -12,6 +12,7 @@ __pycache__/
 *.pyd
 *.egg-info/
 .ipynb_checkpoints/
+.pytest_cache/
 .numba_cache/
 .Rhistory
 .RData
@@ -19,21 +20,51 @@ __pycache__/
 .env
 .venv/
 venv/
+.conda/
+env/
+envs/
 
 # Local machine-only overrides (paths, secrets)
 configs/project_config.local.yaml
+/manuscript/
 
 # Project outputs and large data
 data/
 logs/
 result/
+results/
+cache/
 tmp_*.pdf
 tmp_*.txt
+*.h5ad
+*.loom
+*.rds
+*.mtx
+provider_data/
+raw_provider_data/
+merscope_raw/
 external/CellTrek/
 external/cytospace/cytospace_results*/
 external/cytospace/cytospace_results_brca/
 external/cytospace/data/
 external/cytospace/images/
+reproducibility_release/tmp_extract/
+reproducibility_release/release_assets/
+
+# Local full audit workspaces are retained outside the public release payload.
+reproducibility_release/audit_records/manuscript_audits/
+reproducibility_release/audit_records/manuscript_data_source_audit/
+reproducibility_release/audit_records/manuscript_public_source_resolution/
+reproducibility_release/audit_records/path_content_hash_inventory.tsv
+reproducibility_release/audit_records/path_relocation_map.tsv
+
+# Superseded Task 4F freeze-candidate aliases; frozen v1.0 files are retained.
+reproducibility_release/manifests/*_freeze_candidate.tsv
+reproducibility_release/manifests/manifest_v1.0_freeze_candidate_metadata.json
+
+# Task 4H froze four CytoSPACE package-metadata files as release payload.
+!reproducibility_release/release_candidate_v1.0/code/external/cytospace/cytospace.egg-info/
+!reproducibility_release/release_candidate_v1.0/code/external/cytospace/cytospace.egg-info/*.txt
 
 # GitHub archive stores the exact Phase 4 Matrix Market outputs as matrix.mtx.gz.
 visualizations/bioapp_experiment/**/assigned_expression/matrix.mtx

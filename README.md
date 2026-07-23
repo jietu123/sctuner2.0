@@ -7,25 +7,31 @@ SVTuner is a reference-adequacy and abstention layer for spatial transcriptomics
 
 The maintained backend is [CytoSPACE](external/cytospace). SVTuner is not a replacement for CytoSPACE and should not be described as a generally superior mapping algorithm. Its intended use is to make a mapper mismatch-aware when the reference and spatial sample do not contain the same biological types or states.
 
-This is a research repository. Code, dataset configurations, audit tables, manuscript notes, and selected paper figures are versioned. Most raw data and large run outputs are local and intentionally excluded from Git.
+This is a research repository. Code, dataset configurations, audit tables, reproducibility records, and selected paper figures are versioned. Most raw data and large run outputs are local and intentionally excluded from Git.
+
+## Release Candidate
+
+This repository is associated with the manuscript reproducibility release candidate `v1.0.0-rc1`. The frozen reproducibility package, manifests, source-value records, environment specifications, configuration records, and audit summaries are indexed in [`reproducibility_release/`](reproducibility_release/README.md).
+
+GitHub releases are available from the [SVTuner Releases page](https://github.com/jietu123/sctuner2.0/releases). Large raw datasets and complete mapping intermediates are not stored in Git. Third-party inputs must be reacquired from the accessions and official provider routes recorded in the frozen dataset manifest.
 
 ## Current Evidence Snapshot
 
-The current simulation endpoint is an **abstention-aware whole-space recovery score**. Every truth spot remains in the denominator. A nonblank spot receives its normalized composition-overlap score; an SVTuner blank receives `1` only when independent simulation truth confirms that the SC-reference-dropped type is dominant at that spot, and an incorrect blank receives `0`.
+The current simulation endpoint is an **abstention-aware whole-space recovery score**. Every truth spot remains in the denominator. A non-withheld spot receives its normalized composition-overlap score; an SVTuner-withheld spatial unit receives `1` only when independent simulation truth confirms that the SC-reference-dropped type is dominant at that spot, and an incorrect withholding decision receives `0`.
 
 | Method | No noise, mean (n=9) | 10% SC noise, mean (n=9) |
 |---|---:|---:|
 | CytoSPACE | 0.5154 | 0.5046 |
-| **SVTuner** | **0.7104** | **0.6220** |
+| **SVTuner** | **0.7104** | **0.6553** |
 | Tangram, all genes | 0.4377 | 0.4513 |
 | Tangram, marker genes | 0.4628 | 0.4687 |
 | novoSpaRc | 0.4914 | 0.4889 |
 | SpaOTsc | 0.3950 | 0.3836 |
 | CellTrek | 0.5309 | 0.4352 |
 
-Under no added noise, SVTuner exceeded CytoSPACE in `9/9` scenarios, with an absolute mean improvement of `0.1950` (`37.83%`). Of `10,445` predicted blank spots, `10,389` were correct, giving abstention precision `0.9946` and recall `0.9540` against `10,890` truth-unsupported spots.
+Under no added noise, SVTuner exceeded CytoSPACE in `9/9` scenarios. Of `10,445` predicted withheld spatial units, `10,389` were correct, giving abstention precision `0.9946` and recall `0.9540` against `10,890` truth-unsupported spots.
 
-Under 10% scRNA-seq expression perturbation, SVTuner exceeded CytoSPACE in `7/9` scenarios, with an absolute mean improvement of `0.1174` (`23.27%`). Abstention precision and recall decreased to `0.9614` and `0.9039`. The two human-lung missing-type scenarios had small negative deltas (`-0.0030` and `-0.0035`), so the result is an aggregate benefit, not uniform robustness.
+Under 10% scRNA-seq expression perturbation, the complete Stage3A plus Stage3B route achieved a mean score of `0.6553`, compared with `0.5046` for CytoSPACE, and exceeded CytoSPACE in `8/9` scenarios. Abstention precision and recall were `0.9614` and `0.9039`. The result supports an aggregate benefit, not uniform robustness across every dataset background.
 
 The final biological application uses an independent computational-pathology annotation (CTA) Immune endpoint in breast-cancer Visium, not the retired Xenium/B-lineage candidate. Under an immune-all-dropout reference perturbation, the frozen analysis reported:
 
@@ -33,9 +39,10 @@ The final biological application uses an independent computational-pathology ann
 |---|---:|
 | Analysis spots, positive / negative | 134 / 1,754 |
 | Mean withheld score, positive / negative | 0.5206 / 0.3752 |
-| AUROC / AUPRC | 0.8305 / 0.2837 |
-| Binary withheld rate, positive / negative | 0.4478 / 0.02166 |
-| Risk ratio / odds ratio | 20.67 / 36.21 |
+| AUROC / average precision (AP) | 0.8305 / 0.2837 |
+| Binary withheld rate, positive / negative | 44.78% / 2.17% |
+| Risk ratio / odds ratio | 20.67 / 36.61 |
+| Fisher exact P | 1.95e-49 |
 | CTA-positive vs withheld Jaccard | 0.2691 |
 | Binary / continuous forced-burden prevention | 0.4478 / 0.5206 |
 
@@ -54,15 +61,10 @@ scripts/                 Experiment, benchmark, audit, and figure entry points
 src/stages/              Stage0, Stage1 IO, Stage3A, Stage3B, and Stage4
 src/svtuner/             CLI and pipeline orchestration
 src/utils/               Shared path and cell-type utilities
-tests/                   Stage3B and Stage4 blank-restoration tests
+tests/                   Stage3B and Stage4 withholding-restoration tests
 visualizations/          Curated figures and source-value tables
+reproducibility_release/ Frozen release candidate, manifests, and public audit indexes
 ```
-
-The three manuscript evidence summaries are:
-
-- [Stage3A and SC-only mismatch](论文材料准备.md)
-- [Stage3B and ST-only unsupported regions](论文材料准备B.md)
-- [Independent CTA Immune biological application](生物学应用实验论文材料准备.md)
 
 ## Installation
 
@@ -232,7 +234,7 @@ data/processed/<sample>/stage3b_st_unsupported/supported_mixture_weights.csv
 result/<sample>/stage3b_st_unsupported/stage3b_summary.json
 ```
 
-To preserve Stage3B regions as explicit blanks, pass the mask to Stage4:
+To preserve Stage3B regions as withheld spatial units, pass the mask to Stage4. The `blank` token in the following option and output suffix is retained as a legacy compatibility identifier:
 
 ```powershell
 python -m src.stages.stage4_cytospace `
@@ -286,7 +288,7 @@ python scripts/run_nine_scenario_method_benchmark.py `
   --sample_suffix _scnoise10
 ```
 
-These commands run Tangram, novoSpaRc, SpaOTsc, and CellTrek. The no-noise summary additionally requires the CytoSPACE baseline and SVTuner Stage3B-blank outputs. The full 5% and 10% noise SVTuner routes are run separately below.
+These commands run Tangram, novoSpaRc, SpaOTsc, and CellTrek. The no-noise summary additionally requires the CytoSPACE baseline and SVTuner Stage3B-withholding outputs. The historical output directory still contains `blank` in its compatibility name. The full 5% and 10% noise SVTuner routes are run separately below.
 
 Rebuild the abstention-aware summaries and boxplots:
 
@@ -346,7 +348,7 @@ visualizations/method_comparison/composite_scnoise10_stage3ab_full/
   composite_scnoise10_stage3ab_full_summary.json
 ```
 
-The previous naive whole-space score incorrectly treated correct SVTuner blanks as zero. The previous predicted-supported-region score used a method-dependent evaluation subset. Both are retired and must not be mixed with the current benchmark.
+The previous naive whole-space score incorrectly treated correct SVTuner withholding decisions as zero. The previous predicted-supported-region score used a method-dependent evaluation subset. Both are retired and must not be mixed with the current benchmark.
 
 ## Biological Application
 
@@ -406,19 +408,9 @@ visualizations/highres_profile_mask_fig2d/targeted_validation/
   targeted_fig2d_highres_fixed_panel.png
 ```
 
-Editable vector assets in the repository root include:
-
-```text
-1_editable.svg
-FIG1B_editable.svg
-A简洁版_editable.svg
-B_editable.svg
-SVTuner_2_0_workflow_realistic_style_editable.svg
-```
-
 ## Testing
 
-The maintained unit tests cover Stage3B calibration/spatial logic and Stage4 blank-mask restoration:
+The maintained unit tests cover Stage3B calibration/spatial logic and Stage4 withholding-mask restoration:
 
 ```powershell
 python -m pytest -q tests
@@ -450,6 +442,8 @@ external/cytospace/images/
 
 Selected visualizations and source-value CSVs are committed as the auditable paper evidence layer. Reproducing mapping from scratch requires obtaining the corresponding local raw/reference data and satisfying each dataset's license and access conditions.
 
+The `v1.0.0-rc1` public reproducibility layer is indexed in [`reproducibility_release/README.md`](reproducibility_release/README.md). It excludes restricted provider data, complete GEO/10x copies, complete Space Ranger outputs, raw MERSCOPE provider files, large expression matrices, and complete CytoSPACE intermediate outputs.
+
 Create a distributable code/configuration bundle with:
 
 ```powershell
@@ -462,7 +456,7 @@ svtuner bundle --include-raw-data --include-results --name svtuner_full_delivery
 Supported statements:
 
 - Stage3A can reduce unsupported reference-type reconstruction under tested mismatch conditions.
-- Stage3B can identify spatial regions insufficiently explained by the available SC reference and preserve them as blanks.
+- Stage3B can identify spatial regions insufficiently explained by the available SC reference and withhold them from forced mapping.
 - SVTuner improves the mean abstention-aware whole-space score in the tested no-noise and 10% SC-noise composite benchmarks.
 - The frozen CTA application shows concordance between SVTuner withholding and an independent immune-associated pathology endpoint under immune-all-dropout.
 
@@ -470,7 +464,7 @@ Unsupported statements:
 
 - SVTuner perfectly detects every missing type or every target-positive spot.
 - SVTuner is uniformly superior to all mapping methods or under all noise conditions.
-- A correct blank is equivalent to a conventional composition prediction.
+- A correct withholding decision is equivalent to a conventional composition prediction.
 - The CTA experiment proves a new breast-cancer immune mechanism or reports post-remapping composition improvement.
 - Simulation truth, target labels, or CTA endpoint labels are used by the Stage3B algorithm. They are used only for post hoc evaluation.
 
@@ -478,6 +472,6 @@ Closely related cell states remain a difficult boundary case because broad linea
 
 ## License and Status
 
-`pyproject.toml` currently declares a proprietary license. External components retain their own licenses; see [`external/cytospace/LICENSE`](external/cytospace/LICENSE).
+`pyproject.toml` currently declares a proprietary license, but this repository does not yet contain a project-level `LICENSE` file. No release license is inferred here. External components retain their own licenses; see [`external/cytospace/LICENSE`](external/cytospace/LICENSE).
 
-The public package version is `0.1.0`. The maintained command surface is `svtuner run`, `svtuner envcheck`, `svtuner stage3b`, `svtuner bundle`, and `svtuner version`. The many scripts under `scripts/` are experiment-specific research entry points and are not a stable public API.
+The manuscript-associated reproducibility version is `v1.0.0-rc1`; the Python package metadata remains `0.1.0`. The maintained command surface is `svtuner run`, `svtuner envcheck`, `svtuner stage3b`, `svtuner bundle`, and `svtuner version`. The many scripts under `scripts/` are experiment-specific research entry points and are not a stable public API.

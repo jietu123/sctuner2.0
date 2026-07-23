@@ -1,0 +1,71 @@
+{
+  "audit_date": "2026-07-22",
+  "backend_by_panel": {
+    "Fig. 2b": "CUSTOM_PYTHON_CONFIRMED",
+    "Fig. 2c": "CUSTOM_PYTHON_HIGH_CONFIDENCE_CONDITIONAL",
+    "Fig. 2d": "CUSTOM_PYTHON_CONFIRMED",
+    "Fig. 2f": "CUSTOM_PYTHON_CONFIRMED"
+  },
+  "decision": "CONDITIONAL PASS",
+  "formal_source_value_consistency": "PASS",
+  "guardrails": {
+    "cytospace_rerun": false,
+    "experimental_code_modified": false,
+    "experimental_outputs_modified": false,
+    "formal_bibliography_accessed": false,
+    "formal_bibliography_modified": false,
+    "formal_figures_modified": false,
+    "formal_manuscript_accessed": false,
+    "formal_manuscript_modified": false,
+    "formal_source_value_tables_modified": false,
+    "github_access_required": false,
+    "stage0_stage5_rerun": false
+  },
+  "key_values": {
+    "fig2b_baseline_peak_es": 0.06441033713760723,
+    "fig2b_svtuner_peak_es": 0.07477371113734689,
+    "fig2c_cytospace_mean_nes": 1.3458403002710941,
+    "fig2c_pairs": 12,
+    "fig2c_pvalue_lattice_max_error": 1.1368683772161603e-13,
+    "fig2c_svtuner_mean_nes": 1.5321634615053374,
+    "fig2c_svtuner_wins": 11,
+    "fig2d_cytospace_nes": 2.1713406947443907,
+    "fig2d_pvalues": [
+      0.0009990009990009,
+      0.0009990009990009
+    ],
+    "fig2d_svtuner_nes": 2.523755126437745,
+    "fig2f_svtuner_wins": 28,
+    "fig2f_valid_pairs": 50
+  },
+  "minimal_reconstruction_required": false,
+  "protected_input_hashes": {
+    "result/cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages/fig2c_strict_cd4_ce9/baseline/fig2c_official_enrichment_summary.csv": "56678e60e4f59a75cce9482b36824a0c03b42f23",
+    "result/cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages/fig2c_strict_cd4_ce9/route2/fig2c_official_enrichment_summary.csv": "a05ce60de62b5656059f24cd58946665afca16ab",
+    "result/cytospace_fig2d_profile_mask_benchmark/fig2d_profile_mask_benchmark_source_values.csv": "77aaf34b35dde53837b0c47b8ed313bb566a3a85",
+    "result/cytospace_fig2e_stage3_profile_mask/fig2e_stage3_profile_mask_metrics.csv": "29bd3bc3fcb152ea4022ca8abe38648f206e3085",
+    "result/real_profile_mask_foundation/ffpe_mouse_brain_sagittal_real_profile_mask_microglia/spot_foundation.csv": "2118d5d5022c3f4031de5f1e0ba6e3f367521f43",
+    "scripts/build_fig2e_stage3_profile_mask_benchmark.py": "541cf2cf4313e740defed595cf95d107fd607ee4",
+    "scripts/build_fig2e_stage3_profile_mask_route2_only.py": "d820257f6044b0d75de6705843b72dd27c0cc434",
+    "scripts/build_real_profile_mask_foundation.py": "7c5bebe61ac03798b754025fb8929eadc1105c8a",
+    "scripts/compute_cytospace_fig2c_official_enrichment.R": "2b384da977e9eef70642cf8b9d77698c84653007",
+    "scripts/compute_cytospace_fig2c_official_enrichment_seurat.R": "19ee3fd8678e06abcaf225a56d104088c881663f",
+    "scripts/compute_fig2c_enrichment_python.py": "4446d9789a48bb6a928437a450d14b6ff8df38b5",
+    "scripts/plot_fig2d_profile_mask_benchmark.py": "4aea32d696bd5f87cf5e1f9019671c61e3bf0c07",
+    "scripts/plot_real_profile_mask_fig2c_only.py": "8867d0b68dfd44d34d5e15b3502dc1014cab7942",
+    "scripts/run_cytospace_fig2d_profile_mask_benchmark.py": "8717d5db41afbcb7b005879d2c5aa5eebf0d23dc",
+    "visualizations/cytospace_fig2c_melanoma_stage3_profile_mask/fig2c_cd4_ce9_stage3_detected_macrophage_mask_baseline_vs_route2.png": "9cb3233ceb197195f205181fd889696f02fe026f",
+    "visualizations/cytospace_fig2c_melanoma_stage3_profile_mask/fig2c_cd4_ce9_stage3_detected_macrophage_mask_metrics.csv": "f2a485d3ae7c482feff851b6a72f87ef7648d78f",
+    "visualizations/cytospace_fig2d_profile_mask_benchmark/fig2d_profile_mask_benchmark.png": "42996d6927596bbf4d6bb6bceab60fcc7b66b27c",
+    "visualizations/cytospace_fig2d_profile_mask_benchmark/fig2d_profile_mask_benchmark_source_values.csv": "77aaf34b35dde53837b0c47b8ed313bb566a3a85",
+    "visualizations/cytospace_fig2e_stage3_profile_mask/fig2e_stage3_profile_mask_route2_ce9_ce10.png": "a87a120e083208ae00d0994e7ec39faba89d517e",
+    "visualizations/simulations/real_profile_mask_fig2c_only/fig2_panel_c_real_profile_mask.png": "b5c341566eb67387eea11fbf1d9be062e410ff6e"
+  },
+  "remaining_unresolved_items": [
+    "Fig. 2c formal command/log and pair-level intermediate summaries are not retained.",
+    "Formal Python executable and package versions are not retained for Fig. 2b/c/d/f.",
+    "The Fig. 2d plot generator is recoverable from local Git but absent from the current working tree."
+  ],
+  "seurat_used_for_formal_fig2": false,
+  "task": "Task 4E formal Fig. 2 enrichment-backend provenance audit"
+}

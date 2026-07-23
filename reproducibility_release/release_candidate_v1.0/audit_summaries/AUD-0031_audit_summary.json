@@ -1,0 +1,90 @@
+{
+  "blocking_conflicts": 0,
+  "candidate_change_count": 1755,
+  "candidate_status": "PENDING_HUMAN_APPROVAL",
+  "candidates": {
+    "dataset": {
+      "path": "reproducibility_release/manifests/dataset_manifest_v1.0_freeze_candidate.tsv",
+      "records": 37,
+      "sha1": "64223e7846fc3cc8228a076b0f3e069742f58afe"
+    },
+    "experiment": {
+      "path": "reproducibility_release/manifests/experiment_manifest_v1.0_freeze_candidate.tsv",
+      "records": 40,
+      "sha1": "347539ed5677dc89318772333552d5944821a355"
+    },
+    "metadata": {
+      "path": "reproducibility_release/manifests/manifest_v1.0_freeze_candidate_metadata.json",
+      "sha1": "80b7d1905b24bf9fe7d5de9bf52f8a1e7998575c"
+    }
+  },
+  "current_manifests": {
+    "dataset": {
+      "path": "visualizations/manuscript_audits/dataset_provenance_major_evidence_recovery/dataset_manifest_draft_v0_2.tsv",
+      "records": 37,
+      "sha1": "26c2e5db78c3ae781b44216acf786236d6b16c5d",
+      "version": "0.2"
+    },
+    "experiment": {
+      "path": "visualizations/manuscript_audits/dataset_provenance_major_evidence_recovery/experiment_manifest_draft_v0_2.tsv",
+      "records": 40,
+      "sha1": "62fe0999388588953b74b3047fd5700c180015ef",
+      "version": "0.2"
+    }
+  },
+  "decision": "CONDITIONAL_PASS_TO_FREEZE_REVIEW",
+  "generated_date": "2026-07-22",
+  "guardrails": {
+    "existing_manifests_modified": false,
+    "experimental_code_modified": false,
+    "experimental_outputs_modified": false,
+    "formal_bibliography_accessed": false,
+    "formal_bibliography_modified": false,
+    "formal_figures_modified": false,
+    "formal_manuscript_accessed": false,
+    "formal_manuscript_modified": false,
+    "formal_source_value_tables_modified": false,
+    "formal_stages_rerun": false,
+    "github_remote_access_required": false,
+    "task4e_release_manifest_modified": false
+  },
+  "major_conflicts": 0,
+  "manuscript_reconciliation_counts": {
+    "MATCH": 174,
+    "MATCH_WITH_QUALIFIED_WORDING": 17
+  },
+  "ready_for_final_manifest_freeze": false,
+  "ready_for_freeze_review": true,
+  "redistribution_classification_counts": {
+    "LINK_AND_RECONSTRUCT_ONLY": 18,
+    "PERMISSION_UNRESOLVED": 5,
+    "REDISTRIBUTABLE_DERIVATIVE_ONLY": 53,
+    "RESTRICTED": 1
+  },
+  "source_layer_counts": {
+    "PROJECT_GENERATED_DECOY": 2,
+    "PROJECT_GENERATED_DERIVATIVE": 7,
+    "PROJECT_GENERATED_ENDPOINT_DERIVATIVE": 1,
+    "PROJECT_GENERATED_SIMULATION_TRUTH": 3,
+    "THIRD_PARTY_RETAINED_EXPORT": 24
+  },
+  "source_status_counts": {
+    "dataset": {
+      "CONFIRMED": 28,
+      "PARTIAL": 7,
+      "PROJECT_GENERATED": 2
+    },
+    "experiment": {
+      "CONFIRMED": 29,
+      "PARTIAL": 9,
+      "PROJECT_GENERATED": 2
+    }
+  },
+  "task": "Task 4F final dataset/experiment manifest reconciliation and freeze-candidate generation",
+  "unresolved_nonblocking_records": 6,
+  "validation": {
+    "checks": 16,
+    "failed": 0,
+    "passed": 16
+  }
+}

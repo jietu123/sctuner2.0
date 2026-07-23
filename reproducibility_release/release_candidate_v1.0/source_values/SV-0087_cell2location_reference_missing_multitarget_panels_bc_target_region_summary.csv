@@ -1,0 +1,8 @@
+label,section,sample,drop_types,target_region_spots,st_spots
+Astrocyte,ST8059051,cell2loc_scan_st8059051_sc_missing_astrocyte,Astro_AMY;Astro_AMY_CTX;Astro_CTX;Astro_HPC;Astro_HYPO;Astro_STR;Astro_THAL_hab;Astro_THAL_lat;Astro_THAL_med;Astro_WM,362,2409
+Excitatory neuron,ST8059051,cell2loc_scan_st8059051_sc_missing_excitatory_neuron,Ext_Amy_1;Ext_Amy_2;Ext_ClauPyr;Ext_Hpc_CA1;Ext_Hpc_CA2;Ext_Hpc_CA3;Ext_Hpc_DG1;Ext_Hpc_DG2;Ext_L23;Ext_L25;Ext_L56;Ext_L5_1;Ext_L5_2;Ext_L5_3;Ext_L6;Ext_L6B;Ext_Med;Ext_Pir;Ext_Thal_1;Ext_Thal_2;Ext_Unk_1;Ext_Unk_2;Ext_Unk_3,362,2409
+Inhibitory neuron,ST8059051,cell2loc_scan_st8059051_sc_missing_inhibitory_neuron,Inh_1;Inh_2;Inh_3;Inh_4;Inh_5;Inh_6;Inh_Lamp5;Inh_Meis2_1;Inh_Meis2_2;Inh_Meis2_3;Inh_Meis2_4;Inh_Pvalb;Inh_Sst;Inh_Vip,362,2409
+Neuroblast,ST8059051,cell2loc_scan_st8059051_sc_missing_neuroblast,Nb_1;Nb_2,362,2409
+Microglia,ST8059051,cell2loc_scan_st8059051_sc_missing_microglia,Micro,362,2409
+Endothelial,ST8059051,cell2loc_scan_st8059051_sc_missing_endothelial,Endo,362,2409
+Oligodendrocyte/OPC,ST8059051,cell2loc_scan_st8059051_sc_missing_oligodendrocyte_opc,Oligo_1;Oligo_2;OPC_1;OPC_2,362,2409

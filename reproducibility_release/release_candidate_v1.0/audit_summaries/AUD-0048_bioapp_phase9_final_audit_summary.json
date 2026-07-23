@@ -1,0 +1,61 @@
+{
+  "phase": "BioApp Phase 9 final biological-application audit, figure selection, and interpretation boundary lock",
+  "decision": "PASS",
+  "stage_type": "final audit / figure selection / interpretation boundary lock",
+  "input_phase2c_decision": "PASS",
+  "input_phase3r_decision": "PASS",
+  "input_phase4_decision": "PASS",
+  "input_phase5_decision": "PASS",
+  "input_phase6_decision": "PASS",
+  "input_phase7_decision": "PASS",
+  "input_phase8_decision": "PASS",
+  "endpoint_frozen": true,
+  "primary_endpoint": "Immune cells",
+  "endpoint_external_spatially_registered_independent": true,
+  "baseline_anchor_condition": "baseline_immune_all_dropout",
+  "svtuner_condition": "svtuner_immune_all_dropout",
+  "main_analysis_spots": 1888,
+  "final_effective_gene_count_for_phase9": 2000,
+  "gene_count_material_mismatch": false,
+  "phase8_metric_highlights": {
+    "mean_withheld_score_positive": 0.5205562170297745,
+    "mean_withheld_score_negative": 0.37524085541836516,
+    "withheld_enrichment_delta": 0.14531536161140934,
+    "withheld_AUROC": 0.8305238346466074,
+    "withheld_AUPRC": 0.2836551170002947,
+    "withheld_binary_positive_rate": 0.44776119402985076,
+    "withheld_binary_negative_rate": 0.021664766248574687,
+    "contradiction_prevention_rate": 0.44776119402985076,
+    "mean_prevented_forced_nonimmune_burden_positive_binary": 0.44776119402985076,
+    "mean_prevented_forced_nonimmune_burden_positive_continuous": 0.5205562170297745
+  },
+  "endpoint_concordant_withheld_behavior_supported": true,
+  "forced_nonimmune_burden_reduction_supported": true,
+  "biological_application_allowed": true,
+  "allowed_final_claim": "SVTuner provides biological-application evidence that its unsupported/withheld output is concordant with an independent CTA-defined Immune endpoint under an immune-all-dropout condition, reducing forced non-immune assignment burden relative to the baseline mapping.",
+  "final_biological_application_claim_made_in_manuscript": false,
+  "main_figure_candidate": "visualizations/bioapp_phase8_svtuner_vs_endpoint_evaluation_and_baseline_svtuner_comparison/endpoint_baseline_svtuner_three_way_spatial_comparison.pdf",
+  "main_figure_candidate_requires_layout_review": true,
+  "supplementary_figure_candidates": [
+    "visualizations/bioapp_phase8_svtuner_vs_endpoint_evaluation_and_baseline_svtuner_comparison/endpoint_positive_forced_nonimmune_burden_reduction.pdf",
+    "visualizations/bioapp_phase8_svtuner_vs_endpoint_evaluation_and_baseline_svtuner_comparison/phase8_svtuner_endpoint_metric_summary.pdf",
+    "visualizations/bioapp_phase8_svtuner_vs_endpoint_evaluation_and_baseline_svtuner_comparison/withheld_score_positive_vs_negative_boxplot.pdf",
+    "visualizations/bioapp_phase8_svtuner_vs_endpoint_evaluation_and_baseline_svtuner_comparison/withheld_score_roc_curve.pdf",
+    "visualizations/bioapp_phase8_svtuner_vs_endpoint_evaluation_and_baseline_svtuner_comparison/withheld_score_pr_curve.pdf"
+  ],
+  "qc_audit_only_figures": [
+    "visualizations/bioapp_phase8_svtuner_vs_endpoint_evaluation_and_baseline_svtuner_comparison/binary_withheld_endpoint_contingency_plot.pdf"
+  ],
+  "audit_errors": [],
+  "no_rerun_or_redefinition_guardrails": {
+    "SVTuner_rerun": false,
+    "Stage3_rerun": false,
+    "Stage4_run": false,
+    "CytoSPACE_rerun": false,
+    "endpoint_redefined": false,
+    "threshold_selected_using_endpoint_labels": false,
+    "new_biological_endpoint_introduced": false,
+    "new_mapping_or_new_computation_beyond_audit": false
+  },
+  "next": "manuscript integration"
+}

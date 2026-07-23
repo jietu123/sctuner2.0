@@ -1,0 +1,13 @@
+{
+  "experiment_id": "fig3b_highres_profile_mask_enrichment",
+  "representative_profile_mask_sample": "highres_humanmelanomapatient2_profile_mask_b_cells",
+  "representative_selection_rule": "Historical Fig. 3B representative recovered from the deleted plotting script and fixed before this rerun; the current values are recomputed and are not copied from the historical PDF.",
+  "marker_gene_limit": 30,
+  "low_score_fraction": 0.1,
+  "score_tie_handling": "fractional_hit_mass",
+  "support_tie_handling": "source_order_preserved",
+  "mapping_methods": {
+    "CytoSPACE": "baseline",
+    "SVTuner": "route2"
+  }
+}

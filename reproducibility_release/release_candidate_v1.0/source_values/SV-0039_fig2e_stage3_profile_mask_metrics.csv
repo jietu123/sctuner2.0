@@ -1,0 +1,221 @@
+scenario,dataset_label,scrna_label,masked_label,method,display_method,cell_type,actual_cell_type,cell_label,feature,NES,P-value,ES,peak_rank,n_cells,n_close,n_far,n_genes_used
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE9,1.8177656058311713,0.000999000999000999,0.7768696062343936,2270,1146,580,566,324
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE10,0.2572334654142218,1.0,0.10980481949000205,1922,1146,580,566,316
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE9,1.8249522441790136,0.000999000999000999,0.8377151395303345,1044,1380,709,671,111
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE10,-4.556339240766989e-13,1.0,-2.0890233987103102e-13,14520,1380,709,671,106
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,CytoSPACE,CytoSPACE,Mono/Mac,Macrophages,Mono/Mac,CE9,1.6303156860088273,0.000999000999000999,0.4982553900391164,2077,150,82,68,487
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,CytoSPACE,CytoSPACE,Mono/Mac,Macrophages,Mono/Mac,CE10,1.3805706644602194,0.000999000999000999,0.41936830040759165,2801,150,82,68,482
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE9,1.4673290765081366,0.03196803196803197,0.5997863328824724,1018,645,323,322,38
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE10,0.370132490506627,0.9820179820179821,0.1525632630871035,971,645,323,322,36
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE9,,,,0,0,0,0,0
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE10,,,,0,0,0,0,0
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE9,1.9540762550534125,0.000999000999000999,0.804838318813231,1973,1176,603,573,324
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE10,2.9490202320765117e-14,1.0,1.2169085183977302e-14,14520,1176,603,573,316
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE9,1.8816157508081541,0.000999000999000999,0.8404245530872976,1521,1416,744,672,111
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE10,0.08222333950019628,1.0,0.036563308105712275,818,1416,744,672,106
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE9,,,,0,0,0,0,0
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE10,,,,0,0,0,0,0
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE9,1.6302593899741522,0.024975024975024976,0.5695583248526438,1906,662,336,326,38
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE10,0.07986503878916441,0.9920079920079921,0.028454773918002482,700,662,336,326,36
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE9,,,,0,0,0,0,0
+cytospace_fig2c_melanoma_mel1_rep2_screen_mask_macrophages,Melanoma 1,Tirosh et al.,Macrophages,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE10,,,,0,0,0,0,0
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE9,1.8390208814333464,0.000999000999000999,0.8132788469015859,2025,1499,764,735,324
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE10,0.09964673368523164,1.0,0.04418743301850467,1157,1499,764,735,317
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE9,1.789759349802827,0.000999000999000999,0.8072339873858861,1198,1804,902,902,111
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE10,0.00015016596289611577,1.0,6.80410970129372e-05,14802,1804,902,902,106
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,CytoSPACE,CytoSPACE,Mono/Mac,Macrophages,Mono/Mac,CE9,2.4266958160461005,0.000999000999000999,0.6813179136167928,1539,196,119,77,487
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,CytoSPACE,CytoSPACE,Mono/Mac,Macrophages,Mono/Mac,CE10,0.7796595995416692,0.9400599400599401,0.2197226312318751,1635,196,119,77,481
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE9,1.6357990700801222,0.000999000999000999,0.7082410242786009,2547,844,423,421,38
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE10,0.5228861381651282,0.968031968031968,0.23220368895277604,1103,844,423,421,36
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE9,,,,0,0,0,0,0
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE10,,,,0,0,0,0,0
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE9,1.8652238490432291,0.000999000999000999,0.7988079019374131,1787,1515,822,693,324
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE10,-3.7856218833540456e-13,1.0,-1.626650203423452e-13,14803,1515,822,693,317
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE9,1.753077589926127,0.000999000999000999,0.7868520010500965,1920,1824,913,911,111
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE10,0.07593192933550462,1.0,0.03434838486473511,1191,1824,913,911,106
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Macrophages,Mono/Mac,CE9,1.9447489359425556,0.000999000999000999,0.7255458556886646,2008,198,117,81,487
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Macrophages,Mono/Mac,CE10,0.7096126958207661,1.0,0.26527545112327866,3070,198,117,81,481
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE9,1.799855903574494,0.000999000999000999,0.7779053061067291,1844,853,437,416,38
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE10,0.03896405969746904,0.997002997002997,0.016853731698273453,1325,853,437,416,36
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE9,,,,0,0,0,0,0
+cytospace_fig2c_melanoma_mel2_rep1_profile_mask_nk_cells,Melanoma 2,Tirosh et al.,NK cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE10,,,,0,0,0,0,0
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE9,0.9017931390655629,0.7272727272727273,0.271121910001203,541,7569,3787,3782,187
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE10,0.9533311295055938,0.6253746253746254,0.2846776121980196,570,7569,3787,3782,210
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE9,0.569412021778136,0.949050949050949,0.16532167568266398,142,7569,3789,3780,83
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE10,1.0487314678971122,0.4405594405594406,0.30988143483251246,364,7569,3789,3780,84
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,CytoSPACE,CytoSPACE,Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE9,-8.208421815999822e-14,1.0,-1.0505485370515544e-14,2000,7569,3794,3775,198
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,CytoSPACE,CytoSPACE,Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE10,5.256426953933189,0.000999000999000999,0.6628684442400777,265,7569,3794,3775,305
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE9,1.461675813462439,0.00999000999000999,0.6229114495924283,204,7575,3793,3782,30
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE10,1.0522985015943969,0.46653346653346656,0.4740573172645149,140,7575,3793,3782,15
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE9,1.5351937310918815,0.006993006993006993,0.6779835768651228,428,4276,2167,2109,22
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE10,1.4329725395494477,0.06793206793206794,0.6870919136112393,632,4276,2167,2109,9
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE9,0.8960155545061782,0.7802197802197802,0.29398929300187737,528,7941,3971,3970,187
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE10,1.0700368175091115,0.2857142857142857,0.3469993923277271,586,7941,3971,3970,210
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE9,0.5777117746407399,0.935064935064935,0.1705948266138307,219,7941,3975,3966,83
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE10,1.358305765291013,0.08791208791208792,0.3987709237904331,300,7941,3975,3966,84
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE9,-8.185227452513763e-14,1.0,-1.0234868508263162e-14,2000,7941,3986,3955,198
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE10,5.507808143359026,0.000999000999000999,0.6727212987873001,221,7941,3986,3955,305
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE9,1.303921437268585,0.07292707292707293,0.554547867984456,368,7946,3988,3958,30
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE10,1.0234632377052868,0.5204795204795205,0.4639540665793084,232,7946,3988,3958,15
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE9,1.6433597166712253,0.000999000999000999,0.7302009510279395,341,4486,2261,2225,22
+cytospace_fig2d_tme_brca_er_her2_fresh_frozen_profile_mask_t_cells,"HER2+ BRCA
+FF",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE10,1.4190104843901743,0.06793206793206794,0.6888421733084897,401,4486,2261,2225,9
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE9,0.6039565850009598,0.9590409590409591,0.1347580357016445,372,5018,2510,2508,181
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE10,0.9066626495734232,0.6303696303696303,0.20618928911168088,295,5018,2510,2508,131
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE9,0.2025155829730937,0.996003996003996,0.05118795826454415,179,5018,2515,2503,80
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE10,1.0611496859970526,0.4385614385614386,0.29041800885014946,201,5018,2515,2503,33
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,CytoSPACE,CytoSPACE,Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE9,-2.831589659403052e-13,1.0,-3.8219427622721014e-14,2000,5018,2510,2508,196
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,CytoSPACE,CytoSPACE,Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE10,4.338161579514583,0.000999000999000999,0.5764341075683277,357,5018,2510,2508,223
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE9,0.7839426319944673,0.6383616383616384,0.15927792449123696,408,5023,2513,2510,30
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE10,0.43574209497592414,0.7602397602397603,0.10963796295649945,165,5023,2513,2510,12
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE9,1.3036287563251128,0.07292707292707293,0.5614796639522923,442,2835,1419,1416,20
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE10,1.3689009331079947,0.06593406593406594,0.6293355978475117,636,2835,1419,1416,12
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE9,0.7683369011431325,0.8981018981018981,0.20680489379208086,152,5265,2637,2628,181
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE10,0.5070262607040696,0.991008991008991,0.1379673148431731,342,5265,2637,2628,131
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE9,0.4580661664563875,0.9280719280719281,0.09129792865012822,127,5265,2637,2628,80
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE10,1.7819248295082093,0.06493506493506493,0.3965532122971524,407,5265,2637,2628,33
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE9,-3.4482135840687094e-13,1.0,-3.9239445026595376e-14,2000,5265,2633,2632,196
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE10,5.396608811813801,0.000999000999000999,0.6223772644438541,357,5265,2633,2632,223
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE9,1.7622170721258246,0.08391608391608392,0.3832147971819533,215,5266,2637,2629,30
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE10,-5.109780834200416e-15,1.0,-1.3877787807814457e-15,2000,5266,2637,2629,12
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE9,1.3226282677776866,0.07192807192807193,0.5715827271297018,424,2974,1504,1470,20
+cytospace_fig2d_tme_brca_her2_ffpe_profile_mask_t_cells,"HER2+ BRCA
+FFPE",Wu et al.,T-cells,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE10,1.419979762061664,0.060939060939060936,0.6462787891410067,596,2974,1504,1470,12
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE9,2.329199201572867,0.000999000999000999,0.645937626730558,400,2201,1119,1082,203
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE10,0.003134336518557898,1.0,0.0008667465661505586,23,2201,1119,1082,207
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE9,1.9081291556775926,0.000999000999000999,0.527330613654654,307,2201,1110,1091,92
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE10,7.301942131302635e-14,0.999000999000999,2.0192181260370035e-14,2000,2201,1110,1091,81
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,CytoSPACE,CytoSPACE,Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE9,0.3228390957051111,0.998001998001998,0.06655743372777023,95,2201,1102,1099,205
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,CytoSPACE,CytoSPACE,Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE10,2.0090375805554275,0.000999000999000999,0.40337108902721797,457,2201,1102,1099,305
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE9,1.3022942958422268,0.2037962037962038,0.41361551889789966,134,2201,1101,1100,30
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE10,0.2879010360685206,0.9560439560439561,0.09700713495536423,335,2201,1101,1100,18
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE9,0.8076812876936174,0.7712287712287712,0.3195317307478628,511,2201,1183,1018,22
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE10,1.6418498137687734,0.01098901098901099,0.7153016545209022,187,2201,1183,1018,11
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE9,2.4771463564856306,0.000999000999000999,0.5882419133098371,464,2691,1350,1341,203
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE10,0.024095285214681704,1.0,0.005705208724292746,29,2691,1350,1341,207
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE9,1.8036231664641962,0.003996003996003996,0.4367031910943328,376,2691,1349,1342,92
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE10,7.793802478674573e-14,1.0,1.9040324872321435e-14,2000,2691,1349,1342,81
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE9,0.6583692215256565,0.8731268731268731,0.11193401928610414,108,2691,1346,1345,205
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE10,0.963284425627667,0.5424575424575424,0.15845854645180651,309,2691,1346,1345,305
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE9,1.6481032189444058,0.11288711288711288,0.3597668061323761,172,2691,1346,1345,30
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE10,0.008304934972769951,0.9920079920079921,0.00201816347128031,1996,2691,1346,1345,18
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE9,0.6400626295007843,0.8971028971028971,0.24685358713510486,454,2691,1358,1333,22
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_profile_mask_fibroblasts,TNBC BRCA,Wu et al.,Fibroblasts,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE10,1.4977752472184438,0.054945054945054944,0.6372178917209259,283,2691,1358,1333,11
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE9,0.6816174284561952,0.997002997002997,0.22051929772429885,414,7411,3759,3652,204
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,CytoSPACE,CytoSPACE,CD4 T cells,CD4 T cells,CD4 T cells,CE10,1.5701207293471506,0.000999000999000999,0.5065858422290792,617,7411,3759,3652,212
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE9,1.9016889152651932,0.000999000999000999,0.6149820564151818,492,7411,3828,3583,90
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,CytoSPACE,CytoSPACE,CD8 T cells,CD8 T cells,CD8 T cells,CE10,0.009643613121715047,1.0,0.0031413612565319438,1994,7411,3828,3583,90
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,CytoSPACE,CytoSPACE,Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE9,-4.807966659350576e-14,1.0,-1.309369279667294e-14,2000,7411,3708,3703,192
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,CytoSPACE,CytoSPACE,Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE10,2.334106809165943,0.000999000999000999,0.622957159310614,256,7411,3708,3703,323
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE9,1.9386903421477004,0.017982017982017984,0.6074566049119128,210,7411,3857,3554,30
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,CytoSPACE,CytoSPACE,B cells,B cells,B cells,CE10,0.0029896819900617233,0.997002997002997,0.0010080645161469615,1998,7411,3857,3554,16
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE9,,,,0,0,0,0,0
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,CytoSPACE,CytoSPACE,Plasma cells,Plasma cells,Plasma cells,CE10,,,,0,0,0,0,0
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE9,0.4175030419261386,1.0,0.13295676868865527,596,8404,4208,4196,204
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD4 T cells,CD4 T cells,CD4 T cells,CE10,1.913232958026595,0.000999000999000999,0.6121585724104239,482,8404,4208,4196,212
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE9,1.9133072920702232,0.000999000999000999,0.6240579145933339,541,8404,4302,4102,90
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",CD8 T cells,CD8 T cells,CD8 T cells,CE10,0.006413527829366407,1.0,0.002094240837677494,1996,8404,4302,4102,90
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE9,,,,0,0,0,0,0
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Mono/Mac,Monocytes and Macrophages,Mono/Mac,CE10,,,,0,0,0,0,0
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE9,1.7528832175335671,0.04195804195804196,0.545991217176412,522,8404,4342,4062,30
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",B cells,B cells,B cells,CE10,0.004614170933964122,0.999000999000999,0.0015120967742114078,1997,8404,4342,4062,16
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE9,,,,0,0,0,0,0
+cytospace_fig2d_tme_crc_fresh_frozen_profile_mask_monocytes_and_macrophages,CRC,Lee et al.,Mono/Mac,SVTuner + CytoSPACE,"SVTuner +
+CytoSPACE",Plasma cells,Plasma cells,Plasma cells,CE10,,,,0,0,0,0,0

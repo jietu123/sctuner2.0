@@ -1,0 +1,368 @@
+# Stage 1: Preprocess scRNA and ST data (Seurat, mild/adjustable filtering)
+# Usage (from project root):
+#   Rscript r_scripts/stage1_preprocess.R --sample real_brca
+# Optional: add --project_root <path> to override root detection, --export_csv to dump CSVs for Stage2 reuse.
+
+`%||%` <- function(a, b) if (!is.null(a) && length(a) > 0 && !is.na(a)) a else b
+
+suppressPackageStartupMessages({
+  library(Seurat)
+  library(data.table)
+  library(Matrix)
+  library(jsonlite)
+  library(yaml)
+})
+
+args <- commandArgs(trailingOnly = TRUE)
+
+parse_args <- function(args) {
+  res <- list(
+    sample = "real_brca",
+    project_root = NULL,
+    export_csv = FALSE
+  )
+  i <- 1
+  while (i <= length(args)) {
+    key <- args[[i]]
+    if (key == "--sample" && i + 1 <= length(args)) {
+      res$sample <- args[[i + 1]]
+      i <- i + 2
+    } else if (key == "--project_root" && i + 1 <= length(args)) {
+      res$project_root <- args[[i + 1]]
+      i <- i + 2
+    } else if (key == "--export_csv") {
+      res$export_csv <- TRUE
+      i <- i + 1
+    } else {
+      i <- i + 1
+    }
+  }
+  res
+}
+
+cli <- parse_args(args)
+sample_id <- cli$sample
+
+# Resolve project root: script is under r_scripts/, so parent is project root
+get_script_path <- function() {
+  cmd <- commandArgs(trailingOnly = FALSE)
+  file_arg <- grep("^--file=", cmd, value = TRUE)
+  if (length(file_arg) > 0) {
+    return(normalizePath(sub("^--file=", "", file_arg[1])))
+  }
+  if (!is.null(sys.frames()) && length(sys.frames()) > 0) {
+    fr <- sys.frames()[[1]]
+    if (!is.null(fr$ofile)) {
+      return(normalizePath(fr$ofile))
+    }
+  }
+  normalizePath(file.path("r_scripts", "stage1_preprocess.R"))
+}
+
+script_path <- get_script_path()
+project_root <- cli$project_root %||% normalizePath(file.path(dirname(script_path), ".."))
+
+message("==== Stage1 preprocess start: ", Sys.time(), " ====")
+message("[Stage1] sample: ", sample_id)
+message("[Stage1] project_root: ", project_root)
+
+# Paths
+raw_input_dir <- file.path(project_root, "data", "raw", sample_id)
+sim_input_dir <- file.path(project_root, "data", "sim", "real_brca", sample_id)
+sim_input_dir_flat <- file.path(project_root, "data", "sim", sample_id)
+if (dir.exists(sim_input_dir)) {
+  input_dir <- sim_input_dir
+} else if (dir.exists(sim_input_dir_flat)) {
+  input_dir <- sim_input_dir_flat
+} else {
+  sim_root <- file.path(project_root, "data", "sim")
+  sim_group_hit <- NULL
+  if (dir.exists(sim_root)) {
+    sim_groups <- list.dirs(sim_root, recursive = FALSE, full.names = TRUE)
+    for (g in sim_groups) {
+      cand <- file.path(g, sample_id)
+      if (dir.exists(cand)) {
+        sim_group_hit <- cand
+        break
+      }
+    }
+  }
+  if (!is.null(sim_group_hit)) {
+    input_dir <- sim_group_hit
+  } else {
+    input_dir <- raw_input_dir
+  }
+}
+processed_dir <- file.path(project_root, "data", "processed", sample_id, "stage1_preprocess")
+summary_dir <- file.path(project_root, "result", sample_id, "stage1_preprocess")
+qc_dir <- file.path(summary_dir, "qc_plots")
+dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
+dir.create(summary_dir, recursive = TRUE, showWarnings = FALSE)
+
+# Defaults
+default_cfg <- list(
+  paths = list(
+    sc_expr = sprintf("%s_scRNA_GEP.txt", sample_id),
+    sc_meta = sprintf("%s_scRNA_celllabels.txt", sample_id),
+    st_expr = sprintf("%s_STdata_GEP.txt", sample_id),
+    st_meta = sprintf("%s_STdata_coordinates.txt", sample_id),
+    svg_marker_whitelist = NULL
+  ),
+  qc = list(
+    sc_min_genes = 200,
+    sc_max_genes = 6000,
+    sc_max_mt = 10,
+    st_min_genes = 100,
+    st_max_genes = Inf,
+    st_max_mt = 20,
+    hvg_nfeatures = 2000,
+    mt_pattern = "^MT-"
+  ),
+  gene_filter = list(
+    min_cells_sc = 0,
+    min_cells_st = 0
+  )
+)
+
+read_yaml_safe <- function(path) {
+  if (!file.exists(path) || file.info(path)$size == 0) return(list())
+  tryCatch(yaml::read_yaml(path), error = function(e) list())
+}
+
+dataset_cfg_path <- file.path(project_root, "configs", "datasets", paste0(sample_id, ".yaml"))
+project_cfg_path <- file.path(project_root, "configs", "project_config.yaml")
+
+cfg <- default_cfg
+cfg <- modifyList(cfg, read_yaml_safe(project_cfg_path))
+cfg <- modifyList(cfg, read_yaml_safe(dataset_cfg_path))
+
+storage_group <- cfg$storage$group %||% NULL
+if (!is.null(storage_group) && nzchar(as.character(storage_group))) {
+  grouped_raw_dir <- file.path(project_root, "data", "raw", as.character(storage_group), sample_id)
+  if (dir.exists(grouped_raw_dir)) {
+    input_dir <- grouped_raw_dir
+  }
+  processed_dir <- file.path(project_root, "data", "processed", as.character(storage_group), sample_id, "stage1_preprocess")
+  summary_dir <- file.path(project_root, "result", as.character(storage_group), sample_id, "stage1_preprocess")
+  qc_dir <- file.path(summary_dir, "qc_plots")
+  dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
+  dir.create(summary_dir, recursive = TRUE, showWarnings = FALSE)
+}
+
+resolve_path <- function(p) {
+  if (is.null(p)) return(NULL)
+  if (grepl("^([A-Za-z]:|/)", p)) return(normalizePath(p, winslash = "/"))
+  normalizePath(file.path(input_dir, p), winslash = "/", mustWork = FALSE)
+}
+
+paths <- lapply(cfg$paths, resolve_path)
+
+qc <- cfg$qc
+gene_filter <- cfg$gene_filter
+
+guess_prefixes <- unique(c(sample_id, sub("^.*_", "", sample_id)))
+
+find_input <- function(key, suffix) {
+  if (!is.null(paths[[key]]) && file.exists(paths[[key]])) {
+    return(paths[[key]])
+  }
+  for (pfx in guess_prefixes) {
+    cand <- file.path(input_dir, sprintf("%s_%s", pfx, suffix))
+    if (file.exists(cand)) return(cand)
+  }
+  # fallback to first prefix even if missing (will error downstream)
+  file.path(input_dir, sprintf("%s_%s", guess_prefixes[[1]], suffix))
+}
+
+read_expression <- function(path) {
+  dt <- fread(path)
+  genes <- dt[[1]]
+  mat <- as.matrix(dt[, -1, with = FALSE])
+  rownames(mat) <- genes
+  mode(mat) <- "numeric"
+  Matrix(mat, sparse = TRUE)
+}
+
+load_whitelist <- function(path) {
+  if (is.null(path) || !file.exists(path)) return(character(0))
+  trimws(readLines(path))
+}
+
+filter_genes <- function(mat, min_cells, whitelist) {
+  if (min_cells <= 0) return(mat)
+  keep <- rowSums(mat > 0) >= min_cells
+  if (length(whitelist) > 0) {
+    keep[rownames(mat) %in% whitelist] <- TRUE
+  }
+  mat[keep, , drop = FALSE]
+}
+
+load_scrna <- function() {
+  expr_path <- find_input("sc_expr", "scRNA_GEP.txt")
+  meta_path <- find_input("sc_meta", "scRNA_celllabels.txt")
+  mat_raw <- read_expression(expr_path)
+  meta <- fread(meta_path)
+  setnames(meta, c("cell_id", "cell_type"))
+  setkey(meta, cell_id)
+  common_cells <- intersect(colnames(mat_raw), meta$cell_id)
+  mat_raw <- mat_raw[, common_cells, drop = FALSE]
+  meta_use <- meta[common_cells]
+  rownames(meta_use) <- meta_use$cell_id
+
+  whitelist <- load_whitelist(paths$svg_marker_whitelist)
+  mat_filtered <- filter_genes(mat_raw, gene_filter$min_cells_sc %||% 0, whitelist)
+
+  stats <- list(
+    n_cells_raw = ncol(mat_raw),
+    n_genes_raw = nrow(mat_raw),
+    n_cells_after_gene_filter = ncol(mat_filtered),
+    n_genes_after_gene_filter = nrow(mat_filtered),
+    whitelist_retained = sum(rownames(mat_filtered) %in% whitelist)
+  )
+
+  seurat_obj <- CreateSeuratObject(mat_filtered, meta.data = meta_use)
+  seurat_obj[["percent.mt"]] <- PercentageFeatureSet(seurat_obj, pattern = qc$mt_pattern %||% "^MT-")
+  seurat_obj <- subset(
+    seurat_obj,
+    subset = nFeature_RNA >= qc$sc_min_genes &
+      nFeature_RNA <= qc$sc_max_genes &
+      percent.mt <= qc$sc_max_mt
+  )
+  seurat_obj <- NormalizeData(seurat_obj)
+  seurat_obj <- FindVariableFeatures(seurat_obj, nfeatures = qc$hvg_nfeatures)
+  list(obj = seurat_obj, stats = stats, whitelist = whitelist)
+}
+
+load_st <- function() {
+  expr_path <- find_input("st_expr", "STdata_GEP.txt")
+  coord_path <- find_input("st_meta", "STdata_coordinates.txt")
+  mat_raw <- read_expression(expr_path)
+  coords <- fread(coord_path)
+  setnames(coords, c("spot_id", "row", "col"))
+  setkey(coords, spot_id)
+  common_spots <- intersect(colnames(mat_raw), coords$spot_id)
+  mat_raw <- mat_raw[, common_spots, drop = FALSE]
+  coords_use <- coords[common_spots]
+  rownames(coords_use) <- coords_use$spot_id
+
+  whitelist <- load_whitelist(paths$svg_marker_whitelist)
+  mat_filtered <- filter_genes(mat_raw, gene_filter$min_cells_st %||% 0, whitelist)
+
+  stats <- list(
+    n_cells_raw = ncol(mat_raw),
+    n_genes_raw = nrow(mat_raw),
+    n_cells_after_gene_filter = ncol(mat_filtered),
+    n_genes_after_gene_filter = nrow(mat_filtered),
+    whitelist_retained = sum(rownames(mat_filtered) %in% whitelist)
+  )
+
+  seurat_obj <- CreateSeuratObject(mat_filtered, meta.data = coords_use)
+  seurat_obj[["percent.mt"]] <- PercentageFeatureSet(seurat_obj, pattern = qc$mt_pattern %||% "^MT-")
+  seurat_obj <- subset(
+    seurat_obj,
+    subset = nFeature_RNA >= qc$st_min_genes &
+      nFeature_RNA <= qc$st_max_genes &
+      percent.mt <= qc$st_max_mt
+  )
+  seurat_obj <- NormalizeData(seurat_obj)
+  list(obj = seurat_obj, stats = stats, whitelist = whitelist)
+}
+
+
+message("[Stage1] Loading scRNA...")
+sc_res <- load_scrna()
+sc <- sc_res$obj
+
+message("[Stage1] Loading ST...")
+st_res <- load_st()
+st <- st_res$obj
+
+message("[Stage1] Aligning genes...")
+common_genes <- intersect(rownames(sc), rownames(st))
+common_genes_path <- file.path(processed_dir, "common_genes.txt")
+writeLines(common_genes, common_genes_path)
+sc <- subset(sc, features = common_genes)
+st <- subset(st, features = common_genes)
+
+# HVG info
+hvg_list <- VariableFeatures(sc)
+hvg_path <- file.path(processed_dir, "hvg_genes.txt")
+writeLines(hvg_list, hvg_path)
+
+# QC stats
+mt_stats <- function(obj) {
+  pct <- obj$percent.mt
+  list(mean = mean(pct), median = median(pct), max = max(pct))
+}
+
+summary_list <- list(
+  sample = sample_id,
+  input_dir = input_dir,
+  processed_dir = processed_dir,
+  summary_dir = summary_dir,
+  qc_dir = qc_dir,
+  qc_params = qc,
+  gene_filter = gene_filter,
+  paths = paths,
+  stats = list(
+    sc = c(sc_res$stats, n_cells_filtered = ncol(sc), n_genes_filtered = nrow(sc)),
+    st = c(st_res$stats, n_cells_filtered = ncol(st), n_genes_filtered = nrow(st))
+  ),
+  genes = list(
+    common = length(common_genes),
+    common_genes_path = common_genes_path,
+    hvg_requested = qc$hvg_nfeatures,
+    hvg_actual = length(hvg_list),
+    hvg_genes_path = hvg_path
+  ),
+  mt_pct = list(
+    sc = mt_stats(sc),
+    st = mt_stats(st)
+  )
+)
+
+message("[Stage1] Saving outputs...")
+write_json(summary_list, file.path(summary_dir, "stage1_summary.json"), auto_unbox = TRUE, pretty = TRUE)
+
+if (cli$export_csv) {
+  message("[Stage1] Exporting CSVs for Stage2 reuse...")
+  export_dir <- file.path(processed_dir, "exported")
+  dir.create(export_dir, recursive = TRUE, showWarnings = FALSE)
+
+  get_layer_data <- function(obj) {
+    tryCatch(
+      GetAssayData(obj, layer = "data"),
+      error = function(e) GetAssayData(obj, slot = "data")
+    )
+  }
+
+  sc_mat <- get_layer_data(sc)
+  sc_df <- as.data.frame(Matrix::t(sc_mat))
+  sc_df <- cbind(cell_id = rownames(sc_df), sc_df)
+  fwrite(sc_df, file.path(export_dir, "sc_expression_normalized.csv"))
+
+  sc_meta <- sc@meta.data
+  sc_meta <- cbind(cell_id = rownames(sc_meta), sc_meta)
+  fwrite(sc_meta, file.path(export_dir, "sc_metadata.csv"))
+
+  st_mat <- get_layer_data(st)
+  st_df <- as.data.frame(Matrix::t(st_mat))
+  st_df <- cbind(spot_id = rownames(st_df), st_df)
+  fwrite(st_df, file.path(export_dir, "st_expression_normalized.csv"))
+
+  st_meta <- st@meta.data
+  if (!("UMI_total" %in% colnames(st_meta))) {
+    if ("nCount_RNA" %in% colnames(st_meta)) {
+      st_meta$UMI_total <- st_meta$nCount_RNA
+    } else if ("nCount_Spatial" %in% colnames(st_meta)) {
+      st_meta$UMI_total <- st_meta$nCount_Spatial
+    }
+  }
+  st_meta <- cbind(spot_id = rownames(st_meta), st_meta)
+  fwrite(st_meta, file.path(export_dir, "st_coordinates.csv"))
+
+  message("[Stage1] CSV export done: ", export_dir)
+}
+
+message("[Stage1] Done.")
+message("==== Stage1 preprocess end: ", Sys.time(), " ====")

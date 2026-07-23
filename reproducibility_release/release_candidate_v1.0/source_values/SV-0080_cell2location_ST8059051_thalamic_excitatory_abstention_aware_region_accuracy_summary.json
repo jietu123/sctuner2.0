@@ -1,0 +1,55 @@
+{
+  "sample": "cell2loc_scan_st8059051_sc_missing_thalamic_excitatory",
+  "section": "ST8059051",
+  "target_label": "Thalamic excitatory",
+  "target_region_definition": "E:\\AAA\u6587\u4ef6\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\cell2location_stage3b_case\\thalamic_top15\\cell2location_ST8059051_thalamic_excitatory_marker_region.csv",
+  "unsupported_core_spots": 362,
+  "supported_region_spots": 928,
+  "supported_quantile": 0.85,
+  "supported_region_counts": [
+    {
+      "expected_type": "Oligodendrocyte/OPC",
+      "spots": 321
+    },
+    {
+      "expected_type": "Inhibitory neuron",
+      "spots": 250
+    },
+    {
+      "expected_type": "Astrocyte",
+      "spots": 192
+    },
+    {
+      "expected_type": "Microglia",
+      "spots": 165
+    }
+  ],
+  "metrics": [
+    {
+      "method": "CytoSPACE",
+      "evaluated_spots": 1290,
+      "unsupported_core_spots": 362,
+      "supported_region_spots": 928,
+      "unsupported_correct": 0,
+      "supported_correct": 425,
+      "unsupported_contribution": 0.0,
+      "supported_contribution": 0.32945736434108525,
+      "abstention_aware_accuracy": 0.32945736434108525,
+      "incorrect_fraction": 0.6705426356589147
+    },
+    {
+      "method": "SVTuner",
+      "evaluated_spots": 1290,
+      "unsupported_core_spots": 362,
+      "supported_region_spots": 928,
+      "unsupported_correct": 347,
+      "supported_correct": 391,
+      "unsupported_contribution": 0.2689922480620155,
+      "supported_contribution": 0.30310077519379847,
+      "abstention_aware_accuracy": 0.5720930232558139,
+      "incorrect_fraction": 0.42790697674418604
+    }
+  ],
+  "png": "E:\\AAA\u6587\u4ef6\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\cell2location_stage3b_case\\thalamic_top15\\cell2location_ST8059051_thalamic_excitatory_abstention_aware_region_accuracy.png",
+  "pdf": "E:\\AAA\u6587\u4ef6\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\cell2location_stage3b_case\\thalamic_top15\\cell2location_ST8059051_thalamic_excitatory_abstention_aware_region_accuracy.pdf"
+}

@@ -1,0 +1,17 @@
+check_id	check	expected	observed	status	details
+V001	unique dataset IDs	0 duplicates	0	PASS	
+V002	unique experiment IDs	0 duplicates	0	PASS	
+V003	experiment dataset foreign keys	0 unresolved	0	PASS	
+V004	source-layer vocabulary	0 invalid	0	PASS	
+V005	dataset redistribution vocabulary	0 invalid	0	PASS	
+V006	experiment redistribution vocabulary	0 invalid	0	PASS	
+V007	existing retained input/config hash coverage	all present and matching	97/97	PASS	
+V008	unresolved Vizgen permission not REDISTRIBUTABLE	0 violations	0	PASS	
+V009	ERS20065156 not recorded as run	0 violations	0	PASS	
+V010	CID4465 slide not invented	UNRESOLVED	UNRESOLVED	PASS	
+V011	CID4465 capture area not invented	UNRESOLVED	UNRESOLVED	PASS	
+V012	CTA exact chemistry not invented	contains unresolved	10x Visium Spatial Gene Expression; exact chemistry/kit version unresolved	PASS	
+V013	dataset record count	37	37	PASS	
+V014	experiment record count	40	40	PASS	
+V015	manuscript reconciliation conflicts	0	0	PASS	
+V016	candidate status	PENDING_HUMAN_APPROVAL	PENDING_HUMAN_APPROVAL	PASS	

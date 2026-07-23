@@ -1,0 +1,19 @@
+accession	claimed_type_in_manuscript	verified_type	linked_record_id	status	recommended_wording
+GSE176078	dataset/reference accession	NCBI GEO Series accession	SIM01_BRCA;CTA01_BCSA2TUMB1;RD03_TNBC_PLASMA;RD05_BRCA_FFPE_PLASMA;RD06_BRCA_FFPE_EPITHELIAL	CONFIRMED	GEO Series GSE176078
+GSM5354535	Wu patient identifier CID45171	NCBI GEO Sample accession for CID45171	CTA01_BCSA2TUMB1	CONFIRMED	CID45171 (GEO Sample GSM5354535)
+E-MTAB-11114	spatial accession	BioStudies/ArrayExpress study accession	THAL01_ST8059051	CONFIRMED	spatial study E-MTAB-11114
+E-MTAB-11115	reference accession	BioStudies/ArrayExpress study accession	SIM02_MOUSE_BRAIN;LR02_BRAIN;THAL01_ST8059051	CONFIRMED	snRNA-seq reference study E-MTAB-11115
+E-MTAB-11640	study/reference record	BioStudies/ArrayExpress study accession	SIM03_HUMAN_LUNG	CONFIRMED	study E-MTAB-11640
+PRJEB52292	study record	ENA project accession	SIM03_HUMAN_LUNG	CONFIRMED	ENA project PRJEB52292
+ERS20065156	run	ENA sample accession	SIM03_HUMAN_LUNG	CONFLICT	sample accession ERS20065156; do not call it a run
+SAMEA115633909	BioSample	BioSample accession linked to ERS20065156	SIM03_HUMAN_LUNG	CONFIRMED	BioSample SAMEA115633909
+GSE129798	kidney reference	NCBI GEO Series accession	STATE02_KIDNEY_STATE32	CONFIRMED	GEO Series GSE129798
+SRP192559	kidney reference	SRA study accession	STATE02_KIDNEY_STATE32	CONFIRMED	SRA study SRP192559
+PRJNA532850	kidney reference	NCBI BioProject accession	STATE02_KIDNEY_STATE32	CONFIRMED	BioProject PRJNA532850
+GSE132465	CRC reference	NCBI GEO Series accession	RD04_CRC_B;EXT06_CRC	CONFIRMED	GEO Series GSE132465
+10.5281/zenodo.15211538	CTA accession	Zenodo dataset DOI	CTA01_BCSA2TUMB1	CONFIRMED	processed-data DOI 10.5281/zenodo.15211538
+10.48723/f4v5-m008	CTA accession	Swedish National Data Service raw-data DOI	CTA01_BCSA2TUMB1	CONFIRMED	raw-data DOI 10.48723/f4v5-m008
+Researchdata.se 2025-97	CTA accession	Researchdata.se catalogue identifier	CTA01_BCSA2TUMB1	CONFIRMED	Researchdata.se dataset 2025-97
+V11J26-008	dataset accession	10x slide serial	SIM01_BRCA;LR03_BRCA_FFPE;RD05_BRCA_FFPE_PLASMA;RD06_BRCA_FFPE_EPITHELIAL	CONFIRMED	slide V11J26-008, capture area B1; not a repository accession
+HumanBreastCancerPatient1	patient ID	Vizgen provider release sample identifier	MERS01_BREAST;STATE01_TCELL_DECOY	PARTIAL	release sample identifier HumanBreastCancerPatient1; do not imply verified clinical identity
+ST8059051	accession	cell2location spatial section identifier	THAL01_ST8059051	CONFIRMED	section ST8059051 (Visium-29B; C05717-021/B1)

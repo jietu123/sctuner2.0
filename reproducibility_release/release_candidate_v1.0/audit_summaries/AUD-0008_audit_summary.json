@@ -1,0 +1,40 @@
+{
+  "cid4465_slide_capture_recovered": false,
+  "crc_slide_capture_recovered": true,
+  "cta_exact_chemistry_recovered": false,
+  "cta_slide_capture_recovered": true,
+  "data_availability_ready": false,
+  "dataset_record_count": 37,
+  "dataset_status_counts": {
+    "CONFIRMED": 28,
+    "PARTIAL": 7,
+    "PROJECT_GENERATED": 2
+  },
+  "decision": "CONDITIONAL PASS",
+  "experiment_record_count": 40,
+  "experiment_status_counts": {
+    "CONFIRMED": 29,
+    "PARTIAL": 9,
+    "PROJECT_GENERATED": 2
+  },
+  "experimental_outputs_modified": false,
+  "figures_modified": false,
+  "formal_bibliography_accessed": false,
+  "formal_manuscript_accessed": false,
+  "heca_exact_lineage_records": 5,
+  "link_integrity": "PASS",
+  "manifest_frozen": false,
+  "manifest_status": "DRAFT_NOT_FROZEN",
+  "manifest_version": "0.2",
+  "overall_task4_resolved": false,
+  "remaining_issue_count": 6,
+  "remaining_issue_severity_counts": {
+    "CRITICAL": 1,
+    "MAJOR": 3,
+    "MINOR": 2
+  },
+  "task": "Task 4B-2 major provenance evidence recovery",
+  "vizgen_provider_checksum_confirmed": 0,
+  "vizgen_redistribution_confirmed": 0,
+  "vizgen_sample_identity_confirmed": 5
+}

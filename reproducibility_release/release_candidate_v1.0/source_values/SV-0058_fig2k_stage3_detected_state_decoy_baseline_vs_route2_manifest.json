@@ -1,0 +1,15 @@
+{
+  "sample": "cytospace_fig2k_breast_state_decoy_stage3_detected",
+  "figure": "E:\\AAA\u6587\u4ef6\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\cytospace_fig2k_tcell_states_stage3_decoy\\fig2k_stage3_detected_state_decoy_baseline_vs_route2.png",
+  "source_values": "E:\\AAA\u6587\u4ef6\\Experiment\\SVTuner\\sctuner2.0\\visualizations\\cytospace_fig2k_tcell_states_stage3_decoy\\fig2k_stage3_detected_state_decoy_baseline_vs_route2_source_values.csv",
+  "stats": {
+    "CytoSPACE": {
+      "r": 0.2263798366567022,
+      "p": 0.3663648617138927
+    },
+    "SVTuner + CytoSPACE": {
+      "r": 0.714439416703016,
+      "p": 0.0008646053485796309
+    }
+  }
+}
