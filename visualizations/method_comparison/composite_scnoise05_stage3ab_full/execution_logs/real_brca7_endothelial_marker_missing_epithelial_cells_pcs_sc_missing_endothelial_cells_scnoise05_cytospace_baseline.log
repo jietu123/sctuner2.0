@@ -1,0 +1,220 @@
+COMMAND
+E:\ANACONDA\envs\cytospace_v1.1.0_py310\python.exe -m src.stages.stage4_cytospace --sample real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells_scnoise05 --project_root V:\ --stage4_suffix _baseline --filter_mode none --filter_scope unsupported_all --cell_type_column sc_meta --sc_expr_source normalized --n_processors 1 --n_subspots 800 --mapping_cells_per_spot 5
+
+OUTPUT
+[stage4] missing_type canonicalized: raw='T cells CD8' -> normalized='T cells CD8' (no alias mapping applied)
+[stage4] effective_missing_types=['T cells CD8', 'Epithelial cells', 'PCs']
+[stage4] sc_expr_source=normalized
+[debug] sc_expr shape=(2812, 2000), st_expr shape=(2518, 2000)
+[debug] st_expr index sample=['AAACAAGTATCTCCCA.1__50x102', 'AAACACCAATAACTGC.1__59x19', 'AAACAGAGCGACTCCT.1__14x94']
+[debug] st_expr columns sample=['MALAT1', 'HSPA1A', 'SCGB1B2P']
+[debug] st_coords index sample=['AAACAAGTATCTCCCA.1__50x102', 'AAACACCAATAACTGC.1__59x19', 'AAACAGAGCGACTCCT.1__14x94']
+[stage4] writing sc expression ((2000, 2812)) ¡ú sc_expression_for_cytospace.csv
+[stage4] writing st expression ((2000, 2518)) ¡ú st_expression_for_cytospace.csv
+[stage4] cytospace output dir: V:\result\real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells_scnoise05\stage4_cytospace_baseline\cytospace_output
+Read and validate data ...
+Time to read and validate data: 0.37 seconds
+Down/up sample of scRNA-seq data according to estimated cell type fractions
+Time to down/up sample scRNA-seq data: 0.8 seconds
+Number of required processors: 16
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -32927839
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -37447806
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -39840652
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -30836935
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -31457411
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -36191368
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -36713025
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -32942008
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -30373149
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -34948051
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -37855377
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -33034205
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -34940644
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -40172504
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.08 seconds
+Solving linear assignment problem ...
+Total cost =  -32691745
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.06 seconds
+Solving linear assignment problem ...
+Total cost =  -28070555
+
+Time to solve linear assignment problem: 0.2 seconds
+Total time to run CytoSPACE core algorithm: 8.81 seconds
+Saving results ...
+Skipping assigned_expression export (CYTOSPACE_SKIP_ASSIGNED_EXPRESSION=1)
+Total execution time: 9.56 seconds
+[Stage4 cytospace] summary:
+{
+  "n_cells_before_prefilter": 2812,
+  "n_cells_after_prefilter": 2812,
+  "n_filtered": 0,
+  "assignment_rows": 12590,
+  "assigned_locations_rows": 12590,
+  "by_spot_total_cells": 12590,
+  "missing_present_in_assignment": 6677,
+  "missing_present_in_assignment_by_type": {
+    "T cells CD8": 2241,
+    "Epithelial cells": 2238,
+    "PCs": 2198
+  },
+  "filter_mode": "none",
+  "stage3_weak_th": 0.4,
+  "stage3_strong_th": 0.7,
+  "sampling_sub_spots": true,
+  "n_subspots": 800,
+  "solver_method": "lap_CSPR",
+  "seed": 42,
+  "missing_type_truth": "Epithelial cells",
+  "missing_type_list": [
+    "T cells CD8",
+    "Epithelial cells",
+    "PCs"
+  ],
+  "cells_per_spot_override": null,
+  "cell_type_column": "sc_meta",
+  "filter_scope": "unsupported_all",
+  "type_list": [
+    "PVL",
+    "PCs",
+    "T cells CD8",
+    "T cells CD4",
+    "NK cells",
+    "Epithelial cells"
+  ],
+  "full_type_list": [
+    "PVL",
+    "PCs",
+    "T cells CD8",
+    "T cells CD4",
+    "NK cells",
+    "Epithelial cells"
+  ],
+  "active_type_list": [
+    "PVL",
+    "PCs",
+    "T cells CD8",
+    "T cells CD4",
+    "NK cells",
+    "Epithelial cells"
+  ],
+  "raw_output_types_by_spot": [
+    "PVL",
+    "T cells CD8",
+    "NK cells",
+    "Epithelial cells",
+    "PCs",
+    "T cells CD4"
+  ],
+  "raw_output_types_fractional": [
+    "PVL",
+    "T cells CD8",
+    "NK cells",
+    "Epithelial cells",
+    "PCs",
+    "T cells CD4"
+  ],
+  "type_alignment_ok": true,
+  "type_alignment_diff_max": 0.0,
+  "marked_unknown_total": 0,
+  "marked_unknown_missing": 0,
+  "marked_unknown_non_missing": 0,
+  "missing_type_total_in_pool": 0,
+  "missing_type_total_in_pool_by_type": {},
+  "missing_type_stage3_detected": false,
+  "oracle_only_filtered_missing": 0,
+  "sha1": {
+    "cell_assignment": "1390b7bf9439b145962caf8b5a1507f59bd5bcb7",
+    "sim_info": "776cde3f00ab726bd268e64fdbe0f8384fe1297c",
+    "sc_metadata": "1aec84020b8066ead52649c1191c9b326e199363"
+  },
+  "cell_assignment_path": "V:\\result\\real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells_scnoise05\\stage4_cytospace_baseline\\cytospace_output\\cell_assignment.csv",
+  "cytospace_output": "V:\\result\\real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells_scnoise05\\stage4_cytospace_baseline\\cytospace_output",
+  "stage3b_blank_regions": {
+    "enabled": false,
+    "applied_before_mapping": false,
+    "full_spots": 2518,
+    "mapped_spots": 2518,
+    "blank_spots": 0
+  },
+  "mapping_cells_per_spot": 5,
+  "truth_filter_enabled": false,
+  "truth_filter_removed": 0,
+  "mapping_cell_type_column": "sc_meta",
+  "route2_restored_unknown_non_missing": 0,
+  "route2_kept_unknown_missing": 0
+}
+[Stage4] Cleaned redundant: ['sc_expression_for_cytospace.csv', 'st_expression_for_cytospace.csv']

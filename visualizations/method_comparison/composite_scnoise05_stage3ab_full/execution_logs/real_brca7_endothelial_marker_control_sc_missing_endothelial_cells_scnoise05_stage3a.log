@@ -1,0 +1,11 @@
+COMMAND
+E:\ANACONDA\envs\cytospace_v1.1.0_py310\python.exe -m src.stages.stage3_type_plugin --sample real_brca7_endothelial_marker_control_sc_missing_endothelial_cells_scnoise05 --project_root V:\ --output_suffix _scnoise05_stage3ab_full
+
+OUTPUT
+[Stage3] sc_expr_source=normalized sc_expr_shape=(2812, 2000)
+[Stage3] V4.3 mismatch_action requires V4.2 results; fallback to ignore.
+[Stage3] type_support.csv -> V:\data\processed\simulation_experiments\real_brca\real_brca7_endothelial_marker_control_sc_missing_endothelial_cells_scnoise05\stage3_typematch_scnoise05_stage3ab_full\type_support.csv
+[Stage3] cell_type_relabel.csv -> V:\data\processed\simulation_experiments\real_brca\real_brca7_endothelial_marker_control_sc_missing_endothelial_cells_scnoise05\stage3_typematch_scnoise05_stage3ab_full\cell_type_relabel.csv
+[Stage3] stage3_adjusted_annotations.csv -> V:\data\processed\simulation_experiments\real_brca\real_brca7_endothelial_marker_control_sc_missing_endothelial_cells_scnoise05\stage3_typematch_scnoise05_stage3ab_full\stage3_adjusted_annotations.csv
+[Stage3] type_prior_matrix.csv -> V:\data\processed\simulation_experiments\real_brca\real_brca7_endothelial_marker_control_sc_missing_endothelial_cells_scnoise05\stage3_typematch_scnoise05_stage3ab_full\type_prior_matrix.csv
+[Stage3] stage3_summary.json -> V:\result\simulation_experiments\real_brca\real_brca7_endothelial_marker_control_sc_missing_endothelial_cells_scnoise05\stage3_typematch_scnoise05_stage3ab_full\stage3_summary.json

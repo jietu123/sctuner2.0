@@ -1,0 +1,17 @@
+{
+  "standalone_from_retired_stage3b_only_outputs": true,
+  "all_reused_method_provenance_verified": true,
+  "controls_filter_none": true,
+  "controls_n_filtered_zero": true,
+  "missing_filter_plugin_unknown": true,
+  "missing_stage3a_outputs_and_logs_present": true,
+  "missing_n_filtered_positive_quality_check": false,
+  "filter_scope_unsupported_all": true,
+  "truth_filter_disabled": true,
+  "oracle_filtering_disabled": true,
+  "all_expected_stage3a_types_detected_quality_check": false,
+  "nine_scenarios_seven_methods": true,
+  "stage3b_all_scenarios_present": true,
+  "stage3b_enabled_and_integrated": true,
+  "decision": "PARTIAL"
+}

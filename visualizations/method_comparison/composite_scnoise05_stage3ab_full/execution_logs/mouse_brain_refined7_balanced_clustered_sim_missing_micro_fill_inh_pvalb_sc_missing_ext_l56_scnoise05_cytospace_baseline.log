@@ -1,0 +1,439 @@
+COMMAND
+E:\ANACONDA\envs\cytospace_v1.1.0_py310\python.exe -m src.stages.stage4_cytospace --sample mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56_scnoise05 --project_root V:\ --stage4_suffix _baseline --filter_mode none --filter_scope unsupported_all --cell_type_column sc_meta --sc_expr_source normalized --n_processors 1 --n_subspots 800 --mapping_cells_per_spot 5
+
+OUTPUT
+[stage4] missing_type canonicalized: raw='T cells CD8' -> normalized='T cells CD8' (no alias mapping applied)
+[stage4] effective_missing_types=['T cells CD8', 'Micro']
+[stage4] sc_expr_source=normalized
+[debug] sc_expr shape=(5112, 2000), st_expr shape=(8469, 2000)
+[debug] st_expr index sample=['AACAATGGAACCACAT-1', 'AACAATGTGCTCCGAG-1', 'AACACCAGCCTACTCG-1']
+[debug] st_expr columns sample=['Rbfox1', 'Kcnip4', 'Erbb4']
+[debug] st_coords index sample=['AACAATGGAACCACAT-1', 'AACAATGTGCTCCGAG-1', 'AACACCAGCCTACTCG-1']
+[stage4] writing sc expression ((2000, 5112)) ¡ú sc_expression_for_cytospace.csv
+[stage4] writing st expression ((2000, 8469)) ¡ú st_expression_for_cytospace.csv
+[stage4] cytospace output dir: V:\result\mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56_scnoise05\stage4_cytospace_baseline\cytospace_output
+Read and validate data ...
+Time to read and validate data: 0.87 seconds
+Down/up sample of scRNA-seq data according to estimated cell type fractions
+Time to down/up sample scRNA-seq data: 2.96 seconds
+Number of required processors: 53
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -178376148
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -175476680
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -182709624
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.25 seconds
+Solving linear assignment problem ...
+Total cost =  -174269220
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -181892901
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -173220940
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -176672278
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -176732558
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -176975617
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -173824043
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -180962240
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -173126422
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.25 seconds
+Solving linear assignment problem ...
+Total cost =  -179161131
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.25 seconds
+Solving linear assignment problem ...
+Total cost =  -179456844
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -180132451
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -179877134
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.25 seconds
+Solving linear assignment problem ...
+Total cost =  -174943822
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -174902613
+
+Time to solve linear assignment problem: 0.36 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -177843855
+
+Time to solve linear assignment problem: 0.36 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -178907686
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -175219868
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -173222576
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -174621044
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -177449919
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -176263676
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -174927644
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -177403425
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -177221434
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -176237376
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -181303738
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -173032004
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -178274456
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -177103973
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -178537741
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -175455124
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -175652034
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -177770959
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -176268303
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -177050006
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -171620281
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -175382396
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -180606653
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -172571995
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -176957598
+
+Time to solve linear assignment problem: 0.47 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -174966840
+
+Time to solve linear assignment problem: 0.47 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -178006539
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -176616537
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -176086365
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -179471775
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -182401537
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -173776508
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.24 seconds
+Solving linear assignment problem ...
+Total cost =  -179178228
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.23 seconds
+Solving linear assignment problem ...
+Total cost =  -166676103
+
+Time to solve linear assignment problem: 0.32 seconds
+Total time to run CytoSPACE core algorithm: 38.9 seconds
+Saving results ...
+Skipping assigned_expression export (CYTOSPACE_SKIP_ASSIGNED_EXPRESSION=1)
+Total execution time: 41.05 seconds
+[Stage4 cytospace] summary:
+{
+  "n_cells_before_prefilter": 5112,
+  "n_cells_after_prefilter": 5112,
+  "n_filtered": 0,
+  "assignment_rows": 42345,
+  "assigned_locations_rows": 42345,
+  "by_spot_total_cells": 42345,
+  "missing_present_in_assignment": 8283,
+  "missing_present_in_assignment_by_type": {
+    "Micro": 8283
+  },
+  "filter_mode": "none",
+  "stage3_weak_th": 0.4,
+  "stage3_strong_th": 0.7,
+  "sampling_sub_spots": true,
+  "n_subspots": 800,
+  "solver_method": "lap_CSPR",
+  "seed": 42,
+  "missing_type_truth": "Micro",
+  "missing_type_list": [
+    "T cells CD8",
+    "Micro"
+  ],
+  "cells_per_spot_override": null,
+  "cell_type_column": "sc_meta",
+  "filter_scope": "unsupported_all",
+  "type_list": [
+    "Ext_Thal_1",
+    "Inh_Pvalb",
+    "Oligo_2",
+    "Astro_CTX",
+    "Nb_1",
+    "Micro"
+  ],
+  "full_type_list": [
+    "Ext_Thal_1",
+    "Inh_Pvalb",
+    "Oligo_2",
+    "Astro_CTX",
+    "Nb_1",
+    "Micro"
+  ],
+  "active_type_list": [
+    "Ext_Thal_1",
+    "Inh_Pvalb",
+    "Oligo_2",
+    "Astro_CTX",
+    "Nb_1",
+    "Micro"
+  ],
+  "raw_output_types_by_spot": [
+    "Astro_CTX",
+    "Inh_Pvalb",
+    "Oligo_2",
+    "Micro",
+    "Ext_Thal_1",
+    "Nb_1"
+  ],
+  "raw_output_types_fractional": [
+    "Astro_CTX",
+    "Inh_Pvalb",
+    "Oligo_2",
+    "Micro",
+    "Ext_Thal_1",
+    "Nb_1"
+  ],
+  "type_alignment_ok": true,
+  "type_alignment_diff_max": 0.0,
+  "marked_unknown_total": 0,
+  "marked_unknown_missing": 0,
+  "marked_unknown_non_missing": 0,
+  "missing_type_total_in_pool": 0,
+  "missing_type_total_in_pool_by_type": {},
+  "missing_type_stage3_detected": false,
+  "oracle_only_filtered_missing": 0,
+  "sha1": {
+    "cell_assignment": "f55bdece8e3c6ccf364984cbfdae6c921afc83ff",
+    "sim_info": "2a590d0bfe52a649adf069fe1b720540b115e142",
+    "sc_metadata": "fb68e57397c71fb615259900b140cd5e95a2f849"
+  },
+  "cell_assignment_path": "V:\\result\\mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56_scnoise05\\stage4_cytospace_baseline\\cytospace_output\\cell_assignment.csv",
+  "cytospace_output": "V:\\result\\mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56_scnoise05\\stage4_cytospace_baseline\\cytospace_output",
+  "stage3b_blank_regions": {
+    "enabled": false,
+    "applied_before_mapping": false,
+    "full_spots": 8469,
+    "mapped_spots": 8469,
+    "blank_spots": 0
+  },
+  "mapping_cells_per_spot": 5,
+  "truth_filter_enabled": false,
+  "truth_filter_removed": 0,
+  "mapping_cell_type_column": "sc_meta",
+  "route2_restored_unknown_non_missing": 0,
+  "route2_kept_unknown_missing": 0
+}
+[Stage4] Cleaned redundant: ['sc_expression_for_cytospace.csv', 'st_expression_for_cytospace.csv']

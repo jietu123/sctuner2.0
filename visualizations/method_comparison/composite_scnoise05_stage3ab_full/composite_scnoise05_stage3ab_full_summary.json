@@ -1,0 +1,65 @@
+{
+  "created_at_utc": "2026-07-16T14:53:35.200548+00:00",
+  "decision": "PARTIAL",
+  "route": "Stage3A unsupported-reference filtering + Stage3B blanking + CytoSPACE",
+  "noise": "5% independent entry-wise within-gene replacement, seed 42",
+  "noise_fraction": 0.05,
+  "noise_seed": 42,
+  "scenario_count": 9,
+  "input_audit_rows": 36,
+  "n_subspots": 800,
+  "mapping_cells_per_spot": 5,
+  "svtuner_mean": 0.659712496501757,
+  "cytospace_mean": 0.5055572102350333,
+  "absolute_improvement": 0.1541552862667237,
+  "relative_improvement_percent": 30.49215462579536,
+  "paired_wins": 7,
+  "paired_total": 9,
+  "scoring_rule": "whole-space target-dominant abstention-aware composition overlap",
+  "blank_precision": 0.957935735150925,
+  "blank_recall": 0.9033976124885216,
+  "comparisons_to_other_methods": [
+    {
+      "comparison_method": "CytoSPACE",
+      "mean_difference": 0.15415528626672373,
+      "wins": 7,
+      "losses": 2,
+      "ties": 0
+    },
+    {
+      "comparison_method": "Tangram (all genes)",
+      "mean_difference": 0.21090625331993632,
+      "wins": 8,
+      "losses": 1,
+      "ties": 0
+    },
+    {
+      "comparison_method": "Tangram (marker genes)",
+      "mean_difference": 0.1934513942786858,
+      "wins": 8,
+      "losses": 1,
+      "ties": 0
+    },
+    {
+      "comparison_method": "novoSpaRc",
+      "mean_difference": 0.16993321585060694,
+      "wins": 8,
+      "losses": 1,
+      "ties": 0
+    },
+    {
+      "comparison_method": "SpaOTsc",
+      "mean_difference": 0.2741278552207631,
+      "wins": 9,
+      "losses": 0,
+      "ties": 0
+    },
+    {
+      "comparison_method": "CellTrek",
+      "mean_difference": 0.19985143790239407,
+      "wins": 6,
+      "losses": 3,
+      "ties": 0
+    }
+  ]
+}

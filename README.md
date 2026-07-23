@@ -273,6 +273,12 @@ python scripts/run_nine_scenario_method_benchmark.py `
   --project_root . `
   --scenario_preset composite
 
+# 5% SC noise
+python scripts/run_nine_scenario_method_benchmark.py `
+  --project_root . `
+  --scenario_preset composite `
+  --sample_suffix _scnoise05
+
 # 10% SC noise
 python scripts/run_nine_scenario_method_benchmark.py `
   --project_root . `
@@ -280,7 +286,7 @@ python scripts/run_nine_scenario_method_benchmark.py `
   --sample_suffix _scnoise10
 ```
 
-These commands run Tangram, novoSpaRc, SpaOTsc, and CellTrek. The no-noise summary additionally requires the CytoSPACE baseline and SVTuner Stage3B-blank outputs. The full 10% noise SVTuner route is run separately below.
+These commands run Tangram, novoSpaRc, SpaOTsc, and CellTrek. The no-noise summary additionally requires the CytoSPACE baseline and SVTuner Stage3B-blank outputs. The full 5% and 10% noise SVTuner routes are run separately below.
 
 Rebuild the abstention-aware summaries and boxplots:
 
@@ -297,6 +303,20 @@ python scripts/plot_method_comparison_composition_recovery.py `
   --title "Spatial cell-type composition recovery, abstention-aware whole-space evaluation" `
   --ylabel "Abstention-aware recovery score"
 
+# 5% SC noise, full Stage3A + Stage3B SVTuner route and all baselines.
+# Set these to the local CytoSPACE and multi-method Python executables.
+$cytoPython = "path\to\cytospace\python.exe"
+$multiMethodPython = "path\to\multimethod\python.exe"
+& $cytoPython scripts/run_composite_scnoise05_stage3ab_full.py `
+  --project_root . `
+  --python $cytoPython `
+  --external_python $multiMethodPython `
+  --prepare_inputs `
+  --run_baselines `
+  --run_external `
+  --execute `
+  --resume
+
 # 10% SC noise, full Stage3A + Stage3B SVTuner route
 python scripts/run_composite_scnoise10_stage3ab_full.py `
   --project_root . `
@@ -310,6 +330,13 @@ Authoritative result tables:
 visualizations/method_comparison/composite_no_noise/
   composition_recovery_7mapping_methods_composite_no_noise_abstention_aware_summary.csv
   composition_recovery_7mapping_methods_composite_no_noise_abstention_aware_scenario.csv
+
+visualizations/method_comparison/composite_scnoise05_stage3ab_full/
+  composite_scnoise05_stage3ab_full_method_summary.csv
+  composite_scnoise05_stage3ab_full_source_values.csv
+  composite_scnoise05_stage3ab_full_stage3a_audit.csv
+  composite_scnoise05_stage3ab_full_stage3b_audit.csv
+  composite_scnoise05_stage3ab_full_summary.json
 
 visualizations/method_comparison/composite_scnoise10_stage3ab_full/
   composite_scnoise10_stage3ab_full_method_summary.csv

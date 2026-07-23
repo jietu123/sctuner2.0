@@ -1,0 +1,283 @@
+COMMAND
+E:\ANACONDA\envs\cytospace_v1.1.0_py310\python.exe -m src.stages.stage4_cytospace --sample human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise05 --project_root V:\ --stage3_suffix _scnoise05_stage3ab_full --stage4_suffix _scnoise05_stage3ab_full --filter_scope unsupported_all --stage3b_blank_regions --stage3b_scores_path V:\data\processed\simulation_experiments\human_lung_5loc\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise05\stage3b_st_unsupported_scnoise05_stage3ab_full\spot_unsupported_scores.csv --sc_expr_source normalized --n_processors 1 --n_subspots 800 --mapping_cells_per_spot 5 --filter_mode plugin_unknown --cell_type_column plugin_type
+
+OUTPUT
+[stage4] missing_type canonicalized: raw='T cells CD8' -> normalized='T cells CD8' (no alias mapping applied)
+[stage4] effective_missing_types=['T cells CD8', 'AT2']
+[stage4] sc_expr_source=normalized
+[stage4] Stage3B pre-mapping blank mask applied: full_spots=3267, blank_spots=28, mapped_spots=3239
+[debug] sc_expr shape=(13186, 2000), st_expr shape=(3239, 2000)
+[debug] st_expr index sample=['AAACAAGTATCTCCCA-1', 'AAACACCAATAACTGC-1', 'AAACAGAGCGACTCCT-1']
+[debug] st_expr columns sample=['SFTPC', 'FTH1', 'FTL']
+[debug] st_coords index sample=['AAACAAGTATCTCCCA-1', 'AAACACCAATAACTGC-1', 'AAACAGAGCGACTCCT-1']
+[stage4] writing sc expression ((2000, 13186)) ¡ú sc_expression_for_cytospace.csv
+[stage4] writing st expression ((2000, 3239)) ¡ú st_expression_for_cytospace.csv
+[stage4] cytospace output dir: V:\result\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise05\stage4_cytospace_scnoise05_stage3ab_full\cytospace_output
+Read and validate data ...
+Time to read and validate data: 1.88 seconds
+Down/up sample of scRNA-seq data according to estimated cell type fractions
+Time to down/up sample scRNA-seq data: 4.22 seconds
+Number of required processors: 21
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -198720394
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -200164726
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -198009643
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -199846525
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -204942435
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -194148560
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -196339045
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -192622552
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -193365819
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -200766635
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -192417708
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -192768391
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -200143207
+
+Time to solve linear assignment problem: 0.39 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -197731879
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -195170975
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -197749016
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -193280513
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -201374977
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -204180732
+
+Time to solve linear assignment problem: 0.37 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.1 seconds
+Solving linear assignment problem ...
+Total cost =  -190369765
+
+Time to solve linear assignment problem: 0.38 seconds
+Building cost matrix ...
+Time to build cost matrix: 0.05 seconds
+Solving linear assignment problem ...
+Total cost =  -47798335
+
+Time to solve linear assignment problem: 0.02 seconds
+Total time to run CytoSPACE core algorithm: 15.03 seconds
+Saving results ...
+Skipping assigned_expression export (CYTOSPACE_SKIP_ASSIGNED_EXPRESSION=1)
+Total execution time: 17.42 seconds
+[Stage4 cytospace] summary:
+{
+  "n_cells_before_prefilter": 13186,
+  "n_cells_after_prefilter": 13186,
+  "n_filtered": 0,
+  "assignment_rows": 16195,
+  "assigned_locations_rows": 16195,
+  "by_spot_total_cells": 16195,
+  "missing_present_in_assignment": 3413,
+  "missing_present_in_assignment_by_type": {
+    "AT2": 3413
+  },
+  "filter_mode": "plugin_unknown",
+  "stage3_weak_th": 0.4,
+  "stage3_strong_th": 0.7,
+  "sampling_sub_spots": true,
+  "n_subspots": 800,
+  "solver_method": "lap_CSPR",
+  "seed": 42,
+  "missing_type_truth": "AT2",
+  "missing_type_list": [
+    "T cells CD8",
+    "AT2"
+  ],
+  "cells_per_spot_override": null,
+  "cell_type_column": "plugin_type",
+  "filter_scope": "unsupported_all",
+  "type_list": [
+    "AT2",
+    "DC",
+    "Ciliated",
+    "Macrophage_alveolar",
+    "Fibroblast",
+    "Endothelia_vascular",
+    "Mast_cell",
+    "Erythrocyte",
+    "Unknown_sc_only"
+  ],
+  "full_type_list": [
+    "AT2",
+    "DC",
+    "Ciliated",
+    "Macrophage_alveolar",
+    "Fibroblast",
+    "Endothelia_vascular",
+    "Mast_cell",
+    "Erythrocyte",
+    "Unknown_sc_only"
+  ],
+  "active_type_list": [
+    "AT2",
+    "DC",
+    "Ciliated",
+    "Macrophage_alveolar",
+    "Fibroblast",
+    "Endothelia_vascular",
+    "Mast_cell",
+    "Erythrocyte"
+  ],
+  "raw_output_types_by_spot": [
+    "Macrophage_alveolar",
+    "Fibroblast",
+    "Mast_cell",
+    "Endothelia_vascular",
+    "Ciliated",
+    "AT2",
+    "DC",
+    "Erythrocyte"
+  ],
+  "raw_output_types_fractional": [
+    "Macrophage_alveolar",
+    "Fibroblast",
+    "Mast_cell",
+    "Endothelia_vascular",
+    "Ciliated",
+    "AT2",
+    "DC",
+    "Erythrocyte"
+  ],
+  "type_alignment_ok": true,
+  "type_alignment_diff_max": 0.0,
+  "marked_unknown_total": 0,
+  "marked_unknown_missing": 0,
+  "marked_unknown_non_missing": 0,
+  "missing_type_total_in_pool": 2779,
+  "missing_type_total_in_pool_by_type": {
+    "AT2": 2779
+  },
+  "missing_type_stage3_detected": false,
+  "oracle_only_filtered_missing": 2779,
+  "sha1": {
+    "cell_assignment": "38e143b152f53e0afed9a1a13e51b76e8b8634fc",
+    "sim_info": "6ab7dc3e1d7dcce6203b36944a2fb1bfb22785f5",
+    "sc_metadata": "501aa0106bb490ef21da9e1c5c0e64eb8be4e499"
+  },
+  "cell_assignment_path": "V:\\result\\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise05\\stage4_cytospace_scnoise05_stage3ab_full\\cytospace_output\\cell_assignment.csv",
+  "cytospace_output": "V:\\result\\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise05\\stage4_cytospace_scnoise05_stage3ab_full\\cytospace_output",
+  "stage3b_blank_regions": {
+    "enabled": true,
+    "applied_before_mapping": true,
+    "scores_path": "E:\\AAAÎÄ¼þ\\Experiment\\SVTuner\\sctuner2.0\\data\\processed\\simulation_experiments\\human_lung_5loc\\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise05\\stage3b_st_unsupported_scnoise05_stage3ab_full\\spot_unsupported_scores.csv",
+    "scores_sha1": "8ed35ea5e616a361d26303ffc307c330496ec0f1",
+    "blank_manifest_path": "V:\\result\\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise05\\stage4_cytospace_scnoise05_stage3ab_full\\cytospace_output\\stage3b_blank_spots.csv",
+    "blank_manifest_sha1": "1857043072f1a3df1498035946b7a5d56aa4ef77",
+    "full_spots": 3267,
+    "mapped_spots": 3239,
+    "blank_spots": 28,
+    "mapping_capacity_removed": 140,
+    "assignment_blank_hits": {
+      "assigned_locations.csv": 0,
+      "cell_assignment.csv": 0
+    },
+    "restored_output_rows": {
+      "cell_type_assignments_by_spot.csv": {
+        "full_spots": 3267,
+        "blank_rows": 28,
+        "blank_nonzero_rows": 0
+      },
+      "fractional_abundances_by_spot.csv": {
+        "full_spots": 3267,
+        "blank_rows": 28,
+        "blank_nonzero_rows": 0
+      }
+    }
+  },
+  "mapping_cells_per_spot": 5,
+  "truth_filter_enabled": false,
+  "truth_filter_removed": 0,
+  "mapping_cell_type_column": "plugin_type",
+  "route2_restored_unknown_non_missing": 0,
+  "route2_kept_unknown_missing": 0
+}
+[Stage4] Cleaned redundant: ['sc_expression_for_cytospace.csv', 'st_expression_for_cytospace.csv']

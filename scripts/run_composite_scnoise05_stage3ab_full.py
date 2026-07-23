@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Compatibility entry point for the 10% composite Stage3A + Stage3B benchmark."""
+"""Run the 5% composite Stage3A + Stage3B noise benchmark."""
 
 import sys
 from pathlib import Path
@@ -12,4 +12,4 @@ from scripts.run_composite_noise_stage3ab_full import main
 
 
 if __name__ == "__main__":
-    raise SystemExit(main(default_noise_fraction=0.10))
+    raise SystemExit(main(default_noise_fraction=0.05))

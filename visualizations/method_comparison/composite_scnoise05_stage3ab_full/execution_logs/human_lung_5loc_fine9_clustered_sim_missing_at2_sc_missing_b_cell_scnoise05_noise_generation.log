@@ -1,0 +1,7 @@
+COMMAND
+E:\ANACONDA\envs\cytospace_v1.1.0_py310\python.exe V:\scripts\generate_sc_noise_from_processed_sim.py --project_root V:\ --sim_group human_lung_5loc --source_sample human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell --target_sample human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise05 --noise_fraction 0.05 --seed 42
+
+OUTPUT
+[OK] generated noisy sample: human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise05
+[OK] raw: V:\data\sim\human_lung_5loc\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise05
+[OK] processed: V:\data\processed\simulation_experiments\human_lung_5loc\human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell_scnoise05
