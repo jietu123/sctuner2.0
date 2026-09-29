@@ -1,336 +1,294 @@
-# SVTuner 数据场景运行说明
+# SVTuner 场景运行指南
 
-本文档说明两类数据场景的基本运行方式：
+本文档说明当前仓库中 Stage 1、Stage 3A、Stage 3B、Stage 4，以及 C1–C8 审稿补充实验的实际入口和文件约定。默认原则是：**不覆盖历史输出、不隐式清理目录、不把本地大数据提交到 Git。**
 
-- 模拟数据场景：数据通常位于 `data/sim/<group>/<sample>`，配置位于 `configs/datasets/<sample>.yaml`。
-- 真实数据场景：数据通常位于 `data/raw/low_resolution_experiments/<sample>`，配置位于 `configs/datasets/<sample>.yaml`。
+## 1. 运行前准备
 
-以下命令默认在 PowerShell 中运行。
+在项目根目录执行：
 
-## 0. 通用环境
+~~~powershell
+conda env create -f configs/environment.yml
+conda activate svtuner_bib
+pip install -e .
+svtuner version
+svtuner envcheck
+~~~
 
-先进入项目根目录，并避免 Python 用户环境污染：
+建议显式指定项目根目录：
 
-```powershell
-Set-Location "E:\AAA文件\Experiment\SVTuner\sctuner2.0"
-$env:PYTHONNOUSERSITE = "1"
-```
+~~~powershell
+$ProjectRoot = "E:\AAA文件\Experiment\SVTuner\sctuner2.0"
+Set-Location -LiteralPath $ProjectRoot
+~~~
 
-如果需要显式使用指定 conda 环境中的 Python：
+本文档不提供默认递归删除命令。需要重跑时，应先确认精确的 sample、stage 和 suffix，再单独处理目标目录。
 
-```powershell
-$envPrefix = "E:\ANACONDA\envs\cytospace_v1.1.0_py310"
-```
+## 2. 配置与目录解析
 
-## 1. 查看可运行样本
+每个 sample 对应：
 
-所有可运行样本都应有对应配置文件：
+~~~text
+configs/datasets/<sample>.yaml
+~~~
 
-```powershell
-Get-ChildItem configs\datasets -Filter *.yaml |
-  Select-Object -ExpandProperty BaseName |
-  Sort-Object
-```
+如果 YAML 定义了 storage.group：
 
-当前重点模拟场景包括：
+~~~text
+data/raw/<group>/<sample>/
+data/processed/<group>/<sample>/
+result/<group>/<sample>/
+~~~
 
-```text
-human_lung_5loc_fine9_clustered_sim
-human_lung_5loc_fine9_clustered_sim_missing_at2
-human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast
+否则：
 
-mouse_brain_refined7_balanced_clustered_sim
-mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_ext_l56
-mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_ext_l56
+~~~text
+data/raw/<sample>/
+data/processed/<sample>/
+result/<sample>/
+~~~
 
-real_brca7_candidate_stable_control
-real_brca7_candidate_stable_control_missing_epithelial_cells
-real_brca7_candidate_stable_control_missing_epithelial_cells_pcs
-```
+Stage 1、Stage 3A、Stage 3B 使用上述 group-aware 路径。当前 Stage 4 的输出例外地写入：
 
-真实数据场景示例包括：
+~~~text
+result/<sample>/stage4_cytospace<suffix>/
+~~~
 
-```text
-adult_mouse_kidney_real
-human_breast_cancer_real
-human_cervical_cancer_real
-human_heart_ff_real
-human_intestine_cancer_real
-human_lymph_node_real
-```
+运行前至少核对：
 
-## 2. 模拟数据场景运行方式
+- dataset YAML 中的 sample 与 storage.group；
+- SC/ST 表达和 metadata 文件名；
+- cell-type 列名；
+- Stage3A/Stage3B 参数；
+- 输出 suffix 是否会覆盖历史目录。
 
-模拟数据通常已经生成在 `data/sim` 下。运行时建议先从模拟源数据重建 Stage1 中间文件，再运行 Stage3。
+## 3. Stage 1：预处理
 
-### 2.1 Stage1 + Stage3 最小命令
+正式 R 入口：
 
-只需要替换 `$sample`：
+~~~powershell
+Rscript r_scripts/stage1_preprocess.R --sample <sample> --project_root $ProjectRoot --export_csv
+~~~
 
-```powershell
-Set-Location "E:\AAA文件\Experiment\SVTuner\sctuner2.0"
-$env:PYTHONNOUSERSITE = "1"
-$envPrefix = "E:\ANACONDA\envs\cytospace_v1.1.0_py310"
+典型输出：
 
-$sample = "<simulation_sample_name>"
+~~~text
+stage1_preprocess/exported/sc_expression_normalized.csv
+stage1_preprocess/exported/sc_expression_data.csv
+stage1_preprocess/exported/sc_expression_counts.csv
+stage1_preprocess/exported/sc_metadata.csv
+stage1_preprocess/exported/st_expression_normalized.csv
+stage1_preprocess/exported/st_coordinates.csv
+stage1_preprocess/hvg_genes.txt
+stage1_preprocess/stage1_summary.json
+~~~
 
-Remove-Item "data\processed\simulation_experiments\*\$sample" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "result\simulation_experiments\*\$sample" -Recurse -Force -ErrorAction SilentlyContinue
+这些矩阵通常体积很大，位于 Git 忽略的 data/processed/ 下。不要为了提交 GitHub 而复制或强制加入。
 
-python scripts\prepare_stage1_from_sim_source.py `
-  --project_root . `
-  --sample $sample
+## 4. Stage 3A：reference-level diagnostics
 
-if ($LASTEXITCODE -ne 0) { throw "Stage1 sim export failed: $sample" }
+推荐显式指定 SC expression source，并用 suffix 隔离测试：
 
-& "$envPrefix\python.exe" -m src.stages.stage3_type_plugin `
-  --sample $sample `
-  --sc_expr_source normalized
+~~~powershell
+python -m src.stages.stage3_type_plugin --project_root $ProjectRoot --sample <sample> --sc_expr_source normalized --output_suffix _trial
+~~~
 
-if ($LASTEXITCODE -ne 0) { throw "Stage3 failed: $sample" }
-```
+主要输出目录：
 
-### 2.2 查看 Stage3 结果
+~~~text
+stage3_typematch<suffix>/
+~~~
 
-根据模拟组选择对应路径。下面示例使用 `human_lung_5loc`：
+关键文件：
 
-```powershell
-$group = "human_lung_5loc"
-$sample = "human_lung_5loc_fine9_clustered_sim_missing_at2"
+- stage3_summary.json：最终 missing/unsupported types、参数与诊断摘要；
+- type_support.csv：每个 cell type 的 support score、category、n_cells 等；
+- cell_type_relabel.csv：原始与调整后标签；
+- stage3_adjusted_annotations.csv：供后续 mapping 使用的 annotations。
 
-Import-Csv "data\processed\simulation_experiments\$group\$sample\stage3_typematch\type_support.csv" |
-  Select-Object orig_type,n_cells,support_score,support_category,auto_missing,auto_missing_confirmed,auto_missing_confirmation_reason,masked_missing_candidate,marker_identity_candidate,marker_identity_z,Action |
-  Sort-Object {[double]$_.support_score} |
-  Format-Table -AutoSize
-```
+正式历史目录 stage3_typematch 没有 suffix。参数敏感性或诊断运行必须使用独立 suffix，不能覆盖正式目录。
 
-### 2.3 模拟场景完整主流程
+## 5. Stage 3B：spatial-unit diagnostics
 
-如果要继续运行 Stage4 和 Stage5，可以使用主流程脚本：
+若希望沿用 dataset YAML 与程序默认值，使用模块入口且不要额外覆盖数值参数：
 
-```powershell
-$sample = "<simulation_sample_name>"
+~~~powershell
+python -m src.stages.stage3b_st_unsupported --project_root $ProjectRoot --sample <sample> --output_suffix _trial
+~~~
 
-python scripts\run_project_mainline.py `
-  --sample $sample `
-  --project_root . `
-  --stage3_sc_expr_source normalized `
-  --stage4_sc_expr_source normalized `
-  --route2_filter_scope missing_only
-```
+说明：
 
-输出通常位于：
+- 模块入口会解析 dataset YAML 和内部默认值；
+- svtuner stage3b 会传递 CLI 中定义的显式默认值；
+- 精确复现已有结果时，应先确认历史运行采用哪种入口；
+- standalone 与 sequential 两种 Stage3B 必须使用独立输出目录和独立 mask。
 
-```text
-data/processed/simulation_experiments/<group>/<sample>/
-result/simulation_experiments/<group>/<sample>/
-```
+关键输出通常包括：
 
-## 3. 真实数据场景运行方式
+- spot_unsupported_scores.csv：spot-level observed statistics、p/q values、score 和最终 withheld decision；
+- Stage3B summary/region 文件：候选与最终空间区域；
+- 用于 Stage 4 blanking 的 final mask。
 
-真实数据场景通常从 `data/raw/low_resolution_experiments/<sample>` 读取。运行时可以使用 R 版 Stage1，或直接使用主流程脚本。
+## 6. Stage 4：四条 decomposition 路线
 
-### 3.1 Stage1 + Stage3 最小命令
+四条路线的科学定义如下：
 
-只需要替换 `$sample`：
+| 路线 | SC reference | Stage3B mask |
+|---|---|---|
+| Baseline | 完整 reference | 无 |
+| Stage3A-only | Stage3A retained reference | 无 |
+| Stage3B-only | 完整 reference | standalone Stage3B mask |
+| Full | Stage3A retained reference | sequential Stage3B mask |
 
-```powershell
-Set-Location "E:\AAA文件\Experiment\SVTuner\sctuner2.0"
-$env:PYTHONNOUSERSITE = "1"
-$envPrefix = "E:\ANACONDA\envs\cytospace_v1.1.0_py310"
+### Baseline
 
-$sample = "<real_sample_name>"
+~~~powershell
+python -m src.stages.stage4_cytospace --project_root $ProjectRoot --sample <sample> --filter_scope none --sc_expr_source normalized --stage4_suffix _baseline
+~~~
 
-Remove-Item "data\processed\low_resolution_experiments\$sample\stage3_typematch" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "result\low_resolution_experiments\$sample\stage3_typematch" -Recurse -Force -ErrorAction SilentlyContinue
+### Stage3A-only
 
-Rscript r_scripts\stage1_preprocess.R `
-  --sample $sample `
-  --project_root .
+~~~powershell
+python -m src.stages.stage4_cytospace --project_root $ProjectRoot --sample <sample> --filter_scope unsupported_all --sc_expr_source normalized --stage4_suffix _stage3a_only
+~~~
 
-if ($LASTEXITCODE -ne 0) { throw "Stage1 failed: $sample" }
+如果历史路线使用 plugin_unknown、plugin_type 或特殊 missing_type 约定，应严格沿用对应 frozen 命令，而不是根据名称猜测。
 
-& "$envPrefix\python.exe" -m src.stages.stage3_type_plugin `
-  --sample $sample `
-  --sc_expr_source normalized
+### Stage3B-only
 
-if ($LASTEXITCODE -ne 0) { throw "Stage3 failed: $sample" }
-```
+使用完整 reference，并通过以下参数传入 **standalone** Stage3B mask：
 
-### 3.2 查看 Stage3 结果
+~~~text
+--stage3b_blank_regions
+--stage3b_scores_path <standalone spot_unsupported_scores.csv>
+~~~
 
-```powershell
-$sample = "<real_sample_name>"
+### Full
 
-Import-Csv "data\processed\low_resolution_experiments\$sample\stage3_typematch\type_support.csv" |
-  Select-Object orig_type,n_cells,support_score,support_category,auto_missing,auto_missing_confirmed,auto_missing_confirmation_reason,masked_missing_candidate,marker_identity_candidate,marker_identity_z,Action |
-  Sort-Object {[double]$_.support_score} |
-  Format-Table -AutoSize
-```
+使用 Stage3A retained reference，并传入基于该 retained reference 重新计算的 **sequential** Stage3B mask。不能把 standalone mask 复用于 Full。
 
-### 3.3 真实数据完整主流程
+Stage 4 还支持 --stage3_suffix、--stage4_suffix、--filter_scope、--keep_redundant 和 --sc_expr_source。
 
-如果要继续运行 Stage4 和 Stage5：
+## 7. 便捷命令的边界
 
-```powershell
-$sample = "<real_sample_name>"
+~~~powershell
+svtuner run --sample <sample> --project-root $ProjectRoot
+~~~
 
-python scripts\run_project_mainline.py `
-  --sample $sample `
-  --project_root . `
-  --stage3_sc_expr_source normalized `
-  --stage4_sc_expr_source normalized `
-  --route2_filter_scope missing_only
-```
+当前 svtuner run 会运行：
 
-输出通常位于：
+1. Stage 1；
+2. Stage 3A；
+3. baseline Stage 4；
+4. Stage3A-controlled Stage 4。
 
-```text
-data/processed/low_resolution_experiments/<sample>/
-result/low_resolution_experiments/<sample>/
-```
+它**不会运行 Stage 3B**。此外，configs/pipeline_presets.yaml 当前为空，因此 --from-scratch 不能在没有补充 preset 的情况下作为通用入口。
 
-## 4. 简单命令样式
+## 8. 九个 composite no-noise 场景
 
-最常用的命令样式可以简化成：
+| ID | config / sample | ST missing | SC dropout |
+|---|---|---|---|
+| BC-1 | real_brca7_endothelial_marker_control_sc_missing_endothelial_cells | None | Endothelial cells |
+| BC-2 | real_brca7_endothelial_marker_missing_epithelial_cells_sc_missing_endothelial_cells | Epithelial cells | Endothelial cells |
+| BC-3 | real_brca7_endothelial_marker_missing_epithelial_cells_pcs_sc_missing_endothelial_cells | Epithelial cells + PCs | Endothelial cells |
+| Lung-1 | human_lung_5loc_fine9_clustered_sim_sc_missing_b_cell | None | B cell |
+| Lung-2 | human_lung_5loc_fine9_clustered_sim_missing_at2_sc_missing_b_cell | AT2 | B cell |
+| Lung-3 | human_lung_5loc_fine9_clustered_sim_missing_at2_fibroblast_sc_missing_b_cell | AT2 + Fibroblast | B cell |
+| Brain-1 | mouse_brain_refined7_balanced_clustered_sim_sc_missing_ext_l56 | None | Ext_L56 |
+| Brain-2 | mouse_brain_refined7_balanced_clustered_sim_missing_micro_fill_inh_pvalb_sc_missing_ext_l56 | Micro | Ext_L56 |
+| Brain-3 | mouse_brain_refined7_balanced_clustered_sim_missing_micro_oligo_2_fill_inh_pvalb_sc_missing_ext_l56 | Micro + Oligo_2 | Ext_L56 |
 
-```powershell
-# 模拟数据
-$sample = "<simulation_sample_name>"
-python scripts\prepare_stage1_from_sim_source.py --project_root . --sample $sample
-python -m src.stages.stage3_type_plugin --sample $sample --sc_expr_source normalized
-```
+## 9. C1：multi-seed simulation
 
-```powershell
-# 真实数据
-$sample = "<real_sample_name>"
-Rscript r_scripts\stage1_preprocess.R --sample $sample --project_root .
-python -m src.stages.stage3_type_plugin --sample $sample --sc_expr_source normalized
-```
+C1 使用 simulation seeds 42–51；Stage3A、Stage3B 和 CytoSPACE 的 algorithm seed 固定为 42。runner 每次处理一个 scenario × seed：
 
-```powershell
-# 主流程：Stage1 -> Stage3 -> Stage4 -> Stage5
-$sample = "<sample_name>"
-python scripts\run_project_mainline.py --sample $sample --project_root .
-```
+~~~powershell
+python scripts/run_c1_seed_repeat.py --scenario BC-2 --simulation-seed 43
+~~~
 
-## 5. 注意事项
+实际参数名以脚本 --help 为准；不要用同一 sample/output path 覆盖不同 seed。正式汇总与图位于：
 
-- 样本名必须和 `configs/datasets/<sample>.yaml` 的文件名一致。
-- 模拟数据场景推荐使用 `scripts/prepare_stage1_from_sim_source.py` 准备 Stage1，而不是直接跑 R 版 Stage1。
-- 真实数据场景默认使用 `Rscript r_scripts/stage1_preprocess.R` 准备 Stage1。
-- 如果只是验证缺失类型检测机制，通常跑到 Stage3 并检查 `type_support.csv` 即可。
-- 如果要比较 baseline 与 route2 映射效果，需要继续运行 Stage4 和 Stage5。
+~~~text
+visualizations/method_comparison/c1_multiseed/
+~~~
 
-## 6. 最近一次 Stage3 验证命令记录
+本地逐次运行结果位于 result/，不会上传 GitHub。
 
-以下命令是最近一次实际用于验证的命令。该验证只运行到 Stage3，用于检查类型缺失检测是否正常；没有继续运行 Stage4、Stage5 或后续映射/评估流程。
+## 10. C2–C8 入口索引
 
-### 6.1 模拟数据单缺失场景
+| 实验 | 当前入口 / 资产 | 注意事项 |
+|---|---|---|
+| C2 | Stage3A CLI；临时 dataset YAML | 敏感性临时输出已清理；不要覆盖正式 stage3_typematch |
+| C3 | scripts/plot_stage3b_threshold_robustness.py | 基于已有 reference-dropout 输出；不重跑 Stage3B |
+| C4.1 | scripts/export_c4_1_stage3b_raw_calibration_null.py；scripts/run_c4_1_observed_vs_null_comparison.py | 导出/比较 Stage3B raw calibration null |
+| C4.2 | scripts/run_c4_2_technical_perturbation_pilot.py | 研究脚本；只运行 Stage3B |
+| C4.3 | scripts/run_c4_3_stage3b_statistical_robustness_pilot.py | BH/BY 与 spatial permutation robustness |
+| C5 | scripts/run_c5_decomposition.py | 研究 runner，含本机历史路径假设；迁移机器前先检查，不要盲目批跑 |
+| C6 | scripts/generate_real_brca_clustered_sim.py；scripts/generate_st_only_reference_dropout_from_sim.py；scripts/evaluate_c6_independent_source.py | 独立 reference/profile source；生成数据与 result 保持本地 |
+| C7 | scripts/repair_c7_metric_provenance.py | 只读冻结输入，确定性修复 CTA 指标 provenance |
+| C8 | C8 paired analysis 与 plotting scripts | 推断单位为 independent experiment；不要把内部 readout 当独立重复 |
 
-验证样本：
+部分 C4/C5/C8 脚本是冻结研究脚本而非通用产品 CLI，可能包含固定数据集、路径或输出约定。运行前只核对脚本顶部常量和输入路径，不应重构算法来适配本机。
 
-```text
-human_lung_5loc_fine9_clustered_sim_missing_at2
-```
+## 11. C6 independent-source 场景
 
-预期结果：`AT2` 被识别为确认缺失类型，其他类型不应被确认缺失。
+冻结样本：
 
-```powershell
-$ErrorActionPreference = 'Stop'
-Set-Location "E:\AAA文件\Experiment\SVTuner\sctuner2.0"
-$env:PYTHONNOUSERSITE = "1"
-$envPrefix = "E:\ANACONDA\envs\cytospace_v1.1.0_py310"
-$py = "$envPrefix\python.exe"
+~~~text
+c6_breast_independent_control
+c6_breast_independent_fibroblast_dropout
+~~~
 
-$simGroup = "human_lung_5loc"
-$simSample = "human_lung_5loc_fine9_clustered_sim_missing_at2"
+配置：
 
-Remove-Item "data\processed\simulation_experiments\$simGroup\$simSample" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "result\simulation_experiments\$simGroup\$simSample" -Recurse -Force -ErrorAction SilentlyContinue
+~~~text
+configs/datasets/c6_breast_independent_control.yaml
+configs/datasets/c6_breast_independent_fibroblast_dropout.yaml
+~~~
 
-& $py scripts\prepare_stage1_from_sim_source.py `
-  --project_root . `
-  --sample $simSample
+设计边界：
 
-if ($LASTEXITCODE -ne 0) { throw "Stage1 sim export failed: $simSample" }
+- Dataset A 提供 SC reference、composition truth、坐标与 library size 框架；
+- Dataset B 仅提供独立的 type profile；
+- generator 的 --profile_source_sample 未提供时保持历史行为；
+- dropout utility 只删除 SC reference 中的 Fibroblasts，ST 与 truth 必须保持不变。
 
-& $py -m src.stages.stage3_type_plugin `
-  --sample $simSample `
-  --sc_expr_source normalized
+## 12. 输出完成性检查
 
-if ($LASTEXITCODE -ne 0) { throw "Stage3 failed: $simSample" }
+每次正式运行后只做一次最终检查：
 
-Import-Csv "data\processed\simulation_experiments\$simGroup\$simSample\stage3_typematch\type_support.csv" |
-  Select-Object orig_type,n_cells,support_score,support_category,auto_missing,auto_missing_confirmed,auto_missing_confirmation_reason,masked_missing_candidate,marker_identity_candidate,marker_identity_z,Action |
-  Sort-Object {[double]$_.support_score} |
-  Format-Table -AutoSize
-```
+1. 命令退出状态为 0；
+2. 目标 stage 目录存在；
+3. summary JSON/CSV 可以读取；
+4. barcode 或 spatial-unit ID 与 coordinates 一一对应；
+5. sample、suffix、seed 与 provenance 一致；
+6. 没有覆盖无 suffix 的历史结果；
+7. 没有把 standalone mask 用于 Full；
+8. Git 跟踪边界符合预期。
 
-### 6.2 真实数据无类型掩盖场景
+只读检查示例：
 
-验证样本：
+~~~powershell
+git check-ignore -v result
+git ls-files -- "result/**"
+git status --short
+~~~
 
-```text
-adult_mouse_kidney_real
-```
+## 13. GitHub 收录边界
 
-预期结果：不应出现确认缺失类型，即 `auto_missing_confirmed=Yes` 的数量应为 0。
+.gitignore 明确忽略 data/、result/ 和 logs/。因此：
 
-```powershell
-$ErrorActionPreference = 'Stop'
-Set-Location "E:\AAA文件\Experiment\SVTuner\sctuner2.0"
-$env:PYTHONNOUSERSITE = "1"
-$envPrefix = "E:\ANACONDA\envs\cytospace_v1.1.0_py310"
-$py = "$envPrefix\python.exe"
+- data/raw、data/sim、data/processed 不上传；
+- result/ 中的本地正式 CSV、JSON、mask、mapping 结果也不上传；
+- GitHub 上公开的是代码、configs、reproducibility_release，以及 visualizations/ 中经过筛选的图和 source table；
+- 不要使用 git add -f result/ 或 git clean 处理实验数据；
+- 需要公开的结果应复制为小型、可再分发、带 provenance 的 curated artifact，再提交到明确的 tracked 目录。
 
-$realSample = "adult_mouse_kidney_real"
+## 14. 安全规则
 
-Remove-Item "data\processed\low_resolution_experiments\$realSample\stage3_typematch" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "result\low_resolution_experiments\$realSample\stage3_typematch" -Recurse -Force -ErrorAction SilentlyContinue
-
-& $py -m src.stages.stage3_type_plugin `
-  --sample $realSample `
-  --sc_expr_source normalized
-
-if ($LASTEXITCODE -ne 0) { throw "Stage3 failed: $realSample" }
-
-Import-Csv "data\processed\low_resolution_experiments\$realSample\stage3_typematch\type_support.csv" |
-  Select-Object orig_type,n_cells,support_score,support_category,auto_missing,auto_missing_confirmed,auto_missing_confirmation_reason,masked_missing_candidate,marker_identity_candidate,marker_identity_z,Action |
-  Sort-Object {[double]$_.support_score} |
-  Format-Table -AutoSize
-```
-
-### 6.3 真实数据单类型掩盖场景
-
-验证样本：
-
-```text
-adult_mouse_kidney_real_profile_mask_endo
-```
-
-预期结果：`Endo` 被识别为确认缺失类型，其他类型不应被确认缺失。
-
-```powershell
-$ErrorActionPreference = 'Stop'
-Set-Location "E:\AAA文件\Experiment\SVTuner\sctuner2.0"
-$env:PYTHONNOUSERSITE = "1"
-$envPrefix = "E:\ANACONDA\envs\cytospace_v1.1.0_py310"
-$py = "$envPrefix\python.exe"
-
-$maskSample = "adult_mouse_kidney_real_profile_mask_endo"
-
-Remove-Item "data\processed\low_resolution_experiments\$maskSample\stage3_typematch" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "result\low_resolution_experiments\$maskSample\stage3_typematch" -Recurse -Force -ErrorAction SilentlyContinue
-
-& $py -m src.stages.stage3_type_plugin `
-  --sample $maskSample `
-  --sc_expr_source normalized
-
-if ($LASTEXITCODE -ne 0) { throw "Stage3 failed: $maskSample" }
-
-Import-Csv "data\processed\low_resolution_experiments\$maskSample\stage3_typematch\type_support.csv" |
-  Select-Object orig_type,n_cells,support_score,support_category,auto_missing,auto_missing_confirmed,auto_missing_confirmation_reason,masked_missing_candidate,marker_identity_candidate,marker_identity_z,Action |
-  Sort-Object {[double]$_.support_score} |
-  Format-Table -AutoSize
-```
+- 不对项目根目录执行递归删除；
+- 不把目录名相似视为 provenance 相同；
+- 不修改原始 dataset YAML 来做临时 sweep；
+- 不覆盖无 suffix 的 Stage3A/Stage3B/Stage4 正式目录；
+- 不因单个 warning 自动调参或改变实验定义；
+- 运行长批次时优先本地终端执行，结束后一次性汇总；
+- commit 前使用 git status 和 git diff 精确确认要上传的文件。
