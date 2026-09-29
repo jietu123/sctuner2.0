@@ -68,3 +68,9 @@ reproducibility_release/manifests/manifest_v1.0_freeze_candidate_metadata.json
 
 # GitHub archive stores the exact Phase 4 Matrix Market outputs as matrix.mtx.gz.
 visualizations/bioapp_experiment/**/assigned_expression/matrix.mtx
+
+# Local temporary workspaces
+/tmp/c5_spreadsheet/
+
+# Node dependencies
+node_modules/

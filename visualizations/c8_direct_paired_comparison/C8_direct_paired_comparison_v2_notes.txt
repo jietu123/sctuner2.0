@@ -1,0 +1,10 @@
+C8 figure V2 refinement notes
+
+- This revision is visual refinement only.
+- No statistical result, scientific definition, or panel content was changed.
+- Panel A was strengthened as the primary visual focus with clearer paired observations and aligned annotations.
+- Panel B was reformatted as an integrated forest-style effect summary with aligned confidence-interval, favorable-pair, and P-value columns.
+- Panel C received harmonized labels, spacing, method encoding, and favorable-pair annotations.
+- Panel D was enlarged and refined with clearer tiles, typography, color scale, and inferential-unit note.
+- Typography, panel hierarchy, margins, line weights, and color contrast were unified across the composite figure.
+- B2 remains visible and unchanged; A3 and B1 are not labeled statistically significant.

@@ -134,21 +134,27 @@ def main() -> int:
     removed_counts = {
         cell_type: int(counts_before.get(cell_type, 0)) for cell_type in drop_types
     }
-    info = {
-        "sample": args.target_sample,
-        "source_sample": args.source_sample,
-        "simulation_type": "st_only_type_missing_from_sc_reference",
-        "sc_reference_drop_types": drop_types,
-        "removed_sc_cells_by_type": removed_counts,
-        "n_sc_cells_before": int(len(metadata)),
-        "n_sc_cells_after": int(len(filtered)),
-        "n_sc_types_before": int(metadata["cell_type"].nunique()),
-        "n_sc_types_after": int(filtered["cell_type"].nunique()),
-        "st_unchanged_from_source": True,
-        "truth_unchanged_from_source": True,
-        "source_simulation_type": source_info.get("simulation_type"),
-        "file_transfer_modes": transfer_modes,
-    }
+    # Preserve the complete parent provenance (including independent-profile
+    # lineage) and overwrite only fields that describe this reference dropout.
+    info = dict(source_info)
+    info.update(
+        {
+            "sample": args.target_sample,
+            "source_sample": args.source_sample,
+            "parent_sample": args.source_sample,
+            "simulation_type": "st_only_type_missing_from_sc_reference",
+            "sc_reference_drop_types": drop_types,
+            "removed_sc_cells_by_type": removed_counts,
+            "n_sc_cells_before": int(len(metadata)),
+            "n_sc_cells_after": int(len(filtered)),
+            "n_sc_types_before": int(metadata["cell_type"].nunique()),
+            "n_sc_types_after": int(filtered["cell_type"].nunique()),
+            "st_unchanged_from_source": True,
+            "truth_unchanged_from_source": True,
+            "source_simulation_type": source_info.get("simulation_type"),
+            "file_transfer_modes": transfer_modes,
+        }
+    )
     if source_missing_type:
         info["missing_type"] = source_missing_type
     if source_missing_types:
@@ -170,15 +176,6 @@ def main() -> int:
             args.source_sample,
             args.target_sample,
         )
-    config["stage3b"] = {
-        "fdr": 0.05,
-        "n_calibration": 0,
-        "n_spatial_permutations": 200,
-        "random_seed": 42,
-        "sc_expr_source": "normalized",
-        "expression_scale": "log1p",
-        "max_genes": 0,
-    }
     target_cfg.write_text(
         yaml.safe_dump(config, sort_keys=False, allow_unicode=True),
         encoding="utf-8",

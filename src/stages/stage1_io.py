@@ -40,6 +40,19 @@ def _resolve_sc_expr_path(base: Path, sc_expr_source: str) -> Path:
     )
 
 
+def _read_expression_float32(path: Path) -> pd.DataFrame:
+    """Read a Stage1 matrix without materializing a full float64 copy."""
+    columns = pd.read_csv(path, nrows=0, sep=None, engine="python").columns
+    numeric_dtypes = {column: "float32" for column in columns[1:]}
+    return pd.read_csv(
+        path,
+        index_col=0,
+        sep=None,
+        engine="python",
+        dtype=numeric_dtypes,
+    )
+
+
 def load_stage1(
     root: Path,
     sample: str,
@@ -49,16 +62,18 @@ def load_stage1(
     cfg = read_dataset_config(root, sample)
     base = stage1_export_dir(root, sample, cfg)
     sc_expr_path = _resolve_sc_expr_path(base, sc_expr_source)
-    sc_expr = pd.read_csv(sc_expr_path, index_col=0, sep=None, engine="python")
-    st_expr = pd.read_csv(base / "st_expression_normalized.csv", index_col=0, sep=None, engine="python")
+    # Stage1 expression exports are numeric by contract.  Reading directly as
+    # float32 avoids a second full-size float64 frame during numeric coercion.
+    sc_expr = _read_expression_float32(sc_expr_path)
+    st_expr = _read_expression_float32(base / "st_expression_normalized.csv")
     st_coords = pd.read_csv(base / "st_coordinates.csv", index_col=0, sep=None, engine="python")
     sc_meta = pd.read_csv(base / "sc_metadata.csv", sep=None, engine="python")
     if "cell_id" in sc_expr.columns:
         sc_expr = sc_expr.drop(columns=["cell_id"])
     if "cell_id" in st_expr.columns:
         st_expr = st_expr.drop(columns=["cell_id"])
-    sc_expr = sc_expr.apply(pd.to_numeric, errors="coerce").dropna(axis=1, how="all").astype("float32")
-    st_expr = st_expr.apply(pd.to_numeric, errors="coerce").dropna(axis=1, how="all").astype("float32")
+    sc_expr = sc_expr.dropna(axis=1, how="all")
+    st_expr = st_expr.dropna(axis=1, how="all")
     st_expr.index = _clean_spot_index(st_expr.index)
     st_coords.index = _clean_spot_index(st_coords.index)
 

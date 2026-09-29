@@ -28,6 +28,15 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--project_root", default=".", help="Project root path.")
     p.add_argument("--source_sample", default="real_brca", help="Source sample id.")
     p.add_argument(
+        "--profile_source_sample",
+        default=None,
+        help=(
+            "Optional independent sample whose raw SC expression/annotations are used only "
+            "to construct cell-type expression profiles. The reference, spatial composition, "
+            "coordinates, and library sizes continue to come from --source_sample."
+        ),
+    )
+    p.add_argument(
         "--target_sample",
         default="real_brca9_strong_clustered_sim",
         help="Target sample name under data/sim/<sim_group>/.",
@@ -79,6 +88,16 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     p.add_argument(
+        "--profile_merge_cell_type",
+        action="append",
+        default=[],
+        metavar="FROM=TO",
+        help=(
+            "Merge an independent profile-source label into a harmonized type. "
+            "Only used with --profile_source_sample; can be repeated."
+        ),
+    )
+    p.add_argument(
         "--replace_cell_type",
         action="append",
         default=[],
@@ -126,6 +145,20 @@ def read_expr_tsv(path: Path) -> tuple[np.ndarray, list[str], np.ndarray]:
     sample_ids = [str(c) for c in df.columns[1:]]
     mat = df.iloc[:, 1:].to_numpy(dtype=np.float32, copy=False)
     return genes, sample_ids, mat
+
+
+def collapse_duplicate_genes(
+    genes: np.ndarray, mat: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    """Collapse duplicate gene rows by summation, matching the existing preparation rule."""
+    unique_genes, inverse = np.unique(genes.astype(str), return_inverse=True)
+    if len(unique_genes) == len(genes):
+        return genes.astype(object, copy=False), mat
+    collapsed = np.zeros((len(unique_genes), mat.shape[1]), dtype=np.float32)
+    for row_idx, target_idx in enumerate(inverse):
+        collapsed[target_idx, :] += mat[row_idx, :]
+    print(f"[GENES] collapsed duplicate rows: {len(genes)} -> {len(unique_genes)}")
+    return unique_genes.astype(object), collapsed
 
 
 def write_expr_tsv(path: Path, genes: np.ndarray, spot_ids: list[str], mat: np.ndarray) -> None:
@@ -252,6 +285,17 @@ def main() -> int:
     )
     dst_dir = project_root / "data" / "sim" / args.sim_group / args.target_sample
 
+    profile_src_dir: Path | None = None
+    if args.profile_source_sample:
+        profile_source_cfg = read_dataset_config(project_root, args.profile_source_sample)
+        raw_profile_dir = raw_dir(project_root, args.profile_source_sample, profile_source_cfg)
+        profile_src_dir = raw_profile_dir if raw_profile_dir.exists() else resolve_sample_dir(
+            project_root,
+            args.profile_source_sample,
+            sim_group=args.sim_group,
+            must_exist=True,
+        )
+
     if not src_dir.exists():
         raise FileNotFoundError(f"Source sample dir not found: {src_dir}")
     if dst_dir.exists():
@@ -278,6 +322,11 @@ def main() -> int:
     sc_meta["cell_type"] = sc_meta["cell_type"].astype(str)
     original_cell_types = sc_meta.set_index("cell_id")["cell_type"].copy()
     merge_map = parse_type_map(args.merge_cell_type, "--merge_cell_type")
+    profile_merge_map = parse_type_map(
+        args.profile_merge_cell_type, "--profile_merge_cell_type"
+    )
+    if profile_merge_map and not args.profile_source_sample:
+        raise ValueError("--profile_merge_cell_type requires --profile_source_sample")
     replacement_map = parse_type_map(args.replace_cell_type, "--replace_cell_type")
     overlap = set(merge_map).intersection(replacement_map)
     if overlap:
@@ -311,6 +360,9 @@ def main() -> int:
 
     print("[STEP] Load SC expression")
     sc_genes, sc_cells, sc_mat = read_expr_tsv(sc_expr_src)
+    if args.profile_source_sample:
+        sc_genes, sc_mat = collapse_duplicate_genes(sc_genes, sc_mat)
+    a_gene_count = int(len(sc_genes))
     sc_cells_arr = np.array(sc_cells, dtype=object)
     meta_map = dict(zip(sc_meta["cell_id"], sc_meta["cell_type"]))
     keep_mask = np.array([c in meta_map for c in sc_cells_arr], dtype=bool)
@@ -351,10 +403,14 @@ def main() -> int:
     cell_types_arr = np.array([effective_meta_map[c] for c in sc_cells_arr], dtype=object)
 
     sc_expr_dst = dst_dir / "brca_scRNA_GEP.txt"
-    write_expr_tsv(sc_expr_dst, sc_genes, sc_cells_arr.tolist(), sc_mat)
+    if not args.profile_source_sample:
+        write_expr_tsv(sc_expr_dst, sc_genes, sc_cells_arr.tolist(), sc_mat)
 
     print("[STEP] Load ST expression")
     st_genes, st_spots, st_mat = read_expr_tsv(st_expr_src)
+    if args.profile_source_sample:
+        st_genes, st_mat = collapse_duplicate_genes(st_genes, st_mat)
+    st_gene_count = int(len(st_genes))
     st_spots_arr = np.array(st_spots, dtype=object)
 
     print("[STEP] Load ST coordinates")
@@ -372,8 +428,76 @@ def main() -> int:
     coords = coord_df.loc[st_spots_arr, ["row", "col"]].to_numpy(dtype=np.float32)
 
     print("[STEP] Align genes (SC ∩ ST)")
+    profile_common: np.ndarray | None = None
+    profile_cell_types_arr: np.ndarray | None = None
+    b_gene_count: int | None = None
+    profile_type_counts: dict[str, int] = {}
+    profile_ignored_types: list[str] = []
+
+    if args.profile_source_sample:
+        assert profile_src_dir is not None
+        profile_expr_src = profile_src_dir / "brca_scRNA_GEP.txt"
+        profile_meta_src = profile_src_dir / "brca_scRNA_celllabels.txt"
+        for path in (profile_expr_src, profile_meta_src):
+            if not path.exists():
+                raise FileNotFoundError(f"Missing independent profile-source file: {path}")
+
+        print("[STEP] Load independent profile-source SC metadata")
+        profile_meta = pd.read_csv(profile_meta_src, sep="\t")
+        if profile_meta.shape[1] < 2:
+            raise ValueError("profile-source SC metadata must have >=2 columns")
+        profile_meta = profile_meta.rename(
+            columns={profile_meta.columns[0]: "cell_id", profile_meta.columns[1]: "cell_type"}
+        )
+        profile_meta = profile_meta[["cell_id", "cell_type"]].drop_duplicates("cell_id")
+        profile_meta["cell_id"] = profile_meta["cell_id"].astype(str)
+        profile_meta["cell_type"] = profile_meta["cell_type"].astype(str).replace(profile_merge_map)
+
+        print("[STEP] Load independent profile-source SC expression")
+        profile_genes, profile_cells, profile_mat = read_expr_tsv(profile_expr_src)
+        profile_genes, profile_mat = collapse_duplicate_genes(profile_genes, profile_mat)
+        b_gene_count = int(len(profile_genes))
+        profile_cells_arr = np.array(profile_cells, dtype=object)
+        profile_meta_map = dict(zip(profile_meta["cell_id"], profile_meta["cell_type"]))
+        profile_keep = np.array([c in profile_meta_map for c in profile_cells_arr], dtype=bool)
+        if not profile_keep.any():
+            raise ValueError("No overlapping cells between profile-source expression and metadata.")
+        profile_cells_arr = profile_cells_arr[profile_keep]
+        profile_mat = profile_mat[:, profile_keep]
+        profile_cell_types_arr = np.array(
+            [profile_meta_map[c] for c in profile_cells_arr], dtype=object
+        )
+
+        harmonized_types = sorted(pd.unique(cell_types_arr).tolist())
+        available_profile_types = set(profile_cell_types_arr.tolist())
+        missing_profile_types = sorted(set(harmonized_types) - available_profile_types)
+        if missing_profile_types:
+            raise ValueError(
+                "Frozen harmonized types missing from independent profile source: "
+                + ", ".join(missing_profile_types)
+            )
+        profile_ignored_types = sorted(available_profile_types - set(harmonized_types))
+        profile_type_keep = np.isin(profile_cell_types_arr, harmonized_types)
+        profile_cell_types_arr = profile_cell_types_arr[profile_type_keep]
+        profile_mat = profile_mat[:, profile_type_keep]
+        profile_type_counts = {
+            str(k): int(v)
+            for k, v in pd.Series(profile_cell_types_arr).value_counts().sort_index().items()
+        }
+    else:
+        profile_genes = None
+        profile_mat = None
+
+    print("[STEP] Align genes across reference SC, ST, and profile-source SC")
     sc_gene_to_idx = {g: i for i, g in enumerate(sc_genes)}
-    common_genes = [g for g in st_genes if g in sc_gene_to_idx]
+    profile_gene_to_idx = (
+        {g: i for i, g in enumerate(profile_genes)} if profile_genes is not None else None
+    )
+    common_genes = [
+        g
+        for g in st_genes
+        if g in sc_gene_to_idx and (profile_gene_to_idx is None or g in profile_gene_to_idx)
+    ]
     if len(common_genes) < 1000:
         raise ValueError(f"Too few common genes: {len(common_genes)}")
     st_gene_to_idx = {g: i for i, g in enumerate(st_genes)}
@@ -381,9 +505,16 @@ def main() -> int:
     st_idx = np.array([st_gene_to_idx[g] for g in common_genes], dtype=np.int32)
     sc_common = sc_mat[sc_idx, :]
     st_common = st_mat[st_idx, :]
+    if profile_gene_to_idx is not None:
+        profile_idx = np.array([profile_gene_to_idx[g] for g in common_genes], dtype=np.int32)
+        assert profile_mat is not None
+        profile_common = profile_mat[profile_idx, :]
     common_genes_arr = np.array(common_genes, dtype=object)
     del sc_mat
     del st_mat
+    if args.profile_source_sample:
+        del profile_mat
+        write_expr_tsv(sc_expr_dst, common_genes_arr, sc_cells_arr.tolist(), sc_common)
 
     type_names = sorted(pd.unique(cell_types_arr).tolist())
     type_to_idx = {t: i for i, t in enumerate(type_names)}
@@ -459,9 +590,18 @@ def main() -> int:
     frac_tab = count_tab.div(np.clip(count_tab.sum(axis=1), 1, None), axis=0).astype(np.float32)
 
     print("[STEP] Build cell-type expression profiles")
-    one_hot = np.zeros((n_cells, n_types), dtype=np.float32)
-    one_hot[np.arange(n_cells), cell_type_idx] = 1.0
-    type_sum = sc_common @ one_hot
+    if profile_common is None:
+        one_hot = np.zeros((n_cells, n_types), dtype=np.float32)
+        one_hot[np.arange(n_cells), cell_type_idx] = 1.0
+        type_sum = sc_common @ one_hot
+    else:
+        assert profile_cell_types_arr is not None
+        profile_type_idx = np.array(
+            [type_to_idx[t] for t in profile_cell_types_arr], dtype=np.int32
+        )
+        profile_one_hot = np.zeros((len(profile_cell_types_arr), n_types), dtype=np.float32)
+        profile_one_hot[np.arange(len(profile_cell_types_arr)), profile_type_idx] = 1.0
+        type_sum = profile_common @ profile_one_hot
     type_profile = type_sum + 1e-3
     type_profile = type_profile / np.clip(type_profile.sum(axis=0, keepdims=True), 1e-8, None)
 
@@ -527,6 +667,19 @@ def main() -> int:
     sim_info = {
         "sample": args.target_sample,
         "source_sample": args.source_sample,
+        "reference_source_sample": args.source_sample,
+        "profile_source_sample": args.profile_source_sample or args.source_sample,
+        "independent_profile_source": bool(args.profile_source_sample),
+        "profile_source_path": str(profile_src_dir if profile_src_dir is not None else src_dir),
+        "harmonized_types": type_names,
+        "reference_label_mapping": merge_map,
+        "profile_label_mapping": profile_merge_map,
+        "profile_ignored_types": profile_ignored_types,
+        "reference_gene_count": a_gene_count,
+        "profile_gene_count": b_gene_count if b_gene_count is not None else a_gene_count,
+        "st_gene_count": st_gene_count,
+        "three_way_shared_gene_count": int(len(common_genes_arr)),
+        "profile_type_counts": profile_type_counts,
         "simulation_type": args.simulation_type_label,
         "seed": args.seed,
         "query_id": query_id,

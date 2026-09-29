@@ -181,12 +181,15 @@ def downsample(data_df, target_count):
     """
     def downsample_cell(sr, target_tr_count):
         if sr.sum() <= target_tr_count:
-            return sr
+            return sr.astype(np.int16, copy=False)
 
         genes, counts = np.unique(np.random.choice(np.repeat(sr.index, sr.to_numpy()), target_tr_count), return_counts=True)
         downsampled = pd.Series(counts, index=genes).reindex(sr.index, fill_value=0)
 
-        return downsampled
+        # Counts are bounded by target_tr_count (1500 in the SVTuner wrapper).
+        # Keep the exact integer values while avoiding an unnecessary int64
+        # consolidation peak for large reference matrices.
+        return downsampled.astype(np.int16, copy=False)
     
     downsampled_df = data_df.apply(lambda k: downsample_cell(k, target_count), axis=0)
 

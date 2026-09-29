@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib.colors import Normalize
+from matplotlib.ticker import PercentFormatter
 from scipy.spatial import cKDTree
 
 
@@ -32,6 +33,16 @@ def parse_args() -> argparse.Namespace:
         default="visualizations/stage3b_realdata_candidate_scan/stage3b_threshold_robustness",
     )
     p.add_argument("--neighbor_rings", type=float, default=2.5)
+    p.add_argument(
+        "--metrics_only",
+        action="store_true",
+        help="Render the two-panel metrics figure from the existing detail and summary CSV files.",
+    )
+    p.add_argument(
+        "--svg_only",
+        action="store_true",
+        help="With --metrics_only, export only the editable SVG without rewriting PNG/PDF.",
+    )
     return p.parse_args()
 
 
@@ -178,6 +189,7 @@ def plot_figure(detail: pd.DataFrame, out_dir: Path) -> None:
             "font.family": "DejaVu Sans",
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
+            "svg.fonttype": "none",
             "axes.edgecolor": "#333333",
             "axes.linewidth": 1.0,
         }
@@ -318,11 +330,132 @@ def plot_figure(detail: pd.DataFrame, out_dir: Path) -> None:
     print(f"[done] {pdf}")
 
 
+def plot_metrics_figure(
+    detail: pd.DataFrame, summary: pd.DataFrame, out_dir: Path, svg_only: bool = False
+) -> None:
+    threshold_order = [f"top{int(round(x * 100))}" for x in THRESHOLDS]
+    tick_labels = ["10%", "15% (original)", "20%", "25%"]
+    x = np.arange(len(threshold_order), dtype=float)
+    scenes = detail.drop_duplicates("scene")["scene"].tolist()
+    offsets = np.linspace(-0.055, 0.055, len(scenes))
+
+    plt.rcParams.update(
+        {
+            "font.family": "DejaVu Sans",
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+            "axes.edgecolor": "#333333",
+            "axes.linewidth": 0.9,
+        }
+    )
+    sns.set_theme(style="white")
+    # Keep labels as editable SVG text; seaborn resets this rcParam.
+    plt.rcParams["svg.fonttype"] = "none"
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.1), dpi=300, sharex=True)
+    panels = [
+        (
+            "target_associated_fraction",
+            "mean_target_associated_fraction",
+            r"$\bf{A}$  Marker-associated withheld spots",
+            "Marker-associated withheld spots (%)",
+            (0.75, 1.005),
+            np.arange(0.75, 1.001, 0.05),
+        ),
+        (
+            "core_recall",
+            "mean_core_recall",
+            r"$\bf{B}$  Marker-core withheld rate",
+            "Marker-core withheld rate (%)",
+            (0.25, 1.005),
+            [0.25, 0.50, 0.75, 1.00],
+        ),
+    ]
+
+    for ax, (detail_col, summary_col, title, ylabel, ylim, yticks) in zip(axes, panels):
+        wide = detail.pivot(index="scene", columns="threshold_label", values=detail_col).reindex(
+            index=scenes, columns=threshold_order
+        )
+        values = wide.to_numpy(dtype=float)
+        mins = np.nanmin(values, axis=0)
+        maxs = np.nanmax(values, axis=0)
+        ax.vlines(x, mins, maxs, color="#C5CACD", linewidth=0.85, zorder=1)
+        for scene_i, offset in enumerate(offsets):
+            ax.scatter(
+                x + offset,
+                values[scene_i],
+                s=13,
+                color="#AFB6BA",
+                edgecolors="none",
+                alpha=0.78,
+                zorder=2,
+            )
+
+        means = summary.set_index("threshold_label").reindex(threshold_order)[summary_col].to_numpy(dtype=float)
+        ax.plot(
+            x,
+            means,
+            color="#146B73",
+            linewidth=1.35,
+            marker="o",
+            markersize=4.0,
+            markerfacecolor="#146B73",
+            markeredgecolor="white",
+            markeredgewidth=0.5,
+            zorder=4,
+        )
+        if detail_col == "target_associated_fraction":
+            for xi, mean in zip(x, means):
+                ax.annotate(
+                    f"{mean * 100:.1f}%",
+                    (xi, mean),
+                    xytext=(0, 6),
+                    textcoords="offset points",
+                    ha="center",
+                    va="bottom",
+                    fontsize=5.9,
+                    color="#34787C",
+                    zorder=5,
+                )
+        ax.axvline(1, color="#C7CCCF", linewidth=0.7, linestyle=(0, (2.2, 2.2)), alpha=0.55, zorder=0)
+        ax.set_title(title, loc="left", fontsize=9.2, fontweight="normal", pad=13)
+        ax.set_xticks(x)
+        ax.set_xticklabels(tick_labels, fontsize=8.0)
+        ax.set_xlabel("Marker-core threshold", fontsize=8.4)
+        ax.set_ylabel(ylabel, fontsize=8.4)
+        ax.set_ylim(*ylim)
+        ax.set_yticks(yticks)
+        ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
+        ax.grid(axis="y", color="#E4E7E8", linewidth=0.55)
+        ax.set_axisbelow(True)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.tick_params(axis="y", labelsize=7.8)
+
+    fig.tight_layout(pad=0.6, w_pad=1.45)
+    png = out_dir / "stage3b_threshold_robustness_metrics.png"
+    pdf = out_dir / "stage3b_threshold_robustness_metrics.pdf"
+    svg = out_dir / "stage3b_threshold_robustness_metrics.svg"
+    if not svg_only:
+        fig.savefig(png, bbox_inches="tight", facecolor="white")
+        fig.savefig(pdf, bbox_inches="tight", facecolor="white")
+    fig.savefig(svg, bbox_inches="tight", facecolor="white")
+    plt.close(fig)
+    if not svg_only:
+        print(f"[done] {png}")
+        print(f"[done] {pdf}")
+    print(f"[done] {svg}")
+
+
 def main() -> int:
     args = parse_args()
     root = Path(args.project_root).resolve()
     out_dir = root / args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
+    if args.metrics_only:
+        detail = pd.read_csv(out_dir / "stage3b_threshold_robustness_detail.csv")
+        summary = pd.read_csv(out_dir / "stage3b_threshold_robustness_summary.csv")
+        plot_metrics_figure(detail, summary, out_dir, svg_only=args.svg_only)
+        return 0
     metadata = pd.read_csv(root / args.metadata_csv)
     detail = pd.concat([scene_table(root, row, args.neighbor_rings) for _, row in metadata.iterrows()], ignore_index=True)
     summary = (

@@ -1,0 +1,11 @@
+Metric,Value,Evaluation type
+AUROC,0.8305,continuous score
+Average precision,0.2837,continuous score
+Positive prevalence,0.0710,continuous score
+Frozen binary precision,0.6122,frozen binary decision
+Frozen binary recall,0.4478,frozen binary decision
+Frozen binary F1,0.5172,frozen binary decision
+Specificity,0.9783,frozen binary decision
+Recall at precision >= 0.25,0.6045,continuous score
+Recall at precision >= 0.30,0.5299,continuous score
+Precision >= 0.50,Not achieved by any finite withheld_score threshold,continuous score

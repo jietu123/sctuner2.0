@@ -347,7 +347,7 @@ def main() -> int:
     src_cfg = read_dataset_config(project_root, source_sample) if source_sample else {}
     src_stage1 = stage1_dir(project_root, source_sample, src_cfg) if source_sample else None
     src_export = src_stage1 / "exported" if src_stage1 else None
-    if source_sample and (
+    if not args.rebuild_sc_from_raw and source_sample and (
         src_export is None
         or not (src_export / "sc_expression_normalized.csv").exists()
     ):

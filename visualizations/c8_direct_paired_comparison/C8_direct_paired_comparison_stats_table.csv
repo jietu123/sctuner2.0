@@ -1,0 +1,6 @@
+Metric,Evidence,n,CytoSPACE mean,SVTuner mean,Mean paired difference,95% CI,Cohen dz,Favorable pairs,Two-sided paired Wilcoxon P
+Reciprocal suppression,Low-resolution profile masking,10,0.8406,0.8513,+0.01065,"[0.00481, 0.01700]",1.0160,9/10,0.00976562
+Reconstructed-expression cosine similarity,Low-resolution profile masking,10,0.5248,0.5313,+0.00644,"[0.00204, 0.01193]",0.7501,8/10,0.0273438
+EcoTyper normalized enrichment (experiment mean),EcoTyper profile-masking enrichment,6,1.3458,1.5322,+0.18632,"[0.07919, 0.29702]",1.2287,5/6,0.0625
+MERSCOPE low-support suppression score,MERSCOPE cell-resolution,5,0.8672,0.9077,+0.04054,"[0.01296, 0.08384]",0.8512,5/5,0.0625
+MERSCOPE peak ES / low-support enrichment,MERSCOPE cell-resolution,5,0.1146,0.1184,+0.00381,"[-0.08775, 0.10880]",0.0287,2/5,1

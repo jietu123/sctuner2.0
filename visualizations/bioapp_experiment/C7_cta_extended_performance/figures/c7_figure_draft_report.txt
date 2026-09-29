@@ -1,0 +1,5 @@
+C7 figure drafts
+Figure 1: E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_experiment\C7_cta_extended_performance\figures\C7_Fig1_PR_performance_panel.png | E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_experiment\C7_cta_extended_performance\figures\C7_Fig1_PR_performance_panel.pdf | E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_experiment\C7_cta_extended_performance\figures\C7_Fig1_PR_performance_panel.svg
+Figure 2: E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_experiment\C7_cta_extended_performance\figures\C7_Fig2_outcome_decomposition_panel.png | E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_experiment\C7_cta_extended_performance\figures\C7_Fig2_outcome_decomposition_panel.pdf | E:\AAA文件\Experiment\SVTuner\sctuner2.0\visualizations\bioapp_experiment\C7_cta_extended_performance\figures\C7_Fig2_outcome_decomposition_panel.svg
+Figure dimensions: 7.6 x 4.35 inches
+Implementation notes: Figures use only the frozen C7 summary, PR-curve, and fixed-precision CSV outputs. The frozen binary decision is displayed separately from finite withheld-score threshold points.

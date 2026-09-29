@@ -1,0 +1,2 @@
+n_total,n_positive,n_negative,positive_prevalence,tp,fp,tn,fn,binary_precision,binary_recall,binary_f1,specificity,average_precision,endpoint_column,score_column,binary_column
+1888,134,1754,0.07097457627118645,60,38,1716,74,0.6122448979591837,0.44776119402985076,0.5172413793103449,0.9783352337514253,0.2836551170002947,primary_endpoint_status,withheld_score,withheld_binary

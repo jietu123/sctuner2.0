@@ -69,6 +69,16 @@ def _fit_line(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return x_grid, slope * x_grid + intercept
 
 
+def _predicted_axis_labels(sub: pd.DataFrame) -> tuple[list[float], list[str]]:
+    """Build method-specific state labels, retaining tied predicted ranks."""
+    grouped = (
+        sub.sort_values(["predicted_rank", "known_rank"], kind="stable")
+        .groupby("predicted_rank", sort=True)["state"]
+        .agg(lambda states: "\n".join(states.astype(str)))
+    )
+    return grouped.index.astype(float).tolist(), grouped.astype(str).tolist()
+
+
 def _compute_values(root: Path, sample: str, table_s9: pd.DataFrame) -> pd.DataFrame:
     export = root / "data" / "processed" / sample / "stage1_preprocess" / "exported"
     sc_expr = pd.read_csv(export / "sc_expression_normalized.csv", index_col=0)
@@ -129,10 +139,11 @@ def _panel(ax: plt.Axes, df: pd.DataFrame, method: str, color: str, state_colors
     ax.set_aspect("equal", adjustable="box")
     order_x = df.drop_duplicates("known_rank").sort_values("known_rank")
     ax.set_xticks(order_x["known_rank"])
-    ax.set_xticklabels(order_x["state"], rotation=90, fontsize=2.1)
-    order_y = sub.sort_values("predicted_rank")
-    ax.set_yticks(order_y["predicted_rank"])
-    ax.set_yticklabels(order_y["state"], fontsize=2.1)
+    ax.set_xticklabels(order_x["state"], rotation=90, fontsize=2.7)
+    y_ticks, y_labels = _predicted_axis_labels(sub)
+    ax.set_yticks(y_ticks)
+    ax.set_yticklabels(y_labels, fontsize=2.7)
+    ax.tick_params(axis="y", labelleft=True)
     ax.tick_params(axis="both", width=0.55, length=1.1, pad=0.5)
     for spine in ["top", "right"]:
         ax.spines[spine].set_visible(False)
@@ -148,17 +159,34 @@ def main() -> int:
     parser.add_argument("--source_xlsx", default="data/raw/cytospace_fig2c_melanoma/41587_2023_1697_MOESM3_ESM.xlsx")
     parser.add_argument("--out_dir", default="visualizations/cytospace_fig2k_tcell_states_stage3_decoy")
     parser.add_argument("--out_prefix", default="fig2k_stage3_decoy_baseline_vs_route2")
+    parser.add_argument(
+        "--reuse_source_values",
+        action="store_true",
+        help="Plot from the existing output source-value CSV without recalculating it.",
+    )
     args = parser.parse_args()
 
     root = Path(args.project_root).resolve()
     out_dir = root / args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
-    table_s9 = _load_table_s9(root / args.source_xlsx)
-    values = _compute_values(root, args.sample, table_s9)
-    values.to_csv(out_dir / f"{args.out_prefix}_source_values.csv", index=False)
+    source_values_path = out_dir / f"{args.out_prefix}_source_values.csv"
+    if args.reuse_source_values:
+        if not source_values_path.exists():
+            raise FileNotFoundError(source_values_path)
+        values = pd.read_csv(source_values_path)
+        table_s9 = (
+            values[["known_rank", "state"]]
+            .drop_duplicates()
+            .sort_values("known_rank", kind="stable")
+            .reset_index(drop=True)
+        )
+    else:
+        table_s9 = _load_table_s9(root / args.source_xlsx)
+        values = _compute_values(root, args.sample, table_s9)
+        values.to_csv(source_values_path, index=False)
 
     plt.rcParams.update({"font.family": "Arial", "pdf.fonttype": 42, "ps.fonttype": 42})
-    fig, axes = plt.subplots(1, 2, figsize=(4.15, 2.45), dpi=300, sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(6.4, 2.8), dpi=300, sharey=False)
     stats = {}
     state_order = table_s9.sort_values("known_rank")["state"].astype(str).tolist()
     cmap = plt.get_cmap("viridis")
@@ -180,7 +208,7 @@ def main() -> int:
     fig.text(0.28, 0.075, "Normal-like\nregions", ha="center", va="top", fontsize=5.4)
     fig.text(0.82, 0.096, "Tumor", ha="center", va="center", fontsize=5.4)
 
-    fig.subplots_adjust(left=0.22, right=0.98, top=0.78, bottom=0.36, wspace=0.42)
+    fig.subplots_adjust(left=0.16, right=0.98, top=0.78, bottom=0.36, wspace=0.78)
     png = out_dir / f"{args.out_prefix}.png"
     pdf = out_dir / f"{args.out_prefix}.pdf"
     fig.savefig(png, dpi=300)
@@ -190,7 +218,7 @@ def main() -> int:
     manifest = {
         "sample": args.sample,
         "figure": str(png),
-        "source_values": str(out_dir / f"{args.out_prefix}_source_values.csv"),
+        "source_values": str(source_values_path),
         "stats": {method: {"r": r, "p": p} for method, (r, p) in stats.items()},
     }
     (out_dir / f"{args.out_prefix}_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
