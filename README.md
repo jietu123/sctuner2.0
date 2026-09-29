@@ -151,7 +151,7 @@ The exact config names and the C1 command are listed in [RUNNING_SCENARIOS.md](R
 | Experiment | Purpose | Main entry points / public artifacts |
 |---|---|---|
 | C1 | Ten-seed robustness across nine composite scenarios | scripts/run_c1_seed_repeat.py; visualizations/method_comparison/c1_multiseed/ |
-| C2 | Stage3A parameter sensitivity | Stage3A CLI plus temporary YAML overrides; temporary outputs were intentionally cleaned |
+| C2 | Stage3A parameter-sensitivity attempt | **CLOSED / CANCELLED.** No formal sensitivity result is released; temporary diagnostic runs are not manuscript evidence. Parameter transparency is handled in the Methods and reproducibility records. |
 | C3 | Marker-core robustness at 10%, 15%, 20%, and 25% | scripts/plot_stage3b_threshold_robustness.py; visualizations/stage3b_realdata_candidate_scan/stage3b_threshold_robustness/ |
 | C4 | Stage3B null calibration, technical perturbation, and statistical robustness | scripts/export_c4_1_stage3b_raw_calibration_null.py and the run_c4_* scripts; visualizations/c4_stage3b_calibration/ |
 | C5 | Stage3A/Stage3B decomposition in 15 profile-masking experiments | scripts/run_c5_decomposition.py; visualizations/c5_decomposition/ |

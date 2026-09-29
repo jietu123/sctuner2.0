@@ -217,7 +217,7 @@ visualizations/method_comparison/c1_multiseed/
 
 | 实验 | 当前入口 / 资产 | 注意事项 |
 |---|---|---|
-| C2 | Stage3A CLI；临时 dataset YAML | 敏感性临时输出已清理；不要覆盖正式 stage3_typematch |
+| C2 | **CLOSED / CANCELLED** | 不发布正式 sensitivity experiment；临时诊断运行不属于论文证据，也不应作为 C2 结果重建或报告 |
 | C3 | scripts/plot_stage3b_threshold_robustness.py | 基于已有 reference-dropout 输出；不重跑 Stage3B |
 | C4.1 | scripts/export_c4_1_stage3b_raw_calibration_null.py；scripts/run_c4_1_observed_vs_null_comparison.py | 导出/比较 Stage3B raw calibration null |
 | C4.2 | scripts/run_c4_2_technical_perturbation_pilot.py | 研究脚本；只运行 Stage3B |

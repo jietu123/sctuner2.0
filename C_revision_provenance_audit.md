@@ -2,7 +2,7 @@
 
 ## 1. Audit scope
 
-- Read-only audit of completed C1/C3/C4/C5/C6/C7/C8 revision artifacts. C2 is excluded by instruction.
+- Read-only audit of completed C1/C3/C4/C5/C6/C7/C8 revision artifacts. C2 is CLOSED / CANCELLED and is excluded because no formal C2 sensitivity result is released.
 - No Stage1, Stage3A, Stage3B, CytoSPACE, simulation, evaluator, or statistical analysis pipeline was rerun.
 - Evidence hierarchy used: persisted resolved output/log > persisted run manifest/provenance > persisted explicit config with direct run linkage > source-value/result table. Current defaults and merely similar configs were not used to fill historical fields.
 - Missing values are written exactly as `NOT DOCUMENTED / NOT RECOVERABLE`.
@@ -208,15 +208,16 @@ The script that originally wrote `c1_paired_difference_summary.csv` is not separ
 | --- | --- |
 | Frozen endpoint | visualizations/bioapp_experiment/bioapp_phase2c_endpoint_freeze_with_validated_cta_to_spot_mapping/spot_level_endpoint_freeze.csv::primary_endpoint_status |
 | Frozen SVTuner output | visualizations/bioapp_experiment/bioapp_phase7_svtuner_aware_execution_against_frozen_cta_immune_endpoint/svtuner_immune_all_dropout/svtuner_immune_all_dropout_spot_level_raw_output_contract.csv::withheld_score,withheld_binary |
-| Analysis set | n=1888; positive=134; negative=1754 |
+| Analysis set | Exact one-to-one barcode match; n=1888, positive=134, negative=1754, missing=0 |
 | Binary metrics | TP=60, FP=38, TN=1716, FN=74, precision=0.6122448979591837, recall=0.44776119402985076, F1=0.5172413793103449, specificity=0.9783352337514253; source c7_metrics_summary.csv |
-| AP | 0.2836551170002947; source c7_metrics_summary.csv |
-| AUROC | 0.8305; persisted only in final_supplementary/C7_Supp_metrics_table.csv and hard-coded in scripts/plot_c7_final_supplementary.py; the metric-computation record is NOT DOCUMENTED / NOT RECOVERABLE |
-| P≥0.25 | threshold=0.5016863844421177, precision=0.2500, recall=0.6044776119402985; recoverable from c7_pr_curve_points.csv |
-| P≥0.30 | selected frozen point threshold=0.5280528671035196, precision=0.3008474576271186, recall=0.5298507462686567; curve source c7_pr_curve_points.csv; plotting script rounds label to 0.3008/0.5299 |
+| AP | 0.28365511700029472; deterministically recomputed from the two frozen inputs by scripts/repair_c7_metric_provenance.py |
+| AUROC | 0.8305238346466074; deterministically recomputed from the two frozen inputs by scripts/repair_c7_metric_provenance.py; repair record: result/c7_provenance_repair/c7_provenance_repair_summary.csv and c7_provenance_repair.md |
+| P≥0.25 | threshold=0.50168638444211766, precision=0.25, recall=0.60447761194029848; deterministic repair and c7_pr_curve_points.csv |
+| P≥0.30 | selected frozen point threshold=0.52805332024965657, precision=0.30084745762711862, recall=0.52985074626865669. Selection rule: maximum recall among finite thresholds satisfying precision ≥0.30, then minimum threshold among the seven maximum-recall ties. The value 0.5280528671035196 is not reproducible from the frozen input and is superseded. |
 | P≥0.50 | not achieved by any finite threshold; c7_fixed_precision_summary.csv and final supplementary table |
-| Closest simple threshold differs by 93 units | Value was reported in the interactive C7-1.5 step but is not persisted in a C7 result file or computation script: NOT DOCUMENTED / NOT RECOVERABLE as file provenance |
-| Figure/table script | scripts/plot_c7_final_supplementary.py |
+| Closest simple threshold differs by 93 units | Reproduced and persisted by scripts/repair_c7_metric_provenance.py. No simple rule withheld_score ≥ t exactly reproduces withheld_binary; minimum disagreement=93, with three tied best score-induced rules. |
+| Repair status | Computational QC=PASS: universe, AUROC/AP, fixed-precision selection, and 93-unit result are reproducible. The alternate historical P≥0.30 threshold 0.5280528671035196 is a documented provenance DISCREPANCY; the frozen-input value above is authoritative. |
+| Scripts | scripts/repair_c7_metric_provenance.py; scripts/plot_c7_final_supplementary.py |
 
 ### C8
 
@@ -234,7 +235,7 @@ The script that originally wrote `c1_paired_difference_summary.csv` is not separ
 - Analysis script: `scripts/run_c8_direct_paired_comparison.py`; figure scripts: `scripts/plot_c8_direct_paired_comparison.py` and `_v2.py`.
 - The statistics file explicitly records two-sided Wilcoxon tests, Cohen dz, 10,000 paired-bootstrap iterations, and seed 20260927 for all five analyses.
 
-## 8. Missing or unrecoverable information
+## 8. Remaining gaps and superseded records
 
 - C5: exact historical Stage3A command/launcher for all 15 experiments.
 - C5: exact historical working directory and git commit/code checkout.
@@ -242,8 +243,8 @@ The script that originally wrote `c1_paired_difference_summary.csv` is not separ
 - C5: resolved `eps`, `plugin_genes_path`, and `gene_weights_path` are not stored in `stage3_summary.json`.
 - C5: no active protection/guard can be established; relevant resolved fields are null or absent.
 - C6: complete successful command lines and git commit are not consistently persisted, although configs, logs, formal outputs, and provenance are present.
-- C7: the AUROC computation artifact/script is not persisted; 0.8305 survives only in the final table and plotting-script constant.
-- C7: the 93-discordant-unit score-threshold check is not persisted in a result file or script.
+- C7: AUROC/AP and the 93-discordant-unit threshold check are now reproducible from the two frozen inputs using scripts/repair_c7_metric_provenance.py.
+- C7: the alternate historical P≥0.30 threshold 0.5280528671035196 is not an observed finite threshold in the frozen inputs and is superseded by 0.52805332024965657 under the documented deterministic selection rule.
 - C1: the original script that wrote `c1_paired_difference_summary.csv` is not separately persisted; the current plot script reconstructs the same frozen 90-row input.
 
 ## 9. Final authoritative-file list
@@ -277,6 +278,9 @@ The script that originally wrote `c1_paired_difference_summary.csv` is not separ
 - `visualizations/bioapp_experiment/C7_cta_extended_performance/c7_pr_curve_points.csv`
 - `visualizations/bioapp_experiment/C7_cta_extended_performance/c7_fixed_precision_summary.csv`
 - `visualizations/bioapp_experiment/C7_cta_extended_performance/final_supplementary/C7_Supp_metrics_table.csv`
+- `scripts/repair_c7_metric_provenance.py`
+- `result/c7_provenance_repair/c7_provenance_repair_summary.csv`
+- `result/c7_provenance_repair/c7_provenance_repair.md`
 - `result/c8_direct_paired_comparison/c8_canonical_pairs.csv`
 - `result/c8_direct_paired_comparison/c8_paired_statistics.csv`
 - `visualizations/c8_direct_paired_comparison/C8_direct_paired_comparison_source_values.csv`
