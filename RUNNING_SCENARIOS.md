@@ -148,7 +148,14 @@ python -m src.stages.stage4_cytospace --project_root $ProjectRoot --sample <samp
 ### Stage3A-only
 
 ~~~powershell
-python -m src.stages.stage4_cytospace --project_root $ProjectRoot --sample <sample> --filter_scope unsupported_all --sc_expr_source normalized --stage4_suffix _stage3a_only
+python -m src.stages.stage4_cytospace `
+  --project_root $ProjectRoot `
+  --sample <sample> `
+  --filter_mode plugin_unknown `
+  --cell_type_column plugin_type `
+  --filter_scope unsupported_all `
+  --sc_expr_source normalized `
+  --stage4_suffix _stage3a_only
 ~~~
 
 如果历史路线使用 plugin_unknown、plugin_type 或特殊 missing_type 约定，应严格沿用对应 frozen 命令，而不是根据名称猜测。

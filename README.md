@@ -127,6 +127,20 @@ python -m src.stages.stage4_cytospace \
   --stage4_suffix _baseline
 ~~~
 
+For the generic Stage3A-only route, use the Stage3A-adjusted
+`plugin_type` annotations and exclude `Unknown_sc_only` cells:
+
+~~~bash
+python -m src.stages.stage4_cytospace \
+  --project_root <project_root> \
+  --sample <sample> \
+  --filter_mode plugin_unknown \
+  --cell_type_column plugin_type \
+  --filter_scope unsupported_all \
+  --sc_expr_source normalized \
+  --stage4_suffix _stage3a_only
+~~~
+
 Use --stage3_suffix, --stage3b_blank_regions, and --stage3b_scores_path as appropriate for the Stage3A-only, Stage3B-only, and Full routes. Always use unique suffixes for exploratory work.
 
 The svtuner run convenience command runs Stage 1, Stage 3A, baseline Stage 4, and the Stage3A-controlled Stage 4 route. It does **not** run Stage 3B. In addition, configs/pipeline_presets.yaml is currently empty, so --from-scratch requires a maintained preset before use.
