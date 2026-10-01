@@ -13,7 +13,10 @@ complete third-party inputs or full mapping intermediates.
 - Hashed payload records: `482`
 - Candidate size: `46,364,491` bytes
 - Hash validation: `PASS`
-- Fig. 1 through Fig. 5 source-value dependency groups: `19`, complete
+- Frozen pre-revision figure source-value dependency groups: `19`,
+  complete for the release-candidate manuscript layout. Revised-manuscript
+  figure numbering and reviewer-response analyses are tracked separately
+  through the root-level provenance records and curated repository resources.
 - Accepted nonblocking gaps: `13`
 - Blocking gaps: `0`
 
@@ -108,5 +111,10 @@ They concern bounded accession, sample-detail, provider-checksum,
 redistribution-permission, and historical runtime-snapshot gaps. There are no
 blocking gaps.
 
-This is a release candidate. Final `v1.0.0` publication remains subject to
-figure harmonization and the final manuscript-figure-source-value audit.
+The `release_candidate_v1.0/` directory is preserved as the frozen
+`v1.0.0-rc1` provenance package and is not rewritten to incorporate
+later manuscript revisions. Revised-manuscript analyses, figure
+reorganisation and reviewer-response experiments are documented through
+the maintained repository resources and root-level provenance records,
+thereby preserving the integrity of the hashed frozen candidate while
+keeping the current manuscript traceable.
