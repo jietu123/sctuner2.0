@@ -132,17 +132,17 @@ python -m src.stages.stage3b_st_unsupported --project_root $ProjectRoot --sample
 
 四条路线的科学定义如下：
 
-| 路线 | SC reference | Stage3B mask |
+| Route | SC reference | Stage3B mask |
 |---|---|---|
-| Baseline | 完整 reference | 无 |
-| Stage3A-only | Stage3A retained reference | 无 |
-| Stage3B-only | 完整 reference | standalone Stage3B mask |
-| Full | Stage3A retained reference | sequential Stage3B mask |
+| Baseline | Experiment-specific Stage1 reference | None |
+| Stage3A-only | Stage3A-admissible reference | None |
+| Stage3B-only | Unfiltered Stage1 reference supplied to that route | Standalone Stage3B mask |
+| Full | Stage3A-admissible reference | Sequential Stage3B mask |
 
 ### Baseline
 
 ~~~powershell
-python -m src.stages.stage4_cytospace --project_root $ProjectRoot --sample <sample> --filter_scope none --sc_expr_source normalized --stage4_suffix _baseline
+python -m src.stages.stage4_cytospace --project_root $ProjectRoot --sample <sample> --filter_mode none --cell_type_column sc_meta --sc_expr_source normalized --stage4_suffix _baseline
 ~~~
 
 ### Stage3A-only
@@ -155,7 +155,7 @@ python -m src.stages.stage4_cytospace --project_root $ProjectRoot --sample <samp
 
 ### Stage3B-only
 
-使用完整 reference，并通过以下参数传入 **standalone** Stage3B mask：
+使用该分析路线对应的 unfiltered Stage1 reference，并通过以下参数传入 **standalone** Stage3B mask：
 
 ~~~text
 --stage3b_blank_regions
@@ -164,7 +164,7 @@ python -m src.stages.stage4_cytospace --project_root $ProjectRoot --sample <samp
 
 ### Full
 
-使用 Stage3A retained reference，并传入基于该 retained reference 重新计算的 **sequential** Stage3B mask。不能把 standalone mask 复用于 Full。
+使用 Stage3A-admissible reference，并传入基于该 Stage3A-admissible reference 重新计算的 **sequential** Stage3B mask。不能把 standalone mask 复用于 Full。
 
 Stage 4 还支持 --stage3_suffix、--stage4_suffix、--filter_scope、--keep_redundant 和 --sc_expr_source。
 
