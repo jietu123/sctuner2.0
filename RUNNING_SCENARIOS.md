@@ -8,7 +8,7 @@
 
 ~~~powershell
 conda env create -f configs/environment.yml
-conda activate svtuner_bib
+conda activate cytospace_v1.1.0_py310
 pip install -e .
 svtuner version
 svtuner envcheck

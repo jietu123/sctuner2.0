@@ -24,11 +24,13 @@ The core workflow has four stages:
 
 ## Installation
 
-The frozen environment is defined in configs/environment.yml and uses Python 3.10 and R 4.5 with pinned scientific packages.
+The reproducibility environment is defined in `configs/environment.yml`
+and pins Python 3.10.19, R 4.5.2, and the principal scientific
+dependencies used by the maintained workflow.
 
 ~~~bash
 conda env create -f configs/environment.yml
-conda activate svtuner_bib
+conda activate cytospace_v1.1.0_py310
 pip install -e .
 svtuner version
 svtuner envcheck
