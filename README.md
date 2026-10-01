@@ -121,7 +121,8 @@ Example Stage 4 pattern:
 python -m src.stages.stage4_cytospace \
   --project_root <project_root> \
   --sample <sample> \
-  --filter_scope none \
+  --filter_mode none \
+  --cell_type_column sc_meta \
   --sc_expr_source normalized \
   --stage4_suffix _baseline
 ~~~
