@@ -106,10 +106,10 @@ Stage 4 supports four decomposition routes:
 
 | Route | Reference | Spatial mask |
 |---|---|---|
-| CytoSPACE baseline | Complete reference | None |
-| Stage3A-only | Stage3A-retained reference | None |
-| Stage3B-only | Complete reference | Standalone Stage3B mask |
-| Full | Stage3A-retained reference | Sequential Stage3B mask |
+| CytoSPACE baseline | Experiment-specific Stage1 reference | None |
+| Stage3A-only | Stage3A-admissible reference | None |
+| Stage3B-only | Unfiltered Stage1 reference supplied to that route | Standalone Stage3B mask |
+| Full | Stage3A-admissible reference | Sequential Stage3B mask |
 
 Standalone and sequential Stage3B masks are different analyses and must not be shared.
 
@@ -184,9 +184,11 @@ The generator adds the optional --profile_source_sample interface. Without it, t
 
 ## Reproducibility release
 
-reproducibility_release/ is the frozen public package for the original workflow and is separate from later reviewer-response work. Its manifest records 497 release files and 482 hashed payload records. Read its [README](reproducibility_release/README.md) before reproducing a frozen analysis.
+reproducibility_release/ contains the frozen release-candidate provenance package, including manifests, source-value records, configurations, environment records, audit records, redistribution metadata, file-integrity records, and reconstruction instructions.
 
-The release distinguishes source/configuration, redistributable frozen artifacts, local or externally licensed datasets, and regenerable working outputs.
+The revised-manuscript analyses, including reviewer-response experiments C1–C8, are additionally represented in the maintained repository through the corresponding scripts, configurations, provenance records, and curated outputs described above. The repository root and reproducibility_release/ therefore provide complementary layers of the public reproducibility record.
+
+Its manifest records 497 release files and 482 hashed payload records. Read its [README](reproducibility_release/README.md) before reproducing a frozen analysis.
 
 ## What is actually on GitHub?
 
