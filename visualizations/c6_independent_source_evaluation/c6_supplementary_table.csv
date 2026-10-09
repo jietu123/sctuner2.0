@@ -1,0 +1,3 @@
+scenario,reference_status,stage3a_false_excluded_type,stage3a_false_excluded_cells,stage3b_withheld_spots,stage3b_withheld_rate,withholding_precision,withholding_recall,supported_spot_fpr,auroc,average_precision,cytospace_whole_space_recovery,svtuner_whole_space_recovery,delta_whole_space_recovery
+Independent-source control,Complete reference,Monocytes and Macrophages,218,205,0.08141382049245433,NA,NA,0.08141382049245433,NA,NA,0.6468015344081084,0.5538045164344795,-0.09299701797362891
+Fibroblast reference dropout,Fibroblasts removed from SC reference,None,0,241,0.09571088165210484,0.8796680497925311,0.4742729306487696,0.014002897151134718,0.6663253170176844,0.5202356989910382,0.5922201547901481,0.6401778198077774,0.047957665017629325

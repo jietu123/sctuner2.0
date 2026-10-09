@@ -1,0 +1,9 @@
+analysis_section,dataset_or_condition,withheld_spots,total_spots,withheld_rate,change_vs_baseline_percentage_points,bh_candidates,bh_candidate_rate,by_candidates,by_candidate_rate,bh_by_overlap_spots,bh_by_jaccard,regions_200,regions_1000,significant_regions_200,significant_regions_1000,final_withheld_spots_200,final_withheld_spots_1000,final_mask_jaccard,spatial_permutation_seed
+Technical perturbation control,Baseline,82,1211,0.06771263418662263,0,,,,,,,,,,,,,,
+Technical perturbation control,Library-size 75%,39,1211,0.03220478943022296,-3.5507844756399667,,,,,,,,,,,,,,
+Technical perturbation control,Library-size 50%,30,1211,0.02477291494632535,-4.293971924029727,,,,,,,,,,,,,,
+Technical perturbation control,Random dropout 10%,67,1211,0.05532617671345995,-1.238645747316268,,,,,,,,,,,,,,
+Technical perturbation control,Random dropout 20%,50,1211,0.04128819157720892,-2.6424442609413705,,,,,,,,,,,,,,
+Statistical robustness,BRCA TNBC - Plasma cells dropout,,,,,154,0.12716763005780346,98,0.08092485549132948,98,0.6363636363636364,34,34,5,5,97,97,1,42
+Statistical robustness,CRC - B cells dropout,,,,,362,0.11536010197578075,280,0.08922880815806246,280,0.7734806629834254,38,38,4,4,298,298,1,42
+Statistical robustness,BRCA HER2 FFPE - Plasma cells dropout,,,,,528,0.2096902303415409,369,0.1465448768864178,369,0.6988636363636364,80,80,8,8,337,337,1,42

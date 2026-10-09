@@ -1,0 +1,13 @@
+sample,dataset_label,statistic,n_observed,n_null,observed_median,null_median,observed_95th_percentile,null_95th_percentile,observed_null_median_ratio
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_sc_missing_plasma_cells,BRCA TNBC – Plasma cells,relative_reconstruction_error,1211,1211,0.8291460112565697,0.4490558310947706,1.016035077715513,0.7429691947257797,1.8464207651755964
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_sc_missing_plasma_cells,BRCA TNBC – Plasma cells,cosine_deficit,1211,1211,0.3485606815343648,0.0994977950008046,0.7925873628524732,0.3118792471305091,3.503200061182724
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_sc_missing_plasma_cells,BRCA TNBC – Plasma cells,positive_residual_fraction,1211,1211,0.4019713135614388,0.2651131464095024,0.5503088889280177,0.41537189055584994,1.5162255022259092
+cytospace_fig2d_tme_brca_tnbc_fresh_frozen_sc_missing_plasma_cells,BRCA TNBC – Plasma cells,residual_concentration,1211,1211,0.1709824447254882,0.1255797884050463,0.6135200327390089,0.6335687923050348,1.361544297032893
+cytospace_fig2d_tme_crc_fresh_frozen_sc_missing_b_cells,CRC – B cells,relative_reconstruction_error,3138,3138,0.8441085145583895,0.4833755747921397,1.0267386489377701,0.8088255734110543,1.7462787914374274
+cytospace_fig2d_tme_crc_fresh_frozen_sc_missing_b_cells,CRC – B cells,cosine_deficit,3138,3138,0.26015352616502174,0.1141013928030008,0.6583984073006565,0.338726645029425,2.28002060074923
+cytospace_fig2d_tme_crc_fresh_frozen_sc_missing_b_cells,CRC – B cells,positive_residual_fraction,3138,3138,0.3371317224880579,0.2306538122907835,0.5088104212359406,0.5138569570575784,1.4616351628432593
+cytospace_fig2d_tme_crc_fresh_frozen_sc_missing_b_cells,CRC – B cells,residual_concentration,3138,3138,0.06791443399479805,0.11654980919577376,0.527556245597528,0.5589342979147347,0.5827073803331521
+cytospace_fig2d_tme_brca_her2_ffpe_sc_missing_plasma_cells,BRCA HER2 FFPE – Plasma cells,relative_reconstruction_error,2518,2518,0.7523137571083568,0.5737505247158636,0.9872204720716465,0.8340397124541568,1.3112210354507692
+cytospace_fig2d_tme_brca_her2_ffpe_sc_missing_plasma_cells,BRCA HER2 FFPE – Plasma cells,cosine_deficit,2518,2518,0.32649100324162816,0.17417977499767615,0.7804131352168447,0.41659039863659586,1.874448415414385
+cytospace_fig2d_tme_brca_her2_ffpe_sc_missing_plasma_cells,BRCA HER2 FFPE – Plasma cells,positive_residual_fraction,2518,2518,0.44783836992755566,0.33469186932484807,0.5745270189295166,0.5578763730145476,1.3380616948686284
+cytospace_fig2d_tme_brca_her2_ffpe_sc_missing_plasma_cells,BRCA HER2 FFPE – Plasma cells,residual_concentration,2518,2518,0.24682080209385185,0.155893311238673,0.822278350676057,0.699843902753041,1.5832674290686446

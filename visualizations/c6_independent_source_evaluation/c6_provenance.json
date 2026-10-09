@@ -1,0 +1,97 @@
+{
+  "dataset_A_reference_source": "human_breast_cancer_real",
+  "dataset_B_profile_source": "real_brca",
+  "independent_profile_source": true,
+  "profile_source_path": "E:\\AAA文件\\Experiment\\SVTuner\\sctuner2.0\\data\\raw\\real_brca",
+  "dropout_target": "Fibroblasts",
+  "seed": 42,
+  "cell_types": [
+    "Endothelial cells",
+    "Epithelial cells",
+    "Fibroblasts",
+    "Monocytes and Macrophages",
+    "T cells"
+  ],
+  "three_way_shared_gene_count": 16401,
+  "stage3A_config_identity": {
+    "c6_breast_independent_control": "09bfe93cc5bf6a03af36c7c5d6fc8901c008e05485e12c333d577d950fe439bc",
+    "c6_breast_independent_fibroblast_dropout": "09bfe93cc5bf6a03af36c7c5d6fc8901c008e05485e12c333d577d950fe439bc"
+  },
+  "stage3A_configs_identical": true,
+  "stage3B_config_identity": {
+    "c6_breast_independent_control": "8c03f5ae38944fc3ee9d2f6ffe4682dda23146dc7410251b743da5dd6420e7db",
+    "c6_breast_independent_fibroblast_dropout": "8c03f5ae38944fc3ee9d2f6ffe4682dda23146dc7410251b743da5dd6420e7db"
+  },
+  "stage3B_configs_identical": true,
+  "stage3B_resolved_config": {
+    "fdr": 0.05,
+    "n_calibration": 0,
+    "n_spatial_permutations": 200,
+    "random_seed": 42,
+    "sc_expr_source": "normalized",
+    "sc_profile_source": null,
+    "expression_scale": "log1p",
+    "sc_profile_scale": null,
+    "max_genes": 0,
+    "enable_residual_program_branch": true,
+    "residual_program_components": 8,
+    "residual_program_candidate_fdr_factor": 2.0,
+    "residual_program_min_whole_profile_overlap": 0.5,
+    "residual_program_min_reference_orthogonal_score": 0.3,
+    "enable_compensatory_diagnostics": true
+  },
+  "stage4_execution_settings": {
+    "seed": 42,
+    "n_processors": 1,
+    "n_subspots": 800,
+    "mapping_cells_per_spot": 5,
+    "sc_expr_source": "normalized",
+    "baseline_filter_mode": "none",
+    "svtuner_filter_mode": "plugin_unknown",
+    "svtuner_filter_scope": "unsupported_all",
+    "svtuner_cell_type_column": "plugin_type",
+    "svtuner_stage3b_blank_regions": true
+  },
+  "truth_rule": "Fibroblast truth-dominant spot",
+  "continuous_evidence_score": "-log10(clip(spot_pvalue, finfo(float).tiny, 1.0))",
+  "file_sha256": {
+    "control_truth": "5fddd2c62847611ce492a8e9ff25c0efb2c920731b61f1a0f009ef3b0d561831",
+    "dropout_truth": "5fddd2c62847611ce492a8e9ff25c0efb2c920731b61f1a0f009ef3b0d561831",
+    "control_st_expression": "14ce26ed5cd51535a97cdf016a85c0879c03e081fa88fadb5153d6682c5701b7",
+    "dropout_st_expression": "14ce26ed5cd51535a97cdf016a85c0879c03e081fa88fadb5153d6682c5701b7"
+  },
+  "final_qc": {
+    "truth_spot_universe_identical": true,
+    "truth_files_sha256_identical": true,
+    "st_expression_sha256_identical": true,
+    "dropout_reference_has_no_fibroblasts": true,
+    "prediction_spot_ids_match_truth": {
+      "c6_breast_independent_control": {
+        "CytoSPACE": true,
+        "SVTuner": true
+      },
+      "c6_breast_independent_fibroblast_dropout": {
+        "CytoSPACE": true,
+        "SVTuner": true
+      }
+    },
+    "blank_manifest_matches_scores": {
+      "c6_breast_independent_control": true,
+      "c6_breast_independent_fibroblast_dropout": true
+    },
+    "fraction_rows_valid": {
+      "c6_breast_independent_control": {
+        "CytoSPACE": true,
+        "SVTuner": true
+      },
+      "c6_breast_independent_fibroblast_dropout": {
+        "CytoSPACE": true,
+        "SVTuner": true
+      }
+    },
+    "metrics_finite": true,
+    "whole_space_scores_in_0_1": true,
+    "auroc_ap_in_0_1": true,
+    "all_pass": true
+  }
+}

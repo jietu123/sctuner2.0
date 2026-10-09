@@ -1,0 +1,5 @@
+scenario,method,whole_space_recovery,n_spots,n_withheld,withheld_rate
+c6_breast_independent_control,CytoSPACE,0.6468015344081084,2518,0,0.0
+c6_breast_independent_control,SVTuner,0.5538045164344795,2518,205,0.08141382049245433
+c6_breast_independent_fibroblast_dropout,CytoSPACE,0.5922201547901481,2518,0,0.0
+c6_breast_independent_fibroblast_dropout,SVTuner,0.6401778198077774,2518,241,0.09571088165210484

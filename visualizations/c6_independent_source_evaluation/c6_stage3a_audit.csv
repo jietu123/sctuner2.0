@@ -1,0 +1,3 @@
+scenario,input_types,detected_unsupported_type_count,detected_unsupported_types,n_input_cells,n_cells_marked_unsupported_or_unknown,false_exclusion_rate,false_exclusion
+c6_breast_independent_control,Endothelial cells;Epithelial cells;Fibroblasts;Monocytes and Macrophages;T cells,1,Monocytes and Macrophages,10748,218,0.020282843319687383,True
+c6_breast_independent_fibroblast_dropout,Endothelial cells;Epithelial cells;Monocytes and Macrophages;T cells,0,,8704,0,0.0,False

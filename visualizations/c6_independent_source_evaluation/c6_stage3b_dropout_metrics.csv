@@ -1,0 +1,2 @@
+scenario,target,truth_unsupported_spots,predicted_withheld,TP,FP,FN,TN,precision,recall,supported_spot_FPR,target_dominant_withheld_rate,non_target_withheld_rate,AUROC,AP
+c6_breast_independent_fibroblast_dropout,Fibroblasts,447,241,212,29,235,2042,0.8796680497925311,0.4742729306487696,0.014002897151134718,0.4742729306487696,0.014002897151134718,0.6663253170176844,0.5202356989910382
