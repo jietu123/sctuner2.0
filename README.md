@@ -1,6 +1,6 @@
 # SVTuner
 
-SVTuner is a spatial-transcriptomics workflow that detects reference populations unsupported by the observed tissue and prevents unsupported mappings from being treated as biological signal. This repository contains the maintained pipeline, dataset configurations, frozen reproducibility assets, and reviewer-response experiments C1–C8.
+SVTuner is a spatial-transcriptomics workflow that detects reference populations unsupported by the observed tissue and prevents unsupported mappings from being treated as biological signal. This repository contains the maintained pipeline, the primary simulation and real-data evaluations, the biological application, frozen reproducibility assets, and targeted robustness analyses added during manuscript revision.
 
 The core workflow has four stages:
 
@@ -145,59 +145,67 @@ Use --stage3_suffix, --stage3b_blank_regions, and --stage3b_scores_path as appro
 
 The svtuner run convenience command runs Stage 1, Stage 3A, baseline Stage 4, and the Stage3A-controlled Stage 4 route. It does **not** run Stage 3B. In addition, configs/pipeline_presets.yaml is currently empty, so --from-scratch requires a maintained preset before use.
 
-## Composite simulation scenarios
+## Evaluation framework
 
-The frozen no-noise composite suite contains nine scenarios:
+The scientific evaluation is organized around three primary experiment families. The later C1–C8 labels are internal revision-work-package identifiers; they are not biological cohorts, dataset names, or the main experiment hierarchy.
 
-| ID | Tissue | ST missing population(s) | SC reference dropout |
+### Primary experiment 1: controlled simulation benchmark
+
+The main simulation benchmark asks whether SVTuner improves mapping when the spatial data and the single-cell reference are incomplete in different ways. Each scenario combines two deliberately distinct challenges:
+
+- **ST-side absence:** one or more cell types remain in the SC reference but are absent from the simulated ST expression. This tests whether Stage3A prevents unsupported reference populations from being mapped.
+- **SC-reference dropout:** a cell type contributes to the simulated ST truth but is removed from the reference supplied to mapping. This tests whether Stage3B identifies spatial units that the available reference cannot adequately explain.
+
+The legacy scenario IDs are compact file labels:
+
+- **BC** means the breast-cancer simulation family; **Lung** means human lung; **Brain** means mouse brain.
+- Suffix **1** is the ST-side control, suffix **2** removes one ST population, and suffix **3** removes two ST populations.
+- All nine scenarios also contain the tissue-specific SC-reference dropout shown in the final column.
+
+| Readable scenario | Legacy ID | ST-side population(s) absent | SC-reference dropout |
 |---|---|---|---|
-| BC-1 | Breast cancer | None | Endothelial cells |
-| BC-2 | Breast cancer | Epithelial cells | Endothelial cells |
-| BC-3 | Breast cancer | Epithelial cells + PCs | Endothelial cells |
-| Lung-1 | Human lung | None | B cell |
-| Lung-2 | Human lung | AT2 | B cell |
-| Lung-3 | Human lung | AT2 + Fibroblast | B cell |
-| Brain-1 | Mouse brain | None | Ext_L56 |
-| Brain-2 | Mouse brain | Micro | Ext_L56 |
-| Brain-3 | Mouse brain | Micro + Oligo_2 | Ext_L56 |
+| Breast cancer, control | BC-1 | None | Endothelial cells |
+| Breast cancer, single ST absence | BC-2 | Epithelial cells | Endothelial cells |
+| Breast cancer, double ST absence | BC-3 | Epithelial cells + PCs | Endothelial cells |
+| Human lung, control | Lung-1 | None | B cell |
+| Human lung, single ST absence | Lung-2 | AT2 | B cell |
+| Human lung, double ST absence | Lung-3 | AT2 + Fibroblast | B cell |
+| Mouse brain, control | Brain-1 | None | Ext_L56 |
+| Mouse brain, single ST absence | Brain-2 | Micro | Ext_L56 |
+| Mouse brain, double ST absence | Brain-3 | Micro + Oligo_2 | Ext_L56 |
 
-The exact config names and the C1 command are listed in [RUNNING_SCENARIOS.md](RUNNING_SCENARIOS.md).
+Cell-type names follow the corresponding dataset annotations: AT2 denotes alveolar type 2 epithelial cells, PCs denotes plasma cells, and Micro denotes microglia; Ext_L56 and Oligo_2 are the exact labels used by the mouse-brain reference. The primary comparison evaluates SVTuner and mapping baselines with abstention-aware composition recovery. Frozen source values are under [visualizations/method_comparison/composite_no_noise/](visualizations/method_comparison/composite_no_noise/); exact config names and runnable scenario commands are in [RUNNING_SCENARIOS.md](RUNNING_SCENARIOS.md).
 
-## Revision experiments C1–C8
+### Primary experiment 2: real-data profile-masking validation
 
-| Experiment | Purpose | Main entry points / public artifacts |
+The second main experiment family uses profile masking in real spatial datasets. Target-associated profile genes are deliberately attenuated in the spatial expression data while the scRNA-seq reference is kept unchanged. This creates a controlled unsupported-reference challenge without claiming that the edited data are a new biological sample. It tests whether:
+
+1. Stage3A detects and excludes the deliberately masked target population from the admissible reference;
+2. standalone and sequential Stage3B masks quantify the incremental spatial abstention before and after the Stage3A reference decision; and
+3. the combined route suppresses unsupported target-like assignments under a fixed low-support evaluation set.
+
+The maintained collection contains 15 profile-masking experiments: 10 spot-resolution datasets and 5 MERSCOPE datasets evaluated at capacity 1. Curated benchmark and decomposition assets are under [visualizations/cytospace_fig2d_profile_mask_benchmark/](visualizations/cytospace_fig2d_profile_mask_benchmark/), [visualizations/highres_profile_mask_mapping/](visualizations/highres_profile_mask_mapping/), and [visualizations/c5_decomposition/](visualizations/c5_decomposition/).
+
+### Primary experiment 3: biological application
+
+The biological application evaluates SVTuner against a frozen CTA-derived immune endpoint after validated CTA-to-spot matching. CytoSPACE and SVTuner outputs are compared on the same formal barcode-matched analysis universe. The maintained evidence chain, endpoint freeze, mapping outputs, and final evaluation assets are under [visualizations/bioapp_experiment/](visualizations/bioapp_experiment/).
+
+## Targeted robustness and revision checks
+
+The C1–C8 labels were introduced only to track focused questions raised during revision. They extend or audit the primary experiments above; they do not replace them. Their purpose is to show whether the main conclusions depend on a particular seed, cutoff, null calibration, stage combination, expression source, or reporting choice.
+
+| Internal ID | Why this check was added | Public entry points / artifacts |
 |---|---|---|
-| C1 | Ten-seed robustness across nine composite scenarios | scripts/run_c1_seed_repeat.py; visualizations/method_comparison/c1_multiseed/ |
-| C2 | Stage3A parameter-sensitivity attempt | **CLOSED / CANCELLED.** No formal sensitivity result is released; temporary diagnostic runs are not manuscript evidence. Parameter transparency is handled in the Methods and reproducibility records. |
-| C3 | Marker-core robustness at 10%, 15%, 20%, and 25% | scripts/plot_stage3b_threshold_robustness.py; visualizations/stage3b_realdata_candidate_scan/stage3b_threshold_robustness/ |
-| C4 | Stage3B null calibration, technical perturbation, and statistical robustness | scripts/export_c4_1_stage3b_raw_calibration_null.py and the run_c4_* scripts; visualizations/c4_stage3b_calibration/ |
-| C5 | Stage3A/Stage3B decomposition in 15 profile-masking experiments | scripts/run_c5_decomposition.py; visualizations/c5_decomposition/ |
-| C6 | Independent-source simulated-ST profiles | C6 configs plus generator, dropout, and evaluation scripts |
-| C7 | CTA performance extension and deterministic provenance repair | scripts/repair_c7_metric_provenance.py; visualizations/bioapp_experiment/C7_cta_extended_performance/ |
-| C8 | Direct paired comparison at the independent experiment level | C8 paired-analysis/plotting scripts; visualizations/c8_direct_paired_comparison/ |
+| C1 | Test whether the nine-scenario simulation conclusion persists across ten simulation seeds rather than one realization | scripts/run_c1_seed_repeat.py; visualizations/method_comparison/c1_multiseed/ |
+| C2 | A parameter-sensitivity attempt was considered, but no formal result was released | **CLOSED / CANCELLED.** Temporary diagnostic runs are not manuscript evidence; parameter transparency is handled in the Methods and reproducibility records |
+| C3 | Test whether the spatial marker-core conclusion depends on choosing a 15% cutoff by repeating the readout at 10%, 15%, 20%, and 25% | scripts/plot_stage3b_threshold_robustness.py; visualizations/stage3b_realdata_candidate_scan/stage3b_threshold_robustness/ |
+| C4 | Audit Stage3B calibration against pseudo-null data, technical perturbations, BH versus BY correction, and 200 versus 1,000 spatial permutations | scripts/export_c4_1_stage3b_raw_calibration_null.py; scripts/run_c4_*; visualizations/c4_stage3b_calibration/ |
+| C5 | Decompose the profile-masking results into Stage3A-only, standalone Stage3B, and sequential Stage3A + Stage3B contributions | scripts/run_c5_decomposition.py; visualizations/c5_decomposition/ |
+| C6 | Remove a potential shared-source advantage by deriving simulated-ST expression profiles from an independent breast-cancer study while retaining a separate SC reference | C6 dataset configs and generator/evaluation scripts; visualizations/c6_independent_source_evaluation/ |
+| C7 | Add the reviewer-requested precision–recall and frozen-binary metrics for the existing CTA application, then repair their deterministic provenance | scripts/repair_c7_metric_provenance.py; visualizations/bioapp_experiment/C7_cta_extended_performance/ |
+| C8 | Summarize direct paired method comparisons using the independent experiment, rather than internal readouts, as the inferential unit | C8 paired-analysis/plotting scripts; visualizations/c8_direct_paired_comparison/ |
 
-Selected frozen results:
-
-- **C1:** nine scenarios × ten simulation seeds; the overall seed-level mean paired difference was approximately +0.0975, with all ten overall seed means positive.
-- **C3:** at the original 15% marker-core threshold, mean marker-associated fraction was 93.79% and mean core withheld rate was 57.78% across six scenarios.
-- **C5:** all 15 masked targets were detected and fully excluded by Stage3A; melanoma patient 2 also had the recorded NK-cell off-target exclusion.
-- **C7:** formal matched universe n=1888 (134 CTA-positive, 1754 CTA-negative); AUROC 0.8305238346466074 and AP 0.28365511700029472. The frozen binary decision is not exactly reproducible by a one-dimensional withheld_score threshold; the minimum disagreement is 93.
-
-For exact configurations, input paths, known limitations, and frozen-vs-local distinctions, see [C_revision_provenance_audit.md](C_revision_provenance_audit.md).
-
-## Independent-source simulation (C6)
-
-C6 separates the single-cell reference source from the source used to derive simulated-ST cell-type profiles:
-
-~~~text
-SC reference / composition source: human_breast_cancer_real
-Independent profile source:       Wu et al. GSE176078 HER2+ breast cancer
-Harmonized broad types:           5
-Three-way shared genes:           16,401
-Seed / mix_alpha / depth_scale:   42 / 1.0 / 1.0
-~~~
-
-The generator adds the optional --profile_source_sample interface. Without it, the historical generator path is preserved. C6-generated data and result files remain local because data/ and result/ are ignored.
+Examples of the resulting secondary checks include seed-level stability across the nine simulation scenarios, marker-core robustness across four cutoffs, full Stage3A exclusion of the masked target in all 15 profile-masking experiments, and deterministic recovery of the CTA AUROC/AP and binary-decision provenance. Exact values, configurations, input paths, and known limitations are recorded in [C_revision_provenance_audit.md](C_revision_provenance_audit.md).
 
 ## Reproducibility release
 
